@@ -1,0 +1,29 @@
+:root {
+    --theme: #002a5c
+}
+
+.header {
+    position: fixed; 
+    z-index: 1;
+    width: 100%;
+    display: flex; 
+    justify-content: space-between;
+    background-color: var(--theme);
+}
+
+.menu, .subMenu {
+    background-color: var(--theme) !important;
+}
+
+.logo {
+    color: white;
+    font-size: 35px;
+}
+
+.content {
+    padding-top: 64px;
+}
+
+.ant-menu-sub {
+    background-color: var(--theme) !important;
+}
