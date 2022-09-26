@@ -1,8 +1,9 @@
 require('dotenv').config();
 const MongoClient = require('mongodb').MongoClient;
 
+// Connects to mongoDB with MONGO_URI from .env
 const connectDB = async () => {
-    const client = new MongoClient(process.env.MONGO_URI, { useUnifiedTopology: true });
+    let client = new MongoClient(process.env.MONGO_URI, { useUnifiedTopology: true });
     let database;
 
     await client.connect().then(() => {

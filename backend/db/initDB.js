@@ -1,6 +1,8 @@
 require('dotenv').config();
 const MongoClient = require('mongodb').MongoClient;
 
+
+// Use 'npm run init' on the terminal backend to setup the database and collections with validation in mongoDB if collections do not exist yet.
 const initDB = async () => {
     console.log(process.env.MONGO_URI)
     const client = new MongoClient(process.env.MONGO_URI, { useUnifiedTopology: true });
@@ -20,7 +22,7 @@ const initDB = async () => {
             $jsonSchema: {
                 bsonType: "object",
                 title: "Accounts Object Validation",
-                required: [ "utorid", "utorName", "savedCourses", "savedReviewQns" ],
+                required: [ "utorid", "utorName", "savedCourses", "reviewQns" ],
                 additionalProperties: false,
                 properties: {
                     _id: {
@@ -40,14 +42,16 @@ const initDB = async () => {
                     savedCourses: {
                         bsonType: "array",
                         description: "'savedCourses' must be an array with courseIds referencing the Courses collection, and is required",
+                        uniqueItems: true,
                         items: {
                             bsonType: "string",
                             description: "items in array must be a string referencing the Courses collection or empty"
                         }
                     },
-                    savedReviewQns: {
+                    reviewQns: {
                         bsonType: "array",
-                        description: "'savedReviewQns' must be an array with courseIds referencing the Questions collection, and is required",
+                        description: "'reviewQns' must be an array with courseIds referencing the Questions collection, and is required",
+                        uniqueItems: true,
                         items: {
                             bsonType: "string",
                             description: "items in array must be a string referencing the Questions collection or empty"
@@ -58,8 +62,7 @@ const initDB = async () => {
         }
     }).then(() => {
         console.log("Successfully created Accounts collection");
-    }).catch(error => {
-        console.log(error)
+    }).catch(() => {
         console.log("Error creating collections or Accounts collection already exists");
     })
 
@@ -75,12 +78,10 @@ const initDB = async () => {
                 properties: {
                     _id: {
                         bsonType: "objectId",
-                        uniqueItems: true,
                         description: "auto-generated objectId"
                     },
                     courseId: {
-                        bsonType: "objectId",
-                        uniqueItems: true,
+                        bsonType: "string",
                         description: "'courseId' must be a string, specifically the course code, is unique, and is required"
                     },
                     courseName: {
@@ -90,6 +91,7 @@ const initDB = async () => {
                     topics: {
                         bsonType: "array",
                         description: "'topics' must be an array with topicIds referencing the Topics collection, and is required",
+                        uniqueItems: true,
                         items: {
                             bsonType: "int",
                             description: "items in array must be an int referencing the Topics collection or empty"
@@ -116,12 +118,10 @@ const initDB = async () => {
                 properties: {
                     _id: {
                         bsonType: "objectId",
-                        uniqueItems: true,
                         description: "auto-generated objectId"
                     },
                     topicId: {
                         bsonType: "int",
-                        uniqueItems: true,
                         description: "'topicId' must be an int, is unique, and is required"
                     },
                     topicName: {
@@ -131,6 +131,7 @@ const initDB = async () => {
                     approvedQns: {
                         bsonType: "array",
                         description: "'approvedQns' must be an array with qnsIds referencing the Questions collection, and is required",
+                        uniqueItems: true,
                         items: {
                             bsonType: "int",
                             description: "items in array must be an int referencing the Questions collection or empty"
@@ -139,6 +140,7 @@ const initDB = async () => {
                     reviewQns: {
                         bsonType: "array",
                         description: "'reviewQns' must be an array with qnsIds referencing the Questions collection, and is required",
+                        uniqueItems: true,
                         items: {
                             bsonType: "int",
                             description: "items in array must be an int referencing the Questions collection or empty"
@@ -165,12 +167,10 @@ const initDB = async () => {
                 properties: {
                     _id: {
                         bsonType: "objectId",
-                        uniqueItems: true,
                         description: "auto-generated objectId"
                     },
                     qnsId: {
                         bsonType: "string",
-                        uniqueItems: true,
                         description: "'qnsId' must be a string, specifically a combination of courseId topicId and a num, is unique, and is required"
                     },
                     qnsName: {
@@ -201,6 +201,7 @@ const initDB = async () => {
                     choices: {
                         bsonType: "array",
                         description: "'choices' must be an array of strings or empty, and is required",
+                        uniqueItems: true,
                         items: {
                             bsonType: "string",
                             description: "items in array must be a string or empty"
@@ -221,6 +222,7 @@ const initDB = async () => {
                     discussions: {
                         bsonType: "array",
                         description: "'discussions' must be an array of discussionIds referencing the Discussions collection or empty, and is required",
+                        uniqueItems: true,
                         items: {
                             bsonType: "int",
                             description: "items in array must be an int referencing the Discussions collection or empty"
@@ -255,12 +257,10 @@ const initDB = async () => {
                 properties: {
                     _id: {
                         bsonType: "objectId",
-                        uniqueItems: true,
                         description: "auto-generated objectId"
                     },
                     discussionId: {
                         bsonType: "int",
-                        uniqueItems: true,
                         description: "'discussionId' must be an int, is unique, and is required"
                     },
                     authName: {
@@ -278,6 +278,7 @@ const initDB = async () => {
                     thread: {
                         bsonType: "array",
                         description: "'thread' must be an array of discussionIds referencing own collection or empty, and is required",
+                        uniqueItems: true,
                         items: {
                             bsonType: "int",
                             description: "items in array must be int referencing own collection or empty"
