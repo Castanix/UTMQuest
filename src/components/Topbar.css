@@ -3,7 +3,9 @@
 }
 
 .header {
-    position: fixed; 
+    position: fixed;
+    padding-right: 0%;
+    padding-left: 15px; 
     z-index: 1;
     width: 100%;
     display: flex; 
@@ -15,9 +17,19 @@
     background-color: var(--theme) !important;
 }
 
+.menu {
+    flex: auto;
+    min-width: 0;
+    justify-content: end;
+}
+
 .logo {
     color: white;
     font-size: 35px;
+}
+
+.theme {
+    transform: translate(-3px, 6px)
 }
 
 .content {
@@ -26,4 +38,11 @@
 
 .ant-menu-sub {
     background-color: var(--theme) !important;
+}
+
+@media screen and (max-width: 420px) {
+    .showLogo {
+        display: none;
+    }
+    
 }
