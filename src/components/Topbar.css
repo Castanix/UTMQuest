@@ -1,0 +1,48 @@
+:root {
+    --theme: #002a5c
+}
+
+.header {
+    position: fixed;
+    padding-right: 0%;
+    padding-left: 1rem; 
+    z-index: 1;
+    width: 100%;
+    display: flex; 
+    justify-content: space-between;
+    background-color: var(--theme);
+}
+
+.menu, .subMenu {
+    background-color: var(--theme) !important;
+}
+
+.menu {
+    flex: auto;
+    min-width: 0;
+    justify-content: end;
+}
+
+.logo {
+    color: white;
+    font-size: 2rem;
+}
+
+.theme {
+    transform: translate(-3px, 6px)
+}
+
+.content {
+    padding-top: 4rem;
+}
+
+.ant-menu-sub {
+    background-color: var(--theme) !important;
+}
+
+@media screen and (max-width: 420px) {
+    .showLogo {
+        display: none;
+    }
+    
+}
