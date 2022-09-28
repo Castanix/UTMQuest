@@ -3,11 +3,11 @@
     justify-content: space-between;
 }
 
-.cards {
+.cards, .error {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    height: 70vh;
+    height: 77vh;
 }
 
 .card {

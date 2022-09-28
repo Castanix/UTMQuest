@@ -1,0 +1,10 @@
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 77vh;
+}
+
+.spinner {
+    font-size: 44px;
+}
