@@ -1,7 +1,9 @@
-import { Card, Breadcrumb, Button, Space, Typography } from 'antd';
+import { Card, Breadcrumb, Button, Space, Typography, Result } from 'antd';
 import Icon, { SettingOutlined, StarOutlined, ContainerTwoTone, PlusCircleTwoTone, DiffTwoTone } from '@ant-design/icons'
 import { Link, useParams } from 'react-router-dom';
-import "./coursePage.css";
+import "./CoursePage.css";
+import { useState } from 'react';
+import Loading from '../../components/Loading/Loading';
 
 const { Title } = Typography;
 
@@ -15,9 +17,38 @@ const GetCard = ({ cardIcon, title }: { cardIcon: React.ForwardRefExoticComponen
 const CoursePage = () => {
 
     // fetch the course here
-    let params = useParams();
+    const params = useParams();
     const courseCode = params.id;
-    const courseName = "Introduction to Computer Science"
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string>("");
+    const [courseName, setCourseName] = useState<string>("");
+
+    fetch(`/getCourse/${courseCode}`)
+        .then((res: Response) => {
+            if (!res.ok) throw Error(res.statusText);
+            return res.json();
+
+        }).then((result) => {
+            setCourseName(result.courseName);
+            setLoading(false);
+
+        }).catch((err) => {
+            setError(err.message);
+            setLoading(false);
+        });
+
+
+    if (loading) return <Loading />
+
+    if (error != "") {
+        return (
+            <Card bordered={false} className='error'>
+                <Result title={error} extra={
+                    <Link to="/courses"><Button type='primary'>Go back to courses</Button></Link>}
+                />
+            </Card>
+        )
+    }
 
     const Header = () => (
         <div>

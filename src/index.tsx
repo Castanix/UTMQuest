@@ -3,10 +3,10 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import "antd/dist/antd.min.css";
 import App from "./App";
-import Topbar from "./components/Topbar";
+import Topbar from "./components/Topbar/Topbar";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import CoursePage from "./pages/coursePage/coursePage";
+import CoursePage from "./pages/CoursePage/CoursePage";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
