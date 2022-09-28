@@ -1,17 +1,11 @@
 import express, { Request, Response } from "express";
-import * as mongoDB from "mongodb";
-import { connectDB } from "./db/db.service"
+import { connectDB } from "./db/db.service";
+import { UTMQuestCollections } from "./types/utmQuestCollection";
 
 const app = express();
 const port = process.env.PORT || 5001;
 
-let collections: { 
-  Accounts?: mongoDB.Collection,
-  Courses?: mongoDB.Collection,
-  Topics?: mongoDB.Collection,
-  Questions?: mongoDB.Collection,
-  Discussions?: mongoDB.Collection,
-} = {}
+let collections: UTMQuestCollections = {}
 
 app.get('/express_backend', (req: Request, res: Response) => {
   res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
