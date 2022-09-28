@@ -1,13 +1,8 @@
 import configValues from '../../config'; 
 import * as mongoDB from "mongodb";
+import { UTMQuestCollections } from '../types/utmQuestCollection';
 
-const UTMQuestCollections: { 
-    Accounts?: mongoDB.Collection,
-    Courses?: mongoDB.Collection,
-    Topics?: mongoDB.Collection,
-    Questions?: mongoDB.Collection,
-    Discussions?: mongoDB.Collection,
-} = {}
+const utmQuestCollections: UTMQuestCollections = {};
 
 // Connects to mongoDB with MONGO_URI from .env
 export async function connectDB() { 
@@ -18,15 +13,15 @@ export async function connectDB() {
 
     const db: mongoDB.Db = client.db(configValues.DB_NAME);
     
-    UTMQuestCollections.Accounts = db.collection("Accounts"); 
+    utmQuestCollections.Accounts = db.collection("Accounts"); 
     
-    UTMQuestCollections.Courses = db.collection("Courses"); 
+    utmQuestCollections.Courses = db.collection("Courses"); 
     
-    UTMQuestCollections.Topics = db.collection("Topics");
+    utmQuestCollections.Topics = db.collection("Topics");
     
-    UTMQuestCollections.Questions = db.collection("Questions");
+    utmQuestCollections.Questions = db.collection("Questions");
     
-    UTMQuestCollections.Discussions = db.collection("Discussions");
+    utmQuestCollections.Discussions = db.collection("Discussions");
 
-    return UTMQuestCollections;
+    return utmQuestCollections;
 }
