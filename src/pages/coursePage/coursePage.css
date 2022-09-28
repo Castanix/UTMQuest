@@ -1,0 +1,25 @@
+.title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cards, .error {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 77vh;
+}
+
+.card {
+    text-align: center;
+}
+
+.card-icon, .card-title {
+    font-size: 5rem;
+}
+
+@media screen and (max-width: 420px) {
+    .title, .cards {
+        display: block;
+    }
+}
