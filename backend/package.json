@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "init": "node ./db/initDB.js",
-    "start": "node ./build/server.js",
+    "initDB": "ts-node ./db/initDB.ts",
+    "start": "ts-node ./server.ts",
     "build": "tsc -p .",
     "dev": "nodemon ./server.ts"
   },
