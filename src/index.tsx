@@ -16,7 +16,7 @@ root.render(
     <BrowserRouter>
       <Topbar>
         <Routes>
-          <Route path="/" element={<DashboardPage />} />
+          <Route path="/dashboard/:id" element={<DashboardPage />} />
           <Route path="/courses" element={<div>Coming soon</div>} />
           <Route path="/courses/:id" element={<CoursePage />} />
           <Route path="/profile" element={<div>Coming soon</div>} />

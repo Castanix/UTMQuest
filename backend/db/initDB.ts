@@ -174,7 +174,6 @@ async function initDB() {
                         description: "'qnsName' must be a string and is required"
                     },
                     qnsStatus: {
-                        bsonType: "string",
                         enum: ["approved", "pending"],
                         description: "'qnsStatus' must be specifically 'approved' or 'pending', and is required",
                     },
@@ -225,7 +224,7 @@ async function initDB() {
                         }
                     },
                     date: {
-                        bsonType: "date",
+                        bsonType: "string",
                         description: "'date' must be a date, specifically the date it was created, and is required" 
                     },
                     snapshot: {

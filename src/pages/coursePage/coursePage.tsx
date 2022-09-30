@@ -40,7 +40,7 @@ const CoursePage = () => {
 
     if (loading) return <Loading />
 
-    if (error != "") {
+    if (error !== "") {
         return (
             <Card bordered={false} className='error'>
                 <Result title={error} extra={
@@ -53,7 +53,7 @@ const CoursePage = () => {
     const Header = () => (
         <div>
             <Breadcrumb>
-                <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+                <Breadcrumb.Item><Link to="/dashboard">Dashboard</Link></Breadcrumb.Item>
                 <Breadcrumb.Item><Link to="/courses">Courses</Link></Breadcrumb.Item>
                 <Breadcrumb.Item>{courseCode}</Breadcrumb.Item>
             </Breadcrumb>

@@ -1,14 +1,11 @@
-import { Breadcrumb, Card, List, Space, Table, Tag, Typography } from 'antd';
+import { Breadcrumb, Button, Card, List, Result, Table, Typography } from 'antd';
 import { DropboxOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom';
-import "./dashboardPage.css";
+import { Link, useParams } from 'react-router-dom';
+import "./DashboardPage.css";
+import { useState } from 'react';
+import Loading from '../../components/Loading/Loading';
 
 const DashboardPage = () => {
-
-    const { Title } = Typography;
-    const { Column } = Table;
-    // Grab SavedCourses and ReviewQuestions by utorid
-    const courseData: any[] = ["Course 1", "Course 2", "Course 3", "Course 4", "Course 5"];
 
     interface DataType {
         key: React.Key;
@@ -16,8 +13,40 @@ const DashboardPage = () => {
         topic: string;
         qnsName: string;
         reviewStatus: string;
-      }
-      
+    }
+
+
+    const { Title } = Typography;
+    const { Column } = Table;
+
+    const params = useParams();
+    const utorid = params.id;
+    const [loading, setLoading] = useState<boolean>(true);
+    const [courseData, setCourseData] = useState<any[]>([]);
+    // const [reviewQns, setReviewQns] = useState<any[]>([]);
+    const [error, setError] = useState("");
+
+    fetch(`/getAccount/${utorid}`)
+        .then((res: Response) => {
+            if (!res.ok) throw Error(res.statusText);
+            return res.json();
+
+        }).then((result) => {
+            const courseArr: any[] = [];
+
+            result.savedCourses.forEach((courseId: string) => {
+                courseArr.push([`/courses/${courseId}`, courseId])
+            })
+
+            console.log(courseArr);
+            setCourseData(courseArr);
+            // setReviewQns(result.reviewQns);
+            setLoading(false);
+        }).catch((err) => {
+            setError(err.message);
+            setLoading(false);
+        });
+
     const questionData: DataType[] = [
         {
             key: "1",
@@ -56,8 +85,6 @@ const DashboardPage = () => {
         }
     ];
 
-
-
     const paginationConfig = (total:number, size:number) => {
         return {
             defaultCurrent: 1,
@@ -65,6 +92,7 @@ const DashboardPage = () => {
             pageSize: size
         }
     };
+
 
     const Header = () => (
         <div>
@@ -74,6 +102,7 @@ const DashboardPage = () => {
             <Title level={3}>Dashboard</Title>
         </div>
     )
+
 
     const SavedCourses = () => {
         return courseData.length ? 
@@ -85,14 +114,15 @@ const DashboardPage = () => {
                     pagination={paginationConfig(courseData.length, 4)}
                     renderItem={item => 
                         <List.Item>
-                            <Link to={''}>
-                                {item}
+                            <Link to={item[0]}>
+                                {item[1]}
                             </Link>
                         </List.Item>
                     }
                 />
             </> : <div className="icon"><DropboxOutlined /></div>
     }
+    
 
     const ReviewQuestions = () => {
         return questionData.length ? 
@@ -109,6 +139,18 @@ const DashboardPage = () => {
             </> : <div className="icon"><DropboxOutlined /></div>
     }
 
+
+    if (loading) return <Loading />
+
+    if (error !== "") {
+        return (
+            <Card bordered={false} className='error'>
+                <Result title={error} extra={
+                    <Link to="/courses"><Button type='primary'>Go back to login</Button></Link>}
+                />
+            </Card>
+        )
+    }
 
     return (
         <Card title={<Header />} bordered={false}>
