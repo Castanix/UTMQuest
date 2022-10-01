@@ -23,8 +23,9 @@ const CoursePage = () => {
     const [error, setError] = useState<string>("");
     const [courseName, setCourseName] = useState<string>("");
 
-    fetch(`/getCourse/${courseCode}`)
+    fetch(`/course/getCourse/${courseCode}`)
         .then((res: Response) => {
+            console.log(res);
             if (!res.ok) throw Error(res.statusText);
             return res.json();
 
@@ -40,7 +41,7 @@ const CoursePage = () => {
 
     if (loading) return <Loading />
 
-    if (error != "") {
+    if (error !== "") {
         return (
             <Card bordered={false} className='error'>
                 <Result title={error} extra={
