@@ -140,7 +140,6 @@ const DashboardPage = () => {
                         <ReviewQuestions />
                     </div>
                 </Card>
-                <>{reviewQnsData.length}</>
             </div>
         </Card>
     );
