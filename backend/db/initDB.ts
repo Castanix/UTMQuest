@@ -1,3 +1,57 @@
+/**
+ * Collections Created:
+ *  Accounts = {
+ *      utorid: string PRIMARY KEY (obtained from uoft login)
+ *      utorName: string
+ *      savedCourses: [courseId: string -> Courses]
+ *      reviewQns: {
+ *          qnsId: string -> Questions
+ *          qnsName: string
+ *          topic: string
+ *          reviewStatus: int
+ *      }
+ *  }
+ *  Courses = {
+ *      courseId: string PRIMARY KEY (course code)
+ *      courseName: string
+ *      topics: [topicId: string -> Topics]
+ *  }
+ *  Topics = {
+ *      topicId: int PRIMARY KEY
+ *      topicName: string
+ *      approvedQns: [qnsId: string -> Questions]
+ *      reviewQns: [qnsId: string -> Questions]
+ *  }
+ *  Questions = {
+ *      qnsId: string PRIMARY KEY (made up of courseId + topicId + int)
+ *      qnsName: string
+ *      qnsStatus: (approved : pending)
+ *      reviewStatus: int
+ *      qnsType: (mc : matching : short)
+ *      desc: string
+ *      xplan: string
+ *      choices: ([string] : null)
+ *      ans: string
+ *      author: {
+ *          utorid: string -> Accounts
+ *          utorName: string
+ *      }
+ *      discussion: [discussionId: int -> Discussions]
+ *      date: string
+ *      snapshot: ({self} : null)
+ *  }
+ *  Discussions = {
+ *      discussionId: int PRIMARY KEY
+ *      author: {
+ *          utorid: string -> Accounts
+ *          utorName: string
+ *      }
+ *      content: string
+ *      thread: [discussionId: int -> Discussions]
+ *      date: string
+ *  }
+ */
+
 import * as mongoDB from "mongodb";
 import configValues from '../../config'; 
 
@@ -23,12 +77,10 @@ async function initDB() {
                 properties: {
                     _id: {
                         bsonType: "objectId",
-                        uniqueItems: true,
                         description: "auto-generated objectId"
                     },
                     utorid: {
                         bsonType: "string",
-                        uniqueItems: true,
                         description: "'utorid' must be a string, specifically the utorid, is unique, and is required"
                     },
                     utorName: {
@@ -46,11 +98,35 @@ async function initDB() {
                     },
                     reviewQns: {
                         bsonType: "array",
-                        description: "'reviewQns' must be an array with courseIds referencing the Questions collection, and is required",
+                        description: "'reviewQns' must be an array of object with partial Question properties from the Questions collection, and is required",
                         uniqueItems: true,
                         items: {
-                            bsonType: "string",
-                            description: "items in array must be a string referencing the Questions collection or empty"
+                            bsonType: "object",
+                            required: [ "qnsId", "topic", "qnsName", "reviewStatus" ],
+                            description: "items in array must be an object with partial Question properties from the Questions collection or empty",
+                            properties: {
+                                _id: {
+                                    bsonType: "objectId",
+                                    uniqueItems: true,
+                                    description: "auto-generated objectId"
+                                },
+                                qnsId: {
+                                    bsonType: "string",
+                                    description: "'qnsId' must be a string, specifically a combination of courseId topicId and a num, is unique, and is required"
+                                },
+                                topic: {
+                                    bsonType: "string",
+                                    description: "'topic' must be a string and is required"
+                                },
+                                qnsName: {
+                                    bsonType: "string",
+                                    description: "'qnsName' must be a string and is required"
+                                },
+                                reviewStatus: {
+                                    bsonType: "int",
+                                    description: "'reviewStatus' must be an int and is required"
+                                }
+                            }
                         }
                     }
                 }
@@ -138,7 +214,7 @@ async function initDB() {
                         description: "'reviewQns' must be an array with qnsIds referencing the Questions collection, and is required",
                         uniqueItems: true,
                         items: {
-                            bsonType: "int",
+                            bsonType: "object",
                             description: "items in array must be an int referencing the Questions collection or empty"
                         }
                     },
@@ -158,7 +234,7 @@ async function initDB() {
             $jsonSchema: {
                 bsonType: "object",
                 title: "Questions Object Validation",
-                required: [ "qnsId", "qnsName", "qnsStatus", "reviewStatus", "qnsType", "desc", "xplan", "choices", "ans", "authName", "authId", "discussions", "date", "snapshot" ],
+                required: [ "qnsId", "qnsName", "qnsStatus", "reviewStatus", "qnsType", "desc", "xplan", "choices", "ans", "author", "discussions", "date", "snapshot" ],
                 additionalProperties: false,
                 properties: {
                     _id: {
@@ -182,8 +258,8 @@ async function initDB() {
                         description: "'reviewStatus' must be an int if qnsStatus is pending or else null, and is required",
                     },
                     qnsType: {
-                        bsonType: "string",
-                        description: "'qnsType' must be a string, and is required",
+                        enum: ["mc", "matching", "short"],
+                        description: "'qnsType' must be specifically 'mc' 'matching' or 'short', and is required",
                     },
                     desc: {
                         bsonType: "string",
@@ -206,13 +282,24 @@ async function initDB() {
                         bsonType: "string",
                         description: "'ans' must be a string, and is required",
                     },
-                    authName: {
-                        bsonType: "string",
-                        description: "'authName' must be a string, and is required",
+                    author: {
+                        bsonType: "object",
+                        description: "'author' must be an object with partial Account properties from Accounts collection",
+                        required: ["utorid", "utorName"],
+                        properties: {
+                            utorid: {
+                                bsonType: "string",
+                                description: "'utorid' must be a string, specifically the utorid, is unique, and is required"
+                            },
+                            utorName: {
+                                bsonType: "string",
+                                description: "'utorName' must be a string and is required"
+                            }
+                        }
                     },
-                    authId: {
+                    topic: {
                         bsonType: "string",
-                        description: "'authId' must be a string, specifically the utorid, and is required",
+                        description: "'topic' must be a string, and is required",
                     },
                     discussions: {
                         bsonType: "array",
@@ -258,13 +345,20 @@ async function initDB() {
                         bsonType: "int",
                         description: "'discussionId' must be an int, is unique, and is required"
                     },
-                    authName: {
-                        bsonType: "string",
-                        description: "'authName' must be a string and is required"
-                    },
-                    authId: {
-                        bsonType: "string",
-                        description: "'authId' must be a string, specifically the utorid, and is required",
+                    author: {
+                        bsonType: "object",
+                        description: "'author' must be an object with partial Account properties from Accounts collection",
+                        required: ["utorid", "utorName"],
+                        properties: {
+                            utorid: {
+                                bsonType: "string",
+                                description: "'utorid' must be a string, specifically the utorid, is unique, and is required"
+                            },
+                            utorName: {
+                                bsonType: "string",
+                                description: "'utorName' must be a string and is required"
+                            }
+                        }
                     },
                     content: {
                         bsonType: "string",

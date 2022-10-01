@@ -51,6 +51,26 @@ app.get('/getAccount/:utorid', (req: Request, res: Response) => {
   })
 });
 
+// Questions routes
+app.get('/getQuestion/:qnsId', (req: Request, res: Response) => {
+
+  collections.Questions?.findOne({qnsId: req.params.qnsId}).then((doc) => {
+
+    if (doc == null) {
+      // set custom statusText to be displayed to user
+      res.statusMessage = "No such question found."
+      res.status(404).end();
+    }
+
+    else { 
+      res.status(200).send(doc);
+    }
+
+  }).catch((error) => {
+    res.status(500).send("ERROR: " + error);
+  })
+});
+
 
 // Connect to mongoDB and listen on app
 connectDB().then(async (collection) => {

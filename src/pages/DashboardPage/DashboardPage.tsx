@@ -15,7 +15,6 @@ const DashboardPage = () => {
         reviewStatus: string;
     }
 
-
     const { Title } = Typography;
     const { Column } = Table;
 
@@ -23,8 +22,9 @@ const DashboardPage = () => {
     const utorid = params.id;
     const [loading, setLoading] = useState<boolean>(true);
     const [courseData, setCourseData] = useState<any[]>([]);
-    // const [reviewQns, setReviewQns] = useState<any[]>([]);
+    const [reviewQnsData, setReviewQnsData] = useState<DataType[]>([]);
     const [error, setError] = useState("");
+
 
     fetch(`/getAccount/${utorid}`)
         .then((res: Response) => {
@@ -33,57 +33,30 @@ const DashboardPage = () => {
 
         }).then((result) => {
             const courseArr: any[] = [];
+            const qnsArr: any[] = [];
 
             result.savedCourses.forEach((courseId: string) => {
                 courseArr.push([`/courses/${courseId}`, courseId])
-            })
+            });
 
-            console.log(courseArr);
+            result.reviewQns.forEach((qns: any) => {
+                qnsArr.push({
+                    key: qns.qnsId,
+                    courseCode: qns.qnsName,
+                    topic: qns.topic,
+                    qnsName: qns.qnsName,
+                    reviewStatus: qns.reviewStatus + "/20"
+                });
+            });
+
             setCourseData(courseArr);
-            // setReviewQns(result.reviewQns);
+            setReviewQnsData(qnsArr);
             setLoading(false);
         }).catch((err) => {
             setError(err.message);
             setLoading(false);
         });
 
-    const questionData: DataType[] = [
-        {
-            key: "1",
-            courseCode: "CSC108",
-            topic: "Strings",
-            qnsName: "Hello Worldaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            reviewStatus: 5  + "/20"
-        },
-        {
-            key: "2",
-            courseCode: "CSC108",
-            topic: "Strings",
-            qnsName: "Hello World",
-            reviewStatus: 5  + "/20"
-        },
-        {
-            key: "3",
-            courseCode: "CSC108",
-            topic: "Strings",
-            qnsName: "Hello World",
-            reviewStatus: 5  + "/20"
-        },
-        {
-            key: "4",
-            courseCode: "CSC108",
-            topic: "Strings",
-            qnsName: "Hello World",
-            reviewStatus: 5  + "/20"
-        },
-        {
-            key: "5",
-            courseCode: "CSC108",
-            topic: "Strings",
-            qnsName: "Hello World",
-            reviewStatus: 5  + "/20"
-        }
-    ];
 
     const paginationConfig = (total:number, size:number) => {
         return {
@@ -125,11 +98,11 @@ const DashboardPage = () => {
     
 
     const ReviewQuestions = () => {
-        return questionData.length ? 
+        return reviewQnsData.length ? 
             <>
                 <Table 
-                    dataSource={questionData}
-                    pagination={paginationConfig(questionData.length, 4)}
+                    dataSource={reviewQnsData}
+                    pagination={paginationConfig(reviewQnsData.length, 4)}
                 >
                     <Column title="Course Code" dataIndex="courseCode" key="courseCode" />
                     <Column title="Topic" dataIndex="topic" key="topic" />
@@ -167,7 +140,7 @@ const DashboardPage = () => {
                         <ReviewQuestions />
                     </div>
                 </Card>
-
+                <>{reviewQnsData.length}</>
             </div>
         </Card>
     );
