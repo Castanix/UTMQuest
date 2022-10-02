@@ -4,7 +4,7 @@ import { collections } from "../server";
 
 const courseRouter = Router();
 
-courseRouter.get('/allCourses', async (req: Request, res: Response) => { 
+courseRouter.get('/getAllCourses', async (req: Request, res: Response) => { 
     try { 
         let courseLst = await collections.Courses?.find().toArray();
         res.json(courseLst);
