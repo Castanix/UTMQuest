@@ -2,7 +2,7 @@ import { Breadcrumb, Button, Card, List, Result, Table, Typography } from 'antd'
 import { DropboxOutlined } from '@ant-design/icons'
 import { Link, useParams } from 'react-router-dom';
 import "./DashboardPage.css";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Loading from '../../components/Loading/Loading';
 
 const DashboardPage = () => {
@@ -25,37 +25,39 @@ const DashboardPage = () => {
     const [reviewQnsData, setReviewQnsData] = useState<DataType[]>([]);
     const [error, setError] = useState("");
 
+    useEffect(() => {
+        fetch(`/getAccount/${utorid}`)
+            .then((res: Response) => {
+                if (!res.ok) throw Error(res.statusText);
+                return res.json();
 
-    fetch(`/getAccount/${utorid}`)
-        .then((res: Response) => {
-            if (!res.ok) throw Error(res.statusText);
-            return res.json();
+            }).then((result) => {
+                const courseArr: any[] = [];
+                const qnsArr: any[] = [];
 
-        }).then((result) => {
-            const courseArr: any[] = [];
-            const qnsArr: any[] = [];
-
-            result.savedCourses.forEach((courseId: string) => {
-                courseArr.push([`/courses/${courseId}`, courseId])
-            });
-
-            result.reviewQns.forEach((qns: any) => {
-                qnsArr.push({
-                    key: qns.qnsId,
-                    courseCode: qns.qnsName,
-                    topic: qns.topic,
-                    qnsName: qns.qnsName,
-                    reviewStatus: qns.reviewStatus + "/20"
+                result.savedCourses.forEach((courseId: string) => {
+                    courseArr.push([`/courses/${courseId}`, courseId])
                 });
-            });
 
-            setCourseData(courseArr);
-            setReviewQnsData(qnsArr);
-            setLoading(false);
-        }).catch((err) => {
-            setError(err.message);
-            setLoading(false);
-        });
+                result.reviewQns.forEach((qns: any) => {
+                    qnsArr.push({
+                        key: qns.qnsId,
+                        courseCode: qns.qnsName,
+                        topic: qns.topic,
+                        qnsName: qns.qnsName,
+                        reviewStatus: qns.reviewStatus + "/20"
+                    });
+                });
+
+                setCourseData(courseArr);
+                setReviewQnsData(qnsArr);
+                setLoading(false);
+            }).catch((err) => {
+                setError(err.message);
+                setLoading(false);
+            });
+    });
+    
 
 
     const paginationConfig = (total:number, size:number) => {
@@ -70,7 +72,7 @@ const DashboardPage = () => {
     const Header = () => (
         <div>
             <Breadcrumb>
-                <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+                <Breadcrumb.Item><Link to="/dashboard">Dashboard</Link></Breadcrumb.Item>
             </Breadcrumb>
             <Title level={3}>Dashboard</Title>
         </div>
