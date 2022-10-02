@@ -25,40 +25,6 @@ const DashboardPage = () => {
     const [reviewQnsData, setReviewQnsData] = useState<DataType[]>([]);
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        fetch(`/getAccount/${utorid}`)
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-
-            }).then((result) => {
-                const courseArr: any[] = [];
-                const qnsArr: any[] = [];
-
-                result.savedCourses.forEach((courseId: string) => {
-                    courseArr.push([`/courses/${courseId}`, courseId])
-                });
-
-                result.reviewQns.forEach((qns: any) => {
-                    qnsArr.push({
-                        key: qns.qnsId,
-                        courseCode: qns.qnsName,
-                        topic: qns.topic,
-                        qnsName: qns.qnsName,
-                        reviewStatus: qns.reviewStatus + "/20"
-                    });
-                });
-
-                setCourseData(courseArr);
-                setReviewQnsData(qnsArr);
-                setLoading(false);
-            }).catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
-    });
-    
-
 
     const paginationConfig = (total:number, size:number) => {
         return {
@@ -114,6 +80,44 @@ const DashboardPage = () => {
             </> : <div className="icon"><DropboxOutlined /></div>
     }
 
+    useEffect(() => {
+        const courseArr: any[] = [];
+        const qnsArr: any[] = [];
+
+        const fetchData = async () => {
+            await fetch(`/getAccount/${utorid}`)
+            .then((res: Response) => {
+                if (!res.ok) throw Error(res.statusText);
+                return res.json();
+
+            }).then((result) => {
+                result.savedCourses.forEach((courseId: string) => {
+                    courseArr.push([`/courses/${courseId}`, courseId]);
+                });
+
+                result.reviewQns.forEach((qns: any) => {
+                    qnsArr.push({
+                        key: qns.qnsId,
+                        courseCode: qns.qnsName,
+                        topic: qns.topic,
+                        qnsName: qns.qnsName,
+                        reviewStatus: qns.reviewStatus + "/20"
+                    });
+                });
+
+                setCourseData(courseArr);
+                setReviewQnsData(qnsArr);
+                setLoading(false);
+            }).catch((err) => {
+                setError(err.message);
+                setLoading(false);
+            });
+        };
+
+        fetchData();
+        
+    }, [setCourseData, setReviewQnsData, utorid]);
+
 
     if (loading) return <Loading />
 
@@ -121,7 +125,7 @@ const DashboardPage = () => {
         return (
             <Card bordered={false} className='error'>
                 <Result title={error} extra={
-                    <Link to="/courses"><Button type='primary'>Go back to login</Button></Link>}
+                    <Link to="/"><Button type='primary'>Go back to login</Button></Link>}
                 />
             </Card>
         )
