@@ -25,7 +25,6 @@ const CoursePage = () => {
 
     fetch(`/course/getCourse/${courseCode}`)
         .then((res: Response) => {
-            console.log(res);
             if (!res.ok) throw Error(res.statusText);
             return res.json();
 
