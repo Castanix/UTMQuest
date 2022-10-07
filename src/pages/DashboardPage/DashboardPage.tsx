@@ -1,6 +1,6 @@
 import { Breadcrumb, Button, Card, List, Result, Table, Typography } from 'antd';
 import { DropboxOutlined } from '@ant-design/icons'
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import "./DashboardPage.css";
 import { useState, useEffect } from 'react';
 import Loading from '../../components/Loading/Loading';
@@ -18,8 +18,7 @@ const DashboardPage = () => {
     const { Title } = Typography;
     const { Column } = Table;
 
-    const params = useParams();
-    const utorid = params.id;
+    const utorid = "dummy22";
     const [loading, setLoading] = useState<boolean>(true);
     const [courseData, setCourseData] = useState<any[]>([]);
     const [reviewQnsData, setReviewQnsData] = useState<DataType[]>([]);
@@ -38,7 +37,7 @@ const DashboardPage = () => {
     const Header = () => (
         <div>
             <Breadcrumb>
-                <Breadcrumb.Item><Link to="/dashboard">Dashboard</Link></Breadcrumb.Item>
+                <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
             </Breadcrumb>
             <Title level={3}>Dashboard</Title>
         </div>
