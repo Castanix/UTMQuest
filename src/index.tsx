@@ -2,10 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import "antd/dist/antd.min.css";
-import App from "./App";
 import Topbar from "./components/Topbar/Topbar";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import DashboardPage from "./pages/DashboardPage/DashboardPage";
 import CoursePage from "./pages/CoursePage/CoursePage";
 
 const root = ReactDOM.createRoot(
@@ -16,7 +16,7 @@ root.render(
     <BrowserRouter>
       <Topbar>
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<DashboardPage />} />
           <Route path="/courses" element={<div>Coming soon</div>} />
           <Route path="/courses/:id" element={<CoursePage />} />
           <Route path="/profile" element={<div>Coming soon</div>} />
