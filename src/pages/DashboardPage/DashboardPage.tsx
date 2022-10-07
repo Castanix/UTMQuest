@@ -20,7 +20,7 @@ const DashboardPage = () => {
 
     const utorid = "dummy22";
     const [loading, setLoading] = useState<boolean>(true);
-    const [courseData, setCourseData] = useState<any[]>([]);
+    const [courseData, setCourseData] = useState<[string, string][]>([]);
     const [reviewQnsData, setReviewQnsData] = useState<DataType[]>([]);
     const [error, setError] = useState("");
 
@@ -71,17 +71,17 @@ const DashboardPage = () => {
                     dataSource={reviewQnsData}
                     pagination={paginationConfig(reviewQnsData.length, 4)}
                 >
-                    <Column title="Course Code" dataIndex="courseCode" key="courseCode" />
-                    <Column title="Topic" dataIndex="topic" key="topic" />
                     <Column title="Question Name" dataIndex="qnsName" key="qnsName" />
+                    <Column title="Topic" dataIndex="topic" key="topic" />
+                    <Column title="Course Code" dataIndex="courseCode" key="courseCode" />
                     <Column title="Review Status" dataIndex="reviewStatus" key="reviewStatus" />
                 </Table>
             </> : <div className="icon"><DropboxOutlined /></div>
     }
 
     useEffect(() => {
-        const courseArr: any[] = [];
-        const qnsArr: any[] = [];
+        const courseArr: [string, string][] = [];
+        const qnsArr: DataType[] = [];
 
         const fetchData = async () => {
             await fetch(`/getAccount/${utorid}`)
@@ -94,6 +94,7 @@ const DashboardPage = () => {
                     courseArr.push([`/courses/${courseId}`, courseId]);
                 });
 
+                // TODO: create a type for qns
                 result.reviewQns.forEach((qns: any) => {
                     qnsArr.push({
                         key: qns.qnsId,
