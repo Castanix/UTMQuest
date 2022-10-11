@@ -28,7 +28,8 @@
     "dev": "concurrently \"npm run start\" \"cd backend && npm run start\"",
     "initDB": "cd backend && npm run initDB",
     "lint": "eslint . --ext .tsx,.ts .",
-    "lintFix": "eslint . --ext .tsx,.ts . --fix"
+    "lintFix": "eslint . --ext .tsx,.ts . --fix",
+    "test:e2e": "npx cypress run --e2e"
   },
   "eslintConfig": {
     "extends": [
@@ -51,6 +52,7 @@
   "proxy": "http://localhost:5001",
   "devDependencies": {
     "concurrently": "^7.4.0",
-    "eslint-config-airbnb": "^19.0.4"
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0"
   }
 }
