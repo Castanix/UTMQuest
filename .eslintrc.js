@@ -3,7 +3,7 @@ module.exports = {
 		'browser': true,
 		'es2021': true,
 	},
-	'extends': ["airbnb", "airbnb/hooks"],
+	'extends': ["airbnb", "airbnb/hooks", "prettier"],
 	'overrides': [
 	],
 	'parser': '@typescript-eslint/parser',
@@ -15,7 +15,7 @@ module.exports = {
 		'react',
 		'@typescript-eslint'
 	],
-	'ignorePatterns': ["*.test.tsx"],
+	'ignorePatterns': ["*.test.tsx", "cypress/*", "cypress.config.ts"],
 	'rules': {
 		'import/extensions': "off",
 		'import/no-unresolved': "off",
