@@ -1,5 +1,5 @@
 import * as mongoDB from 'mongodb';
-import configValues from '../../config';
+import configValues from '../config';
 
 // Use 'npm run init' on the terminal backend to setup the database and collections
 // with validation in mongoDB if collections do not exist yet.
