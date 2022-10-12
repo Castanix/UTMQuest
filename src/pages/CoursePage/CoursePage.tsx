@@ -49,7 +49,7 @@ const CoursePage = () => {
   const [error, setError] = useState<string>('');
   const [courseName, setCourseName] = useState<string>('');
 
-  fetch(`/course/getCourse/${courseCode}`)
+  fetch(`https://utmquest.herokuapp.com/course/getCourse/${courseCode}`)
     .then((res: Response) => {
       if (!res.ok) throw Error(res.statusText);
       return res.json();
