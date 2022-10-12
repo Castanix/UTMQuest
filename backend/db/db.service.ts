@@ -1,5 +1,5 @@
 import * as mongoDB from 'mongodb';
-import configValues from '../../config';
+import configValues from '../config';
 import { UTMQuestCollections } from '../types/utmQuestCollection';
 
 export const utmQuestCollections: UTMQuestCollections = {};
