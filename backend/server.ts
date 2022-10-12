@@ -1,9 +1,12 @@
 import express, { Request, Response } from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import connectDB, { utmQuestCollections } from './db/db.service';
 import courseRouter from './routes/Courses';
 
 const app = express();
+app.use(cors());
+
 const port = process.env.PORT || 5001;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

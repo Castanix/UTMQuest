@@ -83,7 +83,7 @@ const DashboardPage = () => {
       const qnsArr: DataType[] = [];
 
       const fetchData = async () => {
-        await fetch(`/getAccount/${utorid}`)
+        await fetch(`https://utmquest.herokuapp.com/getAccount/${utorid}`)
           .then((res: Response) => {
             if (!res.ok) throw Error(res.statusText);
             return res.json();
