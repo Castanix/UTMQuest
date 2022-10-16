@@ -19,6 +19,7 @@ module.exports = {
 	'rules': {
 		'import/extensions': "off",
 		'import/no-unresolved': "off",
+		'import/no-extraneous-dependencies': "off",
 		"react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }],
 		"react/function-component-definition": [
 			2,
