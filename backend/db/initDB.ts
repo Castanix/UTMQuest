@@ -85,7 +85,7 @@ async function initDB() {
       $jsonSchema: {
         bsonType: 'object',
         title: 'Topics Object Validation',
-        required: ['topicId', 'topicName', 'course'],
+        required: ['topicId', 'topicName', 'numApproved', 'numPending', 'course'],
         additionalProperties: false,
         properties: {
           _id: {
@@ -99,6 +99,14 @@ async function initDB() {
           topicName: {
             bsonType: 'string',
             description: "'topicName' must be a string and is required",
+          },
+          numApproved: {
+            bsonType: 'int',
+            description: "'numApproved' must be an int and is required",
+          },
+          numPending: {
+            bsonType: 'int',
+            description: "'numPending' must be an int and is required",
           },
           course: {
             bsonType: 'string',
