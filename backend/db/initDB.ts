@@ -16,7 +16,7 @@ async function initDB() {
       $jsonSchema: {
         bsonType: 'object',
         title: 'Accounts Object Validation',
-        required: ['utorid', 'utorName', 'savedCourses', 'reviewQns'],
+        required: ['utorid', 'utorName', 'savedCourses'],
         additionalProperties: false,
         properties: {
           _id: {
@@ -40,39 +40,6 @@ async function initDB() {
               description: 'items in array must be a string referencing the Courses collection or empty',
             },
           },
-          reviewQns: {
-            bsonType: 'array',
-            description: "'reviewQns' must be an array of object with partial Question properties from the Questions collection, and is required",
-            uniqueItems: true,
-            items: {
-              bsonType: 'object',
-              required: ['qnsId', 'topic', 'qnsName', 'reviewStatus'],
-              description: 'items in array must be an object with partial Question properties from the Questions collection or empty',
-              properties: {
-                _id: {
-                  bsonType: 'objectId',
-                  uniqueItems: true,
-                  description: 'auto-generated objectId',
-                },
-                qnsId: {
-                  bsonType: 'string',
-                  description: "'qnsId' must be a string, specifically a combination of courseId topicId and a num, is unique, and is required",
-                },
-                topic: {
-                  bsonType: 'string',
-                  description: "'topic' must be a string and is required",
-                },
-                qnsName: {
-                  bsonType: 'string',
-                  description: "'qnsName' must be a string and is required",
-                },
-                reviewStatus: {
-                  bsonType: 'int',
-                  description: "'reviewStatus' must be an int and is required",
-                },
-              },
-            },
-          },
         },
       },
     },
@@ -88,7 +55,7 @@ async function initDB() {
       $jsonSchema: {
         bsonType: 'object',
         title: 'Courses Object Validation',
-        required: ['courseId', 'courseName', 'topics'],
+        required: ['courseId', 'courseName'],
         additionalProperties: false,
         properties: {
           _id: {
@@ -102,15 +69,6 @@ async function initDB() {
           courseName: {
             bsonType: 'string',
             description: "'courseName' must be a string and is required",
-          },
-          topics: {
-            bsonType: 'array',
-            description: "'topics' must be an array with topicIds referencing the Topics collection, and is required",
-            uniqueItems: true,
-            items: {
-              bsonType: 'int',
-              description: 'items in array must be an int referencing the Topics collection or empty',
-            },
           },
         },
       },
@@ -127,7 +85,7 @@ async function initDB() {
       $jsonSchema: {
         bsonType: 'object',
         title: 'Topics Object Validation',
-        required: ['topicId', 'topicName', 'approvedQns', 'reviewQns'],
+        required: ['topicId', 'topicName', 'course'],
         additionalProperties: false,
         properties: {
           _id: {
@@ -142,24 +100,10 @@ async function initDB() {
             bsonType: 'string',
             description: "'topicName' must be a string and is required",
           },
-          approvedQns: {
-            bsonType: 'array',
-            description: "'approvedQns' must be an array with qnsIds referencing the Questions collection, and is required",
-            uniqueItems: true,
-            items: {
-              bsonType: 'int',
-              description: 'items in array must be an int referencing the Questions collection or empty',
-            },
-          },
-          reviewQns: {
-            bsonType: 'array',
-            description: "'reviewQns' must be an array with qnsIds referencing the Questions collection, and is required",
-            uniqueItems: true,
-            items: {
-              bsonType: 'object',
-              description: 'items in array must be an int referencing the Questions collection or empty',
-            },
-          },
+          course: {
+            bsonType: 'string',
+            description: "'course' must be a string that references a courseId from the courses collection and is required",
+          }
         },
       },
     },
@@ -175,7 +119,7 @@ async function initDB() {
       $jsonSchema: {
         bsonType: 'object',
         title: 'Questions Object Validation',
-        required: ['qnsId', 'qnsName', 'qnsStatus', 'reviewStatus', 'qnsType', 'desc', 'xplan', 'choices', 'ans', 'author', 'discussions', 'date', 'snapshot'],
+        required: ['qnsId', 'topic', 'course', 'qnsName', 'qnsStatus', 'reviewStatus', 'qnsType', 'desc', 'xplan', 'choices', 'ans', 'authId', 'authName', 'date', 'snapshot'],
         additionalProperties: false,
         properties: {
           _id: {
@@ -185,6 +129,14 @@ async function initDB() {
           qnsId: {
             bsonType: 'string',
             description: "'qnsId' must be a string, specifically a combination of courseId topicId and a num, is unique, and is required",
+          },
+          topic: {
+            bsonType: 'string',
+            description: "'topic' must be a string, reference a topicId from the topics collection, and is required",
+          },
+          course: {
+            bsonType: 'string',
+            description: "'course' must be a string, reference a courseId from the courses collection, and is required",
           },
           qnsName: {
             bsonType: 'string',
@@ -223,33 +175,13 @@ async function initDB() {
             bsonType: 'string',
             description: "'ans' must be a string, and is required",
           },
-          author: {
-            bsonType: 'object',
-            description: "'author' must be an object with partial Account properties from Accounts collection",
-            required: ['utorid', 'utorName'],
-            properties: {
-              utorid: {
-                bsonType: 'string',
-                description: "'utorid' must be a string, specifically the utorid, is unique, and is required",
-              },
-              utorName: {
-                bsonType: 'string',
-                description: "'utorName' must be a string and is required",
-              },
-            },
-          },
-          topic: {
+          authId: {
             bsonType: 'string',
-            description: "'topic' must be a string, and is required",
+            description: "'authId' must be a string, specifically the utorid, is unique, and is required",
           },
-          discussions: {
-            bsonType: 'array',
-            description: "'discussions' must be an array of discussionIds referencing the Discussions collection or empty, and is required",
-            uniqueItems: true,
-            items: {
-              bsonType: 'int',
-              description: 'items in array must be an int referencing the Discussions collection or empty',
-            },
+          authName: {
+            bsonType: 'string',
+            description: "'authName' must be a string and is required",
           },
           date: {
             bsonType: 'string',
@@ -274,7 +206,7 @@ async function initDB() {
       $jsonSchema: {
         bsonType: 'object',
         title: 'Dicussions Object Validation',
-        required: ['discussionId', 'authName', 'authId', 'content', 'thread', 'date'],
+        required: ['discussionId', 'question', 'op', 'authId', 'authName', 'content', 'thread', 'date', 'deleted'],
         additionalProperties: false,
         properties: {
           _id: {
@@ -285,20 +217,21 @@ async function initDB() {
             bsonType: 'int',
             description: "'discussionId' must be an int, is unique, and is required",
           },
-          author: {
-            bsonType: 'object',
-            description: "'author' must be an object with partial Account properties from Accounts collection",
-            required: ['utorid', 'utorName'],
-            properties: {
-              utorid: {
-                bsonType: 'string',
-                description: "'utorid' must be a string, specifically the utorid, is unique, and is required",
-              },
-              utorName: {
-                bsonType: 'string',
-                description: "'utorName' must be a string and is required",
-              },
-            },
+          question: {
+            bsonType: 'string',
+            description: "'question' must be a string, referencing a questionId from the questions collection, and is required",
+          },
+          op: {
+            bsonType: 'bool',
+            description: "'op' must be a bool, signifying if it is an original post, and is required",
+          },
+          authId: {
+            bsonType: 'string',
+            description: "'authId' must be a string, specifically the utorid, is unique, and is required",
+          },
+          authName: {
+            bsonType: 'string',
+            description: "'authName' must be a string and is required",
           },
           content: {
             bsonType: 'string',
@@ -317,6 +250,10 @@ async function initDB() {
             bsonType: 'date',
             description: "'date' must be a date, specifically the date it was created, and is required",
           },
+          deleted: {
+            bsonType: 'bool',
+            description: "'deleted' must be a bool and is required",
+          }
         },
       },
     },

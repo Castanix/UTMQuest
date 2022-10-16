@@ -80,7 +80,7 @@ const DashboardPage = () => {
 
     useEffect(() => {
       const courseArr: [string, string][] = [];
-      const qnsArr: DataType[] = [];
+      // const qnsArr: DataType[] = [];
 
       const fetchData = async () => {
         await fetch(`https://utmquest.herokuapp.com/getAccount/${utorid}`)
@@ -93,18 +93,10 @@ const DashboardPage = () => {
             });
 
             // TODO: create a type for qns
-            result.reviewQns.forEach((qns: any) => {
-              qnsArr.push({
-                key: qns.qnsId,
-                courseCode: qns.qnsName,
-                topic: qns.topic,
-                qnsName: qns.qnsName,
-                reviewStatus: `${qns.reviewStatus}/20`,
-              });
-            });
+            // Query questions collection for pending questions added by the user
 
             setCourseData(courseArr);
-            setReviewQnsData(qnsArr);
+            // setReviewQnsData(qnsArr);
             setLoading(false);
           }).catch((err) => {
             setError(err.message);
