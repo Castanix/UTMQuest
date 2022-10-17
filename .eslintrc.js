@@ -28,6 +28,7 @@ module.exports = {
 			  unnamedComponents: "arrow-function",
 			},
 		],
-		'no-console': "off"
+		'no-console': "off",
+		"no-underscore-dangle": "off"
 	}
 };
