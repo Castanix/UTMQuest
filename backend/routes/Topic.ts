@@ -1,6 +1,7 @@
 import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
 import { utmQuestCollections } from "../db/db.service";
+import Topics from "../types/Topics";
 
 const topicRouter = Router();
 
@@ -28,12 +29,29 @@ topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 });
 
 topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
+	let _id;
+	try {
+		_id = new ObjectID(req.body._id);
+	} catch (error) {
+		res.status(400).send("Invalid ObjectId : _id");
+		return;
+	}
+
 	const topic = await utmQuestCollections.Topics?.findOne({
-		_id: new ObjectID(req.body._id),
+		_id: _id,
 	});
 
 	if (!topic) {
 		res.status(404).send("No such topic found.");
+		return;
+	}
+
+	let count = topic.numApproved + topic.numPending;
+
+	if (count !== 0) {
+		res.status(400).send(
+			"Topics must contain no questions before they can be deleted."
+		);
 		return;
 	}
 
@@ -53,8 +71,16 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 });
 
 topicRouter.put("/putTopic", async (req: Request, res: Response) => {
+	let _id;
+	try {
+		_id = new ObjectID(req.body._id);
+	} catch (error) {
+		res.status(400).send("Invalid ObjectId : _id");
+		return;
+	}
+
 	const topic = await utmQuestCollections.Topics?.findOne({
-		_id: new ObjectID(req.body._id),
+		_id: _id,
 	});
 
 	if (!topic) {
