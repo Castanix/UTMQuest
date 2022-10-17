@@ -1,11 +1,13 @@
 import {
-  Breadcrumb, Button, Card, List, Result, Table, Typography,
+  Breadcrumb, Card, List, Table, Typography,
 } from 'antd';
 import { DropboxOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import './DashboardPage.css';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Loading from '../../components/Loading/Loading';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import GetWidgets from './fetch/GetWidgets';
 
 const { Title } = Typography;
 const { Column } = Table;
@@ -19,7 +21,7 @@ const Header = () => (
   </div>
 );
 
-const paginationConfig = (total:number, size:number) => ({
+const paginationConfig = (total: number, size: number) => ({
   defaultCurrent: 1,
   total,
   pageSize: size,
@@ -64,82 +66,31 @@ const SavedCourses = (props: any) => {
 };
 
 const DashboardPage = () => {
-    interface DataType {
-        key: React.Key;
-        courseCode: string;
-        topic: string;
-        qnsName: string;
-        reviewStatus: string;
-    }
+  const utorid = 'dummy22';
+  const { loading, courseData, reviewQnsData, error } = GetWidgets(utorid);
 
-    const utorid = 'dummy22';
-    const [loading, setLoading] = useState<boolean>(true);
-    const [courseData, setCourseData] = useState<[string, string][]>([]);
-    const [reviewQnsData, setReviewQnsData] = useState<DataType[]>([]);
-    const [error, setError] = useState('');
+  if (loading) return <Loading />;
 
-    useEffect(() => {
-      const courseArr: [string, string][] = [];
-      // const qnsArr: DataType[] = [];
+  if (error !== '') return <ErrorMessage title={error} link='.' message='Refresh' />
 
-      const fetchData = async () => {
-        await fetch(`https://utmquest.herokuapp.com/getAccount/${utorid}`)
-          .then((res: Response) => {
-            if (!res.ok) throw Error(res.statusText);
-            return res.json();
-          }).then((result) => {
-            result.savedCourses.forEach((courseId: string) => {
-              courseArr.push([`/courses/${courseId}`, courseId]);
-            });
+  return (
+    <Card title={<Header />} bordered={false}>
+      <div className="dashboard-content">
 
-            // TODO: create a type for qns
-            // Query questions collection for pending questions added by the user
-
-            setCourseData(courseArr);
-            // setReviewQnsData(qnsArr);
-            setLoading(false);
-          }).catch((err) => {
-            setError(err.message);
-            setLoading(false);
-          });
-      };
-
-      fetchData();
-    }, [setCourseData, setReviewQnsData, utorid]);
-
-    if (loading) return <Loading />;
-
-    if (error !== '') {
-      return (
-        <Card bordered={false} className="error">
-          <Result
-            title={error}
-            extra={
-              <Link to="/"><Button type="primary">Go back to login</Button></Link>
-}
-          />
+        <Card title="Saved Courses">
+          <div className="card-content">
+            <SavedCourses courseData={courseData} />
+          </div>
         </Card>
-      );
-    }
 
-    return (
-      <Card title={<Header />} bordered={false}>
-        <div className="dashboard-content">
-
-          <Card title="Saved Courses">
-            <div className="card-content">
-              <SavedCourses courseData={courseData} />
-            </div>
-          </Card>
-
-          <Card title="Questions Pending Review">
-            <div className="card-content">
-              <ReviewQuestions reviewQnsData={reviewQnsData} />
-            </div>
-          </Card>
-        </div>
-      </Card>
-    );
+        <Card title="Questions Pending Review">
+          <div className="card-content">
+            <ReviewQuestions reviewQnsData={reviewQnsData} />
+          </div>
+        </Card>
+      </div>
+    </Card>
+  );
 };
 
 export default DashboardPage;

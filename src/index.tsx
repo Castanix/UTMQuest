@@ -7,24 +7,24 @@ import Topbar from './components/Topbar/Topbar';
 import reportWebVitals from './reportWebVitals';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
 import CoursePage from './pages/CoursePage/CoursePage';
+import ManageTopics from './pages/ManageTopics/ManageTopics';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Topbar>
-        <Routes>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/courses" element={<div>Coming soon</div>} />
-          <Route path="/courses/:id" element={<CoursePage />} />
-          <Route path="/profile" element={<div>Coming soon</div>} />
-          <Route path="*" element={<div>Page not found</div>} />
-        </Routes>
-      </Topbar>
-    </BrowserRouter>
-  </React.StrictMode>,
+  <BrowserRouter>
+    <Topbar>
+      <Routes>
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/courses" element={<div>Coming soon</div>} />
+        <Route path="/courses/:id" element={<CoursePage />} />
+        <Route path="/profile" element={<div>Coming soon</div>} />
+        <Route path='/courses/:id/topics' element={<ManageTopics />} />
+        <Route path="*" element={<div>Page not found</div>} />
+      </Routes>
+    </Topbar>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
