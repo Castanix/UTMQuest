@@ -1,7 +1,6 @@
 import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
 import { utmQuestCollections } from "../db/db.service";
-import Topics from "../types/Topics";
 
 const topicRouter = Router();
 
@@ -38,7 +37,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 	}
 
 	const topic = await utmQuestCollections.Topics?.findOne({
-		_id: _id,
+		_id,
 	});
 
 	if (!topic) {
@@ -46,7 +45,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
-	let count = topic.numApproved + topic.numPending;
+	const count = topic.numApproved + topic.numPending;
 
 	if (count !== 0) {
 		res.status(400).send(
@@ -80,7 +79,7 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 	}
 
 	const topic = await utmQuestCollections.Topics?.findOne({
-		_id: _id,
+		_id,
 	});
 
 	if (!topic) {
