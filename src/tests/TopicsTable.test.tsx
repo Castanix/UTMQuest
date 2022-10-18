@@ -16,7 +16,6 @@ Object.defineProperty(window, 'matchMedia', {
 const topics: Topics[] = [
     {
         _id: '1234',
-        topicId: 1,
         topicName: 'Strings',
         numApproved: 0,
         numPending: 0,
@@ -24,7 +23,6 @@ const topics: Topics[] = [
     },
     {
         _id: '12345',
-        topicId: 2,
         topicName: 'Arrays',
         numApproved: 1,
         numPending: 0,
@@ -35,7 +33,7 @@ const topics: Topics[] = [
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<TopicsTable topics={topics} />)
+    const { container } = render(<TopicsTable courseId='test' topics={topics} />)
     document = container;
 
 });
