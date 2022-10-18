@@ -23,6 +23,7 @@ app.get("/express_backend", (req: Request, res: Response) => {
 });
 
 // Accounts routes
+// TODO: add this to its own routes file along with any additional routes required
 app.get("/getAccount/:utorid", (req: Request, res: Response) => {
 	utmQuestCollections.Accounts?.findOne({ utorid: req.params.utorid })
 		.then((doc) => {
