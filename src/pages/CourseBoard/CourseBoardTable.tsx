@@ -15,17 +15,15 @@ const CourseBoardTable = (props: any) => {
         title: "Course Code",
         dataIndex: "courseId",
         render: text => <Link to={`/courses/${text}`}>{text}</Link>,
-        key: "courseId"
     },
     {
         title: "Title",
         dataIndex: "courseName",
-        key: "courseId"
     },
     {
         title: "Number of Topics",
         dataIndex: "numTopics",
-        key: "courseId"
+        width: '15%' 
     }]
 
     const handleSearch = (value: string) => {
