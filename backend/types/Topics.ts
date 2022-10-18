@@ -1,4 +1,4 @@
-export default interface Topics {
+export default interface TopicsType {
 	_id: string;
 	topicId: number;
 	topicName: string;
