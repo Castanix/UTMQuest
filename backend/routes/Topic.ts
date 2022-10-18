@@ -1,30 +1,9 @@
+import * as mongoDB from "mongodb";
 import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
 import { utmQuestCollections } from "../db/db.service";
 
 const topicRouter = Router();
-
-function isIdValid(objectId: string) {
-	let _id;
-	try {
-		_id = new ObjectID(objectId);
-		return true;
-	} catch (error) {
-		return false;
-	}
-}
-
-async function doesTopicExist(objectId: string) {
-	const topic = await utmQuestCollections.Topics?.findOne({
-		_id: objectId,
-	});
-
-	if (!topic) {
-		return false;
-	}
-
-	return true;
-}
 
 topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 	const course = await utmQuestCollections.Courses?.findOne({
@@ -50,7 +29,7 @@ topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 });
 
 topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
-	if (!isIdValid(req.body._id)) {
+	if (!mongoDB.ObjectId.isValid(req.body._id)) {
 		res.status(400).send("Invalid ObjectId : _id");
 		return;
 	}
@@ -89,12 +68,16 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 });
 
 topicRouter.put("/putTopic", async (req: Request, res: Response) => {
-	if (!isIdValid(req.body._id)) {
+	if (!mongoDB.ObjectId.isValid(req.body._id)) {
 		res.status(400).send("Invalid ObjectId : _id");
 		return;
 	}
 
-	if (!doesTopicExist(req.body._id)) {
+	const topic = await utmQuestCollections.Topics?.findOne({
+		_id: new ObjectID(req.body._id),
+	});
+
+	if (!topic) {
 		res.status(404).send("No such topic found.");
 		return;
 	}
