@@ -33,7 +33,7 @@ const topics: Topics[] = [
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<TopicsTable courseId='test' topics={topics} />)
+    const { container } = render(<TopicsTable topics={topics} />)
     document = container;
 
 });
