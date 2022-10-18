@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from "react";
-
-interface DataType {
-    key: React.Key;
-    courseCode: string;
-    topic: string;
-    qnsName: string;
-    reviewStatus: string;
-}
+import { useEffect, useState } from "react";
+import WidgetType from "../../../../backend/types/Widget";
 
 const GetWidgets = (utorid: string) => {
 
     const [loading, setLoading] = useState<boolean>(true);
     const [courseData, setCourseData] = useState<[string, string][]>([]);
-    const [reviewQnsData, setReviewQnsData] = useState<DataType[]>([]);
+    const [reviewQnsData, setReviewQnsData] = useState<WidgetType[]>([]);
     const [error, setError] = useState('');
 
     useEffect(() => {
