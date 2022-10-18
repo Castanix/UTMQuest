@@ -4,6 +4,28 @@ import { utmQuestCollections } from "../db/db.service";
 
 const topicRouter = Router();
 
+function isIdValid(objectId: string) {
+	let _id;
+	try {
+		_id = new ObjectID(objectId);
+		return true;
+	} catch (error) {
+		return false;
+	}
+}
+
+async function doesTopicExist(objectId: string) {
+	const topic = await utmQuestCollections.Topics?.findOne({
+		_id: objectId,
+	});
+
+	if (!topic) {
+		return false;
+	}
+
+	return true;
+}
+
 topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 	const course = await utmQuestCollections.Courses?.findOne({
 		courseId: req.params.courseId,
@@ -28,16 +50,13 @@ topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 });
 
 topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
-	let _id;
-	try {
-		_id = new ObjectID(req.body._id);
-	} catch (error) {
+	if (!isIdValid(req.body._id)) {
 		res.status(400).send("Invalid ObjectId : _id");
 		return;
 	}
 
 	const topic = await utmQuestCollections.Topics?.findOne({
-		_id,
+		_id: new ObjectID(req.body._id),
 	});
 
 	if (!topic) {
@@ -70,26 +89,19 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 });
 
 topicRouter.put("/putTopic", async (req: Request, res: Response) => {
-	let _id;
-	try {
-		_id = new ObjectID(req.body._id);
-	} catch (error) {
+	if (!isIdValid(req.body._id)) {
 		res.status(400).send("Invalid ObjectId : _id");
 		return;
 	}
 
-	const topic = await utmQuestCollections.Topics?.findOne({
-		_id,
-	});
-
-	if (!topic) {
+	if (!doesTopicExist(req.body._id)) {
 		res.status(404).send("No such topic found.");
 		return;
 	}
 
 	utmQuestCollections.Topics?.findOneAndUpdate(
 		{ _id: new ObjectID(req.body._id) },
-		{ $set: { topicName: req.body.newTopic } }
+		{ $set: { topicName: req.body.newTopic.trim() } }
 	)
 		.then((result) => {
 			if (!result) {
@@ -104,16 +116,6 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 });
 
 topicRouter.post("/addTopic", async (req: Request, res: Response) => {
-	const topic = await utmQuestCollections.Topics?.findOne({
-		topicName: req.body.topicName,
-	});
-
-	if (topic) {
-		res.status(400).send("This topic already exists.");
-		console.log("exists");
-		return;
-	}
-
 	const course = await utmQuestCollections.Courses?.findOne({
 		courseId: req.body.courseId,
 	});
@@ -124,7 +126,7 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 	}
 
 	const newTopic = {
-		topicName: req.body.topicName,
+		topicName: req.body.topicName.trim(),
 		course: req.body.courseId,
 		numApproved: 0,
 		numPending: 0,
@@ -135,7 +137,7 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 			if (!result) {
 				res.status(400).send("Unable to add new topic.");
 			}
-			res.status(201).send(`Topic has been added succesfully`);
+			res.status(201).send(result);
 		})
 		.catch((error) => {
 			res.status(500).send(`ERROR: ${error}`);
