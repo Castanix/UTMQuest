@@ -33,7 +33,7 @@ const topics: TopicsType[] = [
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<TopicsTable topics={topics} />)
+    const { container } = render(<TopicsTable courseId='test' topics={topics} />)
     document = container;
 
 });
