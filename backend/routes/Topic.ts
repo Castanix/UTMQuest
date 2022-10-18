@@ -5,6 +5,28 @@ import { utmQuestCollections } from "../db/db.service";
 
 const topicRouter = Router();
 
+function isIdValid(objectId: string) {
+	let _id;
+	try {
+		_id = new ObjectID(objectId);
+		return true;
+	} catch (error) {
+		return false;
+	}
+}
+
+async function doesTopicExist(objectId: string) {
+	const topic = await utmQuestCollections.Topics?.findOne({
+		_id: objectId,
+	});
+
+	if (!topic) {
+		return false;
+	}
+
+	return true;
+}
+
 topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 	const course = await utmQuestCollections.Courses?.findOne({
 		courseId: req.params.courseId,
