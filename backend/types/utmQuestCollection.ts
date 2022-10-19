@@ -1,6 +1,6 @@
-import * as mongoDB from "mongodb";
+import * as mongoDB from 'mongodb';
 
-export type UTMQuestCollections = { 
+export type UTMQuestCollections = {
     Accounts?: mongoDB.Collection,
     Courses?: mongoDB.Collection,
     Topics?: mongoDB.Collection,

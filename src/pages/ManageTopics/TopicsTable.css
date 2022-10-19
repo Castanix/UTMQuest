@@ -1,0 +1,34 @@
+.delete {
+    color: red;
+}
+
+.table {
+    overflow-x: auto;
+}
+
+.deleteDisabled {
+    color: #7e7979;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.ant-input, .ant-btn, .ant-popover-inner, .ant-message-notice-content {
+    border-radius: 25px;
+}
+
+.ant-input-affix-wrapper {
+    border-radius: 25px;
+    width: 250px;
+}
+
+@media screen and (max-width: 420px) {
+    .toolbar {
+        display: block;
+    }
+    .addNewTopic {
+        margin-top: 0.5rem;
+    }
+}

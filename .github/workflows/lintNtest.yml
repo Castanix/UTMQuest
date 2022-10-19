@@ -1,0 +1,23 @@
+name: lintNtest
+
+on:
+  pull_request:
+    branches: [ "main", "dev" ]
+jobs:
+  run-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+    
+      - name: Installing Dependencies
+        run: npm install
+    
+      - name: Running Eslint
+        run: npm run lint
+      
+      - name: Running Tests
+        run: npm run test
+
