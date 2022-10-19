@@ -5,8 +5,8 @@ import { Button, Input } from 'antd';
 import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import CoursesType from "../../../backend/types/Courses";
 
-const CourseBoardTable = (props: any) => {
-    const { dataSource }: { dataSource: CoursesType[] } = props;
+const CourseBoardTable = (props: { dataSource: CoursesType[] } ) => {
+    const { dataSource } = props;
 
     const [searchValue, setSearchValue] = useState<string>("");
     const [displayData, setDisplayData] = useState<CoursesType[]>(dataSource);
