@@ -4,8 +4,8 @@ import { Table } from "antd";
 import Column from "antd/lib/table/Column";
 import WidgetType from "./types/Widget";
 
-const ReviewQuestionsTable = (props: { reviewQnsData: WidgetType[], paginationConfig: Function }) => {
-    const { reviewQnsData, paginationConfig } = props;
+const ReviewQuestionsTable = (props: any) => {
+    const { reviewQnsData, paginationConfig }: { reviewQnsData: WidgetType[], paginationConfig: Function } = props;
   
     return reviewQnsData.length
       ? (
