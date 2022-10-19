@@ -3,8 +3,8 @@ import { DropboxOutlined } from "@ant-design/icons";
 import { List } from "antd";
 import { Link } from "react-router-dom";
   
-const SavedCoursesList = (props: any) => {
-  const { courseData, paginationConfig }: { courseData: string[], paginationConfig: Function } = props;
+const SavedCoursesList = (props: { courseData: string[], paginationConfig: Function }) => {
+  const { courseData, paginationConfig } = props;
 
   return courseData.length
     ? (
