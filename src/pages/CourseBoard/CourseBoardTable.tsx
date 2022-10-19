@@ -23,7 +23,7 @@ const CourseBoardTable = (props: any) => {
     {
         title: "Number of Topics",
         dataIndex: "numTopics",
-        width: '15%' 
+        width: '%' 
     }]
 
     const handleSearch = (value: string) => {
