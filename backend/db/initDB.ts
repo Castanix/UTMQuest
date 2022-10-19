@@ -60,40 +60,58 @@ async function initDB() {
 			);
 		});
 
-  // Creates the Courses collection in Mongo Atlas with validation
-  await db.createCollection('Courses', {
-    validator: {
-      $jsonSchema: {
-        bsonType: 'object',
-        title: 'Courses Object Validation',
-        required: ['courseId', 'courseName', 'numTopics'],
-        additionalProperties: false,
-        properties: {
-          _id: {
-            bsonType: 'objectId',
-            description: 'auto-generated objectId',
-          },
-          courseId: {
-            bsonType: 'string',
-            description: "'courseId' must be a string, specifically the course code, is unique, and is required",
-          },
-          courseName: {
-            bsonType: 'string',
-            description: "'courseName' must be a string and is required",
-          },
-          numTopics: {
-            bsonType: 'int',
-            description: "'numTopics' must be an int and is required",
-          },
-        },
-      },
-    },
-  }).then(() => {
-    console.log('Successfully created Courses collection');
-  }).catch(() => {
-    console.log('Error creating collections or Courses collection already exists');
-  });
+	// Creates the Courses collection in Mongo Atlas with validation
+	await db
+		.createCollection("Courses", {
+			validator: {
+				$jsonSchema: {
+					bsonType: "object",
+					title: "Courses Object Validation",
+					required: ["courseId", "courseName", "numTopics"],
+					additionalProperties: false,
+					properties: {
+						_id: {
+							bsonType: "objectId",
+							description: "auto-generated objectId",
+						},
+						courseId: {
+							bsonType: "string",
+							description:
+								"'courseId' must be a string, specifically the course code, is unique, and is required",
+						},
+						courseName: {
+							bsonType: "string",
+							description:
+								"'courseName' must be a string and is required",
+						},
+						numTopics: {
+							bsonType: "int",
+							description:
+								"'numTopics' must be an int and is required",
+						},
+					},
+				},
+			},
+		})
+		.then(() => {
+			console.log("Successfully created Courses collection");
+		})
+		.catch(() => {
+			console.log(
+				"Error creating collections or Courses collection already exists"
+			);
+		});
 
+	// add index into topics; this index ensures combination of topicName and course is unique as well as ignores case
+	await db
+		.collection("Courses")
+		.createIndex({ courseId: 1 }, { unique: true })
+		.then(() => {
+			console.log("Successfully created index for Topics");
+		})
+		.catch(() => {
+			console.log("Error creating index for Topics");
+		});
 
 	// Creates the Topics collection in Mongo Atlas with validation
 	await db
