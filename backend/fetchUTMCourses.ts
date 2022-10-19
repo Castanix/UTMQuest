@@ -25,7 +25,7 @@ axios({
 }).then((result) => {
   Object.values(result.data.payload.pageableCourse.courses).forEach( (item: any) => { 
     const course = {
-        courseId: item.code,
+        courseId: item.code.substring(0, item.code.length - 2),
         courseName: item.name
     }
     utmQuestCollections.Courses?.insertOne(course).then((res) => {
