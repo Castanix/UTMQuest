@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-
 import { PlusCircleOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Form, Input, Popconfirm, Table, Typography, message, Space, Tooltip, Button } from 'antd';
 import React, { useState } from 'react';
@@ -80,7 +79,7 @@ const TopicsTable = ({ topics }: { topics: TopicsType[] }) => {
             body: JSON.stringify({ _id: key })
         }
         fetch(`${process.env.REACT_APP_API_URI}/topic/deleteTopic`, request).then((result) => {
-            if (!result) {
+            if (!result.ok) {
                 message.error("Could not delete topic. Please try again.")
                 return;
             }
@@ -111,7 +110,7 @@ const TopicsTable = ({ topics }: { topics: TopicsType[] }) => {
             }
 
             fetch(`${process.env.REACT_APP_API_URI}/topic/putTopic`, request).then((result) => {
-                if (!result) {
+                if (!result.ok) {
                     message.error("Could not save topic. Please try again.")
                     return;
                 }

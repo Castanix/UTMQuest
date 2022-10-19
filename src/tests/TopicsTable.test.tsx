@@ -16,7 +16,6 @@ Object.defineProperty(window, 'matchMedia', {
 const topics: TopicsType[] = [
     {
         _id: '1234',
-        topicId: 1,
         topicName: 'Strings',
         numApproved: 0,
         numPending: 0,
@@ -24,7 +23,6 @@ const topics: TopicsType[] = [
     },
     {
         _id: '12345',
-        topicId: 2,
         topicName: 'Arrays',
         numApproved: 1,
         numPending: 0,
