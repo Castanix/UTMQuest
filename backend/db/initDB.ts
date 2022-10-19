@@ -67,7 +67,7 @@ async function initDB() {
 				$jsonSchema: {
 					bsonType: "object",
 					title: "Courses Object Validation",
-					required: ["courseId", "courseName", "numTopics"],
+					required: ["courseId", "courseName", "numTopics", "added"],
 					additionalProperties: false,
 					properties: {
 						_id: {
@@ -88,6 +88,11 @@ async function initDB() {
 							bsonType: "int",
 							description:
 								"'numTopics' must be an int and is required",
+						},
+						added: {
+							bsonType: "bool",
+							description:
+								"'added' must be a bool and is required",
 						},
 					},
 				},
