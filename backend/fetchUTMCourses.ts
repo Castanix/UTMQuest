@@ -1,5 +1,5 @@
 import axios from "axios";
-import { collections } from "./server";
+import { utmQuestCollections } from "./db/db.service";
 
 const dataBody = {
   courseCodeAndTitleProps: { "courseCode": "", "courseTitle": "", "courseSectionCode": "" },
@@ -24,12 +24,12 @@ axios({
   data: dataBody,
 }).then((result) => {
   Object.values(result.data.payload.pageableCourse.courses).forEach( (item: any) => { 
-    let course = {
+    const course = {
         courseId: item.code,
         courseName: item.name,
         topics: []
     }
-    collections.Courses?.insertOne(course).then((res) => {
+    utmQuestCollections.Courses?.insertOne(course).then((res) => {
         if (!res) { 
             console.log(`INSERTION FOR COURSE ${course} HAS FAILED!`);
         }
