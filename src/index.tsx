@@ -8,6 +8,7 @@ import reportWebVitals from './reportWebVitals';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
 import CoursePage from './pages/CoursePage/CoursePage';
 import ManageTopics from './pages/ManageTopics/ManageTopics';
+import CourseBoard from './pages/CourseBoard/CourseBoard';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -17,7 +18,7 @@ root.render(
     <Topbar>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
-        <Route path="/courses" element={<div>Coming soon</div>} />
+        <Route path="/courses" element={<CourseBoard />} />
         <Route path="/courses/:id" element={<CoursePage />} />
         <Route path="/courses/:id/topics" element={<ManageTopics />} />
         <Route path="/profile" element={<div>Coming soon</div>} />

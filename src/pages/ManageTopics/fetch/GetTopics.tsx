@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Topics from "../../../../backend/types/Topics";
+import TopicsType from "../../../../backend/types/Topics";
 
 const GetAllTopics = (courseCode: string) => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [topics, setTopics] = useState<Topics[]>([]);
+    const [topics, setTopics] = useState<TopicsType[]>([]);
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
