@@ -1,3 +1,4 @@
+import * as mongoDB from "mongodb";
 import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
 import { utmQuestCollections } from "../db/db.service";
@@ -28,16 +29,13 @@ topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 });
 
 topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
-	let _id;
-	try {
-		_id = new ObjectID(req.body._id);
-	} catch (error) {
+	if (!mongoDB.ObjectId.isValid(req.body._id)) {
 		res.status(400).send("Invalid ObjectId : _id");
 		return;
 	}
 
 	const topic = await utmQuestCollections.Topics?.findOne({
-		_id,
+		_id: new ObjectID(req.body._id),
 	});
 
 	if (!topic) {
@@ -70,16 +68,13 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 });
 
 topicRouter.put("/putTopic", async (req: Request, res: Response) => {
-	let _id;
-	try {
-		_id = new ObjectID(req.body._id);
-	} catch (error) {
+	if (!mongoDB.ObjectId.isValid(req.body._id)) {
 		res.status(400).send("Invalid ObjectId : _id");
 		return;
 	}
 
 	const topic = await utmQuestCollections.Topics?.findOne({
-		_id,
+		_id: new ObjectID(req.body._id),
 	});
 
 	if (!topic) {
@@ -89,7 +84,7 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 
 	utmQuestCollections.Topics?.findOneAndUpdate(
 		{ _id: new ObjectID(req.body._id) },
-		{ $set: { topicName: req.body.newTopic } }
+		{ $set: { topicName: req.body.newTopic.trim() } }
 	)
 		.then((result) => {
 			if (!result) {
@@ -104,16 +99,6 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 });
 
 topicRouter.post("/addTopic", async (req: Request, res: Response) => {
-	const topic = await utmQuestCollections.Topics?.findOne({
-		topicName: req.body.topicName,
-	});
-
-	if (topic) {
-		res.status(400).send("This topic already exists.");
-		console.log("exists");
-		return;
-	}
-
 	const course = await utmQuestCollections.Courses?.findOne({
 		courseId: req.body.courseId,
 	});
@@ -124,7 +109,7 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 	}
 
 	const newTopic = {
-		topicName: req.body.topicName,
+		topicName: req.body.topicName.trim(),
 		course: req.body.courseId,
 		numApproved: 0,
 		numPending: 0,
@@ -135,7 +120,7 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 			if (!result) {
 				res.status(400).send("Unable to add new topic.");
 			}
-			res.status(201).send(`Topic has been added succesfully`);
+			res.status(201).send(result);
 		})
 		.catch((error) => {
 			res.status(500).send(`ERROR: ${error}`);
