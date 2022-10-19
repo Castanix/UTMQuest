@@ -1,5 +1,5 @@
 import React from 'react';
-import Topics from '../../backend/types/Topics';
+import TopicsType from '../../backend/types/Topics';
 import { fireEvent, render, screen } from '@testing-library/react';
 import TopicsTable from '../pages/ManageTopics/TopicsTable';
 
@@ -13,7 +13,7 @@ Object.defineProperty(window, 'matchMedia', {
     }
 })
 
-const topics: Topics[] = [
+const topics: TopicsType[] = [
     {
         _id: '1234',
         topicId: 1,

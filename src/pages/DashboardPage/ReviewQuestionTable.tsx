@@ -2,7 +2,13 @@ import React from "react";
 import { DropboxOutlined } from "@ant-design/icons";
 import { Table } from "antd";
 import Column from "antd/lib/table/Column";
-import WidgetType from "../../../backend/types/Widget";
+
+interface WidgetType {
+  courseCode: string;
+  topic: string;
+  qnsName: string;
+  reviewStatus: string;
+}
 
 const ReviewQuestionsTable = (props: any) => {
     const { reviewQnsData, paginationConfig }: { reviewQnsData: WidgetType[], paginationConfig: Function } = props;
