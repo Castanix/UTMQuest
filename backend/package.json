@@ -8,7 +8,8 @@
     "initDB": "ts-node ./db/initDB.ts",
     "start": "npx ts-node ./server.ts",
     "build": "tsc -p .",
-    "dev": "nodemon ./server.ts"
+    "dev": "nodemon ./server.ts",
+    "fetchCourses": "ts-node ./fetchUTMCourses.ts"
   },
   "keywords": [],
   "author": "",

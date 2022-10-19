@@ -3,9 +3,11 @@ import { utmQuestCollections } from '../db/db.service';
 
 const courseRouter = Router();
 
-courseRouter.get('/getAllCourses', async (req: Request, res: Response) => {
+courseRouter.get('/getAllAddedCourses', async (req: Request, res: Response) => {
   try {
-    const courseLst = await utmQuestCollections.Courses?.find().toArray();
+    const courseLst = await utmQuestCollections.Courses?.find({
+      added: true
+    }).toArray();
     res.json(courseLst);
   } catch (error) {
     res.status(500).send(`ERROR: ${error}`);
