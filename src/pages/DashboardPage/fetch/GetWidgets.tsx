@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import WidgetType from "../../../../backend/types/Widget";
+import WidgetType from "../types/Widget";
 
 const GetWidgets = (utorid: string) => {
 
