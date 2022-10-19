@@ -10,7 +10,7 @@ const GetAllCourses = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             await fetch(
-                `${process.env.REACT_APP_API_URI}/course/getAllCourses`
+                `${process.env.REACT_APP_API_URI}/course/getAllAddedCourses`
             )
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
