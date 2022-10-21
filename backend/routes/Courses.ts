@@ -14,6 +14,17 @@ courseRouter.get('/getAllAddedCourses', async (req: Request, res: Response) => {
   }
 });
 
+courseRouter.get('/getNonAddedCourses', async (req: Request, res: Response) => {
+  try {
+    const courseLst = await utmQuestCollections.Courses?.find({
+      added: false
+    }).toArray();
+    res.json(courseLst);
+  } catch (error) {
+    res.status(500).send(`ERROR: ${error}`);
+  }
+});
+
 courseRouter.get('/getCourse/:courseId', (req: Request, res: Response) => {
   utmQuestCollections.Courses?.findOne({ courseId: req.params.courseId }).then((doc: any) => {
     if (doc == null) {
@@ -45,10 +56,25 @@ courseRouter.post('/', async (req: Request, res: Response) => {
     if (!result) {
       res.status(400).send('Unable to post the course');
     }
-    res.status(201).send(`course ${course.courseId} has been added succesfully`);
+    res.status(201).send(`course ${course.courseId} has been added successfully`);
   }).catch((error) => {
     res.status(500).send(`ERROR: ${error}`);
   });
+});
+
+courseRouter.put('/', async (req: Request, res: Response) => {
+  const course = {
+    courseId: req.body.courseId
+  };
+
+  utmQuestCollections.Courses?.updateOne(course, { $set: { added: true } }).then((result) => {
+    if (!result) {
+      res.status(400).send('Unable to update the course');
+    }
+    res.status(200).send(`course ${course.courseId} has been updated successfully`)
+  }).catch((error) => {
+    res.status(500).send(`ERROR: ${error}`);
+  })
 });
 
 export default courseRouter;

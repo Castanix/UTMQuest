@@ -4,12 +4,14 @@ import { Link } from "react-router-dom";
 import { Button, Input } from 'antd';
 import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import CoursesType from "../../../backend/types/Courses";
+import AddCourseModal from './AddCourseModal';
 
 const CourseBoardTable = (props: any) => {
     const { dataSource }: { dataSource: CoursesType[] } = props;
 
     const [searchValue, setSearchValue] = useState<string>("");
     const [displayData, setDisplayData] = useState<CoursesType[]>(dataSource);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const columns: ColumnsType<CoursesType> = [{
         title: "Course Code",
@@ -21,9 +23,9 @@ const CourseBoardTable = (props: any) => {
         dataIndex: "courseName",
     },
     {
-        title: "Number of Topics",
+        title: "# of Topics",
         dataIndex: "numTopics",
-        width: '%' 
+        width: '10%' 
     }]
 
     const handleSearch = (value: string) => {
@@ -37,7 +39,7 @@ const CourseBoardTable = (props: any) => {
         <div>
             <div className='toolbar'>
                 <Input placeholder="Search Course" prefix={<SearchOutlined />} value={searchValue} onChange={(e) => {handleSearch(e.target.value)}} />
-                <Button type="primary" icon={<PlusCircleOutlined />} shape="round" className='addNewTopic'>
+                <Button type="primary" icon={<PlusCircleOutlined />} shape="round" className='addNewCourse' onClick={()=>{setIsModalOpen(true)}}>
                     Add a Course
                 </Button>
             </div>
@@ -45,6 +47,12 @@ const CourseBoardTable = (props: any) => {
             <Table 
                 dataSource={displayData}
                 columns={columns}
+            />
+            <AddCourseModal 
+                modalState={isModalOpen}
+                setModalState={setIsModalOpen} 
+                setDisplayData={setDisplayData} 
+                afterClose={() => setSearchValue("")}
             />
         </div>
     )
