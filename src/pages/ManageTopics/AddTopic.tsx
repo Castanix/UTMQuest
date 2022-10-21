@@ -50,7 +50,7 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                     label="Topic Name"
                     rules={[{ required: true, message: 'Please add a topic name' }]}
                 >
-                    <Input />
+                    <Input className='addTopicInput' />
                 </Form.Item>
             </Form>
         </Modal>
