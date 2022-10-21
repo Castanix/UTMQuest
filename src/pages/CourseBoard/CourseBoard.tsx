@@ -2,7 +2,7 @@ import React from "react";
 import { Breadcrumb, Card, Typography } from "antd";
 import { Link } from "react-router-dom";
 import './CourseBoard.css';
-import GetAllCourses from "./apis/GetAllCourses";
+import GetAllCourses from "./fetch/GetAllCourses";
 import CourseBoardTable from "./CourseBoardTable";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loading from "../../components/Loading/Loading";
