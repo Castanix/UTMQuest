@@ -35,6 +35,16 @@ const CourseBoardTable = (props: any) => {
         ) : dataSource);
     };
 
+    const rerender = (code: string, name: string) => {
+        setSearchValue("")
+        setDisplayData([{
+            _id: "temp",
+            courseId: code,
+            courseName: name,
+            numTopics: 0
+        }, ...displayData])
+    }
+
     return (
         <div>
             <div className='toolbar'>
@@ -52,7 +62,7 @@ const CourseBoardTable = (props: any) => {
                 modalState={isModalOpen}
                 setModalState={setIsModalOpen} 
                 setDisplayData={setDisplayData} 
-                afterClose={() => setSearchValue("")}
+                rerender={rerender}
             />
         </div>
     )
