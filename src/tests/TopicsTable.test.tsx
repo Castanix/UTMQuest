@@ -1,7 +1,9 @@
 import React from 'react';
 import TopicsType from '../../backend/types/Topics';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import TopicsTable from '../pages/ManageTopics/TopicsTable';
+import { rest } from 'msw'
+import { setupServer } from 'msw/node'
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -12,6 +14,16 @@ Object.defineProperty(window, 'matchMedia', {
         };
     }
 })
+
+// mock add topic fetch call
+const server = setupServer(
+    rest.post(`${process.env.REACT_APP_API_URI}/topic/addTopic`, (req, res, ctx) => {
+        return res(
+            ctx.status(201),
+            ctx.json({ authorized: true, insertedId: 'abcd' })
+        )
+    }),
+)
 
 const topics: TopicsType[] = [
     {
@@ -33,10 +45,18 @@ const topics: TopicsType[] = [
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<TopicsTable topics={topics} />)
+    const { container } = render(<TopicsTable courseId='test' topics={topics} />)
     document = container;
-
 });
+
+beforeAll(() => {
+    server.listen();
+})
+
+afterEach(() => server.resetHandlers());
+
+afterAll(() => server.close());
+
 
 test('test table content', () => {
     const firstTopic = screen.getByText(/Strings/i);
@@ -62,4 +82,22 @@ test('test searching for topic', () => {
 
     // table now contains only one row
     expect(document.getElementsByTagName('tbody')[0].children.length).toBe(1)
+})
+
+test('test adding a course', async () => {
+
+    // table contains two rows
+    expect(document.getElementsByTagName('tbody')[0].children.length).toBe(2)
+
+    fireEvent.click(screen.getByText('Add a new topic'));
+    screen.getByText(/Add a topic for test/i)
+
+    const inputNode = screen.getByLabelText(/Topic Name/i)
+
+    // add a new topic
+    fireEvent.change(inputNode, { target: { value: 'New Topic' } });
+    fireEvent.click(screen.getByText(/Save/i))
+
+    // table should now have 3 rows
+    await waitFor(() => expect(document.getElementsByTagName('tbody')[0].children.length).toBe(3));
 })

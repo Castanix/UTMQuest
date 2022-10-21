@@ -36,7 +36,7 @@ const ManageTopics = () => {
 
     return (
         <Card title={<Header courseCode={courseCode ?? ''} title={`Topics for ${courseCode}`} />} bordered={false}>
-            <TopicsTable topics={topics} />
+            <TopicsTable topics={topics} courseId={courseCode ?? ''} />
         </Card>
     )
 }
