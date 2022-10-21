@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PlusCircleOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
-import { Form, Input, Popconfirm, Table, Typography, message, Space, Tooltip, Button } from 'antd';
+import { QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { Form, Input, Popconfirm, Table, Typography, message, Space, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import TopicsType from '../../../backend/types/Topics';
+import AddTopic from './AddTopic';
 
 import "./TopicsTable.css"
 
@@ -46,7 +47,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
     </td>
 );
 
-const TopicsTable = ({ topics }: { topics: TopicsType[] }) => {
+const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: string }) => {
     const [form] = Form.useForm();
     const [originalData, setOriginalData] = useState<TopicsType[]>(topics);
     const [data, setData] = useState<TopicsType[]>(topics);
@@ -56,6 +57,12 @@ const TopicsTable = ({ topics }: { topics: TopicsType[] }) => {
     const isEditing = (record: TopicsType) => record._id === editingKey;
 
     const isDisabled = (record: TopicsType) => record.numApproved + record.numPending > 0;
+
+    const addTopicCallback = (topic: TopicsType) => {
+        setSearchTerm('');
+        setOriginalData([...originalData, topic])
+        setData([...originalData, topic]);
+    }
 
     const onChange = (value: string) => {
         setSearchTerm(value);
@@ -203,9 +210,7 @@ const TopicsTable = ({ topics }: { topics: TopicsType[] }) => {
         <Form form={form} component={false}>
             <div className='toolbar'>
                 <Input placeholder="Search topic" prefix={<SearchOutlined />} value={searchTerm} onChange={(event) => onChange(event.target.value)} />
-                <Button type="primary" icon={<PlusCircleOutlined />} shape="round" className='addNewTopic'>
-                    Add a new topic
-                </Button>
+                <AddTopic courseId={courseId} addTopicCallback={addTopicCallback} />
             </div>
             <br />
             <Table

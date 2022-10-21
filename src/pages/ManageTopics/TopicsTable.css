@@ -15,8 +15,16 @@
     justify-content: space-between;
 }
 
-.ant-input, .ant-btn, .ant-popover-inner, .ant-message-notice-content {
-    border-radius: 25px;
+.ant-btn, .ant-popover-inner, .ant-message-notice-content, .ant-modal-content, .ant-modal-header, .ant-pagination-item, .ant-pagination-item-link, .ant-input {
+    border-radius: 25px !important;
+}
+
+.ant-input-prefix {
+    border-radius: 0;
+}
+
+.ant-tooltip-inner {
+    border-radius: 10px;
 }
 
 .ant-input-affix-wrapper {
