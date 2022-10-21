@@ -6,7 +6,7 @@ import GetAllCourses from './apis/GetAllCourses';
 const { Option, OptGroup } = Select;
 
 const AddCourseModal = (props: any) => {
-    const { modalState, setModalState }: {modalState: boolean, setModalState: Function} = props;
+    const { modalState, setModalState, rerender }: {modalState: boolean, setModalState: Function, rerender: Function} = props;
     const { courses } = GetAllCourses(false);
 
     const [searchInput, setSearchInput] = useState<string>();
@@ -15,7 +15,7 @@ const AddCourseModal = (props: any) => {
     const setupOptions = () => {
         let courseArr: React.ReactNode[] = [];
         const groupArr: React.ReactNode[] = [];
-        let keyWord: string = "";
+        let oldCode: string = "";
 
         const sortedCourses = courses.sort((a, b) => {
             const fa = a.courseId.toLowerCase();
@@ -31,24 +31,28 @@ const AddCourseModal = (props: any) => {
         });
 
         sortedCourses.forEach(item => {
-            const test = item.courseId.slice(0, 3)
+            const code = item.courseId.slice(0, 3)
 
-            if(keyWord === test) {
-                courseArr.push(<Option value={item.courseId}>{`${item.courseId}: ${item.courseName}`}</Option>)
+            if(oldCode === code) {
+                courseArr.push(<Option value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>)
             } else {
-                groupArr.push(<OptGroup label={keyWord}>{courseArr}</OptGroup>)
-                keyWord = item.courseId.slice(0, 3)
-                courseArr = [<Option value={item.courseId}>{`${item.courseId}: ${item.courseName}`}</Option>]
+                groupArr.push(<OptGroup label={oldCode}>{courseArr}</OptGroup>)
+                oldCode = item.courseId.slice(0, 3)
+                courseArr = [<Option value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>]
             }
         })
-        groupArr.push(<OptGroup label={keyWord}>{courseArr}</OptGroup>)
+        groupArr.push(<OptGroup label={oldCode}>{courseArr}</OptGroup>)
 
         return groupArr;
     }
 
     const handleOk = () => {
         if(selected) {
-            AddCourse(selected || '');
+            const code = selected.slice(0, 6);
+            const name = selected.slice(6);
+
+            AddCourse(code || '');
+            rerender(code, name);
         }
         setModalState(false);
     }
@@ -59,6 +63,7 @@ const AddCourseModal = (props: any) => {
             open={modalState} 
             onCancel={() => setModalState(false)}
             onOk={() => handleOk()}
+            destroyOnClose
         >
             <Form layout="vertical">
                 <Form.Item label="Select Course to Add:">
@@ -70,9 +75,6 @@ const AddCourseModal = (props: any) => {
                         size="small"
                         onSearch={(value: string) => setSearchInput(value)}
                         onChange={(value: string) => setSelected(value)}
-                        filterOption={(input, option) =>
-                            (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
-                        }
                     >
                         {setupOptions()}
                     </Select>
