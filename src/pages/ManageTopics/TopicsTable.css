@@ -15,7 +15,15 @@
     justify-content: space-between;
 }
 
-.ant-btn, .ant-popover-inner, .ant-message-notice-content, .ant-modal-content, .ant-modal-header, .ant-pagination-item, .ant-pagination-item-link, .addTopicInput {
+.ant-btn, 
+.ant-popover-inner, 
+.ant-message-notice-content, 
+.ant-modal-content, 
+.ant-modal-header, 
+.ant-pagination-item, 
+.ant-pagination-item-link, 
+.addTopicInput,
+#topicName.ant-input {
     border-radius: 25px !important;
 }
 

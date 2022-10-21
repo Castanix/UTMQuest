@@ -117,17 +117,14 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
             }
 
             fetch(`${process.env.REACT_APP_API_URI}/topic/putTopic`, request).then((result) => {
-                if (!result.ok) {
-                    message.error("Could not save topic. Please try again.")
-                    return;
-                }
+                if (!result.ok) throw new Error("Could not save topic. Ensure the new name hasn't already been added and try again.")
                 message.success("Topic successfully saved.")
                 setData(newData);
                 setOriginalData(newData);
                 setSearchTerm('');
                 setEditingKey('');
-            }).catch(() => {
-                message.error("Could not save topic. Please try again.")
+            }).catch((error) => {
+                message.error(error.message)
             })
 
         } catch (errInfo) {
