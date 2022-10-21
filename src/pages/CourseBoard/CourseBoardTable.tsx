@@ -26,23 +26,45 @@ const CourseBoardTable = (props: any) => {
         title: "# of Topics",
         dataIndex: "numTopics",
         width: '10%' 
-    }]
+    }];
+
+    const courseSort = (data: CoursesType[]) => { 
+        const newData = data.sort((a, b) => {
+            const fa = a.courseId.toLowerCase();
+            const fb = b.courseId.toLowerCase();
+
+            if (fa < fb) {
+                return -1;
+            }
+            if (fa > fb) {
+                return 1;
+            }
+            return 0;
+        });
+
+        return newData;
+    }
 
     const handleSearch = (value: string) => {
         setSearchValue(value);
         setDisplayData(value ? dataSource.filter(item => 
-            item.courseId.includes(value) || item.courseName.includes(value)
+            item.courseId.toLowerCase().includes(value.toLowerCase()) || 
+            item.courseName.toLowerCase().includes(value.toLowerCase())
         ) : dataSource);
     };
 
+    // Locally renders new course on the courseboard. Renders by fetching from db happens on initial page load.
     const rerender = (code: string, name: string) => {
         setSearchValue("")
-        setDisplayData([{
+
+        const courses = [...dataSource, {
             _id: "temp",
             courseId: code,
             courseName: name,
             numTopics: 0
-        }, ...displayData])
+        }]
+        
+        setDisplayData(courseSort(courses));
     }
 
     return (
@@ -63,6 +85,7 @@ const CourseBoardTable = (props: any) => {
                 setModalState={setIsModalOpen} 
                 setDisplayData={setDisplayData} 
                 rerender={rerender}
+                courseSort={courseSort}
             />
         </div>
     )

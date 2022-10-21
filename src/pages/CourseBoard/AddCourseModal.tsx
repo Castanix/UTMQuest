@@ -1,12 +1,14 @@
 import { Form, Modal, Select } from 'antd';
 import React, { useState } from 'react';
-import AddCourse from './apis/AddCourse';
-import GetAllCourses from './apis/GetAllCourses';
+import AddCourse from './fetch/AddCourse';
+import GetAllCourses from './fetch/GetAllCourses';
+import CoursesType from '../../../backend/types/Courses';
 
 const { Option, OptGroup } = Select;
 
 const AddCourseModal = (props: any) => {
-    const { modalState, setModalState, rerender }: {modalState: boolean, setModalState: Function, rerender: Function} = props;
+    const { modalState, setModalState, rerender, courseSort }: 
+        {modalState: boolean, setModalState: Function, rerender: Function, courseSort: Function} = props;
     const { courses } = GetAllCourses(false);
 
     const [searchInput, setSearchInput] = useState<string>();
@@ -17,20 +19,7 @@ const AddCourseModal = (props: any) => {
         const groupArr: React.ReactNode[] = [];
         let oldCode: string = "";
 
-        const sortedCourses = courses.sort((a, b) => {
-            const fa = a.courseId.toLowerCase();
-            const fb = b.courseId.toLowerCase();
-    
-            if (fa < fb) {
-                return -1;
-            }
-            if (fa > fb) {
-                return 1;
-            }
-            return 0;
-        });
-
-        sortedCourses.forEach(item => {
+        courseSort(courses).forEach((item: CoursesType) => {
             const code = item.courseId.slice(0, 3)
 
             if(oldCode === code) {
