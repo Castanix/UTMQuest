@@ -1,16 +1,15 @@
 import { Form, Modal, Select } from 'antd';
 import React, { useState } from 'react';
 import AddCourse from './fetch/AddCourse';
-import GetAllCourses from './fetch/GetAllCourses';
 import CoursesType from '../../../backend/types/Courses';
 
 const { Option, OptGroup } = Select;
 
 const AddCourseModal = (props: any) => {
-    const { modalState, setModalState, rerender }: 
-        {modalState: boolean, setModalState: Function, rerender: Function} = props;
-    const { courses, setCourses } = GetAllCourses(false);
+    const { modalState, setModalState, rerender, unadded }: 
+        {modalState: boolean, setModalState: Function, rerender: Function, unadded: CoursesType[]} = props;
 
+    const [displayCourses, setDisplayCourses] = useState<CoursesType[]>(unadded)
     const [searchInput, setSearchInput] = useState<string>();
     const [selected, setSelected] = useState<string>();
 
@@ -36,7 +35,7 @@ const AddCourseModal = (props: any) => {
             return newData;
         }
 
-        courseSort(courses).forEach((item: CoursesType) => {
+        courseSort(displayCourses).forEach((item: CoursesType) => {
             const code = item.courseId.slice(0, 3)
 
             if(oldCode === code) {
@@ -59,7 +58,7 @@ const AddCourseModal = (props: any) => {
             const code = selected.slice(0, 6);
             const name = selected.slice(6);
 
-            AddCourse(code || '', name, courses, rerender, setCourses);
+            AddCourse(code || '', name, displayCourses, rerender, setDisplayCourses);
         }
         setModalState(false);
     }
