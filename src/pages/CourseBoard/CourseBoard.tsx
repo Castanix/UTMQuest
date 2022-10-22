@@ -20,7 +20,7 @@ const Header = () => (
 );
 
 const CourseBoard = () => {
-    const { courses, loading, error } = GetAllCourses(true);
+    const { courses, loading, error } = GetAllCourses();
 
 
     if (loading) return <Loading />;
