@@ -6,8 +6,8 @@ import CoursesType from '../../../backend/types/Courses';
 const { Option, OptGroup } = Select;
 
 const AddCourseModal = (props: any) => {
-    const { modalState, setModalState, rerender, unadded }: 
-        {modalState: boolean, setModalState: Function, rerender: Function, unadded: CoursesType[]} = props;
+    const { modalState, setModalState, rerender, unadded }:
+        { modalState: boolean, setModalState: Function, rerender: Function, unadded: CoursesType[] } = props;
 
     const [displayCourses, setDisplayCourses] = useState<CoursesType[]>(unadded)
     const [searchInput, setSearchInput] = useState<string>();
@@ -18,11 +18,11 @@ const AddCourseModal = (props: any) => {
         const groupArr: React.ReactNode[] = [];
         let oldCode: string = "";
 
-        const courseSort = (data: CoursesType[]) => { 
+        const courseSort = (data: CoursesType[]) => {
             const newData = data.sort((a, b) => {
                 const fa = a.courseId.toLowerCase();
                 const fb = b.courseId.toLowerCase();
-    
+
                 if (fa < fb) {
                     return -1;
                 }
@@ -31,28 +31,29 @@ const AddCourseModal = (props: any) => {
                 }
                 return 0;
             });
-    
+
             return newData;
         }
 
         courseSort(displayCourses).forEach((item: CoursesType) => {
             const code = item.courseId.slice(0, 3)
 
-            if(oldCode === code) {
-                courseArr.push(<Option value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>)
+            if (oldCode === code) {
+                courseArr.push(<Option key={item._id} value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>)
             } else {
-                groupArr.push(<OptGroup label={oldCode}>{courseArr}</OptGroup>)
+                groupArr.push(<OptGroup key={oldCode} label={oldCode}>{courseArr}</OptGroup>)
                 oldCode = item.courseId.slice(0, 3)
-                courseArr = [<Option value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>]
+                courseArr = [<Option key={item._id} value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>]
             }
         })
-        groupArr.push(<OptGroup label={oldCode}>{courseArr}</OptGroup>)
+        groupArr.push(<OptGroup key={oldCode} label={oldCode}>{courseArr}</OptGroup>)
 
-        return groupArr;
+        // skip empty group in groupArr
+        return groupArr.slice(1);
     }
 
     const handleOk = () => {
-        if(selected) {
+        if (selected) {
             // Slices the selected string to get the course code
             const code = selected.slice(0, 6);
             // Slices the selected string to get the course name
@@ -64,9 +65,9 @@ const AddCourseModal = (props: any) => {
     }
 
     return (
-        <Modal 
-            title="Add Course" 
-            open={modalState} 
+        <Modal
+            title="Add Course"
+            open={modalState}
             onCancel={() => setModalState(false)}
             onOk={() => handleOk()}
             destroyOnClose
