@@ -19,13 +19,15 @@ const courses: CoursesType[] = [
         _id: "1234",
         courseId: "CSC108",
         courseName: "Introduction to Computer Science",
-        numTopics: 0
+        numTopics: 0,
+        added: true
     },
     {
         _id: "12345",
         courseId: "CSC373",
         courseName: "VERY PAINFUL COURSE",
-        numTopics: 2
+        numTopics: 2,
+        added: true
     }
 ]
 
@@ -34,8 +36,8 @@ let document: HTMLElement;
 beforeEach(() => {
     const { container } = render(<CourseBoardTable dataSource={courses} />, {wrapper: BrowserRouter})
     document = container;
+})
 
-});
 
 test('test table content', () => {
     const firstCourse = screen.getByText(/Introduction to Computer Science/i);
