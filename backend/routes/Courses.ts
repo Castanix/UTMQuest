@@ -62,7 +62,7 @@ courseRouter.post('/', async (req: Request, res: Response) => {
   });
 });
 
-courseRouter.put('/', async (req: Request, res: Response) => {
+courseRouter.put('/addCourse', async (req: Request, res: Response) => {
   const course = {
     courseId: req.body.courseId
   };

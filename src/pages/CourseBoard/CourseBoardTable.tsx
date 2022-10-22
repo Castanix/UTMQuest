@@ -17,33 +17,20 @@ const CourseBoardTable = (props: any) => {
         title: "Course Code",
         dataIndex: "courseId",
         render: text => <Link to={`/courses/${text}`}>{text}</Link>,
+        sorter: (a: CoursesType, b: CoursesType) => a.courseId.localeCompare(b.courseId),
+        defaultSortOrder: 'ascend'
     },
     {
         title: "Title",
         dataIndex: "courseName",
+        sorter: (a: CoursesType, b: CoursesType) => a.courseName.localeCompare(b.courseName)
     },
     {
         title: "# of Topics",
         dataIndex: "numTopics",
-        width: '10%' 
+        width: '10%',
+        sorter: (a: CoursesType, b: CoursesType) => a.numTopics - b.numTopics
     }];
-
-    const courseSort = (data: CoursesType[]) => { 
-        const newData = data.sort((a, b) => {
-            const fa = a.courseId.toLowerCase();
-            const fb = b.courseId.toLowerCase();
-
-            if (fa < fb) {
-                return -1;
-            }
-            if (fa > fb) {
-                return 1;
-            }
-            return 0;
-        });
-
-        return newData;
-    }
 
     const handleSearch = (value: string) => {
         setSearchValue(value);
@@ -61,10 +48,11 @@ const CourseBoardTable = (props: any) => {
             _id: "temp",
             courseId: code,
             courseName: name,
-            numTopics: 0
+            numTopics: 0,
+            added: true
         }]
         
-        setDisplayData(courseSort(courses));
+        setDisplayData(courses);
     }
 
     return (
@@ -85,7 +73,6 @@ const CourseBoardTable = (props: any) => {
                 setModalState={setIsModalOpen} 
                 setDisplayData={setDisplayData} 
                 rerender={rerender}
-                courseSort={courseSort}
             />
         </div>
     )

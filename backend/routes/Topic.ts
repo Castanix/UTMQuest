@@ -60,7 +60,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 				res.status(400).send(result);
 				return;
 			}
-			res.status(200).send("Topc successfully deleted.");
+			res.status(200).send("Topic successfully deleted.");
 		})
 		.catch((error) => {
 			res.status(500).send(`ERROR: ${error}`);

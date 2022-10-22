@@ -7,9 +7,9 @@ import CoursesType from '../../../backend/types/Courses';
 const { Option, OptGroup } = Select;
 
 const AddCourseModal = (props: any) => {
-    const { modalState, setModalState, rerender, courseSort }: 
-        {modalState: boolean, setModalState: Function, rerender: Function, courseSort: Function} = props;
-    const { courses } = GetAllCourses(false);
+    const { modalState, setModalState, rerender }: 
+        {modalState: boolean, setModalState: Function, rerender: Function} = props;
+    const { courses, setCourses } = GetAllCourses(false);
 
     const [searchInput, setSearchInput] = useState<string>();
     const [selected, setSelected] = useState<string>();
@@ -18,6 +18,23 @@ const AddCourseModal = (props: any) => {
         let courseArr: React.ReactNode[] = [];
         const groupArr: React.ReactNode[] = [];
         let oldCode: string = "";
+
+        const courseSort = (data: CoursesType[]) => { 
+            const newData = data.sort((a, b) => {
+                const fa = a.courseId.toLowerCase();
+                const fb = b.courseId.toLowerCase();
+    
+                if (fa < fb) {
+                    return -1;
+                }
+                if (fa > fb) {
+                    return 1;
+                }
+                return 0;
+            });
+    
+            return newData;
+        }
 
         courseSort(courses).forEach((item: CoursesType) => {
             const code = item.courseId.slice(0, 3)
@@ -36,12 +53,13 @@ const AddCourseModal = (props: any) => {
     }
 
     const handleOk = () => {
+        console.log("here");
+        console.log(selected)
         if(selected) {
             const code = selected.slice(0, 6);
             const name = selected.slice(6);
 
-            AddCourse(code || '');
-            rerender(code, name);
+            AddCourse(code || '', name, courses, rerender, setCourses);
         }
         setModalState(false);
     }
@@ -71,7 +89,6 @@ const AddCourseModal = (props: any) => {
             </Form>
         </Modal>
     )
-
 };
 
 
