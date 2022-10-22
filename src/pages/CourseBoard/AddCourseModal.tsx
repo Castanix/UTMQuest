@@ -53,10 +53,10 @@ const AddCourseModal = (props: any) => {
     }
 
     const handleOk = () => {
-        console.log("here");
-        console.log(selected)
         if(selected) {
+            // Slices the selected string to get the course code
             const code = selected.slice(0, 6);
+            // Slices the selected string to get the course name
             const name = selected.slice(6);
 
             AddCourse(code || '', name, courses, rerender, setCourses);
