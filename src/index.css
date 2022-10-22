@@ -67,6 +67,7 @@ tr th {
 .ant-modal-header, 
 .ant-pagination-item, 
 .ant-pagination-item-link,
+.ant-input,
 input {
   border-radius: var(--radius) !important;
 }
@@ -76,9 +77,9 @@ input {
   width: 250px !important;
 }
 
-.ant-input-prefix {
-  border-radius: 0 !important;
-}
+.ant-input-affix-wrapper .ant-input {
+  border-radius: 0px !important;
+} 
 
 .ant-tooltip-inner {
   border-radius: 10px !important;
