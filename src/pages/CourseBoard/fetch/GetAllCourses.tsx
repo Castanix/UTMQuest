@@ -34,6 +34,7 @@ const GetAllCourses = (added: boolean) => {
         courses,
         loading,
         error,
+        setCourses
     };
 };
 
