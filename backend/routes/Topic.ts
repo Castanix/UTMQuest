@@ -24,7 +24,7 @@ topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 			res.status(200).send(topics);
 		})
 		.catch((error) => {
-			res.status(500).send(`ERROR: ${error}`);
+			res.status(500).send(error);
 		});
 });
 
@@ -51,20 +51,31 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		);
 		return;
 	}
-
-	utmQuestCollections.Topics?.findOneAndDelete({
-		_id: new ObjectID(req.body._id),
-	})
-		.then((result) => {
-			if (!result) {
-				res.status(400).send(result);
-				return;
+	utmQuestCollections.Topics?.deleteOne(topic).then((result) => {
+		if (!result.acknowledged) {
+			res.status(400).send(result);
+			return;
+		}
+		// DECREMENT TOPIC COUNTER IN COURSE
+		const course = {
+			courseId: topic.course,
+			numTopics: { $gt: 0 }
+		};
+		
+		utmQuestCollections.Courses?.findOneAndUpdate(course, 
+			{ $inc: { numTopics: -1 } }
+		)
+			.then((decrementResult) => {
+			if (!decrementResult) {
+			  res.status(400).send(`Unable to decrement numTopics for ${course.courseId}`);
+			  return;
 			}
 			res.status(200).send("Topic successfully deleted.");
-		})
-		.catch((error) => {
-			res.status(500).send(`ERROR: ${error}`);
-		});
+		  })
+
+	}).catch((error) => {
+		res.status(500).send(error);
+	})
 });
 
 topicRouter.put("/putTopic", async (req: Request, res: Response) => {
@@ -82,19 +93,19 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
-	utmQuestCollections.Topics?.findOneAndUpdate(
-		{ _id: new ObjectID(req.body._id) },
-		{ $set: { topicName: req.body.newTopic.trim() } }
+	utmQuestCollections.Topics?.updateOne(
+		topic, 
+		{ $set: { topicName: req.body.newTopic.trim() } } 
 	)
 		.then((result) => {
-			if (!result) {
+			if (!result.acknowledged) {
 				res.status(400).send(result);
 				return;
 			}
 			res.status(200).send("Topic successfully updated.");
 		})
 		.catch((error) => {
-			res.status(500).send(`ERROR: ${error}`);
+			res.status(500).send(error);
 		});
 });
 
@@ -119,11 +130,23 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 		.then((result) => {
 			if (!result) {
 				res.status(400).send("Unable to add new topic.");
+				return;
 			}
-			res.status(201).send(result);
+			// INCREMENT COUNTER 
+			utmQuestCollections.Courses?.updateOne(course, 
+				{ 
+				  $inc: { numTopics: 1 } 
+				}
+			  ).then((incrementResult) => {
+				if (!incrementResult) {
+				  res.status(400).send(`Unable to increment numTopics for ${course.courseId}`); 
+				  return;
+				}
+				res.status(201).send(result);
+			  })
 		})
 		.catch((error) => {
-			res.status(500).send(`ERROR: ${error}`);
+			res.status(500).send(error);
 		});
 });
 
