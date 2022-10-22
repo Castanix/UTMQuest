@@ -74,6 +74,7 @@ const AddTopic = ({ courseId, addTopicCallback }: { courseId: string, addTopicCa
             numApproved: 0,
             numPending: 0
         }
+
         fetch(`${process.env.REACT_APP_API_URI}/topic/addTopic`, request).then((result) => {
             if (!result.ok) throw new Error("Could not add topic. Ensure the topic hasn't already been added and try again.");
             return result.json();
