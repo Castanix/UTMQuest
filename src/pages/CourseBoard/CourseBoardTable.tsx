@@ -9,8 +9,19 @@ import AddCourseModal from './AddCourseModal';
 const CourseBoardTable = (props: any) => {
     const { dataSource }: { dataSource: CoursesType[] } = props;
 
+    const added: CoursesType[] = [];
+    const unadded: CoursesType[] = [];
+
+    dataSource.forEach((item) => {
+        if (item.added) {
+            added.push(item)
+        } else {
+            unadded.push(item)
+        }
+    })
+
     const [searchValue, setSearchValue] = useState<string>("");
-    const [displayData, setDisplayData] = useState<CoursesType[]>(dataSource);
+    const [displayData, setDisplayData] = useState<CoursesType[]>(added);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const columns: ColumnsType<CoursesType> = [{
@@ -34,17 +45,17 @@ const CourseBoardTable = (props: any) => {
 
     const handleSearch = (value: string) => {
         setSearchValue(value);
-        setDisplayData(value ? dataSource.filter(item => 
+        setDisplayData(value ? added.filter(item => 
             item.courseId.toLowerCase().includes(value.toLowerCase()) || 
             item.courseName.toLowerCase().includes(value.toLowerCase())
-        ) : dataSource);
+        ) : added);
     };
 
     // Locally renders new course on the courseboard. Renders by fetching from db happens on initial page load.
     const rerender = (code: string, name: string) => {
         setSearchValue("")
 
-        const courses = [...dataSource, {
+        const courses = [...added, {
             _id: "temp",
             courseId: code,
             courseName: name,
@@ -73,6 +84,7 @@ const CourseBoardTable = (props: any) => {
                 setModalState={setIsModalOpen} 
                 setDisplayData={setDisplayData} 
                 rerender={rerender}
+                unadded={unadded}
             />
         </div>
     )

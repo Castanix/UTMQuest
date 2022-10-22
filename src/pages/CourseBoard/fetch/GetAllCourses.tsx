@@ -2,17 +2,15 @@ import { useState, useEffect } from 'react';
 import CoursesType from '../../../../backend/types/Courses';
 
 
-const GetAllCourses = (added: boolean) => {
+const GetAllCourses = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [courses, setCourses] = useState<CoursesType[]>([]);
 
     useEffect(() => {
-        const toFetch = added ? "getAllAddedCourses" : "getNonAddedCourses";
-
         const fetchCourses = async () => {
             await fetch(
-                `${process.env.REACT_APP_API_URI}/course/${toFetch}`
+                `${process.env.REACT_APP_API_URI}/course/getAllCourses`
             )
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
@@ -28,7 +26,7 @@ const GetAllCourses = (added: boolean) => {
             });
         }
         fetchCourses();
-    }, [setCourses, setLoading, setError, added]);
+    }, [setCourses, setLoading, setError]);
 
     return {
         courses,
