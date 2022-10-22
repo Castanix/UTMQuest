@@ -25,13 +25,15 @@ const CourseBoard = () => {
 
     if (loading) return <Loading />;
 
-    if (error !== '') return <ErrorMessage title={error} link='.' message='Refresh' />
+    if (error !== '') return <ErrorMessage title={error} link='.' message='Refresh' />;
 
     return (
-        <Card title={<Header />} bordered={false}> 
-            <div className="card-content-courseboard">
-                <CourseBoardTable dataSource={courses} />
-            </div>
+        <Card title={<Header />} bordered={false}>
+            <main className="main-container">
+                <div className="card-content-courseboard">
+                    <CourseBoardTable dataSource={courses} />
+                </div>
+            </main>
         </Card>
     );
 };

@@ -50,7 +50,7 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                     label="Topic Name"
                     rules={[{ required: true, message: 'Please add a topic name' }]}
                 >
-                    <Input className='addTopicInput' />
+                    <Input />
                 </Form.Item>
             </Form>
         </Modal>
@@ -65,7 +65,7 @@ const AddTopic = ({ courseId, addTopicCallback }: { courseId: string, addTopicCa
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ courseId, topicName })
-        }
+        };
 
         const topic: TopicsType = {
             _id: '',
@@ -73,7 +73,7 @@ const AddTopic = ({ courseId, addTopicCallback }: { courseId: string, addTopicCa
             course: courseId,
             numApproved: 0,
             numPending: 0
-        }
+        };
         fetch(`${process.env.REACT_APP_API_URI}/topic/addTopic`, request).then((result) => {
             if (!result.ok) throw new Error("Could not add topic. Ensure the topic hasn't already been added and try again.");
             return result.json();
@@ -82,8 +82,8 @@ const AddTopic = ({ courseId, addTopicCallback }: { courseId: string, addTopicCa
             addTopicCallback(topic);
             setOpen(false);
         }).catch((error) => {
-            message.error(error.message)
-        })
+            message.error(error.message);
+        });
     };
 
     return (

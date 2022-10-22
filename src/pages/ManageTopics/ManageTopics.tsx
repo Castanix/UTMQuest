@@ -32,13 +32,15 @@ const ManageTopics = () => {
 
     if (loading) return <Loading />;
 
-    if (error !== '') return <ErrorMessage title={error} link='/courses' message='Go back to courses' />
+    if (error !== '') return <ErrorMessage title={error} link='/courses' message='Go back to courses' />;
 
     return (
         <Card title={<Header courseCode={courseCode ?? ''} title={`Topics for ${courseCode}`} />} bordered={false}>
-            <TopicsTable topics={topics} courseId={courseCode ?? ''} />
+            <main className="main-container">
+                <TopicsTable topics={topics} courseId={courseCode ?? ''} />
+            </main>
         </Card>
-    )
-}
+    );
+};
 
 export default ManageTopics;

@@ -16,6 +16,6 @@ const ErrorMessage = ({ title, link, message }: { title: string, link: string, m
             }
         />
     </Card>
-)
+);
 
 export default ErrorMessage;

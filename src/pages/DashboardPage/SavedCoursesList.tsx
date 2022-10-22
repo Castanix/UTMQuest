@@ -24,4 +24,4 @@ const SavedCoursesList = (props: any) => {
   ) : <div className="icon"><DropboxOutlined /></div>;
 };
 
-export default SavedCoursesList
+export default SavedCoursesList;

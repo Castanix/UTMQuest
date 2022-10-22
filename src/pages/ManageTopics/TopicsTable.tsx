@@ -6,7 +6,7 @@ import TopicsType from '../../../backend/types/Topics';
 import AddTopic from './AddTopic';
 import TopicState from './fetch/TopicState';
 
-import "./TopicsTable.css"
+import "./TopicsTable.css";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -104,7 +104,7 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
                         <Popconfirm disabled={isDisabled(record)} title="Sure to delete?" onConfirm={() => handleDelete(record._id)}>
                             <Space>
                                 <Typography.Link>
-                                    <span className={isDisabled(record) ? 'deleteDisabled' : 'delete'}>Delete</span>
+                                    <span className={isDisabled(record) ? 'delete-disabled' : 'delete'}>Delete</span>
                                 </Typography.Link>
                                 {isDisabled(record)
                                     ? (
@@ -150,7 +150,6 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
                         cell: EditableCell,
                     },
                 }}
-                bordered
                 className='table'
                 rowKey="_id"
                 dataSource={data}

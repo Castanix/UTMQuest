@@ -6,7 +6,7 @@
     overflow-x: auto;
 }
 
-.deleteDisabled {
+.delete-disabled {
     color: #7e7979;
 }
 
@@ -15,36 +15,11 @@
     justify-content: space-between;
 }
 
-.ant-btn, 
-.ant-popover-inner, 
-.ant-message-notice-content, 
-.ant-modal-content, 
-.ant-modal-header, 
-.ant-pagination-item, 
-.ant-pagination-item-link, 
-.addTopicInput,
-#topicName.ant-input {
-    border-radius: 25px !important;
-}
-
-.ant-input-prefix {
-    border-radius: 0;
-}
-
-.ant-tooltip-inner {
-    border-radius: 10px;
-}
-
-.ant-input-affix-wrapper {
-    border-radius: 25px;
-    width: 250px;
-}
-
 @media screen and (max-width: 420px) {
     .toolbar {
         display: block;
     }
-    .addNewTopic {
+    .add-new-topic {
         margin-top: 0.5rem;
     }
 }

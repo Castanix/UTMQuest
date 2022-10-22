@@ -9,7 +9,7 @@ const AddCourseModal = (props: any) => {
     const { modalState, setModalState, rerender, unadded }:
         { modalState: boolean, setModalState: Function, rerender: Function, unadded: CoursesType[] } = props;
 
-    const [displayCourses, setDisplayCourses] = useState<CoursesType[]>(unadded)
+    const [displayCourses, setDisplayCourses] = useState<CoursesType[]>(unadded);
     const [searchInput, setSearchInput] = useState<string>();
     const [selected, setSelected] = useState<string>();
 
@@ -33,24 +33,24 @@ const AddCourseModal = (props: any) => {
             });
 
             return newData;
-        }
+        };
 
         courseSort(displayCourses).forEach((item: CoursesType) => {
-            const code = item.courseId.slice(0, 3)
+            const code = item.courseId.slice(0, 3);
 
             if (oldCode === code) {
-                courseArr.push(<Option key={item._id} value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>)
+                courseArr.push(<Option key={item._id} value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>);
             } else {
-                groupArr.push(<OptGroup key={oldCode} label={oldCode}>{courseArr}</OptGroup>)
-                oldCode = item.courseId.slice(0, 3)
-                courseArr = [<Option key={item._id} value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>]
+                groupArr.push(<OptGroup key={oldCode} label={oldCode}>{courseArr}</OptGroup>);
+                oldCode = item.courseId.slice(0, 3);
+                courseArr = [<Option key={item._id} value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>];
             }
-        })
-        groupArr.push(<OptGroup key={oldCode} label={oldCode}>{courseArr}</OptGroup>)
+        });
+        groupArr.push(<OptGroup key={oldCode} label={oldCode}>{courseArr}</OptGroup>);
 
         // skip empty group in groupArr
         return groupArr.slice(1);
-    }
+    };
 
     const handleOk = () => {
         if (selected) {
@@ -62,7 +62,7 @@ const AddCourseModal = (props: any) => {
             AddCourse(code || '', name, displayCourses, rerender, setDisplayCourses);
         }
         setModalState(false);
-    }
+    };
 
     return (
         <Modal
@@ -88,7 +88,7 @@ const AddCourseModal = (props: any) => {
                 </Form.Item>
             </Form>
         </Modal>
-    )
+    );
 };
 
 

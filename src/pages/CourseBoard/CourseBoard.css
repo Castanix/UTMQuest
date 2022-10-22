@@ -1,8 +1,5 @@
 .card-content-courseboard {
-    width: 80vw;
-    max-width: 180rem;
     margin: auto;
-
     overflow-x: auto;
     overflow-y: hidden;
 }
@@ -28,4 +25,8 @@
 
 .options {
     overflow-x: none;
+}
+
+.ant-select-selector, .ant-select-dropdown {
+    border-radius: 25px !important;
 }
