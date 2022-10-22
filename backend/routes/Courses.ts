@@ -66,7 +66,7 @@ courseRouter.put('/addCourse', async (req: Request, res: Response) => {
     res.status(200).send(`course ${course.courseId} has been updated successfully`);
   }).catch((error) => {
     res.status(500).send(error);
-  })
+  });
 });
 
 
@@ -83,10 +83,10 @@ courseRouter.put('/incrementTopic', async (req: Request, res: Response) => {
     if (!result) {
       res.status(400).send(`Unable to increment numTopics for ${course.courseId}`);
     }
-    res.status(200).send(`course ${course.courseId} has been updated successfully`)
+    res.status(200).send(`course ${course.courseId} has been updated successfully`);
   }).catch((error) => {
     res.status(500).send(error);
-  })
+  });
 });
 
 courseRouter.put('/decrementTopic', async (req: Request, res: Response) => {
@@ -108,10 +108,10 @@ courseRouter.put('/decrementTopic', async (req: Request, res: Response) => {
     if (!result) {
       res.status(400).send(`Unable to decrement numTopics for ${course.courseId}`);
     }
-    res.status(200).send(`course ${course.courseId} has been updated successfully`)
+    res.status(200).send(`course ${course.courseId} has been updated successfully`);
   }).catch((error) => {
     res.status(500).send(error);
-  })
+  });
 });
 
 export default courseRouter;
