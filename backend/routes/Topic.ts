@@ -71,11 +71,11 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 			  return;
 			}
 			res.status(200).send("Topic successfully deleted.");
-		  })
+		  });
 
 	}).catch((error) => {
 		res.status(500).send(error);
-	})
+	});
 });
 
 topicRouter.put("/putTopic", async (req: Request, res: Response) => {
@@ -143,7 +143,7 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 				  return;
 				}
 				res.status(201).send(result);
-			  })
+			  });
 		})
 		.catch((error) => {
 			res.status(500).send(error);

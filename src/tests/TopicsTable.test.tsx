@@ -67,7 +67,7 @@ test('test table content', () => {
 });
 
 test('test that one delete action is disabled and one is enabled', () => {
-    expect(document.getElementsByClassName('deleteDisabled').length).toBe(1);
+    expect(document.getElementsByClassName('delete-disabled').length).toBe(1);
     expect(document.getElementsByClassName('delete').length).toBe(1);
 })
 

@@ -4,8 +4,7 @@
 }
 
 .card-content {
-    width: 40vw;
-    max-width: 60rem;
+    width: 35vw;
 
     overflow-x: auto;
     overflow-y: hidden;
