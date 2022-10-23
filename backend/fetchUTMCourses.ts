@@ -16,7 +16,7 @@ const dataBody = {
   requirementProps: [],
   sessions: ["20229", "20231", "20229-20231"],
   timePreferences: []
-}
+};
 
 axios({
   method: 'post',
@@ -29,7 +29,7 @@ axios({
         courseName: item.name,
         numTopics: 0,
         added: false
-    }
+    };
     utmQuestCollections.Courses?.insertOne(course).then((res) => {
         if (!res) { 
             console.log(`INSERTION FOR COURSE ${course} HAS FAILED!`);
@@ -37,6 +37,6 @@ axios({
         console.log("SUCCESSFULLY INSERTED COURSES"); 
     }).catch((err) => { 
         console.log(err);
-    })
+    });
   });
 });

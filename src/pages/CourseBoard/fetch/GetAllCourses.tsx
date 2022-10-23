@@ -24,7 +24,7 @@ const GetAllCourses = () => {
                 setError(err.message);
                 setLoading(false);
             });
-        }
+        };
         fetchCourses();
     }, [setCourses, setLoading, setError]);
 

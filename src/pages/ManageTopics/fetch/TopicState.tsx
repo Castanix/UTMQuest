@@ -1,6 +1,6 @@
-import { Form, message } from 'antd'
-import React, { useState } from 'react'
-import TopicsType from '../../../../backend/types/Topics'
+import { Form, message } from 'antd';
+import React, { useState } from 'react';
+import TopicsType from '../../../../backend/types/Topics';
 
 
 const TopicState = (topics: TopicsType[]) => {
@@ -16,14 +16,14 @@ const TopicState = (topics: TopicsType[]) => {
 
     const addTopicCallback = (topic: TopicsType) => {
         setSearchTerm('');
-        setOriginalData([...originalData, topic])
+        setOriginalData([...originalData, topic]);
         setData([...originalData, topic]);
-    }
+    };
 
     const onChange = (value: string) => {
         setSearchTerm(value);
         setData(originalData.filter(item => item.topicName.toLowerCase().includes(value.toLowerCase())));
-    }
+    };
 
     const edit = (record: Partial<TopicsType> & { _id: React.Key }) => {
         form.setFieldsValue({ topicName: '', ...record });
@@ -40,19 +40,19 @@ const TopicState = (topics: TopicsType[]) => {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ _id: key })
-        }
+        };
         fetch(`${process.env.REACT_APP_API_URI}/topic/deleteTopic`, request).then((result) => {
             if (!result.ok) {
-                message.error("Could not delete topic. Please try again.")
+                message.error("Could not delete topic. Please try again.");
                 return;
             }
-            message.success("Topic successfully deleted.")
+            message.success("Topic successfully deleted.");
             setData(newData);
             setOriginalData(newData);
             setSearchTerm('');
         }).catch(() => {
-            message.error("Could not delete topic. Please try again.")
-        })
+            message.error("Could not delete topic. Please try again.");
+        });
     };
 
     const save = async (key: React.Key) => {
@@ -70,21 +70,21 @@ const TopicState = (topics: TopicsType[]) => {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ _id: key, newTopic: row.topicName })
-            }
+            };
 
             fetch(`${process.env.REACT_APP_API_URI}/topic/putTopic`, request).then((result) => {
-                if (!result.ok) throw new Error("Could not save topic. Ensure the new name hasn't already been added and try again.")
-                message.success("Topic successfully saved.")
+                if (!result.ok) throw new Error("Could not save topic. Ensure the new name hasn't already been added and try again.");
+                message.success("Topic successfully saved.");
                 setData(newData);
                 setOriginalData(newData);
                 setSearchTerm('');
                 setEditingKey('');
             }).catch((error) => {
-                message.error(error.message)
-            })
+                message.error(error.message);
+            });
 
         } catch (errInfo) {
-            message.error("Please enter a topic name.")
+            message.error("Please enter a topic name.");
         }
     };
 
@@ -101,7 +101,7 @@ const TopicState = (topics: TopicsType[]) => {
         searchTerm,
         onChange,
         addTopicCallback
-    }
-}
+    };
+};
 
 export default TopicState;

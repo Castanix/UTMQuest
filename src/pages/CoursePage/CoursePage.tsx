@@ -15,7 +15,7 @@ const { Title } = Typography;
 
 const GetCard = ({ cardIcon, title }:
   { cardIcon: React.ForwardRefExoticComponent<any>, title: string }) => (
-  <Card className="card" hoverable bordered={false}>
+  <Card className="card" hoverable bordered>
     <Icon className="card-icon" component={cardIcon} />
     <br />
     <br />
@@ -55,15 +55,17 @@ const CoursePage = () => {
 
   if (loading) return <Loading />;
 
-  if (error !== '') return <ErrorMessage title={error} link="/courses" message="Go back to courses" />
+  if (error !== '') return <ErrorMessage title={error} link="/courses" message="Go back to courses" />;
 
   return (
     <Card title={<Header courseCode={courseCode ?? ''} courseName={courseName ?? ''} />} bordered={false}>
-      <div className="cards">
-        <GetCard cardIcon={ContainerTwoTone} title="Browse Questions" />
-        <GetCard cardIcon={PlusCircleTwoTone} title="Add a Question" />
-        <GetCard cardIcon={DiffTwoTone} title="Review Questions" />
-      </div>
+      <main className="main-container">
+        <div className="cards">
+          <GetCard cardIcon={ContainerTwoTone} title="Browse Questions" />
+          <GetCard cardIcon={PlusCircleTwoTone} title="Add a Question" />
+          <GetCard cardIcon={DiffTwoTone} title="Review Questions" />
+        </div>
+      </main>
     </Card>
   );
 };

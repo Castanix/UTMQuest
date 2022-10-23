@@ -29,6 +29,7 @@ module.exports = {
 			},
 		],
 		'no-console': "off",
-		"no-underscore-dangle": ["error", { "allow": ["_id"] }]
+		"no-underscore-dangle": ["error", { "allow": ["_id"] }],
+		"semi": [2, "always"]
 	}
 };

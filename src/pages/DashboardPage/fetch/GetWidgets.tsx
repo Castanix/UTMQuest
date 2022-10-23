@@ -42,7 +42,7 @@ const GetWidgets = (utorid: string) => {
         courseData,
         reviewQnsData,
         error
-    }
-}
+    };
+};
 
 export default GetWidgets;

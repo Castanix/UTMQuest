@@ -12,6 +12,7 @@
 
 .card {
     text-align: center;
+    margin-left: 10px;
 }
 
 .card-icon, .card-title {
@@ -21,5 +22,8 @@
 @media screen and (max-width: 420px) {
     .title, .cards {
         display: block;
+    }
+    .card {
+        margin-bottom: 10px;
     }
 }
