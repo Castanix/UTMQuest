@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import connectDB, { utmQuestCollections } from "./db/db.service";
 import courseRouter from "./routes/Courses";
 import topicRouter from "./routes/Topic";
+import questionRouter from "./routes/Question";
 
 const app = express();
 app.use(cors());
@@ -11,6 +12,9 @@ app.use(cors());
 const port = process.env.PORT || 5001;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Questions 
+app.use("/question", questionRouter)
 
 // Courses
 app.use("/course", courseRouter);
@@ -23,7 +27,6 @@ app.get("/express_backend", (req: Request, res: Response) => {
 });
 
 // Accounts routes
-// TODO: add this to its own routes file along with any additional routes required
 app.get("/getAccount/:utorid", (req: Request, res: Response) => {
 	utmQuestCollections.Accounts?.findOne({ utorid: req.params.utorid })
 		.then((doc) => {
