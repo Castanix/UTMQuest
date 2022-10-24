@@ -45,8 +45,8 @@ const CourseBoardTable = (props: any) => {
 
     const handleSearch = (value: string) => {
         setSearchValue(value);
-        setDisplayData(value ? added.filter(item => 
-            item.courseId.toLowerCase().includes(value.toLowerCase()) || 
+        setDisplayData(value ? added.filter(item =>
+            item.courseId.toLowerCase().includes(value.toLowerCase()) ||
             item.courseName.toLowerCase().includes(value.toLowerCase())
         ) : added);
     };
@@ -62,28 +62,28 @@ const CourseBoardTable = (props: any) => {
             numTopics: 0,
             added: true
         }];
-        
+
         setDisplayData(courses);
     };
 
     return (
         <div>
             <div className='toolbar'>
-                <Input placeholder="Search Course" prefix={<SearchOutlined />} value={searchValue} onChange={(e) => {handleSearch(e.target.value);}} />
-                <Button type="primary" icon={<PlusCircleOutlined />} shape="round" className='addNewCourse' onClick={()=>{setIsModalOpen(true);}}>
+                <Input placeholder="Search Course" prefix={<SearchOutlined />} value={searchValue} onChange={(e) => { handleSearch(e.target.value); }} />
+                <Button type="primary" icon={<PlusCircleOutlined />} shape="round" className='add-new-course' onClick={() => { setIsModalOpen(true); }}>
                     Add a Course
                 </Button>
             </div>
-            <br/>
-            <Table 
+            <br />
+            <Table
                 dataSource={displayData}
                 columns={columns}
                 rowKey="_id"
             />
-            <AddCourseModal 
+            <AddCourseModal
                 modalState={isModalOpen}
-                setModalState={setIsModalOpen} 
-                setDisplayData={setDisplayData} 
+                setModalState={setIsModalOpen}
+                setDisplayData={setDisplayData}
                 rerender={rerender}
                 unadded={unadded}
             />

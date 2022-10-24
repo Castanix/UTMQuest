@@ -74,7 +74,7 @@ const AddTopic = ({ courseId, addTopicCallback }: { courseId: string, addTopicCa
             numApproved: 0,
             numPending: 0
         };
-        
+
         fetch(`${process.env.REACT_APP_API_URI}/topic/addTopic`, request).then((result) => {
             if (!result.ok) throw new Error("Could not add topic. Ensure the topic hasn't already been added and try again.");
             return result.json();
@@ -89,7 +89,7 @@ const AddTopic = ({ courseId, addTopicCallback }: { courseId: string, addTopicCa
 
     return (
         <div>
-            <Button type="primary" icon={<PlusCircleOutlined />} shape="round" className='addNewTopic' onClick={() => setOpen(true)}>
+            <Button type="primary" icon={<PlusCircleOutlined />} shape="round" className='add-new-topic' onClick={() => setOpen(true)}>
                 Add a new topic
             </Button>
             <CollectionCreateForm
