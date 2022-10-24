@@ -15,34 +15,34 @@ questionRouter.get('/:questionId', async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).send(`ERROR: ${error}`);
     }
-}) 
+});
 
 questionRouter.get('/allDiscussions/:questionId', async (req: Request, res: Response) => {
     try { 
         const discussions = await utmQuestCollections.Discussions?.findOne({ question: req.params.questionId }); 
         if (!discussions) {
             res.status(404).send('Cannot find discussion');
-            return 
+            return; 
         }
 
         res.status(200).send(discussions);
     } catch (error){ 
         res.status(500).send(`ERROR: ${error}`);
     }
-}) 
+});
 
 questionRouter.get('/reviewStatus/:questionId', async (req: Request, res: Response) => {
     try {
         const question = await utmQuestCollections.Questions?.findOne({ qnsId: req.params.questionId });
         if (!question){
             res.status(404).send(`Error: Unable to find question`); 
-            return
+            return;
         }
         res.json(question.reviewStatus);
     } catch (error) {
         res.status(500).send(`ERROR: ${error}`);
     }
-}) 
+});
 
 questionRouter.put('/reviewStatus/:questionId', async (req: Request, res: Response) => {
     try { 
@@ -56,7 +56,7 @@ questionRouter.put('/reviewStatus/:questionId', async (req: Request, res: Respon
     } catch (error) { 
         res.status(500).send(`ERROR: ${error}`);
     }
-})
+});
 
 questionRouter.post('/:topicId', async (req: Request, res: Response) => {
     // post a new question
@@ -87,7 +87,7 @@ questionRouter.post('/:topicId', async (req: Request, res: Response) => {
         authName: req.body.authName,
         date: `${mm}/${dd}/${yyyy}`,
         snapshot: null,
-    }
+    };
     
     utmQuestCollections.Questions?.insertOne(question).then((result) => {
         if (!result) {
@@ -97,7 +97,7 @@ questionRouter.post('/:topicId', async (req: Request, res: Response) => {
     }).catch((error) => {
         res.status(500).send(`ERROR: ${error}`);
     });
-})
+});
 
 questionRouter.put('/:questionId', async (req: Request, res: Response) => {
     try { 
@@ -124,7 +124,7 @@ questionRouter.put('/:questionId', async (req: Request, res: Response) => {
             authName: req.body.authName,
             date: `${mm}/${dd}/${yyyy}`,
             snapshot: new ObjectID(), // -> need to update this 
-        }
+        };
 
         await utmQuestCollections.Questions?.updateOne({ qnsId: req.params.questionId }, {$set: question}).then( (result) => { 
             if (!result) { 
@@ -133,12 +133,12 @@ questionRouter.put('/:questionId', async (req: Request, res: Response) => {
             }
             res.status(200).send('Succesfully updated question');
         }).catch( (error) => { 
-            console.log(error)
+            console.log(error);
         });
     } catch (error) { 
         res.status(500).send(`ERROR: ${error}`);
     }
-}) 
+});
 
 
 questionRouter.delete('/:questionId', async (req: Request, res: Response) => {
@@ -154,7 +154,7 @@ questionRouter.delete('/:questionId', async (req: Request, res: Response) => {
     } catch (error) { 
         res.status(500).send(`ERROR: ${error}`);
     }
-})
+});
 
 
 export default questionRouter;  
