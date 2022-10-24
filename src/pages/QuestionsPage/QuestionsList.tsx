@@ -65,7 +65,7 @@ const QuestionsList = ({ questions, topics, approved }:
                                      <IconText icon={DislikeOutlined} text="20" key="list-vertical-message" />] :
                                     [<IconText icon={CheckOutlined} text={item.reviewStatus.toString().concat("/20")} key="list-vertical-message" />],
                                     
-                                <IconText icon={MessageOutlined} text="2" key="list-vertical-message" />
+                                <IconText icon={MessageOutlined} text={item.numDiscussions.toString()} key="list-vertical-message" />
                             ]}
                         >
                             <List.Item.Meta

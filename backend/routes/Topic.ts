@@ -67,7 +67,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		)
 			.then((decrementResult) => {
 			if (!decrementResult) {
-			  res.status(400).send(`Unable to decrement numTopics for ${course.courseId}`);
+			  res.status(500).send(`Unable to decrement numTopics for ${course.courseId}`);
 			  return;
 			}
 			res.status(200).send("Topic successfully deleted.");
@@ -99,10 +99,20 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 	)
 		.then((result) => {
 			if (!result.acknowledged) {
-				res.status(400).send(result);
+				res.status(500).send(result);
 				return;
 			}
-			res.status(200).send("Topic successfully updated.");
+
+			utmQuestCollections.Questions?.updateMany(
+				{ topicId: new ObjectID(req.body._id) },
+				{ $set: { topicName: req.body.newTopic.trim() } }
+			).then((updateTopicResult) => {
+				if (!result.acknowledged) {
+					res.status(500).send("Could not update topic.");
+					return;
+				}
+				res.status(200).send(updateTopicResult);
+			});
 		})
 		.catch((error) => {
 			res.status(500).send(error);
@@ -129,7 +139,7 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 	utmQuestCollections.Topics?.insertOne(newTopic)
 		.then((result) => {
 			if (!result) {
-				res.status(400).send("Unable to add new topic.");
+				res.status(500).send("Unable to add new topic.");
 				return;
 			}
 			// INCREMENT COUNTER 
@@ -139,7 +149,7 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 				}
 			  ).then((incrementResult) => {
 				if (!incrementResult) {
-				  res.status(400).send(`Unable to increment numTopics for ${course.courseId}`); 
+				  res.status(500).send(`Unable to increment numTopics for ${course.courseId}`); 
 				  return;
 				}
 				res.status(201).send(result);

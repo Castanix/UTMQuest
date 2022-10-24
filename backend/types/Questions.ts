@@ -15,7 +15,8 @@ export enum qnsStatusType {
 interface QuestionsType {
 	_id: string;
 	qnsId: string;
-	topic: string;
+	topicId: string;
+	topicName: string;
 	course: string;
 	qnsName: string;
 	qnsStatus: qnsStatusType;
@@ -28,6 +29,7 @@ interface QuestionsType {
 	authId: string;
 	authName: string;
 	date: string;
+	numDiscussions: number;
 	snapshort: ObjectId | null;
 }
 
