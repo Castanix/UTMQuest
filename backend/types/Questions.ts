@@ -1,14 +1,15 @@
+/* eslint-disable no-shadow, no-unused-vars */
 import { ObjectId } from "mongodb";
 
 enum qnsTypeEnum {
-	mc,
-	matching,
-	short,
+	mc = "mc",
+	matching = "matching",
+	short = "short",
 }
 
 enum qnsStatusType {
-	approved,
-	pending,
+	approved = "approved",
+	pending = "pending",
 }
 
 interface QuestionsType {
