@@ -22,7 +22,8 @@ root.render(
         <Route path="/courses" element={<CourseBoard />} />
         <Route path="/courses/:id" element={<CoursePage />} />
         <Route path="/courses/:id/topics" element={<ManageTopics />} />
-        <Route path="/courses/:id/browse" element={<QuestionsPage />} />
+        <Route path="/courses/:id/browse" element={<QuestionsPage approved />} />
+        <Route path="/courses/:id/review" element={<QuestionsPage approved={false} />} />
         <Route path="/profile" element={<div>Coming soon</div>} />
         <Route path="*" element={<div>Page not found</div>} />
       </Routes>
