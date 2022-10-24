@@ -74,7 +74,7 @@ const questions: QuestionsType[] = [
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<QuestionsList questions={questions} topics={topics} />, { wrapper: BrowserRouter })
+    const { container } = render(<QuestionsList questions={questions} topics={topics} approved />, { wrapper: BrowserRouter })
     document = container;
 });
 
