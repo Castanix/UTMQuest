@@ -61,7 +61,7 @@ const CoursePage = () => {
     <Card title={<Header courseCode={courseCode ?? ''} courseName={courseName ?? ''} />} bordered={false}>
       <main className="main-container">
         <div className="cards">
-          <GetCard cardIcon={ContainerTwoTone} title="Browse Questions" />
+          <Link to={`/courses/${courseCode}/browse`}><GetCard cardIcon={ContainerTwoTone} title="Browse Questions" /></Link>
           <GetCard cardIcon={PlusCircleTwoTone} title="Add a Question" />
           <GetCard cardIcon={DiffTwoTone} title="Review Questions" />
         </div>

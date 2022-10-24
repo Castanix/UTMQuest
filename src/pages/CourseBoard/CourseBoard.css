@@ -30,3 +30,9 @@
 .ant-select-selector, .ant-select-dropdown {
     border-radius: 25px !important;
 }
+
+@media screen and (max-width: 420px) {
+    .add-new-course {
+        margin-top: 0.5rem;
+    }
+}
