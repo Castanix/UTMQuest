@@ -126,7 +126,7 @@ questionRouter.put('/:questionId', async (req: Request, res: Response) => {
             snapshot: new ObjectID(), // -> need to update this 
         }
 
-        await utmQuestCollections.Questions?.findOneAndUpdate({ qnsId: req.params.questionId }, {$set: question}).then( (result) => { 
+        await utmQuestCollections.Questions?.updateOne({ qnsId: req.params.questionId }, {$set: question}).then( (result) => { 
             if (!result) { 
                 res.status(400).send(result);
 				return;
