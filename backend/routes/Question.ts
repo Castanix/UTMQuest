@@ -31,6 +31,27 @@ questionRouter.get('/allDiscussions/:questionId', async (req: Request, res: Resp
     }
 });
 
+questionRouter.get('/:courseId/:status', async (req: Request, res: Response) => { 
+    try { 
+        if (req.params.status === 'approved') { 
+            const approvedQuestions = await utmQuestCollections.Questions?.find({ course: req.params.courseId, qnsStatus: req.params.status }).toArray();
+            res.status(200).send(approvedQuestions); 
+            return;
+        }
+
+        if (req.params.status === 'pending') { 
+            const pendingQuestions = await utmQuestCollections.Questions?.find({ course: req.params.courseId, qnsStatus: req.params.status }).toArray();
+            res.status(200).send(pendingQuestions);
+            return; 
+        } 
+
+        res.status(400).send('Invalid status id'); 
+
+    } catch (error) { 
+        res.status(500).send(error); 
+    }
+});
+
 questionRouter.get('/reviewStatus/:questionId', async (req: Request, res: Response) => {
     try {
         const question = await utmQuestCollections.Questions?.findOne({ qnsId: req.params.questionId });
