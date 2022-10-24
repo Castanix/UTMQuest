@@ -107,7 +107,7 @@ input,
   border-radius: 10px !important;
 }
 
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 720px) {
   .main-container {
     padding-inline: 0;
   }

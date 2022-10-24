@@ -27,8 +27,8 @@
     font-size: 1.25rem;
 }
 
-.question-list-meta {
-    margin-top: 0.5rem;
+.ant-list-item-action, .question-list-meta {
+    margin: 0 !important;
 }
 
 .ant-page-header-content {
