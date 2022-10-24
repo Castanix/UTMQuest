@@ -1,13 +1,13 @@
 /* eslint-disable no-shadow, no-unused-vars */
 import { ObjectId } from "mongodb";
 
-enum qnsTypeEnum {
+export enum qnsTypeEnum {
 	mc = "mc",
 	matching = "matching",
 	short = "short",
 }
 
-enum qnsStatusType {
+export enum qnsStatusType {
 	approved = "approved",
 	pending = "pending",
 }
@@ -19,7 +19,7 @@ interface QuestionsType {
 	course: string;
 	qnsName: string;
 	qnsStatus: qnsStatusType;
-	reviewStatus: string;
+	reviewStatus: number;
 	qnsType: qnsTypeEnum;
 	desc: string;
 	xplan: string;
