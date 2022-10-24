@@ -34,13 +34,13 @@ questionRouter.get('/allDiscussions/:questionId', async (req: Request, res: Resp
 questionRouter.get('/:courseId/:status', async (req: Request, res: Response) => { 
     try { 
         if (req.params.status === 'approved') { 
-            const approvedQuestions = await utmQuestCollections.Questions?.find({ course: req.params.courseId, qnsStatus: req.params.status }).toArray();
+            const approvedQuestions = await utmQuestCollections.Questions?.find({ courseId: req.params.courseId, qnsStatus: req.params.status }).toArray();
             res.status(200).send(approvedQuestions); 
             return;
         }
 
         if (req.params.status === 'pending') { 
-            const pendingQuestions = await utmQuestCollections.Questions?.find({ course: req.params.courseId, qnsStatus: req.params.status }).toArray();
+            const pendingQuestions = await utmQuestCollections.Questions?.find({ courseId: req.params.courseId, qnsStatus: req.params.status }).toArray();
             res.status(200).send(pendingQuestions);
             return; 
         } 
@@ -94,8 +94,9 @@ questionRouter.post('/:topicId', async (req: Request, res: Response) => {
 
     const question = { 
         qnsId: req.body.course + Math.floor((Math.random() * 1000)),
-        topic: new ObjectID(req.params.topicId).toString(), 
-        course: req.body.course,
+        topicId: new ObjectID(req.params.topicId).toString(), 
+        topicName: req.body.topicName,
+        courseId: req.body.course,
         qnsName: req.body.qnsName, 
         qnsStatus: 'pending',
         reviewStatus: 0,

@@ -193,8 +193,9 @@ async function initDB() {
 					title: "Questions Object Validation",
 					required: [
 						"qnsId",
-						"topic",
-						"course",
+						"topicId",
+						"topicName",
+						"courseId",
 						"qnsName",
 						"qnsStatus",
 						"reviewStatus",
@@ -206,6 +207,7 @@ async function initDB() {
 						"authId",
 						"authName",
 						"date",
+						"numDiscussions",
 						"snapshot",
 					],
 					additionalProperties: false,
@@ -219,12 +221,17 @@ async function initDB() {
 							description:
 								"'qnsId' must be a string, specifically a combination of courseId and a num, is unique, and is required",
 						},
-						topic: {
+						topicId: {
+							bsonType: "objectId",
+							description:
+								"'topicId' must be an objectId, reference an _id from the topics collection, and is required",
+						},
+						topicName: {
 							bsonType: "string",
 							description:
-								"'topic' must be a string, reference a topicId from the topics collection, and is required",
+								"'topicName' must be a string, reference a topicId from the topics collection, and is required",
 						},
-						course: {
+						courseId: {
 							bsonType: "string",
 							description:
 								"'course' must be a string, reference a courseId from the courses collection, and is required",
@@ -290,6 +297,11 @@ async function initDB() {
 							description:
 								"'date' must be a date, specifically the date it was created, and is required",
 						},
+						numDiscussions: {
+							bsonType: "int",
+							description:
+								"'numDiscussions' must be an int, and is required",
+						},
 						snapshot: {
 							bsonType: ["objectId", "null"],
 							description:
@@ -317,7 +329,7 @@ async function initDB() {
 					title: "Dicussions Object Validation",
 					required: [
 						"discussionId",
-						"question",
+						"questionId",
 						"op",
 						"authId",
 						"authName",
