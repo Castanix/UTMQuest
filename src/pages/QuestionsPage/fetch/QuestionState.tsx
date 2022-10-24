@@ -11,7 +11,7 @@ const QuestionState = (questions: QuestionsType[]) => {
         const map = new Set(value);
 
         if (map.size === 0) setData(originalData);
-        else setData(originalData.filter(item => map.has(item.topic.toLowerCase())));
+        else setData(originalData.filter(item => map.has(item.topicName.toLowerCase())));
     };
 
     return {
