@@ -291,7 +291,7 @@ async function initDB() {
 								"'date' must be a date, specifically the date it was created, and is required",
 						},
 						snapshot: {
-							bsonType: "objectId",
+							bsonType: ["objectId", "null"],
 							description:
 								"'snapshot' must be an objectId of an old copy of itself or null",
 						},
@@ -374,7 +374,7 @@ async function initDB() {
 							},
 						},
 						date: {
-							bsonType: "date",
+							bsonType: "string",
 							description:
 								"'date' must be a date, specifically the date it was created, and is required",
 						},
