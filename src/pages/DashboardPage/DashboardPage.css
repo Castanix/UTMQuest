@@ -5,9 +5,12 @@
 
 .card-content {
     width: 35vw;
-
     overflow-x: auto;
     overflow-y: hidden;
+}
+
+.saved-courses {
+    margin-right: 1rem;
 }
 
 .icon {
@@ -25,5 +28,10 @@
     
     .card-content {
         min-width: 100%;
+    }
+
+    .saved-courses {
+        margin-right: 0;
+        margin-bottom: 1rem;
     }
 }

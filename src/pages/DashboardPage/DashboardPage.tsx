@@ -36,23 +36,23 @@ const DashboardPage = () => {
   if (error !== '') return <ErrorMessage title={error} link='.' message='Refresh' />;
 
   return (
-      <Card title={<Header />} bordered={false}>
-        <main className="main-container">
-          <div className="dashboard-content">
-            <Card title="Saved Courses">
-              <div className="card-content">
-                <SavedCoursesList courseData={courseData} paginationConfig={paginationConfig} />
-              </div>
-            </Card>
+    <Card title={<Header />} bordered={false}>
+      <main className="main-container">
+        <div className="dashboard-content">
+          <Card title="Saved Courses" className="saved-courses">
+            <div className="card-content">
+              <SavedCoursesList courseData={courseData} paginationConfig={paginationConfig} />
+            </div>
+          </Card>
 
-            <Card title="Questions Pending Review">
-              <div className="card-content">
-                <ReviewQuestionsTable reviewQnsData={reviewQnsData} paginationConfig={paginationConfig} />
-              </div>
-            </Card>
-          </div>
-        </main>
-      </Card>
+          <Card title="Questions Pending Review">
+            <div className="card-content">
+              <ReviewQuestionsTable reviewQnsData={reviewQnsData} paginationConfig={paginationConfig} />
+            </div>
+          </Card>
+        </div>
+      </main>
+    </Card>
   );
 };
 
