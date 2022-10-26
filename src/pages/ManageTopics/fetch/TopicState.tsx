@@ -90,6 +90,8 @@ const TopicState = (topics: TopicsType[]) => {
                 }).catch((error) => {
                     message.error(error.message);
                 });
+            } else {
+                message.info('Topic name is the same');
             }
             setSearchTerm('');
             setEditingKey('');  
