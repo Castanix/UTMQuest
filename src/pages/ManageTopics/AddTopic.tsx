@@ -32,7 +32,12 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                     .validateFields()
                     .then(values => {
                         form.resetFields();
-                        onCreate(values.name);
+                        const name = values.name.trim();
+                        if (name) {
+                            onCreate(name);
+                        } else {
+                            message.error('Cannot add empty topic names');
+                        }
                     })
                     .catch(info => {
                         console.log('Validate Failed:', info);
