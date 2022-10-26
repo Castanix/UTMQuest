@@ -58,30 +58,41 @@ const TopicState = (topics: TopicsType[]) => {
     const save = async (key: React.Key) => {
         try {
             const row = (await form.validateFields()) as TopicsType;
+            const newTopicName = row.topicName.trim();
+
+            if(!newTopicName) {
+                message.error('Cannot save empty topic name');
+                return;
+            }
 
             const newData = [...originalData];
             const index = newData.findIndex(item => key === item._id);
             const item = newData[index];
+
             newData.splice(index, 1, {
                 ...item,
                 ...row,
             });
-            const request = {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ _id: key, newTopic: row.topicName })
-            };
+            
 
-            fetch(`${process.env.REACT_APP_API_URI}/topic/putTopic`, request).then((result) => {
-                if (!result.ok) throw new Error("Could not save topic. Ensure the new name hasn't already been added and try again.");
-                message.success("Topic successfully saved.");
-                setData(newData);
-                setOriginalData(newData);
-                setSearchTerm('');
-                setEditingKey('');
-            }).catch((error) => {
-                message.error(error.message);
-            });
+            if(item.topicName !== newTopicName) {
+                const request = {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ _id: key, newTopic: newTopicName })
+                };
+
+                fetch(`${process.env.REACT_APP_API_URI}/topic/putTopic`, request).then((result) => {
+                    if (!result.ok) throw new Error("Could not save topic. Ensure the new name hasn't already been added and try again.");
+                    message.success("Topic successfully saved.");
+                    setData(newData);
+                    setOriginalData(newData);
+                }).catch((error) => {
+                    message.error(error.message);
+                });
+            }
+            setSearchTerm('');
+            setEditingKey('');  
 
         } catch (errInfo) {
             message.error("Please enter a topic name.");

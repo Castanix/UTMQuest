@@ -93,9 +93,15 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
+	const newTopicName = req.body.newTopic.trim();
+	if (!newTopicName) {
+		res.status(400).send("Cannot update with given topic name");
+		return;
+	}
+
 	utmQuestCollections.Topics?.updateOne(
 		topic, 
-		{ $set: { topicName: req.body.newTopic.trim() } } 
+		{ $set: { topicName: newTopicName } } 
 	)
 		.then((result) => {
 			if (!result.acknowledged) {
@@ -129,8 +135,14 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
+	const newTopicName = req.body.newTopic.trim();
+	if (!newTopicName) {
+		res.status(400).send("Cannot add with given topic name");
+		return;
+	}
+
 	const newTopic = {
-		topicName: req.body.topicName.trim(),
+		topicName: newTopicName,
 		course: req.body.courseId,
 		numApproved: 0,
 		numPending: 0,
