@@ -1,0 +1,14 @@
+.add-mc {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.add-mc-textarea {
+    width: 31rem;
+}
+
+.add-mc-actions {
+    margin-bottom: 0.5rem;
+}
