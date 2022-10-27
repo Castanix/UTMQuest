@@ -90,7 +90,9 @@ tr th {
 .ant-pagination-item-link,
 .ant-input,
 input,
-.ant-select-selection-item {
+.ant-select-selection-item,
+.ant-checkbox-inner,
+.ant-checkbox-checked:after {
   border-radius: var(--radius) !important;
 }
 
