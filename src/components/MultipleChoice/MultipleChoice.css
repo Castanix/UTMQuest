@@ -1,0 +1,25 @@
+.mc {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: fit-content;
+}
+
+.ant-checkbox-wrapper {
+    margin: 0 !important;
+}
+
+.red {
+    background-color: #ec6054;
+    border-radius: 25px;
+    padding-inline: 0.5rem;
+    padding-bottom: 0.1rem;
+}
+
+.green {
+    background-color: #71c037;
+    border-radius: 25px;
+    padding-inline: 0.5rem;
+    padding-bottom: 0.1rem;
+}
+  
