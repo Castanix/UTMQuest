@@ -2,7 +2,16 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    width: fit-content;
+    white-space: pre-line;
+    margin-bottom: 1rem;
+}
+
+.mc-actions {
+    margin-bottom: 0.5rem;
+}
+
+.mc-actions-add {
+    margin-left: 1.6rem;
 }
 
 .ant-checkbox-wrapper {

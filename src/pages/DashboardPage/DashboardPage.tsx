@@ -9,7 +9,6 @@ import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import GetWidgets from './fetch/GetWidgets';
 import ReviewQuestionsTable from './ReviewQuestionTable';
 import SavedCoursesList from './SavedCoursesList';
-import MultipleChoice from '../../components/MultipleChoice/MultipleChoice';
 
 const { Title } = Typography;
 
@@ -51,9 +50,6 @@ const DashboardPage = () => {
               <ReviewQuestionsTable reviewQnsData={reviewQnsData} paginationConfig={paginationConfig} />
             </div>
           </Card>
-        </div>
-        <div>
-          <MultipleChoice options={["Option A", "Option B", "Option C", "Option D"]} answers={["Option A", "Option C"]} />
         </div>
       </main>
     </Card>
