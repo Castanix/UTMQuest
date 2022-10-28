@@ -51,31 +51,33 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		);
 		return;
 	}
-	utmQuestCollections.Topics?.deleteOne(topic).then((result) => {
-		if (!result.acknowledged) {
-			res.status(400).send(result);
-			return;
-		}
-		// DECREMENT TOPIC COUNTER IN COURSE
-		const course = {
-			courseId: topic.course,
-			numTopics: { $gt: 0 }
-		};
-		
-		utmQuestCollections.Courses?.findOneAndUpdate(course, 
-			{ $inc: { numTopics: -1 } }
-		)
-			.then((decrementResult) => {
-			if (!decrementResult) {
-			  res.status(500).send(`Unable to decrement numTopics for ${course.courseId}`);
-			  return;
+	utmQuestCollections.Topics?.deleteOne(topic)
+		.then((result) => {
+			if (!result.acknowledged) {
+				res.status(400).send(result);
+				return;
 			}
-			res.status(200).send("Topic successfully deleted.");
-		  });
+			// DECREMENT TOPIC COUNTER IN COURSE
+			const course = {
+				courseId: topic.course,
+				numTopics: { $gt: 0 },
+			};
 
-	}).catch((error) => {
-		res.status(500).send(error);
-	});
+			utmQuestCollections.Courses?.findOneAndUpdate(course, {
+				$inc: { numTopics: -1 },
+			}).then((decrementResult) => {
+				if (!decrementResult) {
+					res.status(500).send(
+						`Unable to decrement numTopics for ${course.courseId}`
+					);
+					return;
+				}
+				res.status(200).send("Topic successfully deleted.");
+			});
+		})
+		.catch((error) => {
+			res.status(500).send(error);
+		});
 });
 
 topicRouter.put("/putTopic", async (req: Request, res: Response) => {
@@ -99,10 +101,9 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
-	utmQuestCollections.Topics?.updateOne(
-		topic, 
-		{ $set: { topicName: newTopicName } } 
-	)
+	utmQuestCollections.Topics?.updateOne(topic, {
+		$set: { topicName: newTopicName },
+	})
 		.then((result) => {
 			if (!result.acknowledged) {
 				res.status(500).send(result);
@@ -135,7 +136,7 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
-	const newTopicName = req.body.newTopic.trim();
+	const newTopicName = req.body.topicName.trim();
 	if (!newTopicName) {
 		res.status(400).send("Cannot add with given topic name");
 		return;
@@ -154,18 +155,18 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 				res.status(500).send("Unable to add new topic.");
 				return;
 			}
-			// INCREMENT COUNTER 
-			utmQuestCollections.Courses?.updateOne(course, 
-				{ 
-				  $inc: { numTopics: 1 } 
-				}
-			  ).then((incrementResult) => {
+			// INCREMENT COUNTER
+			utmQuestCollections.Courses?.updateOne(course, {
+				$inc: { numTopics: 1 },
+			}).then((incrementResult) => {
 				if (!incrementResult) {
-				  res.status(500).send(`Unable to increment numTopics for ${course.courseId}`); 
-				  return;
+					res.status(500).send(
+						`Unable to increment numTopics for ${course.courseId}`
+					);
+					return;
 				}
 				res.status(201).send(result);
-			  });
+			});
 		})
 		.catch((error) => {
 			res.status(500).send(error);
