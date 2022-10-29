@@ -4,7 +4,7 @@ import { Form, Input, Popconfirm, Table, Typography, Space, Tooltip } from 'antd
 import React from 'react';
 import TopicsType from '../../../backend/types/Topics';
 import AddTopic from './AddTopic';
-import TopicState from './fetch/TopicState';
+import TopicState from './TopicState';
 
 import "./TopicsTable.css";
 
