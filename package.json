@@ -31,7 +31,8 @@
     "initDB": "cd backend && npm run initDB",
     "lint": "eslint . --ext .tsx,.ts .",
     "lintFix": "eslint . --ext .tsx,.ts . --fix",
-    "test:e2e": "npx cypress run --e2e"
+    "test:e2e": "npx cypress run --e2e",
+    "test:coverage": "react-scripts test \"--watchAll\" \"--coverage\""
   },
   "eslintConfig": {
     "extends": [
@@ -56,5 +57,14 @@
     "concurrently": "^7.4.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/fetch/*",
+      "!src/**/types/*",
+      "!src/index.tsx",
+      "!src/reportWebVitals.ts"
+    ]
   }
 }

@@ -1,6 +1,6 @@
 import { Form, message } from 'antd';
 import React, { useState } from 'react';
-import TopicsType from '../../../../backend/types/Topics';
+import TopicsType from '../../../backend/types/Topics';
 
 
 const TopicState = (topics: TopicsType[]) => {
@@ -60,7 +60,7 @@ const TopicState = (topics: TopicsType[]) => {
             const row = (await form.validateFields()) as TopicsType;
             const newTopicName = row.topicName.trim();
 
-            if(!newTopicName) {
+            if (!newTopicName) {
                 message.error('Cannot save empty topic name');
                 return;
             }
@@ -73,9 +73,9 @@ const TopicState = (topics: TopicsType[]) => {
                 ...item,
                 ...row,
             });
-            
 
-            if(item.topicName !== newTopicName) {
+
+            if (item.topicName !== newTopicName) {
                 const request = {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -94,7 +94,7 @@ const TopicState = (topics: TopicsType[]) => {
                 message.info('Topic name is the same');
             }
             setSearchTerm('');
-            setEditingKey('');  
+            setEditingKey('');
 
         } catch (errInfo) {
             message.error("Please enter a topic name.");
