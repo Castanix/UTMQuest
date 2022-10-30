@@ -58,7 +58,7 @@ const QuestionsList = ({ questions, topics, approved }:
 
                     return (
                         <List.Item
-                            key={item.qnsId}
+                            key={item._id}
                             actions={[
                                 ... approved ? 
                                     [<IconText icon={LikeOutlined} text="156" key="list-vertical-message" />,
@@ -79,7 +79,7 @@ const QuestionsList = ({ questions, topics, approved }:
                                     <PageHeader
                                         className="question-list-page-header"
                                         title={
-                                            <Link className="question-list-title" to={`/courses/${item.course}/question/${item.qnsId}`}>
+                                            <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item._id}`}>
                                                 {item.qnsName}
                                             </Link>}
                                     >

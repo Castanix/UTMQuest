@@ -23,7 +23,7 @@ const server = setupServer(
             ctx.json({ authorized: true, insertedId: 'abcd' })
         )
     }),
-)
+);
 
 const topics: TopicsType[] = [
     {
