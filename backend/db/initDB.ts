@@ -184,7 +184,7 @@ async function initDB() {
 			console.log("Error creating index for Topics");
 		});
 
-	// Creates the Topics collection in Mongo Atlas with validation
+	// Creates the Questions collection in Mongo Atlas with validation
 	await db
 		.createCollection("Questions", {
 			validator: {
@@ -192,7 +192,6 @@ async function initDB() {
 					bsonType: "object",
 					title: "Questions Object Validation",
 					required: [
-						"qnsId",
 						"topicId",
 						"topicName",
 						"courseId",
@@ -215,11 +214,6 @@ async function initDB() {
 						_id: {
 							bsonType: "objectId",
 							description: "auto-generated objectId",
-						},
-						qnsId: {
-							bsonType: "string",
-							description:
-								"'qnsId' must be a string, specifically a combination of courseId and a num, is unique, and is required",
 						},
 						topicId: {
 							bsonType: "objectId",
@@ -252,9 +246,9 @@ async function initDB() {
 								"'reviewStatus' must be an int if qnsStatus is pending or else null, and is required",
 						},
 						qnsType: {
-							enum: ["mc", "matching", "short"],
+							enum: ["mc", "short"],
 							description:
-								"'qnsType' must be specifically 'mc' 'matching' or 'short', and is required",
+								"'qnsType' must be specifically 'mc' or 'short', and is required",
 						},
 						desc: {
 							bsonType: "string",

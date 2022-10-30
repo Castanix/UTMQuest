@@ -79,27 +79,20 @@ questionRouter.put('/reviewStatus/:questionId', async (req: Request, res: Respon
     }
 });
 
-questionRouter.post('/:topicId', async (req: Request, res: Response) => {
+questionRouter.post('/addQuestion', async (req: Request, res: Response) => {
     // post a new question
-    const topic = await utmQuestCollections.Topics?.findOne({_id: new ObjectID(req.params.topicId)});
-    if (!topic){
-        res.status(404).send({ error: 'topic does not exist' });
-        return;
-    }
-
     const today = new Date();
     const dd = String(today.getDate()).padStart(2, '0');
     const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
     const yyyy = today.getFullYear();
 
-    const question = { 
-        qnsId: req.body.course + Math.floor((Math.random() * 1000)),
-        topicId: new ObjectID(req.params.topicId).toString(), 
+    const question = {
+        topicId: new ObjectID(req.body.topicId), 
         topicName: req.body.topicName,
-        courseId: req.body.course,
+        courseId: req.body.courseId,
         qnsName: req.body.qnsName, 
-        qnsStatus: 'pending',
-        reviewStatus: 0,
+        qnsStatus: req.body.qnsStatus,
+        reviewStatus: req.body.reviewStatus,
         qnsType: req.body.qnsType, 
         desc: req.body.desc,
         xplan: req.body.xplan,
@@ -108,14 +101,16 @@ questionRouter.post('/:topicId', async (req: Request, res: Response) => {
         authId: req.body.authId,
         authName: req.body.authName,
         date: `${mm}/${dd}/${yyyy}`,
+        numDiscussions: req.body.numDiscussions,
         snapshot: null,
     };
+
     
     utmQuestCollections.Questions?.insertOne(question).then((result) => {
         if (!result) {
             res.status(400).send('Unable to post the course');
         }
-        res.status(201).send(`course ${question.qnsId} has been added succesfully`);
+        res.status(201).send(result);
     }).catch((error) => {
         res.status(500).send(`ERROR: ${error}`);
     });
