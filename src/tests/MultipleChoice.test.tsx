@@ -15,7 +15,7 @@ Object.defineProperty(window, 'matchMedia', {
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<MultipleChoice options={["Option A", "Option B", "Option C", "Option D"]} answers={["Option A", "Option C"]} />);
+    const { container } = render(<MultipleChoice options={["Option A", "Option B", "Option C", "Option D"]} answers={["Option A", "Option C"]} explanation="" />);
     document = container;
 });
 
@@ -61,4 +61,10 @@ test('test resetting all options', () => {
     fireEvent.click(screen.getByText(/Reset/i))
     expect(document.getElementsByClassName('green').length).toBe(0);
     expect(document.getElementsByClassName('red').length).toBe(0);
+})
+
+test('test explanation section', () => { 
+    // select the explanation button 
+    fireEvent.click(screen.getByText(/Explanation/i));
+    expect(document.getElementsByClassName('explanation-container').length).toBe(2);
 })
