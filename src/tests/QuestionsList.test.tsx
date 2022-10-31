@@ -2,7 +2,7 @@ import React from 'react';
 import TopicsType from '../../backend/types/Topics';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import QuestionsList from '../pages/QuestionsPage/QuestionsList';
-import QuestionsType, { qnsStatusType, qnsTypeEnum } from '../../backend/types/Questions';
+import { qnsStatusType, qnsTypeEnum, QuestionsType } from '../../backend/types/Questions';
 import { BrowserRouter } from 'react-router-dom';
 
 Object.defineProperty(window, 'matchMedia', {

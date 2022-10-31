@@ -23,7 +23,20 @@ const server = setupServer(
             ctx.json({ authorized: true, insertedId: 'abcd' })
         )
     }),
-);
+
+    rest.put(`${process.env.REACT_APP_API_URI}/topic/putTopic`, (req, res, ctx) => {
+        return res(
+            ctx.status(200),
+            ctx.json({})
+        )
+    }),
+    rest.delete(`${process.env.REACT_APP_API_URI}/topic/deleteTopic`, (req, res, ctx) => {
+        return res(
+            ctx.status(200),
+            ctx.json({})
+        )
+    }),
+)
 
 const topics: TopicsType[] = [
     {
@@ -84,7 +97,7 @@ test('test searching for topic', () => {
     expect(document.getElementsByTagName('tbody')[0].children.length).toBe(1)
 })
 
-test('test adding a course', async () => {
+test('test adding a topic', async () => {
 
     // table contains two rows
     expect(document.getElementsByTagName('tbody')[0].children.length).toBe(2)
@@ -100,4 +113,33 @@ test('test adding a course', async () => {
 
     // table should now have 3 rows
     await waitFor(() => expect(document.getElementsByTagName('tbody')[0].children.length).toBe(3));
+})
+
+test('test editing an existing topic name', async () => {
+
+    // original topic name
+    expect(screen.getByText(/Strings/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByText(/Rename/i)[0]);
+
+    const inputNode = screen.getByDisplayValue(/Strings/i);
+
+    fireEvent.change(inputNode, { target: { value: 'Edited topic' } });
+
+    fireEvent.click(screen.getByText(/Save/i));
+
+    await waitFor(() => expect(screen.getByText(/Edited topic/i)).toBeInTheDocument());
+})
+
+test('test deleting an existing topic', async () => {
+
+    // table contains two rows
+    expect(document.getElementsByTagName('tbody')[0].children.length).toBe(2);
+
+    // confirm delete popup
+    fireEvent.click(screen.getAllByText(/Delete/i)[0]);
+    fireEvent.click(screen.getByText(/OK/i));
+
+    // table contains one row
+    await waitFor(() => expect(document.getElementsByTagName('tbody')[0].children.length).toBe(1));
 })

@@ -68,7 +68,7 @@ const AddMultipleChoice = (
                             key={`input_${item._id}`}
                             maxLength={1000}
                             onChange={e => updateOptionValue(index, e.target.value)}
-                            placeholder="Option goes here"
+                            placeholder={`Option ${String.fromCharCode(65 + index)}`}
                             autoSize
                         />
                     </Checkbox>

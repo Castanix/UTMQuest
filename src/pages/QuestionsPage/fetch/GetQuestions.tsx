@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import QuestionsType from "../../../../backend/types/Questions";
+import { QuestionsType } from "../../../../backend/types/Questions";
 
 // const mockedTopics = ["Strings", "Arrays", "Topic 3", "Topic 4"];
 

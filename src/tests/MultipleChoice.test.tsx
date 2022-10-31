@@ -15,7 +15,7 @@ Object.defineProperty(window, 'matchMedia', {
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<MultipleChoice options={["Option A", "Option B", "Option C", "Option D"]} answers={["Option A", "Option C"]} />);
+    const { container } = render(<MultipleChoice options={["Option A", "Option B", "Option C", "Option D"]} answers={["Option A", "Option C"]} explanation="" />);
     document = container;
 });
 

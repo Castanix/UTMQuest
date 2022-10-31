@@ -31,4 +31,12 @@
     padding-inline: 0.5rem;
     padding-bottom: 0.1rem;
 }
-  
+
+.explanation-container { 
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.explanation-title { 
+    color: #808080;
+}
