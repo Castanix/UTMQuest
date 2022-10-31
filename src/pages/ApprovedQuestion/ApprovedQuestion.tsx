@@ -94,18 +94,21 @@ const ApprovedQuestion = ({ approved }: { approved: boolean }) => {
     };
 
     return ( 
-        <Card
-            style={{width: '100%'}}
-            title={<Header courseCode={courseCode ?? ''} courseTitle={`${courseCode} `} approved={approved} 
-                questionName={questions[0].qnsName} topicName={questions[0].topicName} />}
-            tabList={tabList}
-            activeTabKey={activeTabKey}
-            onTabChange={key => {
-                onTabChange(key);
-            }}    
-        >
-                {contentList[activeTabKey]}
-        </Card>
+            <Card
+                style={{width: '100%'}}
+                title={<Header courseCode={courseCode ?? ''} courseTitle={`${courseCode} `} approved={approved} 
+                    questionName={questions[0].qnsName} topicName={questions[0].topicName} />}
+                tabList={tabList}
+                activeTabKey={activeTabKey}
+                onTabChange={key => {
+                    onTabChange(key);
+                }}    
+                bordered={false}
+            >   
+                <main className="main-container">
+                    {contentList[activeTabKey]}
+                </main>
+            </Card>
     );
 };
 
