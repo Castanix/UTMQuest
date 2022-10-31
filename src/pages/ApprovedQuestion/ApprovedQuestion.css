@@ -1,0 +1,27 @@
+.title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.icon-buttons {
+    display: flex;
+    text-align: center;
+}
+
+.flex-child { 
+    flex: 1
+}
+
+.flex-child:first-child { 
+    margin-right: 10px;
+}
+
+.icon-text { 
+    font-size: small;
+    text-align: center;
+    color: #1890ff;
+}
+
+.report-text {
+    color: red;
+}

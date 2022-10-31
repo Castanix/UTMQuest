@@ -22,7 +22,6 @@ const Header = () => (
 const CourseBoard = () => {
     const { courses, loading, error } = GetAllCourses();
 
-
     if (loading) return <Loading />;
 
     if (error !== '') return <ErrorMessage title={error} link='.' message='Refresh' />;

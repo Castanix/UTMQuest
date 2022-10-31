@@ -1,5 +1,5 @@
 import { useState } from "react";
-import QuestionsType from "../../../../backend/types/Questions";
+import { QuestionsType } from "../../../../backend/types/Questions";
 
 const QuestionState = (questions: QuestionsType[]) => {
     const [originalData] = useState<QuestionsType[]>(questions);

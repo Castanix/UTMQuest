@@ -2,7 +2,7 @@ import React from 'react';
 import TopicsType from '../../backend/types/Topics';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import QuestionsList from '../pages/QuestionsPage/QuestionsList';
-import QuestionsType, { qnsStatusType, qnsTypeEnum } from '../../backend/types/Questions';
+import { qnsStatusType, qnsTypeEnum, QuestionsType } from '../../backend/types/Questions';
 import { BrowserRouter } from 'react-router-dom';
 
 Object.defineProperty(window, 'matchMedia', {
@@ -38,7 +38,7 @@ const questions: QuestionsType[] = [
         qnsId: 'test1',
         topicId: '12345',
         topicName: 'Strings',
-        course: 'test',
+        courseId: 'test',
         qnsName: 'Hello World Strings',
         qnsStatus: qnsStatusType.approved,
         reviewStatus: 0,
@@ -58,7 +58,7 @@ const questions: QuestionsType[] = [
         qnsId: 'test2',
         topicId: '123456',
         topicName: 'Arrays',
-        course: 'test',
+        courseId: 'test',
         qnsName: 'Arrays question',
         qnsStatus: qnsStatusType.approved,
         reviewStatus: 0,

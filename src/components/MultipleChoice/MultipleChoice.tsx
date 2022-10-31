@@ -1,17 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Checkbox, Divider, Space } from "antd";
-
 import "./MultipleChoice.css";
 import MultipleChoiceState from "./MultipleChoiceState";
 
-const MultipleChoice = ({ options, answers }: { options: string[], answers: string[] }) => {
+const MultipleChoice = ({ options, answers, explanation }: { options: string[], answers: string[], explanation: string }) => {
+
+    const [revealExplanation, setRevealExplanation] = useState<boolean>(false); 
+    const [isActive, setIsActive] = useState(false);
+    
+    const showExplanation = () => { 
+        setRevealExplanation(!revealExplanation); 
+        setIsActive(!isActive); 
+    };
+
 
     const {
         showingAnswer,
         optionState,
         onChange,
         showAnswers,
-        resetAnswers
+        resetAnswers,
     } = MultipleChoiceState(options, answers);
 
     return (
@@ -39,8 +47,21 @@ const MultipleChoice = ({ options, answers }: { options: string[], answers: stri
                 <Space split={<Divider type="vertical" />}>
                     <Button shape="round" onClick={showAnswers}>Check Answers</Button>
                     <Button shape="round" onClick={resetAnswers}>Reset</Button>
+                    <Button style={{
+                        backgroundColor: isActive ? '#1890ff' : '',
+                        color: isActive ? 'white' : ''
+                    }} shape="round" onClick={showExplanation}>Explanation</Button>
                 </Space>
             </div>
+
+            {revealExplanation && <div className="explanation-container">
+                <h3 className="explanation-title">
+                    Explanation
+                </h3>
+                <p> 
+                    {explanation}
+                </p>
+            </div> }
         </div>
     );
 };
