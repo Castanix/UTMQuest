@@ -2,7 +2,7 @@ import { DislikeOutlined, LikeOutlined, CheckOutlined, MessageOutlined, SearchOu
 import { Divider, Input, List, PageHeader, Select, Space } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import QuestionsType from '../../../backend/types/Questions';
+import { QuestionsType } from '../../../backend/types/Questions';
 import TopicsType from '../../../backend/types/Topics';
 import QuestionState from './fetch/QuestionState';
 
@@ -79,7 +79,7 @@ const QuestionsList = ({ questions, topics, approved }:
                                     <PageHeader
                                         className="question-list-page-header"
                                         title={
-                                            <Link className="question-list-title" to={`/courses/${item.course}/question/${item.qnsId}`}>
+                                            <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.qnsId}`}>
                                                 {item.qnsName}
                                             </Link>}
                                     >
