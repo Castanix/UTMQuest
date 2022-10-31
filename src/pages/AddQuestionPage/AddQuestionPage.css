@@ -26,8 +26,33 @@
     margin-bottom: 0.5rem;
 }
 
+@media screen and (max-width: 1200px) {
+    .add-mc-actions .ant-divider-inner-text {
+        text-align: center !important;
+        margin: auto !important;
+
+        white-space: pre-line;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .add-mc-actions .ant-divider-inner-text {
+        white-space: nowrap;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .add-mc-actions .ant-divider-inner-text {
+        white-space: pre-line;
+    }
+}
+
 .ant-checkbox-wrapper {
     margin: 0 !important;
+}
+
+.add-mc .add-mc-textarea {
+    width: max(20rem, 30vw) !important;
 }
 
 .items-container {
