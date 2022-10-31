@@ -13,11 +13,13 @@ Object.defineProperty(window, 'matchMedia', {
 })
 
 const option1: AddOptionType = {
+    _id: 1,
     value: "",
     isCorrect: false
 };
 
 const option2: AddOptionType = {
+    _id: 2,
     value: "",
     isCorrect: false
 };

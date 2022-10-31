@@ -20,6 +20,7 @@ const CourseBoardTable = (props: any) => {
         }
     });
 
+    const [allData, setAllData] = useState<CoursesType[]>(added);
     const [searchValue, setSearchValue] = useState<string>("");
     const [displayData, setDisplayData] = useState<CoursesType[]>(added);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -45,17 +46,17 @@ const CourseBoardTable = (props: any) => {
 
     const handleSearch = (value: string) => {
         setSearchValue(value);
-        setDisplayData(value ? added.filter(item =>
+        setDisplayData(value ? allData.filter(item =>
             item.courseId.toLowerCase().includes(value.toLowerCase()) ||
             item.courseName.toLowerCase().includes(value.toLowerCase())
-        ) : added);
+        ) : allData);
     };
 
     // Locally renders new course on the courseboard. Renders by fetching from db happens on initial page load.
     const rerender = (code: string, name: string) => {
         setSearchValue("");
 
-        const courses = [...added, {
+        const courses = [...allData, {
             _id: "temp",
             courseId: code,
             courseName: name,
@@ -63,6 +64,7 @@ const CourseBoardTable = (props: any) => {
             added: true
         }];
 
+        setAllData(courses);
         setDisplayData(courses);
     };
 
