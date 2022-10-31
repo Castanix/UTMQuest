@@ -1,0 +1,138 @@
+.subtitle {
+    display: inline-block;
+    color: gray;
+}
+
+.ant-alert-content {
+    max-width: fit-content;
+}
+
+.add-mc {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.add-mc-textarea {
+    width: 31rem;
+}
+
+.mc-actions-add {
+    margin-left: 1.6rem;
+}
+
+.add-mc-actions {
+    margin-bottom: 0.5rem;
+}
+
+@media screen and (max-width: 1200px) {
+    .add-mc-actions .ant-divider-inner-text {
+        text-align: center !important;
+        margin: auto !important;
+
+        white-space: pre-line;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .add-mc-actions .ant-divider-inner-text {
+        white-space: nowrap;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .add-mc-actions .ant-divider-inner-text {
+        white-space: pre-line;
+    }
+}
+
+.ant-checkbox-wrapper {
+    margin: 0 !important;
+}
+
+.add-mc .add-mc-textarea {
+    width: max(20rem, 30vw) !important;
+}
+
+.items-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.answer-form {
+    display: inline-flex;
+    flex-wrap: wrap;
+    width: max(20rem, 50%);
+}
+
+.detail-form {
+    display: inline-flex;
+    flex-direction: column;
+    width: max(20rem, 45%);
+}
+
+.question-form .ant-form-item {
+    margin-top: 2rem;
+    margin-right: 2vw;
+}
+
+.question-form .ant-row {
+    flex-direction: column;
+}
+
+.textarea, 
+.textarea * {
+    width: 100%;
+}
+
+.answer-space {
+    position: relative;
+    width: max(24rem, 90%);
+    height: 40vh;
+    border: 1px solid black;
+    background-color: gray;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px black solid;
+}
+
+.sol-container {
+    width: 100%;
+}
+
+
+/* MDEditor CSS */
+.w-md-editor-content,
+.w-md-editor-content * {
+    scrollbar-width: thin;
+    scrollbar-color: gray;
+}
+
+.w-md-editor-toolbar svg {
+    width: 1.25rem;
+    height: auto;
+}
+
+.w-md-editor-toolbar path {
+    color: rgb(100, 100, 100);
+}
+
+.w-md-editor {
+    border-radius: 25px !important; 
+}
+
+.w-md-editor-toolbar {
+    background-color: transparent !important;
+}
+
+.w-md-editor-bar {
+    right: -3px !important;
+    bottom: -3px !important;
+}

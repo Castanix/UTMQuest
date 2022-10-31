@@ -23,6 +23,7 @@ const server = setupServer(
             ctx.json({ authorized: true, insertedId: 'abcd' })
         )
     }),
+
     rest.put(`${process.env.REACT_APP_API_URI}/topic/putTopic`, (req, res, ctx) => {
         return res(
             ctx.status(200),

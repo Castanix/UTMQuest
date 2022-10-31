@@ -62,7 +62,7 @@ const CoursePage = () => {
       <main className="main-container">
         <div className="cards">
           <Link to={`/courses/${courseCode}/browse`}><GetCard cardIcon={ContainerTwoTone} title="Browse Questions" /></Link>
-          <GetCard cardIcon={PlusCircleTwoTone} title="Add a Question" />
+          <Link to={`/courses/${courseCode}/addQuestion`}><GetCard cardIcon={PlusCircleTwoTone} title="Add a Question" /></Link>
           <Link to={`/courses/${courseCode}/review`}><GetCard cardIcon={DiffTwoTone} title="Review Questions" /></Link>
         </div>
       </main>
