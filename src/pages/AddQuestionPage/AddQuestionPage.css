@@ -99,23 +99,6 @@
     color: rgb(100, 100, 100);
 }
 
-/* .wmde-markdown-var .w-md-editor .w-md-editor-show-live {
-    border-radius: 25px;
-}
-
-.ant-col .ant-form-item-control,
-.ant-col .ant-form-item-control * {
-    border-radius: 25px !important;
-}
-
-.wmde-markdown-var .w-md-editor .w-md-editor-show-live {
-    border-radius: 25px !important; 
-}
-
-.ant-form-item-control-input-content {
-    border-radius: 25px !important
-} */
-
 .w-md-editor {
     border-radius: 25px !important; 
 }

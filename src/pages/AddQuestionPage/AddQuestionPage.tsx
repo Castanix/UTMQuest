@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Breadcrumb, Card, Steps, Typography } from 'antd';
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -28,7 +27,7 @@ const Header = ({ courseCode }:
     </div>
 );
 
-const AddQuestion = () => {
+const AddQuestionPage = () => {
     const [currStep, setCurrStep] = useState<number>(0);
     const [topicSelected, setTopicSelected] = useState<[string, string]>(["", ""]);
     
@@ -46,7 +45,7 @@ const AddQuestion = () => {
             <main className='main-container'>
                 <Steps current={currStep}>
                     <Step title={currStep ? "Done" : "Select a Topic"} />
-                    <Step title={"Add Question"} />
+                    <Step title="Add Question" />
                 </Steps>
                 <br/>
                 <div style={(currStep) ? { display: "none" } : { display: "block" }}>
@@ -63,6 +62,6 @@ const AddQuestion = () => {
             </main>
         </Card>
     );
-}
+};
 
-export default AddQuestion
+export default AddQuestionPage;

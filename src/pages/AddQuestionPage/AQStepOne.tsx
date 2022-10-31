@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { Alert, Button, Form, message, Select } from "antd";
 import { Option } from "antd/lib/mentions";
 import React, { useState } from "react";
@@ -53,8 +51,8 @@ const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
                         </Select>   
                     </Form.Item>
                     <Button 
-                        type={"primary"}
-                        disabled={selected ? false : true}
+                        type="primary"
+                        disabled={!selected}
                         onClick={() => {
                             if(selected) {
                                 const name = topics.find(item => item._id === selected)?.topicName;

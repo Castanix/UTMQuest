@@ -1,25 +1,14 @@
-/* eslint-disable */
-
-// import MDEditor from '@uiw/react-md-editor';
-import { Button, Checkbox, Form, Input, message, Select } from 'antd';
+import { Button, Checkbox, Form, Input, Select } from 'antd';
 import { Option } from 'antd/lib/mentions';
 import React, { useState } from 'react';
+import MDEditor from '@uiw/react-md-editor';
+import rehypeSanitize from 'rehype-sanitize';
 import QuestionsType from '../../../backend/types/Questions';
 import qnsTypeEnum from './types/QnsTypeEnum';
 import qnsStatusType from './types/QnsStatusType';
 import AddQuestion from './fetch/AddQuestion';
-import AddMultipleChoice from '../../components/MultipleChoice/AddMultipleChoice/AddMultipleChoice';
-import { AddOptionType } from '../../components/MultipleChoice/AddMultipleChoice/AddMultipleChoice';
-import MDEditor from '@uiw/react-md-editor';
-import rehypeSanitize from 'rehype-sanitize';
+import AddMultipleChoice, { AddOptionType } from '../../components/MultipleChoice/AddMultipleChoice/AddMultipleChoice';
 
-
-/* installs:
-npm i --save-dev @types/markdown-it --legacy-peer-deps
-npm install markdown-it --save --legacy-peer-deps
-npm install react-markdown-editor-lite --save --legacy-peer-deps
-npm i react-markdown --legacy-peer-deps
-*/
 
 const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }: 
     { courseCode: string, topicSelected: [string, string], setCurrStep: Function }) => {
@@ -32,23 +21,21 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
     const [solValue, setSolValue] = useState<string>();
 
     const setAnswerType = () => {
-        let el = <></>
+        let el;
 
         if (type === qnsTypeEnum.mc) {
-            el = <AddMultipleChoice options={mcOption} setOptions={setMcOption} />
+            el = <AddMultipleChoice options={mcOption} setOptions={setMcOption} />;
         } else if (type === qnsTypeEnum.short) {
             el = <div><MDEditor
                     height={300} 
-                    value={solValue} 
+                    value={solValue}
+                    textareaProps={{placeholder: "Add Solution"}}
                     onChange={setSolValue}
                     highlightEnable={false}
                     previewOptions={{
                         rehypePlugins: [[rehypeSanitize]]
                     }}
-                /></div>
-            // el = <ReactQuill theme="snow" value={solValue} onChange={setSolValue} />
-            // el = <SimpleMdeReact options={customRendererOptions} value={solValue} onChange={onChange} />
-            // el = <MdEditor style={{ height: '500px' }} renderHTML={text => render(text)} />
+                /></div>;
         }
 
         return <Form.Item 
@@ -58,7 +45,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                     label="Solution"
                     required
                 >{el}</Form.Item>;
-    }
+    };
 
     const verifySol = () => {
         if (type === qnsTypeEnum.mc) {
@@ -70,7 +57,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                     ret = false;
                     return;
                 }
-                if(item.isCorrect) numCorrect = numCorrect + 1;
+                if(item.isCorrect) numCorrect += 1;
             });
             
             if (!ret) return false;
@@ -78,12 +65,12 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
             if(numCorrect < 1) return false;
 
             return true;
-        } else if (type === qnsTypeEnum.short) {
-            return solValue?.trim() ? true : false
+        } if (type === qnsTypeEnum.short) {
+            return !!solValue?.trim();
         }
 
         return false;
-    }
+    };
     
 
     return (
@@ -108,7 +95,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                         <Form.Item name='type' label="Answer Type" required>
                             <Select
                                 placeholder="Select Type"
-                                onChange={(value: qnsTypeEnum) => {setType((value === "mc") ? qnsTypeEnum.mc : qnsTypeEnum.short)}}
+                                onChange={(value: qnsTypeEnum) => {setType((value === "mc") ? qnsTypeEnum.mc : qnsTypeEnum.short);}}
                                 style={{width: 'max(10rem, 10vw)'}}
                             >
                                 <Option key='mc' value='mc'>Multiple Choice</Option>
@@ -121,7 +108,8 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                         <Form.Item label="Problem Description" required>
                             <MDEditor 
                                 height={300} 
-                                value={problemValue} 
+                                value={problemValue}
+                                textareaProps={{placeholder: "Add Problem"}}
                                 onChange={setProblemValue}
                                 highlightEnable={false}
                                 previewOptions={{
@@ -130,9 +118,10 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                             />
                         </Form.Item>
                         <Form.Item label="Explanation (Optional)">
-                            <MDEditor 
+                            <MDEditor
                                 height={300} 
                                 value={explanationValue} 
+                                textareaProps={{placeholder: "Add Explanation"}}
                                 onChange={setExplanationValue}
                                 highlightEnable={false}
                                 previewOptions={{
@@ -149,8 +138,8 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                 <div>
                     <Checkbox>Post Anonymously<br/>(to other users only)</Checkbox>
                     <Button 
-                        type={"primary"}
-                        disabled={(type && title.trim() && problemValue?.trim() && verifySol()) ? false : true}
+                        type="primary"
+                        disabled={!((type && title.trim() && problemValue?.trim() && verifySol()))}
                         onClick={() => {
                             const questionObj: QuestionsType = {
                                 _id: '',
@@ -170,7 +159,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                                 date: '',
                                 numDiscussions: 0,
                                 snapshot: null,
-                            }
+                            };
                             AddQuestion(questionObj);
                         }}
                     >Submit</Button>

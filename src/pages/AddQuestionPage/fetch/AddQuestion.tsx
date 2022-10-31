@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { message } from "antd";
 import QuestionsType from "../../../../backend/types/Questions";
 
