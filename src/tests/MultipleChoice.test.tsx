@@ -62,9 +62,3 @@ test('test resetting all options', () => {
     expect(document.getElementsByClassName('green').length).toBe(0);
     expect(document.getElementsByClassName('red').length).toBe(0);
 })
-
-test('test explanation section', () => { 
-    // select the explanation button 
-    fireEvent.click(screen.getByText(/Explanation/i));
-    expect(document.getElementsByClassName('explanation-container').length).toBe(2);
-})
