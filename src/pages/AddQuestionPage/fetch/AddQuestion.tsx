@@ -1,27 +1,29 @@
 import { message } from "antd";
-import QuestionsType from "../../../../backend/types/Questions";
+import { QuestionsType } from "../../../../backend/types/Questions";
 
-const AddQuestion = async (questionObj: QuestionsType) => {
-
-    await fetch(`${process.env.REACT_APP_API_URI}/question/addQuestion`,
-    {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(questionObj)
-    }).then((res: Response) => {
-        if (!res.ok) {
-            message.error("Could not add course. Please try again.");
-            return;
-        }
-        message.success("Course successfully added.");
-    }).catch(() => {
-        message.error("Could not add course. Please try again.");
-    });
+const AddQuestion = async (questionObj: QuestionsType, setRedirect: Function) => {
+    
+    fetch(`${process.env.REACT_APP_API_URI}/question/addQuestion`,
+        {
+            method: 'POST',
+            redirect: "follow",
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(questionObj)
+        }).then((res: Response) => {
+            if (!res.ok) throw new Error("Could not add course. Please try again.");
+            return res.json();
+        }).then((result) => {
+            message.success("Course successfully added.");
+            const id = result.insertedId;
+            setRedirect(id);
+        })
+        .catch((error) => {
+            message.error(error);
+        });
 };
-
 export default AddQuestion;

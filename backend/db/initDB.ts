@@ -207,6 +207,7 @@ async function initDB() {
 						"authName",
 						"date",
 						"numDiscussions",
+						"anon",
 						"snapshot",
 					],
 					additionalProperties: false,
@@ -263,7 +264,7 @@ async function initDB() {
 						choices: {
 							bsonType: "array",
 							description:
-								"'choices' must be an array of strings or empty, and is required",
+								"'choices' must be an array of strings, and is required",
 							uniqueItems: true,
 							items: {
 								bsonType: "string",
@@ -272,9 +273,15 @@ async function initDB() {
 							},
 						},
 						ans: {
-							bsonType: "string",
+							bsonType: ["array", "string"],
 							description:
-								"'ans' must be a string, and is required",
+								"'ans' must be an array of strings or a string, and is required",
+							uniqueItems: true,
+							items: {
+								bsonType: "string",
+								description:
+									"items in array must be a string or empty",
+							},
 						},
 						authId: {
 							bsonType: "string",
@@ -295,6 +302,11 @@ async function initDB() {
 							bsonType: "int",
 							description:
 								"'numDiscussions' must be an int, and is required",
+						},
+						anon: {
+							bsonType: "bool",
+							description:
+								"'anon' must be a bool, and is required"
 						},
 						snapshot: {
 							bsonType: ["objectId", "null"],

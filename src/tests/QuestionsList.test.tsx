@@ -50,6 +50,7 @@ const questions: QuestionsType[] = [
         authName: 'Bob Bob',
         date: 'Mon Oct 24 2022',
         numDiscussions: 1,
+        anon: false,
         snapshot: null,
     },
     {
@@ -69,6 +70,7 @@ const questions: QuestionsType[] = [
         authName: 'Bob Bob',
         date: 'Mon Oct 24 2022',
         numDiscussions: 0,
+        anon: false,
         snapshot: null,
     },
 ]

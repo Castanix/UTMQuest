@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { Button, Input } from 'antd';
-import './ShortAnswer.css'; 
+import Title from 'antd/lib/typography/Title';
+import Paragraph from 'antd/lib/typography/Paragraph';
+import './ShortAnswer.css';
+import MDEditor from '@uiw/react-md-editor';
 
 const { TextArea } = Input;
 
-const ShortAnswer = ({explanation}: {explanation: string}) => {
+const ShortAnswer = ({answer}: {answer: string}) => {
     const [text, setText] = useState<string>("");
     const [isSubmit, setIsSubmit] = useState<boolean>(false); 
 
@@ -18,16 +21,22 @@ const ShortAnswer = ({explanation}: {explanation: string}) => {
 
     return ( 
         <div>
-            <TextArea showCount disabled={isSubmit} rows={5} placeholder="Type your answer here" onChange={handleTextChange} value={text}/>
-            <div className="submitButton-container">
-                <Button shape="round" onClick={submitAnswer}>Submit</Button>
-            </div>
+            {!isSubmit ? 
+                <div>
+                    <TextArea showCount disabled={isSubmit} rows={5} placeholder="Type your answer here" onChange={handleTextChange} value={text}/> 
+                    <div className="submitButton-container">
+                        <Button shape="round" onClick={submitAnswer}>Submit</Button>
+                    </div>
+                </div>
+                : 
+                <Paragraph>{text}</Paragraph>
+            }
             {isSubmit &&  
-            <div className="text-container"> 
-                <h2>Your Answer</h2>
-                <p>{text}</p>
-                <h2>This is the Solution</h2>
-                <p>{explanation}</p>
+            <div>
+                <br/>
+                <br/>
+                <Title level={3} className='solution-title'>Solution</Title>
+                <MDEditor.Markdown source={answer} />
             </div>}
         </div>
     );

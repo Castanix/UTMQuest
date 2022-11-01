@@ -65,13 +65,19 @@
     display: inline-flex;
     flex-wrap: wrap;
     width: max(20rem, 50%);
+    height: fit-content;
 }
 
 .detail-form {
     display: inline-flex;
     flex-direction: column;
     width: max(20rem, 45%);
+    margin-top: 7.5rem;
 }
+
+/* .problem-form {
+    margin-top: 7.5rem;
+} */
 
 .question-form .ant-form-item {
     margin-top: 2rem;

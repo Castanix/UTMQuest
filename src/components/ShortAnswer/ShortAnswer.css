@@ -8,3 +8,8 @@
     text-align: center;
     padding-inline: 0.5rem;
 }
+
+.solution-title {
+   border-left: 3px solid #40a9ff !important;
+   padding-left: 0.5rem;
+}
