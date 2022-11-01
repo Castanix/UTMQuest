@@ -9,7 +9,8 @@ import { EditTwoTone, WarningFilled } from "@ant-design/icons";
 import MultipleChoice from "../../components/MultipleChoice/MultipleChoice";
 import Loading from "../../components/Loading/Loading";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
-import { TypeOfQuestion, QuestionsType } from '../../../backend/types/Questions';
+import { TypeOfQuestion } from './types/QuestionTypes';
+import { QuestionsType } from "../../../backend/types/Questions";
 import ShortAnswer from "../../components/ShortAnswer/ShortAnswer";
 import GetQuestion from "./fetch/GetQuestion";
 
