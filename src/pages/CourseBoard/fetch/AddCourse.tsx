@@ -22,14 +22,7 @@ const AddCourse = async (courseId: string, courseName: string, courses: CoursesT
             message.success("Course successfully added.");
         }).catch(() => {
             message.error("Could not add course. Please try again.");
-            return;
-        }
-        rerender(courseId, courseName);
-        setCourses(courses.filter((item => item.courseId !== courseId)));
-        message.success("Course successfully added.");
-    }).catch(() => {
-        message.error("Could not add course. Please try again.");
-    });
+        });
 };
 
 export default AddCourse;

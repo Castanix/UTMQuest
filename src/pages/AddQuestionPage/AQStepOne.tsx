@@ -1,5 +1,4 @@
 import { Alert, Button, Form, message, Select } from "antd";
-import { Option } from "antd/lib/mentions";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import TopicsType from "../../../backend/types/Topics";
@@ -9,6 +8,8 @@ const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
 
     const [selected, setSelected] = useState<string>();
     const [searchValue, setSearchValue] = useState<string>();
+
+    const { Option } = Select;
 
     const initSelect = () => {
         const topicArr: React.ReactNode[] = [];
