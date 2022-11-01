@@ -1,4 +1,4 @@
-import { DislikeOutlined, LikeOutlined, CheckOutlined, MessageOutlined, SearchOutlined } from '@ant-design/icons';
+import { DislikeOutlined, LikeOutlined, CheckOutlined, MessageOutlined, SearchOutlined, QuestionOutlined } from '@ant-design/icons';
 import { Divider, Input, List, PageHeader, Select, Space } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -72,7 +72,11 @@ const QuestionsList = ({ questions, topics, approved }:
                                 className='question-list-meta'
                                 avatar={
                                     <div className='question-list-img'>
-                                        <p>{firstInitial.concat(".").concat(lastInitial).concat(".")}</p>
+                                        {item.anon ? 
+                                            <QuestionOutlined /> 
+                                            : 
+                                            <p>{firstInitial.concat(lastInitial)}</p>
+                                        }
                                     </div>
                                 }
                                 title={
@@ -86,7 +90,7 @@ const QuestionsList = ({ questions, topics, approved }:
                                         <div className="ant-page-header-heading-sub-title">
                                             by {item.authName}
                                             <br />
-                                            {item.date}
+                                            {new Date(item.date).toDateString()}
                                         </div>
                                     </PageHeader>
                                 }

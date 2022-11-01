@@ -6,7 +6,7 @@ const questionRouter = Router();
 
 questionRouter.get('/:questionId', async (req: Request, res: Response) => {
     try {
-        const question = await utmQuestCollections.Questions?.findOne({ qnsId: req.params.questionId });
+        const question = await utmQuestCollections.Questions?.findOne({ _id: new ObjectID(req.params.questionId) });
         if (!question) { 
             res.status(404).send("No question found.");
             return;
@@ -54,7 +54,7 @@ questionRouter.get('/:courseId/:status', async (req: Request, res: Response) => 
 
 questionRouter.get('/reviewStatus/:questionId', async (req: Request, res: Response) => {
     try {
-        const question = await utmQuestCollections.Questions?.findOne({ qnsId: req.params.questionId });
+        const question = await utmQuestCollections.Questions?.findOne({ _id: new ObjectID(req.params.questionId) });
         if (!question){
             res.status(404).send(`Error: Unable to find question`); 
             return;
@@ -67,12 +67,12 @@ questionRouter.get('/reviewStatus/:questionId', async (req: Request, res: Respon
 
 questionRouter.put('/reviewStatus/:questionId', async (req: Request, res: Response) => {
     try { 
-        const question = await utmQuestCollections.Questions?.findOne({ qnsId: req.params.questionId });
+        const question = await utmQuestCollections.Questions?.findOne({ _id: new ObjectID(req.params.questionId) });
         if (!question){
             res.status(404).json(`Error: Unable to find question`); 
             return;
         }
-        await utmQuestCollections.Questions?.updateOne({ qnsId: req.params.questionId }, {$set: {qnsStatus: 'approved'}});
+        await utmQuestCollections.Questions?.updateOne({ _id: new ObjectID(req.params.questionId) }, {$set: {qnsStatus: 'approved'}});
         res.status(204).send('Successfully updated to approved');
     } catch (error) { 
         res.status(500).send(`ERROR: ${error}`);
@@ -102,23 +102,38 @@ questionRouter.post('/addQuestion', async (req: Request, res: Response) => {
         authName: req.body.authName,
         date: `${mm}/${dd}/${yyyy}`,
         numDiscussions: req.body.numDiscussions,
+        anon: req.body.anon,
         snapshot: null,
     };
 
-    
-    utmQuestCollections.Questions?.insertOne(question).then((result) => {
+    utmQuestCollections.Questions?.insertOne(question)
+    .then((result) => {
         if (!result) {
-            res.status(400).send('Unable to post the course');
+            res.status(500).send("Unable to add new question.");
+            return;
         }
-        res.status(201).send(result);
-    }).catch((error) => {
-        res.status(500).send(`ERROR: ${error}`);
+        // INCREMENT COUNTER
+        utmQuestCollections.Topics?.findOneAndUpdate(
+            { _id: new ObjectID(req.body.topicId) }, 
+            { $inc: { numPending: 1 },
+        }).then((incrementResult) => {
+            if (!incrementResult) {
+                res.status(500).send(
+                    `Unable to increment numPending for ${req.body.topicName}`
+                );
+                return;
+            }
+            res.status(201).send(result);
+        });
+    })
+    .catch((error) => {
+        res.status(500).send(error);
     });
 });
 
 questionRouter.put('/:questionId', async (req: Request, res: Response) => {
     try { 
-        const findQuestion = await utmQuestCollections.Questions?.findOne({ qnsId: req.params.questionId });
+        const findQuestion = await utmQuestCollections.Questions?.findOne({ _id: new ObjectID(req.params.questionId) });
         if (!findQuestion) { 
             res.status(404).send("No such question found.");
             return;
@@ -143,7 +158,7 @@ questionRouter.put('/:questionId', async (req: Request, res: Response) => {
             snapshot: new ObjectID(), // -> need to update this 
         };
 
-        await utmQuestCollections.Questions?.updateOne({ qnsId: req.params.questionId }, {$set: question}).then( (result) => { 
+        await utmQuestCollections.Questions?.updateOne({ _id: new ObjectID(req.params.questionId) }, {$set: question}).then( (result) => { 
             if (!result) { 
                 res.status(400).send(result);
 				return;
@@ -160,13 +175,13 @@ questionRouter.put('/:questionId', async (req: Request, res: Response) => {
 
 questionRouter.delete('/:questionId', async (req: Request, res: Response) => {
     try { 
-        const question = await utmQuestCollections.Questions?.findOne({ qnsId: req.params.questionId });
+        const question = await utmQuestCollections.Questions?.findOne({ _id: new ObjectID(req.params.questionId) });
         if (!question) { 
             res.status(404).send('Question does not exist');
             return;
         }
 
-        await utmQuestCollections.Questions?.deleteOne({ qnsId: req.params.questionId });
+        await utmQuestCollections.Questions?.deleteOne({ _id: new ObjectID(req.params.questionId) });
         res.status(202).send('Successfully deleted question');
     } catch (error) { 
         res.status(500).send(`ERROR: ${error}`);

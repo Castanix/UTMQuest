@@ -15,7 +15,7 @@ export enum qnsTypeEnum {
 export interface TypeOfQuestion { 
 	mc: ReactNode,
 	short: ReactNode
-}
+};
 
 export interface QuestionsType {
 	_id: string;
@@ -29,11 +29,12 @@ export interface QuestionsType {
 	desc: string;
 	xplan: string;
 	choices: string[];
-	ans: string;
+	ans: string[] | string;
 	authId: string;
 	authName: string;
 	date: string;
 	numDiscussions: number;
+	anon: boolean;
 	snapshot: ObjectId | null;
-}
+};
 
