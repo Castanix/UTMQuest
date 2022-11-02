@@ -59,14 +59,15 @@ const CoursePage = () => {
   // fetch the course here
   const params = useParams();
   const courseCode = params.id;
-  const { loading, courseName, error } = GetCourse(courseCode ?? '');
+  const { loadingCourses, courseName, errorCourses } = GetCourse(courseCode ?? '');
   
   const [isSaved, setIsSaved] = useState<boolean>(false);
-  const { loading2, error2 } = CheckSaved(courseCode ?? '', setIsSaved);
+  const { loadingSaved, errorSaved } = CheckSaved(courseCode ?? '', setIsSaved);
 
-  if (loading || loading2) return <Loading />;
+  if (loadingCourses || loadingSaved) return <Loading />;
 
-  if (error !== '' && error2 !== '') return <ErrorMessage title={error} link="/courses" message="Go back to courses" />;
+  if (errorCourses !== '') return <ErrorMessage title={errorCourses} link="/courses" message="Go back to courses" />;
+  if (errorSaved !== '') return <ErrorMessage title={errorSaved} link="/courses" message="Go back to courses" />;
 
   return (
     <Card title={<Header courseCode={courseCode ?? ''} courseName={courseName ?? ''} favourite={isSaved} setFavourite={setIsSaved} />} bordered={false}>
