@@ -13,7 +13,7 @@ const GetWidgets = (utorid: string) => {
         // const qnsArr: DataType[] = [];
 
         const fetchData = async () => {
-            await fetch(`${process.env.REACT_APP_API_URI}/getAccount/${utorid}`)
+            await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorid}`)
                 .then((res: Response) => {
                     if (!res.ok) throw Error(res.statusText);
                     return res.json();
