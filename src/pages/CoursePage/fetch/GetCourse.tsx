@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 const GetCourse = (courseCode: string) => {
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loadingCourses, setLoadingCourses] = useState<boolean>(true);
     const [courseName, setCourseName] = useState<string>("");
-    const [error, setError] = useState<string>("");
+    const [errorCourses, setErrorCourses] = useState<string>("");
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_URI}/course/getCourse/${courseCode}`)
@@ -12,17 +12,17 @@ const GetCourse = (courseCode: string) => {
                 return res.json();
             }).then((result) => {
                 setCourseName(result.courseName);
-                setLoading(false);
+                setLoadingCourses(false);
             }).catch((err) => {
-                setError(err.message);
-                setLoading(false);
+                setErrorCourses(err.message);
+                setLoadingCourses(false);
             });
     }, [courseCode]);
 
     return {
         courseName,
-        loading,
-        error,
+        loadingCourses,
+        errorCourses,
     };
 };
 

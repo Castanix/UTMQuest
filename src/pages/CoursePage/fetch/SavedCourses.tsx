@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 
 export const CheckSaved = (courseId: string, setTest: Function) => {
-    const [loading2, setLoading] = useState<boolean>(true);
-    const [error2, setError] = useState<string>("");
+    const [loadingSaved, setLoadingSaved] = useState<boolean>(true);
+    const [errorSaved, setErrorSaved] = useState<string>("");
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_URI}/account/checkSaved/dummy22/${courseId}`)
@@ -13,16 +13,16 @@ export const CheckSaved = (courseId: string, setTest: Function) => {
                 return res.json();
             }).then((result) => {
                 setTest(result);
-                setLoading(false);
+                setLoadingSaved(false);
             }).catch((err) => {
-                setError(err.message);
-                setLoading(false);
+                setErrorSaved(err.message);
+                setLoadingSaved(false);
             });
     }, [courseId, setTest]);
 
     return {
-        loading2,
-        error2
+        loadingSaved,
+        errorSaved
     };
 };
 
