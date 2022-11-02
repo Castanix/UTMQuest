@@ -114,4 +114,5 @@ courseRouter.put('/decrementTopic', async (req: Request, res: Response) => {
   });
 });
 
+
 export default courseRouter;
