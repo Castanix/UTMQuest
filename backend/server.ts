@@ -5,6 +5,7 @@ import connectDB, { utmQuestCollections } from "./db/db.service";
 import courseRouter from "./routes/Courses";
 import topicRouter from "./routes/Topic";
 import questionRouter from "./routes/Question";
+import discussionRouter from "./routes/Discussion";
 
 const app = express();
 app.use(cors());
@@ -15,6 +16,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Questions 
 app.use("/question", questionRouter);
+
+// Discussion
+app.use("/discussion", discussionRouter);
 
 // Courses
 app.use("/course", courseRouter);
