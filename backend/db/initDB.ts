@@ -334,8 +334,7 @@ async function initDB() {
 					bsonType: "object",
 					title: "Dicussions Object Validation",
 					required: [
-						"discussionId",
-						"questionId",
+						"question",
 						"op",
 						"authId",
 						"authName",
@@ -343,6 +342,7 @@ async function initDB() {
 						"thread",
 						"date",
 						"deleted",
+						"anon"
 					],
 					additionalProperties: false,
 					properties: {
@@ -350,13 +350,8 @@ async function initDB() {
 							bsonType: "objectId",
 							description: "auto-generated objectId",
 						},
-						discussionId: {
-							bsonType: "int",
-							description:
-								"'discussionId' must be an int, is unique, and is required",
-						},
 						question: {
-							bsonType: "string",
+							bsonType: "objectId",
 							description:
 								"'question' must be a string, referencing a questionId from the questions collection, and is required",
 						},
@@ -400,6 +395,11 @@ async function initDB() {
 							bsonType: "bool",
 							description:
 								"'deleted' must be a bool and is required",
+						},
+						anon: {
+							bsonType: "bool",
+							description:
+								"'anon' must be a bool, and is required"
 						},
 					},
 				},
