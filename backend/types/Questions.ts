@@ -1,6 +1,5 @@
 /* eslint-disable no-shadow, no-unused-vars */
 import { ObjectId } from "mongodb";
-import { ReactNode } from "react";
 
 export enum qnsStatusType {
 	approved = "approved",
@@ -11,11 +10,6 @@ export enum qnsTypeEnum {
 	mc = "mc",
 	short = "short"
 };
-
-export interface TypeOfQuestion { 
-	mc: ReactNode,
-	short: ReactNode
-}
 
 export interface QuestionsType {
 	_id: string;
