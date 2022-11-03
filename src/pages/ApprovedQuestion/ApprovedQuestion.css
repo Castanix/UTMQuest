@@ -3,6 +3,24 @@
     justify-content: space-between;
 }
 
+.title-flex {
+    display:"flex";
+    flex-direction: "column"
+}
+
+.ant-tabs-nav {
+    padding-inline: 10vw;
+    background-color: white;
+}
+
+.title-flex h3 {
+    margin-bottom: 0 !important;
+}
+
+.title-flex span {
+    font-size: 0.75rem !important;
+}
+
 .icon-buttons {
     display: flex;
     text-align: center;
@@ -25,3 +43,8 @@
 .report-text {
     color: red;
 }
+
+.divider-title {
+    border-left: 3px solid #40a9ff !important;
+    padding-left: 0.5rem;
+ }

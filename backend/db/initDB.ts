@@ -184,7 +184,7 @@ async function initDB() {
 			console.log("Error creating index for Topics");
 		});
 
-	// Creates the Topics collection in Mongo Atlas with validation
+	// Creates the Questions collection in Mongo Atlas with validation
 	await db
 		.createCollection("Questions", {
 			validator: {
@@ -192,7 +192,6 @@ async function initDB() {
 					bsonType: "object",
 					title: "Questions Object Validation",
 					required: [
-						"qnsId",
 						"topicId",
 						"topicName",
 						"courseId",
@@ -208,6 +207,7 @@ async function initDB() {
 						"authName",
 						"date",
 						"numDiscussions",
+						"anon",
 						"snapshot",
 					],
 					additionalProperties: false,
@@ -215,11 +215,6 @@ async function initDB() {
 						_id: {
 							bsonType: "objectId",
 							description: "auto-generated objectId",
-						},
-						qnsId: {
-							bsonType: "string",
-							description:
-								"'qnsId' must be a string, specifically a combination of courseId and a num, is unique, and is required",
 						},
 						topicId: {
 							bsonType: "objectId",
@@ -252,9 +247,9 @@ async function initDB() {
 								"'reviewStatus' must be an int if qnsStatus is pending or else null, and is required",
 						},
 						qnsType: {
-							enum: ["mc", "matching", "short"],
+							enum: ["mc", "short"],
 							description:
-								"'qnsType' must be specifically 'mc' 'matching' or 'short', and is required",
+								"'qnsType' must be specifically 'mc' or 'short', and is required",
 						},
 						desc: {
 							bsonType: "string",
@@ -269,7 +264,7 @@ async function initDB() {
 						choices: {
 							bsonType: "array",
 							description:
-								"'choices' must be an array of strings or empty, and is required",
+								"'choices' must be an array of strings, and is required",
 							uniqueItems: true,
 							items: {
 								bsonType: "string",
@@ -278,9 +273,15 @@ async function initDB() {
 							},
 						},
 						ans: {
-							bsonType: "string",
+							bsonType: ["array", "string"],
 							description:
-								"'ans' must be a string, and is required",
+								"'ans' must be an array of strings or a string, and is required",
+							uniqueItems: true,
+							items: {
+								bsonType: "string",
+								description:
+									"items in array must be a string or empty",
+							},
 						},
 						authId: {
 							bsonType: "string",
@@ -301,6 +302,11 @@ async function initDB() {
 							bsonType: "int",
 							description:
 								"'numDiscussions' must be an int, and is required",
+						},
+						anon: {
+							bsonType: "bool",
+							description:
+								"'anon' must be a bool, and is required"
 						},
 						snapshot: {
 							bsonType: ["objectId", "null"],

@@ -1,11 +1,12 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import connectDB, { utmQuestCollections } from "./db/db.service";
+import connectDB from "./db/db.service";
 import courseRouter from "./routes/Courses";
 import topicRouter from "./routes/Topic";
 import questionRouter from "./routes/Question";
 import discussionRouter from "./routes/Discussion";
+import accountRouter from "./routes/Account";
 
 const app = express();
 app.use(cors());
@@ -26,26 +27,14 @@ app.use("/course", courseRouter);
 // Topics
 app.use("/topic", topicRouter);
 
+// Accounts
+app.use("/account", accountRouter);
+
+// Test route
 app.get("/express_backend", (req: Request, res: Response) => {
 	res.send({ express: "YOUR EXPRESS BACKEND IS CONNECTED TO REACT" });
 });
 
-// Accounts routes
-app.get("/getAccount/:utorid", (req: Request, res: Response) => {
-	utmQuestCollections.Accounts?.findOne({ utorid: req.params.utorid })
-		.then((doc) => {
-			if (doc == null) {
-				// set custom statusText to be displayed to user
-				res.statusMessage = "No such account found.";
-				res.status(404).end();
-			} else {
-				res.status(200).send(doc);
-			}
-		})
-		.catch((error) => {
-			res.status(500).send(`ERROR: ${error}`);
-		});
-});
 
 // Connect to mongoDB and listen on app
 connectDB()

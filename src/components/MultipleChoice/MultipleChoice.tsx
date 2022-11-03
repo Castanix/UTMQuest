@@ -44,7 +44,7 @@ const MultipleChoice = ({ options, answers, explanation }: { options: string[], 
                 })}
             </div>
             <div className="mc-actions">
-                <Space split={<Divider type="vertical" />}>
+                <Space split={<Divider type="horizontal" />}>
                     <Button shape="round" onClick={showAnswers}>Check Answers</Button>
                     <Button shape="round" onClick={resetAnswers}>Reset</Button>
                     <Button style={{

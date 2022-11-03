@@ -2,16 +2,15 @@
 import { ObjectId } from "mongodb";
 import { ReactNode } from "react";
 
-export enum qnsTypeEnum {
-	mc = "mc",
-	matching = "matching",
-	short = "short",
-}
-
 export enum qnsStatusType {
 	approved = "approved",
 	pending = "pending",
-}
+};
+
+export enum qnsTypeEnum {
+	mc = "mc",
+	short = "short"
+};
 
 export interface TypeOfQuestion { 
 	mc: ReactNode,
@@ -20,22 +19,22 @@ export interface TypeOfQuestion {
 
 export interface QuestionsType {
 	_id: string;
-	qnsId: string;
 	topicId: string;
 	topicName: string;
 	courseId: string;
 	qnsName: string;
-	qnsStatus: qnsStatusType;
+	qnsStatus?: qnsStatusType;
 	reviewStatus: number;
-	qnsType: qnsTypeEnum;
+	qnsType?: qnsTypeEnum;
 	desc: string;
 	xplan: string;
 	choices: string[];
-	ans: string;
+	ans: string[] | string;
 	authId: string;
 	authName: string;
 	date: string;
 	numDiscussions: number;
-	snapshort: ObjectId | null;
-}
+	anon: boolean;
+	snapshot: ObjectId | null;
+};
 

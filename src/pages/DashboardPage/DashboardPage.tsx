@@ -10,6 +10,7 @@ import GetWidgets from './fetch/GetWidgets';
 import ReviewQuestionsTable from './ReviewQuestionTable';
 import SavedCoursesList from './SavedCoursesList';
 
+
 const { Title } = Typography;
 
 const paginationConfig = (total: number, size: number) => ({

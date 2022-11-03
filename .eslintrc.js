@@ -13,10 +13,13 @@ module.exports = {
 	},
 	'plugins': [
 		'react',
+		'react-hooks',
 		'@typescript-eslint'
 	],
 	'ignorePatterns': ["*.test.tsx", "cypress/*", "cypress.config.ts"],
 	'rules': {
+		"react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
+    	"react-hooks/exhaustive-deps": "warn", // Checks effect dependencies
 		'import/extensions': "off",
 		'import/no-unresolved': "off",
 		'import/no-extraneous-dependencies': "off",

@@ -1,28 +1,34 @@
 import { Button, Checkbox, Divider, Input, Space } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 
 import "./AddMultipleChoice.css";
 
 const { TextArea } = Input;
 
 export interface AddOptionType {
+    _id: number;
     value: string;
     isCorrect: boolean;
 }
 
+/* options should have 2 items when calling this component */
 const AddMultipleChoice = (
     { options, setOptions }:
         { options: AddOptionType[], setOptions: React.Dispatch<React.SetStateAction<AddOptionType[]>> }) => {
+
+    const [key, setKey] = useState<number>(2);
 
     const addOption = () => {
         const newOptions = [...options];
 
         const newOption: AddOptionType = {
+            _id: key + 1,
             value: "",
             isCorrect: false
         };
         newOptions.push(newOption);
         setOptions(newOptions);
+        setKey(key + 1);
     };
 
     const updateOptionValue = (index: number, value: string) => {
@@ -56,13 +62,13 @@ const AddMultipleChoice = (
             </div>
             <div className="add-mc">
                 {options.map((item, index) =>
-                    <Checkbox key={item.value.concat(index.toString())} onChange={() => onCheckboxChange(index)}>
+                    <Checkbox key={`checkbox_${item._id}`} onChange={() => onCheckboxChange(index)}>
                         <TextArea
                             className="add-mc-textarea"
-                            key={item.value.concat(index.toString())}
+                            key={`input_${item._id}`}
                             maxLength={1000}
                             onChange={e => updateOptionValue(index, e.target.value)}
-                            placeholder="Option goes here"
+                            placeholder={`Option ${String.fromCharCode(65 + index)}`}
                             autoSize
                         />
                     </Checkbox>

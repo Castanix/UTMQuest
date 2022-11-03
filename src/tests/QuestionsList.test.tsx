@@ -35,7 +35,6 @@ const topics: TopicsType[] = [
 const questions: QuestionsType[] = [
     {
         _id: 'abcd',
-        qnsId: 'test1',
         topicId: '12345',
         topicName: 'Strings',
         courseId: 'test',
@@ -51,11 +50,11 @@ const questions: QuestionsType[] = [
         authName: 'Bob Bob',
         date: 'Mon Oct 24 2022',
         numDiscussions: 1,
-        snapshort: null,
+        anon: false,
+        snapshot: null,
     },
     {
         _id: 'abcde',
-        qnsId: 'test2',
         topicId: '123456',
         topicName: 'Arrays',
         courseId: 'test',
@@ -71,7 +70,8 @@ const questions: QuestionsType[] = [
         authName: 'Bob Bob',
         date: 'Mon Oct 24 2022',
         numDiscussions: 0,
-        snapshort: null,
+        anon: false,
+        snapshot: null,
     },
 ]
 

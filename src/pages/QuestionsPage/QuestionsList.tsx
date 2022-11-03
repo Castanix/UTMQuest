@@ -1,4 +1,4 @@
-import { DislikeOutlined, LikeOutlined, CheckOutlined, MessageOutlined, SearchOutlined } from '@ant-design/icons';
+import { DislikeOutlined, LikeOutlined, CheckOutlined, MessageOutlined, SearchOutlined, QuestionOutlined } from '@ant-design/icons';
 import { Divider, Input, List, PageHeader, Select, Space } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -58,7 +58,7 @@ const QuestionsList = ({ questions, topics, approved }:
 
                     return (
                         <List.Item
-                            key={item.qnsId}
+                            key={item._id}
                             actions={[
                                 ... approved ? 
                                     [<IconText icon={LikeOutlined} text="156" key="list-vertical-message" />,
@@ -72,21 +72,25 @@ const QuestionsList = ({ questions, topics, approved }:
                                 className='question-list-meta'
                                 avatar={
                                     <div className='question-list-img'>
-                                        <p>{firstInitial.concat(".").concat(lastInitial).concat(".")}</p>
+                                        {item.anon ? 
+                                            <QuestionOutlined /> 
+                                            : 
+                                            <p>{firstInitial.concat(lastInitial)}</p>
+                                        }
                                     </div>
                                 }
                                 title={
                                     <PageHeader
                                         className="question-list-page-header"
                                         title={
-                                            <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.qnsId}`}>
+                                            <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item._id}`}>
                                                 {item.qnsName}
                                             </Link>}
                                     >
                                         <div className="ant-page-header-heading-sub-title">
                                             by {item.authName}
                                             <br />
-                                            {item.date}
+                                            {new Date(item.date).toDateString()}
                                         </div>
                                     </PageHeader>
                                 }
