@@ -232,8 +232,8 @@ questionRouter.delete("/:questionId", async (req: Request, res: Response) => {
 questionRouter.get(
 	"/similar/:topicId/:term",
 	async (req: Request, res: Response) => {
-		const topicId = req.params.topicId;
-		const term = req.params.term;
+		const { topicId } = req.params;
+		const { term } = req.params;
 
 		const result = await utmQuestCollections.Questions?.aggregate([
 			{
