@@ -88,6 +88,7 @@ accountRouter.put('/updateColour', async (req: Request, res: Response) => {
       if (!result) {
         res.status(400).send(`Unable to update colour`);
       }
+      console.log("here");
       res.status(200).send(result);
     }).catch((error) => {
       res.status(500).send(error);
