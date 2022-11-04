@@ -353,7 +353,7 @@ async function initDB() {
 						question: {
 							bsonType: "objectId",
 							description:
-								"'question' must be a string, referencing a questionId from the questions collection, and is required",
+								"'question' must be a ObjectID, referencing a questionId from the questions collection, and is required",
 						},
 						op: {
 							bsonType: "bool",
