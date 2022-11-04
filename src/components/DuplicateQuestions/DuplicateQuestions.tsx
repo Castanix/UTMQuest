@@ -1,6 +1,5 @@
-/* eslint-disable */
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { List, message, Space, Typography } from "antd";
+import { List, message, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -12,7 +11,7 @@ interface HighlightTextsType {
 }
 
 function escapeSpecialChars(str: string) {
-    const reg = /(<([^>]+)>)/ig
+    const reg = /(<([^>]+)>)/ig;
     return str
         .replace(reg, "");
 }
@@ -29,7 +28,7 @@ const BoldHits = (highlights: HighlightTextsType[]) => {
     let text = "";
 
     highlights.forEach((item) => {
-        let cleanText = escapeSpecialChars(item.value);
+        const cleanText = escapeSpecialChars(item.value);
         if (item.type === "text") {
             text += cleanText;
         }
@@ -37,9 +36,9 @@ const BoldHits = (highlights: HighlightTextsType[]) => {
             text += `<b>${cleanText}</b>`;
         }
 
-    })
-    return { __html: "... " + text + " ..." };
-}
+    });
+    return { __html: `... ${text} ...` };
+};
 
 const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: string) => {
     const [duplicateQuestions, setDuplicateQuestions] = useState<DuplicateQuestionType[]>([]);
@@ -54,10 +53,10 @@ const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: strin
                 setDuplicateQuestions(response);
             }).catch((error) => {
                 message.error(error);
-            })
-    }, [topicId, searchTerm])
+            });
+    }, [topicId, searchTerm]);
 
-    if (searchTerm.length < 3 || duplicateQuestions.length < 1) return;
+    if (searchTerm.length < 3 || duplicateQuestions.length < 1) return <div />;
 
     return (
         <div>
@@ -80,6 +79,7 @@ const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: strin
                                             </Space>
                                         </span>
                                     </Link>
+                                    {/* eslint-disable-next-line react/no-danger */}
                                     <span dangerouslySetInnerHTML={BoldHits(item.highlights[0].texts)} />
                                 </Space>
                             </div>
@@ -88,7 +88,7 @@ const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: strin
                 />
             </Space>
         </div>
-    )
-}
+    );
+};
 
 export default DuplicateQuestions;
