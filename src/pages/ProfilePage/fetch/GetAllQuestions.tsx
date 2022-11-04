@@ -13,7 +13,6 @@ const GetAllQuestions = (utorid: string, setTimeline: Function) => {
                     if (!res.ok) throw Error(res.statusText);
                     return res.json();
                 }).then((result) => {
-                    console.log("1");
                     const timelineArr: TimelineType[] = [];
                     
                     result.forEach((question: QuestionsType) => {
