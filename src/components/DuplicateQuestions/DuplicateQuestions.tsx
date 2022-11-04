@@ -59,11 +59,11 @@ const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: strin
     if (searchTerm.length < 3 || duplicateQuestions.length < 1) return <div />;
 
     return (
-        <div>
+        <div className="duplicate-questions-container">
             <Space direction="vertical">
                 Possible duplicates:
                 <List
-                    className={duplicateQuestions.length > 5 ? "duplicates-list-scroll" : ""}
+                    className={duplicateQuestions.length > 5 ? "duplicates-list duplicates-list-scroll" : "duplicates-list"}
                     bordered
                     size="small"
                     dataSource={duplicateQuestions}
