@@ -33,6 +33,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
         } else if (type === qnsTypeEnum.short) {
             el = <MDEditor
                 height={300}
+                style={{ width: '35vw' }}
                 value={solValue}
                 textareaProps={{ placeholder: "Add Solution" }}
                 onChange={setSolValue}
@@ -109,9 +110,6 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                         <Form.Item>
                             {DuplicateQuestions(courseCode, topicSelected[0], title)}
                         </Form.Item>
-                        {setAnswerType()}
-                    </div>
-                    <div className='detail-form'>
                         <Form.Item label="Problem Description" required>
                             <MDEditor
                                 height={300}
@@ -125,6 +123,9 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                                 }}
                             />
                         </Form.Item>
+                    </div>
+                    <div className='detail-form'>
+                        {setAnswerType()}
                         {type === qnsTypeEnum.mc
                             ?
                             <Form.Item label="Explanation (Optional)">
@@ -141,9 +142,6 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                                 />
                             </Form.Item>
                             : null}
-                    </div>
-                    <div className='detail-form'>
-                        {setAnswerType()}
                     </div>
                 </div>
             </Form>
