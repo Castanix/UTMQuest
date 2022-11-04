@@ -1,7 +1,7 @@
 import { message } from "antd";
 import { useEffect, useState } from "react";
 
-export const GetProfile = (utorid: string, setName: Function, setColour: Function, setBadges: Function) => {
+export const GetProfile = (utorid: string, setName: Function, setSavedColour: Function, setCurrentColour: Function, setBadges: Function) => {
 
     const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
     const [errorProfile, setErrorProfile] = useState('');
@@ -9,22 +9,20 @@ export const GetProfile = (utorid: string, setName: Function, setColour: Functio
     useEffect(() => {
             fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorid}`)
                 .then((res: Response) => {
-                    console.log('he');
                     if (!res.ok) throw Error(res.statusText);
                     return res.json();
                 }).then((result) => {
-                    console.log("aklsnd");
                     setName(result.utorName);
-                    setColour(result.colour);
+                    setSavedColour(result.colour);
+                    setCurrentColour(result.colour);
                     setBadges(result.badges);
                     setLoadingProfile(false);
                 }).catch((err) => {
-                    console.log("error");
                     setErrorProfile(err.message);
                     setLoadingProfile(false);
                 });
 
-    }, [utorid, setBadges, setColour, setName]);
+    }, [utorid, setBadges, setSavedColour, setCurrentColour, setName]);
 
     return {
         loadingProfile,
@@ -32,7 +30,7 @@ export const GetProfile = (utorid: string, setName: Function, setColour: Functio
     };
 };
 
-export const UpdateProfile = (utorid: string, colour: string, setColour: Function) => {
+export const UpdateProfile = (utorid: string, colour: string, setSavedColour: Function) => {
         fetch(`${process.env.REACT_APP_API_URI}/account/updateColour`,
             {
                 method: 'PUT',
@@ -46,7 +44,7 @@ export const UpdateProfile = (utorid: string, colour: string, setColour: Functio
                 body: JSON.stringify({ utorid, colour })
             }).then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
-                setColour(colour);
+                setSavedColour(colour);
             }).catch((err) => {
                 message.error(err);
             });

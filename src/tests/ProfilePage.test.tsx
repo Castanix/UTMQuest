@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import { setupServer } from 'msw/lib/node';
 import { rest } from 'msw';
@@ -17,8 +17,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 // mock add topic fetch call
 const server = setupServer(
-    rest.get(`${process.env.REACT_APP_API_URI}/account/getAccount/dummy22`, (req, res, ctx) => {
-        console.log("asd");
+    rest.get(`${process.env.REACT_APP_API_URI}/account/getAccount/:utorid`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json({
@@ -75,8 +74,9 @@ afterEach(() => server.resetHandlers());
 
 afterAll(() => server.close());
 
-test('profile page renders correctly', () => {
-    expect(screen.getByText(/Dummy Test/i)).toBeInTheDocument();
-    expect(screen.getByText(/Badges/i)).toBeInTheDocument();
-    expect(screen.getByText(/Activity Timeline/i)).toBeInTheDocument();
+test('profile page renders correctly', async() => {
+    await waitFor(() => expect(screen.getByText(/Dummy Test/i)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getAllByText(/badges/i)[0]).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(/Activity Timeline/i)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(/String Title Test/i)).toBeInTheDocument());
 })
