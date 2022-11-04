@@ -33,6 +33,7 @@ module.exports = {
 		],
 		'no-console': "off",
 		"no-underscore-dangle": ["error", { "allow": ["_id"] }],
-		"semi": [2, "always"]
+		"semi": [2, "always"],
+		"no-plusplus": "off"
 	}
 };

@@ -135,16 +135,19 @@ discussionRouter.put('/:discussionId', async (req: Request, res: Response) => {
 // DELETE .../discussion/:discussionId
 discussionRouter.delete('/:discussionId', async (req: Request, res: Response) => { 
     // update content and the deleted flag 
-    await utmQuestCollections.Discussions?.findOneAndUpdate({_id: new ObjectID(req.params.discussionId)}, 
-        {$set: {content: "This message was deleted by the original author or a moderator", deleted: true}}).then((result) => { 
-            if (!result) { 
-                res.status(500).send(`Unable to delete discussion`);
-                return;
-            }
-            res.status(202).send('Successfully deleted discussion');
-         }).catch((error) => {
-            res.status(500).send(error);
-        });
+    try { 
+        const result = await utmQuestCollections.Discussions?.findOneAndUpdate({_id: new ObjectID(req.params.discussionId)}, 
+        {$set: {content: "This message was deleted by the original author or a moderator", deleted: true}}, {returnDocument: 'after'});
+
+        if (!result) { 
+            res.status(400).send(`Unable to delete discussion`);
+            return;
+        };
+
+        res.status(202).send(result);
+    } catch (error) { 
+        res.status(500).send(error);
+    }
 });
 
 
