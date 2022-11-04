@@ -1,0 +1,15 @@
+.comment-img {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #f0f0f0;
+    border-radius: 50%;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.comment-img p {
+    margin-top: 0.7rem;
+    font-size: 0.8rem;
+}
