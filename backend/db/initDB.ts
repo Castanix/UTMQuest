@@ -381,9 +381,9 @@ async function initDB() {
 								"'thread' must be an array of discussionIds referencing own collection or empty, and is required",
 							uniqueItems: true,
 							items: {
-								bsonType: "int",
+								bsonType: "string",
 								description:
-									"items in array must be int referencing own collection or empty",
+									"items in array must be string referencing own collection or empty",
 							},
 						},
 						date: {

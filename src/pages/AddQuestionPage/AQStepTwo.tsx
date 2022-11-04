@@ -12,14 +12,14 @@ import AddMultipleChoice, { AddOptionType } from '../../components/MultipleChoic
 
 const { Option } = Select;
 
-const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }: 
+const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
     { courseCode: string, topicSelected: [string, string], setCurrStep: Function }) => {
-        
+
     const [type, setType] = useState<qnsTypeEnum>();
     const [title, setTitle] = useState<string>('');
     const [problemValue, setProblemValue] = useState<string>();
     const [explanationValue, setExplanationValue] = useState<string>();
-    const [mcOption, setMcOption] = useState<AddOptionType[]>([{_id: 1, value: "", isCorrect: false}, {_id: 2, value: "", isCorrect: false}]);
+    const [mcOption, setMcOption] = useState<AddOptionType[]>([{ _id: 1, value: "", isCorrect: false }, { _id: 2, value: "", isCorrect: false }]);
     const [solValue, setSolValue] = useState<string>();
     const [redirect, setRedirect] = useState<string>();
     const [isAnon, setAnon] = useState<boolean>(false);
@@ -31,23 +31,23 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
             el = <AddMultipleChoice options={mcOption} setOptions={setMcOption} />;
         } else if (type === qnsTypeEnum.short) {
             el = <MDEditor
-                    height={300} 
-                    value={solValue}
-                    textareaProps={{placeholder: "Add Solution"}}
-                    onChange={setSolValue}
-                    highlightEnable={false}
-                    previewOptions={{
-                        rehypePlugins: [[rehypeSanitize]]
-                    }}
-                />;
+                height={300}
+                value={solValue}
+                textareaProps={{ placeholder: "Add Solution" }}
+                onChange={setSolValue}
+                highlightEnable={false}
+                previewOptions={{
+                    rehypePlugins: [[rehypeSanitize]]
+                }}
+            />;
         }
 
-        return <Form.Item 
-                    className='sol-container'
-                    style={type ? {display: "block"} : {display: "none"}}
-                    label="Solution"
-                    required
-                >{el}</Form.Item>;
+        return <Form.Item
+            className='sol-container'
+            style={type ? { display: "block" } : { display: "none" }}
+            label="Solution"
+            required
+        >{el}</Form.Item>;
     };
 
     const verifySol = () => {
@@ -56,16 +56,16 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
             let ret = true;
 
             mcOption.forEach((item) => {
-                if(!item.value.trim()) {
+                if (!item.value.trim()) {
                     ret = false;
                     return;
                 }
-                if(item.isCorrect) numCorrect += 1;
+                if (item.isCorrect) numCorrect += 1;
             });
-            
+
             if (!ret) return false;
 
-            if(numCorrect < 1) return false;
+            if (numCorrect < 1) return false;
 
             return true;
         } if (type === qnsTypeEnum.short) {
@@ -74,13 +74,13 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
 
         return false;
     };
-    
+
 
     return (
         <>
             <h1>Topic: {topicSelected[1]}</h1>
 
-            <Form 
+            <Form
                 className='question-form'
                 labelAlign='left'
             >
@@ -91,28 +91,26 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                                 placeholder='Add Question Title'
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                style={{width: 'max(16rem, 20vw)'}}
+                                style={{ width: 'max(16rem, 20vw)' }}
                             />
                         </Form.Item>
 
                         <Form.Item name='type' label="Answer Type" required>
                             <Select
                                 placeholder="Select Type"
-                                onChange={(value: qnsTypeEnum) => {setType((value === "mc") ? qnsTypeEnum.mc : qnsTypeEnum.short);}}
-                                style={{width: 'max(10rem, 10vw)'}}
+                                onChange={(value: qnsTypeEnum) => { setType((value === "mc") ? qnsTypeEnum.mc : qnsTypeEnum.short); }}
+                                style={{ width: 'max(10rem, 10vw)' }}
                             >
                                 <Option key='mc' value='mc'>Multiple Choice</Option>
                                 <Option key='short' value='short'>Short Answer</Option>
-                            </Select>   
+                            </Select>
                         </Form.Item>
-                        {setAnswerType()}
-                    </div>
-                    <div className='detail-form'>
                         <Form.Item label="Problem Description" required>
-                            <MDEditor 
-                                height={300} 
+                            <MDEditor
+                                height={300}
+                                style={{ width: '35vw' }}
                                 value={problemValue}
-                                textareaProps={{placeholder: "Add Problem"}}
+                                textareaProps={{ placeholder: "Add Problem" }}
                                 onChange={setProblemValue}
                                 highlightEnable={false}
                                 previewOptions={{
@@ -120,21 +118,25 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                                 }}
                             />
                         </Form.Item>
-                        {type === qnsTypeEnum.mc 
-                            ?                         
-                                <Form.Item label="Explanation (Optional)">
-                                    <MDEditor
-                                        height={300} 
-                                        value={explanationValue} 
-                                        textareaProps={{placeholder: "Add Explanation"}}
-                                        onChange={setExplanationValue}
-                                        highlightEnable={false}
-                                        previewOptions={{
-                                            rehypePlugins: [[rehypeSanitize]]
-                                        }}
-                                    />
-                                </Form.Item> 
+                        {type === qnsTypeEnum.mc
+                            ?
+                            <Form.Item label="Explanation (Optional)">
+                                <MDEditor
+                                    height={300}
+                                    style={{ width: '35vw' }}
+                                    value={explanationValue}
+                                    textareaProps={{ placeholder: "Add Explanation" }}
+                                    onChange={setExplanationValue}
+                                    highlightEnable={false}
+                                    previewOptions={{
+                                        rehypePlugins: [[rehypeSanitize]]
+                                    }}
+                                />
+                            </Form.Item>
                             : null}
+                    </div>
+                    <div className='detail-form'>
+                        {setAnswerType()}
                     </div>
                 </div>
             </Form>
@@ -142,8 +144,8 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
             <div className='btn-container'>
                 <Button onClick={() => setCurrStep()}>Back</Button>
                 <div>
-                    <Checkbox onChange={() => setAnon(!isAnon)}>Post Anonymously<br/>(to other users only)</Checkbox>
-                    <Button 
+                    <Checkbox onChange={() => setAnon(!isAnon)}>Post Anonymously<br />(to other users only)</Checkbox>
+                    <Button
                         type="primary"
                         disabled={!((type && title.trim() && problemValue?.trim() && verifySol()))}
                         onClick={() => {
@@ -175,7 +177,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                                 choices,
                                 ans,
                                 authId: "dummy22",
-                                authName: !isAnon ? "Dummy Test" : "Anonymous", 
+                                authName: !isAnon ? "Dummy Test" : "Anonymous",
                                 date: '',
                                 numDiscussions: 0,
                                 anon: isAnon,
@@ -184,7 +186,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                             AddQuestion(questionObj, setRedirect);
                         }}
                     >Submit</Button>
-                </div> 
+                </div>
                 {redirect ? <Navigate to={`/courses/${courseCode}/question/${redirect}`} /> : ""}
             </div>
         </>

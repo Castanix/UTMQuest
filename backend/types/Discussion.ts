@@ -9,5 +9,19 @@ export interface DiscussionType extends WithId<Document> {
     content: string;
     date: string; 
     deleted: boolean;
-    thread: number[]; 
+    thread: string[]; 
 };
+
+
+export interface DiscussionFrontEndType {
+	_id: string;
+	question: string;
+	op: boolean;
+	authId: string;
+	authName: string;
+	content: string;
+	thread: string[];
+	date: string;
+	deleted: boolean;
+	anon: boolean;
+}
