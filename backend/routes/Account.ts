@@ -77,4 +77,21 @@ accountRouter.put('/updateSavedCourse', async (req: Request, res: Response) => {
   });
 
 
+accountRouter.put('/updateColour', async (req: Request, res: Response) => {
+  const account = {
+    utorid: req.body.utorid
+  };
+
+  utmQuestCollections.Accounts?.findOneAndUpdate(account, {
+      $set: {colour: req.body.colour}
+    }).then((result) => {
+      if (!result) {
+        res.status(400).send(`Unable to update colour`);
+      }
+      res.status(200).send(result);
+    }).catch((error) => {
+      res.status(500).send(error);
+    });
+});
+
 export default accountRouter;
