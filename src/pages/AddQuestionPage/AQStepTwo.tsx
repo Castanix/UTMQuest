@@ -8,6 +8,7 @@ import qnsTypeEnum from './types/QnsTypeEnum';
 import qnsStatusType from './types/QnsStatusType';
 import AddQuestion from './fetch/AddQuestion';
 import AddMultipleChoice, { AddOptionType } from '../../components/MultipleChoice/AddMultipleChoice/AddMultipleChoice';
+import DuplicateQuestions from '../../components/DuplicateQuestions/DuplicateQuestions';
 
 
 const { Option } = Select;
@@ -104,11 +105,20 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                                 <Option key='mc' value='mc'>Multiple Choice</Option>
                                 <Option key='short' value='short'>Short Answer</Option>
                             </Select>
+<<<<<<< HEAD
+=======
+                        </Form.Item>
+                        <Form.Item>
+                            {DuplicateQuestions(courseCode, topicSelected[0], title)}
+>>>>>>> 1467fe8 (feat: add duplicate question finder)
                         </Form.Item>
                         <Form.Item label="Problem Description" required>
                             <MDEditor
                                 height={300}
+<<<<<<< HEAD
                                 style={{ width: '35vw' }}
+=======
+>>>>>>> 1467fe8 (feat: add duplicate question finder)
                                 value={problemValue}
                                 textareaProps={{ placeholder: "Add Problem" }}
                                 onChange={setProblemValue}
@@ -123,7 +133,10 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                             <Form.Item label="Explanation (Optional)">
                                 <MDEditor
                                     height={300}
+<<<<<<< HEAD
                                     style={{ width: '35vw' }}
+=======
+>>>>>>> 1467fe8 (feat: add duplicate question finder)
                                     value={explanationValue}
                                     textareaProps={{ placeholder: "Add Explanation" }}
                                     onChange={setExplanationValue}
