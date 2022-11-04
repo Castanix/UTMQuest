@@ -3,15 +3,15 @@ import { Avatar, Button, Checkbox, Comment, Form, message, Space, } from "antd";
 import rehypeSanitize from "rehype-sanitize";
 import MDEditor from "@uiw/react-md-editor";
 import { Link } from "react-router-dom";
-import DiscussionType from "../../../backend/types/Discussion";
+import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 
 import "./Editor.css";
 
-const AddComment = (questionId: string, op: boolean, content: string, isAnon: boolean) => {
+const AddComment = async (discussionId: string, questionId: string, op: boolean, content: string, isAnon: boolean) => {
     // MAKE POST CALL HERE
-    const newComment: DiscussionType = {
+    const newComment: DiscussionFrontEndType = {
         _id: `id${(new Date()).getTime()}`,
-        questionId,
+        question: questionId,
         op,
         authId: '123',
         authName: isAnon ? "Anonymous" : "Some User",
@@ -19,23 +19,66 @@ const AddComment = (questionId: string, op: boolean, content: string, isAnon: bo
         thread: [],
         date: new Date().toLocaleDateString(),
         deleted: false,
-        isAnon,
+        anon: isAnon,
     };
 
-    return newComment;
+    const postedComment: DiscussionFrontEndType = await fetch(
+        `${process.env.REACT_APP_API_URI}/discussion/${questionId}`,
+        {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newComment)}
+    ).then((res: Response) => { 
+        if (!res.ok) throw Error(res.statusText);
+        return res.json();
+    }).then((result) => { 
+        newComment._id = result.insertedId;
+        return newComment;
+    });
+    
+    // when making a reply discussionId is not null and therefore need to populate the comment before with the new comment id 
+    // Make a get and put request HERE 
+    if (discussionId !== null) {
+        const prevDiscussion = await fetch(`${process.env.REACT_APP_API_URI}/discussion/${discussionId}`).then((res: Response)=>{
+            if (!res.ok) throw Error(res.statusText);
+            return res.json();
+        });
+
+        const updatePrevDiscussion = {
+            ...prevDiscussion,
+            thread: [...prevDiscussion.thread, postedComment._id]
+        };
+
+        // update call 
+        await fetch(`${process.env.REACT_APP_API_URI}/discussion/${discussionId}`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatePrevDiscussion)
+        });
+    }
+
+    return postedComment;
 };
 
-const Editor = ({ questionId, op, updateComments }: { questionId: string, op: boolean, updateComments: Function }) => {
+const Editor = ({ discussionId, questionId, op, updateComments }: { discussionId: string | null, questionId: string, op: boolean, updateComments: Function }) => {
     const [content, setContent] = useState<string>("");
     const [isAnon, setAnon] = useState<boolean>(false);
+    const [commented, setCommented] = useState<DiscussionFrontEndType>();
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         if (content.trim().length <= 0) {
             message.info("Invalid comment.");
             return;
         }
-        const newComment = AddComment(questionId, op, content, isAnon);
+        const newComment = await AddComment(discussionId as string, questionId, op, content, isAnon);
         updateComments(newComment);
+        setCommented(newComment);
         setContent("");
         setAnon(false);
     };
@@ -45,7 +88,7 @@ const Editor = ({ questionId, op, updateComments }: { questionId: string, op: bo
             avatar={
                 <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
             }
-            author={<Link to="/">Han Solo</Link>}
+            author={<Link to="/">{commented?.authName ?? 'Anonymous'}</Link>}
             content={
                 <span>
                     <Form.Item>

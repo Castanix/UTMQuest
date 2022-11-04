@@ -3,21 +3,21 @@ import { Comment, Popconfirm } from "antd";
 import { QuestionOutlined } from "@ant-design/icons";
 import MDEditor from "@uiw/react-md-editor";
 import { Link } from "react-router-dom";
-import DiscussionType from "../../../backend/types/Discussion";
+import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 import GetChildComments from "./fetch/GetChildComments";
 import Editor from "./Editor";
 
 import "./Discussion.css";
 
-const DisplayComment = ({ comment }: { comment: DiscussionType }) => {
-    const [displayComment, setDisplayComment] = useState<DiscussionType>(comment);
-    const [childComments, setChildComments] = useState<DiscussionType[]>([]);
+const DisplayComment = ({ comment }: { comment: DiscussionFrontEndType }) => {
+    const [displayComment, setDisplayComment] = useState<DiscussionFrontEndType>(comment);
+    const [childComments, setChildComments] = useState<DiscussionFrontEndType[]>([]);
     const [isDisplayed, setDisplay] = useState(!(displayComment.thread.length > 0));
     const [showReply, setShowReply] = useState(false);
     const actions = [];
 
     /* callback after a new comment is successfully added to update the parent comment */
-    const updateComments = (newComment: DiscussionType) => {
+    const updateComments = (newComment: DiscussionFrontEndType) => {
         setChildComments([...childComments, newComment]);
         setDisplayComment({
             ...displayComment,
@@ -29,10 +29,17 @@ const DisplayComment = ({ comment }: { comment: DiscussionType }) => {
     /* executes when you delete a comment */
     const onDeleteClick = () => {
         // MAKE DELETE CALL
-        setDisplayComment({
-            ...displayComment,
-            content: "This comment has been deleted by the original author or a moderator.",
-            deleted: true
+        fetch(`${process.env.REACT_APP_API_URI}/discussion/${comment._id}`, { 
+            method: 'DELETE'
+        }).then((res: Response) => { 
+            if (!res.ok) throw Error(res.statusText);
+            return res.json();
+        }).then((result) => { 
+            setDisplayComment({
+                ...displayComment,
+                content: result.value.content,
+                deleted: result.value.deleted
+            });  
         });
     };
 
@@ -57,7 +64,14 @@ const DisplayComment = ({ comment }: { comment: DiscussionType }) => {
             key="comment-nested-reply-to"
             role="presentation"
         >
-            {!displayComment.deleted ? "Reply to" : ""}
+            {
+            // eslint-disable-next-line no-nested-ternary
+            !displayComment.deleted 
+                ? !showReply 
+                    ? "Reply to" 
+                    : "Close"
+                : ""
+            }
         </span>,
         <span
             key="comment-nested-delete"
@@ -81,7 +95,7 @@ const DisplayComment = ({ comment }: { comment: DiscussionType }) => {
             author={<span><Link to="/">{displayComment.authName}</Link> on {new Date(displayComment.date).toDateString()}</span>}
             avatar={
                 <div className='comment-img'>
-                    {displayComment.isAnon ?
+                    {displayComment.anon ?
                         <QuestionOutlined />
                         :
                         <p>{firstInitial.concat(lastInitial)}</p>
@@ -91,7 +105,7 @@ const DisplayComment = ({ comment }: { comment: DiscussionType }) => {
         >
             {childComments.map((item) => (<DisplayComment key={item._id} comment={item} />)
             )}
-            {showReply ? <Editor questionId={displayComment.questionId} op={false} updateComments={updateComments} /> : null}
+            {showReply ? <Editor discussionId={displayComment._id} questionId={displayComment.question} op={false} updateComments={updateComments} /> : null}
         </Comment>
     );
 };

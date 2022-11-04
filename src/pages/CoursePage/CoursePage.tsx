@@ -1,15 +1,16 @@
 import {
-  Card, Breadcrumb, Button, Space, Typography,
+  Card, Breadcrumb, Button, Space, Typography
 } from 'antd';
 import Icon, {
-  SettingOutlined, StarOutlined, ContainerTwoTone, PlusCircleTwoTone, DiffTwoTone,
+  SettingOutlined, StarOutlined, StarFilled, ContainerTwoTone, PlusCircleTwoTone, DiffTwoTone,
 } from '@ant-design/icons';
 import { Link, useParams } from 'react-router-dom';
 import './CoursePage.css';
-import React from 'react';
+import React, { useState } from 'react';
 import Loading from '../../components/Loading/Loading';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import GetCourse from './fetch/GetCourse';
+import { CheckSaved, SaveCourse } from './fetch/SavedCourses';
 
 const { Title } = Typography;
 
@@ -23,8 +24,8 @@ const GetCard = ({ cardIcon, title }:
   </Card>
 );
 
-const Header = ({ courseCode, courseName }:
-  { courseCode: string, courseName: string }) => (
+const Header = ({ courseCode, courseName, favourite, setFavourite }:
+  { courseCode: string, courseName: string, favourite: boolean, setFavourite: Function }) => (
   <div>
     <Breadcrumb>
       <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
@@ -40,7 +41,14 @@ const Header = ({ courseCode, courseName }:
               Manage Topics
             </Button>
           </Link>
-          <Button type="primary" icon={<StarOutlined />} shape="round" />
+          <Button 
+            type="primary" 
+            icon={favourite ? <StarFilled /> : <StarOutlined />} 
+            shape="round" 
+            onClick={() => {
+              SaveCourse(courseCode, favourite, setFavourite);
+            }}
+          />
         </Space>
       </div>
     </div>
@@ -51,14 +59,18 @@ const CoursePage = () => {
   // fetch the course here
   const params = useParams();
   const courseCode = params.id;
-  const { loading, courseName, error } = GetCourse(courseCode ?? '');
+  const { loadingCourses, courseName, errorCourses } = GetCourse(courseCode ?? '');
+  
+  const [isSaved, setIsSaved] = useState<boolean>(false);
+  const { loadingSaved, errorSaved } = CheckSaved(courseCode ?? '', setIsSaved);
 
-  if (loading) return <Loading />;
+  if (loadingCourses || loadingSaved) return <Loading />;
 
-  if (error !== '') return <ErrorMessage title={error} link="/courses" message="Go back to courses" />;
+  if (errorCourses !== '') return <ErrorMessage title={errorCourses} link="/courses" message="Go back to courses" />;
+  if (errorSaved !== '') return <ErrorMessage title={errorSaved} link="/courses" message="Go back to courses" />;
 
   return (
-    <Card title={<Header courseCode={courseCode ?? ''} courseName={courseName ?? ''} />} bordered={false}>
+    <Card title={<Header courseCode={courseCode ?? ''} courseName={courseName ?? ''} favourite={isSaved} setFavourite={setIsSaved} />} bordered={false}>
       <main className="main-container">
         <div className="cards">
           <Link to={`/courses/${courseCode}/browse`}><GetCard cardIcon={ContainerTwoTone} title="Browse Questions" /></Link>
