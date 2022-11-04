@@ -19,7 +19,7 @@ async function initDB() {
 				$jsonSchema: {
 					bsonType: "object",
 					title: "Accounts Object Validation",
-					required: ["utorid", "utorName", "savedCourses"],
+					required: ["utorid", "utorName", "savedCourses", "colour", "badges"],
 					additionalProperties: false,
 					properties: {
 						_id: {
@@ -45,6 +45,22 @@ async function initDB() {
 								bsonType: "string",
 								description:
 									"items in array must be a string referencing the Courses collection or empty",
+							},
+						},
+						colour: {
+							bsonType: "string",
+							description:
+								"'colour' must be a string and is required",
+						},
+						badges: {
+							bsonType: "array",
+							description:
+								"'badges' must be an array and is required",
+							uniqueItems: true,
+							items: {
+								bsonType: "string",
+								description:
+									"items in array must be a string describing the badge they earned",
 							},
 						},
 					},
@@ -288,7 +304,7 @@ async function initDB() {
 						date: {
 							bsonType: "string",
 							description:
-								"'date' must be a date, specifically the date it was created, and is required",
+								"'date' must be a string, specifically the date it was created, and is required",
 						},
 						numDiscussions: {
 							bsonType: "int",
@@ -381,7 +397,7 @@ async function initDB() {
 						date: {
 							bsonType: "string",
 							description:
-								"'date' must be a date, specifically the date it was created, and is required",
+								"'date' must be a string, specifically the date it was created, and is required",
 						},
 						deleted: {
 							bsonType: "bool",

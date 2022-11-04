@@ -13,7 +13,7 @@ import QuestionsPage from './pages/QuestionsPage/QuestionsPage';
 import AddQuestionPage from './pages/AddQuestionPage/AddQuestionPage';
 import ApprovedQuestion from './pages/ApprovedQuestion/ApprovedQuestion';
 import LandingPage from './pages/LandingPage/LandingPage';
-
+import ProfilePage from './pages/ProfilePage/ProfilePage';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -53,6 +53,7 @@ root.render(
         <Route path="/courses/:id/browse" element={<QuestionsPage />} />
         <Route path="/courses/:courseId/question/:link" element={<ApprovedQuestion />} />
         <Route path="/profile" element={<div>Coming soon</div>} />
+        <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="*" element={<div>Page not found</div>} />
       </Routes>
     </Topbar>

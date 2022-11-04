@@ -7,8 +7,38 @@ import { utmQuestCollections } from "../db/db.service";
 const questionRouter = Router();
 
 
+<<<<<<< HEAD
 const updateBadge = async (utorid: string) => {
 	const failed = {code: 500, message: `Update 'questionsEdited' field for badges collection failed. Reverting all changes.`, questionStatus: null};
+=======
+// /courses/:courseId/question/:id
+questionRouter.get('/allPostedQuestions/:utorid', async (req: Request, res: Response) => {
+    try {
+        const questions = await utmQuestCollections.Questions?.find({ authId: req.params.utorid }).toArray();
+        if (!questions) { 
+            res.status(404).send("No question found.");
+            return;
+        }
+        res.status(200).send(questions);
+    } catch (error) {
+        res.status(500).send(`ERROR: ${error}`);
+    }
+});
+
+questionRouter.get('/allDiscussions/:questionId', async (req: Request, res: Response) => {
+    try { 
+        const discussions = await utmQuestCollections.Discussions?.findOne({ question: req.params.questionId }); 
+        if (!discussions) {
+            res.status(404).send('Cannot find discussion');
+            return; 
+        }
+
+        res.status(200).send(discussions);
+    } catch (error){ 
+        res.status(500).send(`ERROR: ${error}`);
+    }
+});
+>>>>>>> Finish profile page
 
 	return utmQuestCollections.Badges?.findOne({ utorid })
 		.then(findRes => {
@@ -29,6 +59,7 @@ const updateBadge = async (utorid: string) => {
 		}).catch(() => failed);
 };
 
+<<<<<<< HEAD
 const updateLatest = (question: any, set: boolean) => {
 	const result = utmQuestCollections.Questions?.updateOne(
 		question,
@@ -49,6 +80,90 @@ questionRouter.get(
 			});
 			if (!question) {
 				res.status(404).send("No question found.");
+=======
+questionRouter.post('/addQuestion', async (req: Request, res: Response) => {
+    // post a new question
+    const today = new Date().toISOString();
+    // const dd = String(today.getDate()).padStart(2, '0');
+    // const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+    // const yyyy = today.getFullYear();
+
+    const question = {
+        topicId: new ObjectID(req.body.topicId), 
+        topicName: req.body.topicName,
+        courseId: req.body.courseId,
+        qnsName: req.body.qnsName, 
+        qnsStatus: req.body.qnsStatus,
+        reviewStatus: req.body.reviewStatus,
+        qnsType: req.body.qnsType, 
+        desc: req.body.desc,
+        xplan: req.body.xplan,
+        choices: req.body.choices, 
+        ans: req.body.ans,
+        authId: req.body.authId,
+        authName: req.body.authName,
+        date: today,
+        numDiscussions: req.body.numDiscussions,
+        anon: req.body.anon,
+        snapshot: null,
+    };
+
+    utmQuestCollections.Questions?.insertOne(question)
+    .then((result) => {
+        if (!result) {
+            res.status(500).send("Unable to add new question.");
+            return;
+        }
+        // INCREMENT COUNTER
+        utmQuestCollections.Topics?.findOneAndUpdate(
+            { _id: new ObjectID(req.body.topicId) }, 
+            { $inc: { numPending: 1 },
+        }).then((incrementResult) => {
+            if (!incrementResult) {
+                res.status(500).send(
+                    `Unable to increment numPending for ${req.body.topicName}`
+                );
+                return;
+            }
+            res.status(201).send(result);
+        });
+    })
+    .catch((error) => {
+        res.status(500).send(error);
+    });
+});
+
+questionRouter.put('/:questionId', async (req: Request, res: Response) => {
+    try { 
+        const findQuestion = await utmQuestCollections.Questions?.findOne({ _id: new ObjectID(req.params.questionId) });
+        if (!findQuestion) { 
+            res.status(404).send("No such question found.");
+            return;
+        }
+
+        // const today = new Date(); 
+        // const dd = String(today.getDate()).padStart(2, '0');
+        // const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        // const yyyy = today.getFullYear(); 
+        const question = { 
+            qnsName: req.body.qsnName, 
+            qnsStatus: req.body.qnsStatus,
+            reviewStatus: req.body.reviewStatus,
+            qnsType: req.body.qnsType, 
+            desc: req.body.desc,
+            xplan: req.body.xplan,
+            choices: req.body.choices, 
+            ans: req.body.ans,
+            authId: req.body.authId,
+            authName: req.body.authName,
+            date: new Date(),
+            snapshot: new ObjectID(), // -> need to update this 
+        };
+
+        await utmQuestCollections.Questions?.updateOne({ _id: new ObjectID(req.params.questionId) }, {$set: question}).then( (result) => { 
+            if (!result) { 
+                res.status(400).send(result);
+>>>>>>> Finish profile page
 				return;
 			}
 			res.status(200).send(question);
