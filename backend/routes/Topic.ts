@@ -5,6 +5,7 @@ import { utmQuestCollections } from "../db/db.service";
 
 const topicRouter = Router();
 
+
 topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 	const course = await utmQuestCollections.Courses?.findOne({
 		courseId: req.params.courseId,
@@ -28,6 +29,7 @@ topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 		});
 });
 
+
 topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 	if (!mongoDB.ObjectId.isValid(req.body._id)) {
 		res.status(400).send("Invalid ObjectId : _id");
@@ -43,9 +45,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
-	const count = topic.numApproved + topic.numPending;
-
-	if (count !== 0) {
+	if (topic.numQuestions !== 0) {
 		res.status(400).send(
 			"Topics must contain no questions before they can be deleted."
 		);
@@ -79,6 +79,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 			res.status(500).send(error);
 		});
 });
+
 
 topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 	if (!mongoDB.ObjectId.isValid(req.body._id)) {
@@ -126,6 +127,7 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 		});
 });
 
+
 topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 	const course = await utmQuestCollections.Courses?.findOne({
 		courseId: req.body.courseId,
@@ -145,8 +147,7 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 	const newTopic = {
 		topicName: newTopicName,
 		course: req.body.courseId,
-		numApproved: 0,
-		numPending: 0,
+		numQuestions: 0
 	};
 
 	utmQuestCollections.Topics?.insertOne(newTopic)

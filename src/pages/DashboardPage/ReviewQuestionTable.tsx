@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React from "react";
 import { DropboxOutlined } from "@ant-design/icons";
 import { Table } from "antd";

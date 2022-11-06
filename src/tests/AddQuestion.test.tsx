@@ -20,8 +20,7 @@ const req: TopicsType =  {
 	_id: "abcd1234",
 	topicName: "ABCD",
 	course: "ABC123",
-	numApproved: 0,
-	numPending: 0,
+	numQuestions: 0
 }
 
 describe('AQStepOne', () => {

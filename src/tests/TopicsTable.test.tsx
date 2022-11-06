@@ -42,15 +42,13 @@ const topics: TopicsType[] = [
     {
         _id: '1234',
         topicName: 'Strings',
-        numApproved: 0,
-        numPending: 0,
+        numQuestions: 0,
         course: 'test'
     },
     {
         _id: '12345',
         topicName: 'Arrays',
-        numApproved: 1,
-        numPending: 0,
+        numQuestions: 1,
         course: 'test'
     }
 ]

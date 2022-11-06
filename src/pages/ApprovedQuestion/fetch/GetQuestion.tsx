@@ -8,7 +8,7 @@ const GetQuestion = (id: string) => {
 
     useEffect(() => {
         fetch(
-            `${process.env.REACT_APP_API_URI}/question/${id}`
+            `${process.env.REACT_APP_API_URI}/question/oneQuestion/${id}`
         )
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);

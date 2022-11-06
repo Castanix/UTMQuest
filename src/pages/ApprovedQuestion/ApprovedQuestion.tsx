@@ -39,15 +39,14 @@ const ShortAnswerTab = ({ actualQuestion, answer }: { actualQuestion: string, an
     </div>
 );
 
-const Header = ({ question, approved }: { question: QuestionsType, approved: boolean }) => (
+
+const Header = ({ question }: { question: QuestionsType }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Link to="/courses">Courses</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}>{question.courseId}</Link></Breadcrumb.Item>
-            {approved ?
-                <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}>Browse Questions</Link></Breadcrumb.Item> :
-                <Breadcrumb.Item>Review Questions</Breadcrumb.Item>}
+            <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}>Browse Questions</Link></Breadcrumb.Item>
             <Breadcrumb.Item>{question.qnsName}</Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">
@@ -87,10 +86,10 @@ const tabList = [
     },
 ];
 
-const ApprovedQuestion = ({ approved }: { approved: boolean }) => {
+const ApprovedQuestion = () => {
     const [activeTabKey, setActiveTabKey] = useState<string>('Question');
     const params = useParams();
-    const id = params.id ?? '';
+    const id = params.link ?? '';
     const { loading, question, error } = GetQuestion(id);
 
     if (loading) return <Loading />;
@@ -110,7 +109,7 @@ const ApprovedQuestion = ({ approved }: { approved: boolean }) => {
     return (
         <Card
             style={{ width: '100%' }}
-            title={<Header question={question} approved={approved} />}
+            title={<Header question={question} />}
             tabList={tabList}
             activeTabKey={activeTabKey}
             onTabChange={key => {
