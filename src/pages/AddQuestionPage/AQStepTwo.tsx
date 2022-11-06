@@ -32,7 +32,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     useEffect(() => {
         const setForm = () => {
             if(question) {
-                const { link, qnsName, qnsType, desc, xplan, choices, ans, anon } = question;
+                const { link, qnsName, qnsType, desc, xplan, choices, ans } = question;
     
                 setLink(link);
                 setTitle(qnsName);
@@ -49,7 +49,6 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                 if(typeof(ans) === "string") {
                     setSolValue(ans);
                 };
-                setAnon(anon);
             };
         }
         setForm();
