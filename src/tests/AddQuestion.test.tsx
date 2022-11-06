@@ -66,7 +66,7 @@ describe('AQStepTwo', () => {
         const Wrapper = () => {
             const [currStep, setCurrStep] = React.useState<number>(1)
             const [topicSelected, setTopicSelect] = React.useState<[string, string]>(["abcd1234", "ABCD"])
-            return <AQStepTwo courseCode={"ABC123"} topicSelected={topicSelected} setCurrStep={setCurrStep} />
+            return <AQStepTwo courseCode={"ABC123"} topicSelected={topicSelected} setCurrStep={setCurrStep} edit={false} />
         }
     
         const { container } = render(<Wrapper />, {wrapper: BrowserRouter});

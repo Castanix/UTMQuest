@@ -1,6 +1,8 @@
+/* eslint-disable */
+
 import { Button, Checkbox, Form, Input, Select } from 'antd';
-import { Navigate } from 'react-router-dom';
-import React, { useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import rehypeSanitize from 'rehype-sanitize';
 import { QuestionsType } from '../../../backend/types/Questions';
@@ -13,17 +15,45 @@ import DuplicateQuestions from '../../components/DuplicateQuestions/DuplicateQue
 
 const { Option } = Select;
 
-const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
-    { courseCode: string, topicSelected: [string, string], setCurrStep: Function }) => {
+const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
+    { courseCode: string, topicSelected: [string, string], setCurrStep: Function, edit: boolean }) => {
 
     const [type, setType] = useState<qnsTypeEnum>();
-    const [title, setTitle] = useState<string>('');
+    const [title, setTitle] = useState<string>();
     const [problemValue, setProblemValue] = useState<string>();
     const [explanationValue, setExplanationValue] = useState<string>();
     const [mcOption, setMcOption] = useState<AddOptionType[]>([{ _id: 1, value: "", isCorrect: false }, { _id: 2, value: "", isCorrect: false }]);
     const [solValue, setSolValue] = useState<string>();
     const [redirect, setRedirect] = useState<string>();
     const [isAnon, setAnon] = useState<boolean>(false);
+
+
+    const { question } = useLocation().state ?? "";
+    useEffect(() => {
+        const setForm = () => {
+            if(question) {
+                const { qnsName, qnsType, desc, xplan, choices, ans, anon } = question;
+    
+                setTitle(qnsName);
+                setType(qnsType);
+                setProblemValue(desc);
+                setExplanationValue(xplan);
+                if(typeof(ans) === "object") {
+                    const mcArr: AddOptionType[] = [];
+                    choices.forEach((choice: string, index: number) => {
+                        mcArr.push({_id: index+1, value: choice, isCorrect: ans.includes(choice)});
+                    });
+                    setMcOption(mcArr);
+                };
+                if(typeof(ans) === "string") {
+                    setSolValue(ans);
+                };
+                setAnon(anon);
+            };
+        }
+        setForm();
+    }, [question]);
+    
 
     const setAnswerType = () => {
         let el: React.ReactNode;
@@ -61,7 +91,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                 if (!item.value.trim()) {
                     ret = false;
                     return;
-                }
+                };
                 if (item.isCorrect) numCorrect += 1;
             });
 
@@ -88,7 +118,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
             >
                 <div className="items-container">
                     <div className="answer-form">
-                        <Form.Item name="title" label="Question Title" required>
+                        <Form.Item name="title" label="Question Title" initialValue={question ? question.qnsName : ""} required>
                             <Input
                                 placeholder='Add Question Title'
                                 value={title}
@@ -96,8 +126,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                                 style={{ width: 'max(16rem, 20vw)' }}
                             />
                         </Form.Item>
-
-                        <Form.Item name='type' label="Answer Type" required>
+                        <Form.Item name='type' label="Answer Type" initialValue={question ? question.qnsType : null} required>
                             <Select
                                 placeholder="Select Type"
                                 onChange={(value: qnsTypeEnum) => { setType((value === "mc") ? qnsTypeEnum.mc : qnsTypeEnum.short); }}
@@ -108,7 +137,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                             </Select>
                         </Form.Item>
                         <Form.Item>
-                            {DuplicateQuestions(courseCode, topicSelected[0], title)}
+                            {DuplicateQuestions(courseCode, topicSelected[0], (title ?? ''))}
                         </Form.Item>
                         <Form.Item label="Problem Description" required>
                             <MDEditor
@@ -152,7 +181,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                     <Checkbox onChange={() => setAnon(!isAnon)}>Post Anonymously<br />(to other users only)</Checkbox>
                     <Button
                         type="primary"
-                        disabled={!((type && title.trim() && problemValue?.trim() && verifySol()))}
+                        disabled={!((type && (title ?? '').trim() && problemValue?.trim() && verifySol()))}
                         onClick={() => {
                             const choices: string[] = [];
                             let ans: string[] | string = solValue ?? '';
@@ -173,7 +202,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                                 topicId: topicSelected[0],
                                 topicName: topicSelected[1],
                                 courseId: courseCode,
-                                qnsName: title,
+                                qnsName: (title ?? ''),
                                 qnsStatus: qnsStatusType.pending,
                                 reviewStatus: 0,
                                 qnsType: type,

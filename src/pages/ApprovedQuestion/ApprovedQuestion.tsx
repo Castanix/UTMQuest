@@ -39,26 +39,25 @@ const ShortAnswerTab = ({ actualQuestion, answer }: { actualQuestion: string, an
     </div>
 );
 
-const Header = ({ courseCode, courseTitle, approved, questionName, topicName, author, date }:
-    { courseCode: string, courseTitle: string, approved: boolean, questionName: string, topicName: string, author: string, date: string }) => (
+const Header = ({ question, approved }: { question: QuestionsType, approved: boolean }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Link to="/courses">Courses</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}>{question.courseId}</Link></Breadcrumb.Item>
             {approved ?
-                <Breadcrumb.Item><Link to={`/courses/${courseCode}/browse`}>Browse Questions</Link></Breadcrumb.Item> :
+                <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}>Browse Questions</Link></Breadcrumb.Item> :
                 <Breadcrumb.Item>Review Questions</Breadcrumb.Item>}
-            <Breadcrumb.Item>{questionName}</Breadcrumb.Item>
+            <Breadcrumb.Item>{question.qnsName}</Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">
             <div className="title-flex">
-                <Title level={3} ellipsis>{courseTitle} <div className="subtitle">&#8226; {topicName}</div></Title>
-                <Text type="secondary">{`by ${author} on ${new Date(date).toDateString()}`}</Text>
+                <Title level={3} ellipsis>{question.courseId} <div className="subtitle">&#8226; {question.topicName}</div></Title>
+                <Text type="secondary">{`by ${question.authName} on ${new Date(question.date).toDateString()}`}</Text>
             </div>
             <div className="icon-buttons">
                 <div className="flex-child">
-                    <Button type="link" icon={<EditTwoTone style={{ fontSize: '1.35rem', alignItems: 'center' }} />} />
+                    <Link to={`/courses/${question.courseId}/editQuestion`} state={{ question }}><Button type="link" icon={<EditTwoTone style={{ fontSize: '1.35rem', alignItems: 'center' }} />} /></Link>
                     <p className="icon-text">Edit</p>
                 </div>
                 <div className="flex-child">
@@ -91,7 +90,6 @@ const tabList = [
 const ApprovedQuestion = ({ approved }: { approved: boolean }) => {
     const [activeTabKey, setActiveTabKey] = useState<string>('Question');
     const params = useParams();
-    const courseCode = params.courseId;
     const id = params.id ?? '';
     const { loading, question, error } = GetQuestion(id);
 
@@ -112,8 +110,7 @@ const ApprovedQuestion = ({ approved }: { approved: boolean }) => {
     return (
         <Card
             style={{ width: '100%' }}
-            title={<Header courseCode={courseCode ?? ''} courseTitle={`${courseCode} `} approved={approved}
-                questionName={question.qnsName} topicName={question.topicName} author={question.authName} date={question.date} />}
+            title={<Header question={question} approved={approved} />}
             tabList={tabList}
             activeTabKey={activeTabKey}
             onTabChange={key => {
