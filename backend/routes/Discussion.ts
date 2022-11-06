@@ -70,11 +70,6 @@ discussionRouter.post('/:questionId', async (req: Request, res: Response) => {
         return;
     };
 
-    const today = new Date();
-    const dd = String(today.getDate()).padStart(2, '0');
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-    const yyyy = today.getFullYear();
-
     const discussion = {
         question: new ObjectID(req.params.questionId),
         op: req.body.op, 
@@ -82,7 +77,7 @@ discussionRouter.post('/:questionId', async (req: Request, res: Response) => {
         authName: req.body.authName,
         content: req.body.content,
         thread: req.body.thread, 
-        date: `${mm}/${dd}/${yyyy}`,
+        date: new Date().toISOString(),
         deleted: false,
         anon: req.body.anon
     };     
@@ -92,8 +87,21 @@ discussionRouter.post('/:questionId', async (req: Request, res: Response) => {
             res.status(500).send("Unable to add new discussion.");
             return;
         }
-        
-        res.status(201).send(result);
+
+        // INCREMENT COUNTER
+        utmQuestCollections.Questions?.findOneAndUpdate(
+            { _id: new ObjectID(req.params.questionId) },
+            { $inc: { numDiscussions: 1 } }
+        ).then((incrementResult) => {
+            if (!incrementResult) {
+                res.status(500).send(
+                    `Unable to increment numDiscussions for ${req.params.questionId}`
+                );
+                return;
+            }
+            res.status(201).send(result);
+        });
+
     }).catch((error) => {
         res.status(500).send(error);
     });;

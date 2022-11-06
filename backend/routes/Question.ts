@@ -63,7 +63,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 
 	const question = {
 		_id: mongoId,
-		link: link,
+		link,
 		topicId: new ObjectID(req.body.topicId),
 		topicName: req.body.topicName,
 		courseId: req.body.courseId,
@@ -147,14 +147,14 @@ questionRouter.put("/edit/:questionId", async (req: Request, res: Response) => {
 				utmQuestCollections.Questions?.findOneAndUpdate(
 					{ _id: new ObjectID(req.body.oldVersion) },
 					{ $set: { latest: false } }
-				).then((result) => {
-					if (!result) {
+				).then((linkResult) => {
+					if (!linkResult) {
 						res.status(500).send(
 							`Unable to update latest flag for ${req.body.oldVersion}`
 						);
 						return;
 					};
-					res.status(201).send(result);
+					res.status(201).send(linkResult);
 				});
 			}).catch((error) => {
 				res.status(500).send(error);
@@ -222,7 +222,7 @@ questionRouter.get("/similar/:topicId/:term", async (req: Request, res: Response
 });
 
 
-/******** Currently not being used ********/
+/** ****** Currently not being used ******* */
 // questionRouter.delete("/:questionId", async (req: Request, res: Response) => {
 // 	try {
 // 		const question = await utmQuestCollections.Questions?.findOne({
