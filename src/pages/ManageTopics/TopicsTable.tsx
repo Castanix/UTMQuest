@@ -73,15 +73,9 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
         },
         {
             title: '# Questions',
-            dataIndex: 'numApproved',
+            dataIndex: 'numQuestions',
             width: '15%',
-            sorter: (a: TopicsType, b: TopicsType) => a.numApproved - b.numApproved,
-        },
-        {
-            title: '# Questions Pending Review',
-            dataIndex: 'numPending',
-            width: '15%',
-            sorter: (a: TopicsType, b: TopicsType) => a.numPending - b.numPending,
+            sorter: (a: TopicsType, b: TopicsType) => a.numQuestions - b.numQuestions,
         },
         {
             title: 'Manage',

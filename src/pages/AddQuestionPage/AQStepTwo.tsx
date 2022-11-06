@@ -5,7 +5,6 @@ import MDEditor from '@uiw/react-md-editor';
 import rehypeSanitize from 'rehype-sanitize';
 import { QuestionsType } from '../../../backend/types/Questions';
 import qnsTypeEnum from './types/QnsTypeEnum';
-import qnsStatusType from './types/QnsStatusType';
 import AddQuestion from './fetch/AddQuestion';
 import AddMultipleChoice, { AddOptionType } from '../../components/MultipleChoice/AddMultipleChoice/AddMultipleChoice';
 import DuplicateQuestions from '../../components/DuplicateQuestions/DuplicateQuestions';
@@ -170,12 +169,11 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
 
                             const questionObj: QuestionsType = {
                                 _id: '',
+                                link: '',
                                 topicId: topicSelected[0],
                                 topicName: topicSelected[1],
                                 courseId: courseCode,
                                 qnsName: title,
-                                qnsStatus: qnsStatusType.pending,
-                                reviewStatus: 0,
                                 qnsType: type,
                                 desc: problemValue ?? "",
                                 xplan: explanationValue ?? "",
@@ -186,7 +184,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                                 date: '',
                                 numDiscussions: 0,
                                 anon: isAnon,
-                                snapshot: null,
+                                latest: true
                             };
                             AddQuestion(questionObj, setRedirect);
                         }}

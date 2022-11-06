@@ -1,8 +1,8 @@
 import React from 'react';
 import TopicsType from '../../backend/types/Topics';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import QuestionsList from '../pages/QuestionsPage/QuestionsList';
-import { qnsStatusType, qnsTypeEnum, QuestionsType } from '../../backend/types/Questions';
+import { qnsTypeEnum, QuestionsType } from '../../backend/types/Questions';
 import { BrowserRouter } from 'react-router-dom';
 
 Object.defineProperty(window, 'matchMedia', {
@@ -19,15 +19,13 @@ const topics: TopicsType[] = [
     {
         _id: '1234',
         topicName: 'Strings',
-        numApproved: 0,
-        numPending: 0,
+        numQuestions: 0,
         course: 'test'
     },
     {
         _id: '12345',
         topicName: 'Arrays',
-        numApproved: 1,
-        numPending: 0,
+        numQuestions: 1,
         course: 'test'
     }
 ]
@@ -35,12 +33,11 @@ const topics: TopicsType[] = [
 const questions: QuestionsType[] = [
     {
         _id: 'abcd',
+        link: 'abcd',
         topicId: '12345',
         topicName: 'Strings',
         courseId: 'test',
         qnsName: 'Hello World Strings',
-        qnsStatus: qnsStatusType.approved,
-        reviewStatus: 0,
         qnsType: qnsTypeEnum.mc,
         desc: 'description',
         xplan: 'none',
@@ -51,16 +48,15 @@ const questions: QuestionsType[] = [
         date: 'Mon Oct 24 2022',
         numDiscussions: 1,
         anon: false,
-        snapshot: null,
+        latest: true,
     },
     {
         _id: 'abcde',
+        link: 'abcde',
         topicId: '123456',
         topicName: 'Arrays',
         courseId: 'test',
         qnsName: 'Arrays question',
-        qnsStatus: qnsStatusType.approved,
-        reviewStatus: 0,
         qnsType: qnsTypeEnum.mc,
         desc: 'description',
         xplan: 'none',
@@ -71,14 +67,14 @@ const questions: QuestionsType[] = [
         date: 'Mon Oct 24 2022',
         numDiscussions: 0,
         anon: false,
-        snapshot: null,
+        latest: true
     },
 ]
 
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<QuestionsList questions={questions} topics={topics} approved />, { wrapper: BrowserRouter })
+    const { container } = render(<QuestionsList questions={questions} topics={topics} />, { wrapper: BrowserRouter })
     document = container;
 });
 

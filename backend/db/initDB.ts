@@ -127,8 +127,7 @@ async function initDB() {
 					title: "Topics Object Validation",
 					required: [
 						"topicName",
-						"numApproved",
-						"numPending",
+						"numQuestions",
 						"course",
 					],
 					additionalProperties: false,
@@ -142,15 +141,10 @@ async function initDB() {
 							description:
 								"'topicName' must be a string and is required",
 						},
-						numApproved: {
+						numQuestions: {
 							bsonType: "int",
 							description:
-								"'numApproved' must be an int and is required",
-						},
-						numPending: {
-							bsonType: "int",
-							description:
-								"'numPending' must be an int and is required",
+								"'numQuestions' must be an int and is required",
 						},
 						course: {
 							bsonType: "string",
@@ -192,12 +186,11 @@ async function initDB() {
 					bsonType: "object",
 					title: "Questions Object Validation",
 					required: [
+						"link",
 						"topicId",
 						"topicName",
 						"courseId",
 						"qnsName",
-						"qnsStatus",
-						"reviewStatus",
 						"qnsType",
 						"desc",
 						"xplan",
@@ -208,13 +201,18 @@ async function initDB() {
 						"date",
 						"numDiscussions",
 						"anon",
-						"snapshot",
+						"latest",
 					],
 					additionalProperties: false,
 					properties: {
 						_id: {
 							bsonType: "objectId",
 							description: "auto-generated objectId",
+						},
+						link: {
+							bsonType: "string",
+							description:
+								"'link' must be a string, should be the original version's _id, and is shared by all the versions of a question"
 						},
 						topicId: {
 							bsonType: "objectId",
@@ -235,16 +233,6 @@ async function initDB() {
 							bsonType: "string",
 							description:
 								"'qnsName' must be a string and is required",
-						},
-						qnsStatus: {
-							enum: ["approved", "pending"],
-							description:
-								"'qnsStatus' must be specifically 'approved' or 'pending', and is required",
-						},
-						reviewStatus: {
-							bsonType: "int",
-							description:
-								"'reviewStatus' must be an int if qnsStatus is pending or else null, and is required",
 						},
 						qnsType: {
 							enum: ["mc", "short"],
@@ -308,10 +296,10 @@ async function initDB() {
 							description:
 								"'anon' must be a bool, and is required"
 						},
-						snapshot: {
-							bsonType: ["objectId", "null"],
+						latest: {
+							bsonType: "bool",
 							description:
-								"'snapshot' must be an objectId of an old copy of itself or null",
+								"'latest' must be a bool which represents the latest version of a question"
 						},
 					},
 				},
