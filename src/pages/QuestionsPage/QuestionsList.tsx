@@ -81,7 +81,7 @@ const QuestionsList = ({ questions, topics }:
                                     <PageHeader
                                         className="question-list-page-header"
                                         title={
-                                            <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item._id}`}>
+                                            <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.link}`}>
                                                 {item.qnsName}
                                             </Link>}
                                     >

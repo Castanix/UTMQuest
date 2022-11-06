@@ -7,10 +7,11 @@ const questionRouter = Router();
 
 
 // "/:questionId"
-questionRouter.get("/oneQuestion/:questionId", async (req: Request, res: Response) => {
+questionRouter.get("/oneQuestion/:link", async (req: Request, res: Response) => {
 	try {
 		const question = await utmQuestCollections.Questions?.findOne({
-			_id: new ObjectID(req.params.questionId),
+			link: req.params.link,
+			latest: true
 		});
 		if (!question) {
 			res.status(404).send("No question found.");
@@ -107,18 +108,20 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 });
 
 
-questionRouter.put("/edit/:questionId", async (req: Request, res: Response) => {
+questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 	try {
-		const findQuestion = await utmQuestCollections.Questions?.findOne({
-			_id: new ObjectID(req.params.questionId),
+		const oldVersion = await utmQuestCollections.Questions?.findOne({
+			_id: new ObjectID(req.body.oldVersion),
 		});
-		if (!findQuestion) {
+		if (!oldVersion) {
 			res.status(404).send("No such question found.");
 			return;
 		}
 
+		const {link} = req.body;
+
 		const question = {
-			link: req.body.link,
+			link,
 			topicId: new ObjectID(req.body.topicId),
 			topicName: req.body.topicName,
 			courseId: req.body.courseId,
@@ -144,8 +147,8 @@ questionRouter.put("/edit/:questionId", async (req: Request, res: Response) => {
 				}
 
 				// Set previous question version's latest flag to false
-				utmQuestCollections.Questions?.findOneAndUpdate(
-					{ _id: new ObjectID(req.body.oldVersion) },
+				utmQuestCollections.Questions?.updateOne(
+					oldVersion,
 					{ $set: { latest: false } }
 				).then((linkResult) => {
 					if (!linkResult) {
@@ -154,7 +157,7 @@ questionRouter.put("/edit/:questionId", async (req: Request, res: Response) => {
 						);
 						return;
 					};
-					res.status(201).send(linkResult);
+					res.status(201).send({link});
 				});
 			}).catch((error) => {
 				res.status(500).send(error);

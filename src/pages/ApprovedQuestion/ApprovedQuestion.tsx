@@ -56,7 +56,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
             </div>
             <div className="icon-buttons">
                 <div className="flex-child">
-                    <Link to={`/courses/${question.courseId}/editQuestion`} state={{ question }}><Button type="link" icon={<EditTwoTone style={{ fontSize: '1.35rem', alignItems: 'center' }} />} /></Link>
+                    <Link to={`/courses/${question.courseId}/editQuestion`} state={{ question, oldVersion: question._id }}><Button type="link" icon={<EditTwoTone style={{ fontSize: '1.35rem', alignItems: 'center' }} />} /></Link>
                     <p className="icon-text">Edit</p>
                 </div>
                 <div className="flex-child">
@@ -89,8 +89,8 @@ const tabList = [
 const ApprovedQuestion = () => {
     const [activeTabKey, setActiveTabKey] = useState<string>('Question');
     const params = useParams();
-    const id = params.link ?? '';
-    const { loading, question, error } = GetQuestion(id);
+    const link = params.link ?? '';
+    const { loading, question, error } = GetQuestion(link);
 
     if (loading) return <Loading />;
 

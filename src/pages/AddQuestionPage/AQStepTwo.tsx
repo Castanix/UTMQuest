@@ -19,6 +19,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
 
     const [type, setType] = useState<qnsTypeEnum>();
     const [title, setTitle] = useState<string>();
+    const [link, setLink] = useState<string>('');
     const [problemValue, setProblemValue] = useState<string>();
     const [explanationValue, setExplanationValue] = useState<string>();
     const [mcOption, setMcOption] = useState<AddOptionType[]>([{ _id: 1, value: "", isCorrect: false }, { _id: 2, value: "", isCorrect: false }]);
@@ -27,12 +28,13 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     const [isAnon, setAnon] = useState<boolean>(false);
 
 
-    const { question } = useLocation().state ?? "";
+    const { question, oldVersion } = useLocation().state ?? "";
     useEffect(() => {
         const setForm = () => {
             if(question) {
-                const { qnsName, qnsType, desc, xplan, choices, ans, anon } = question;
+                const { link, qnsName, qnsType, desc, xplan, choices, ans, anon } = question;
     
+                setLink(link);
                 setTitle(qnsName);
                 setType(qnsType);
                 setProblemValue(desc);
@@ -198,7 +200,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
 
                             const questionObj: QuestionsType = {
                                 _id: '',
-                                link: '',
+                                link,
                                 topicId: topicSelected[0],
                                 topicName: topicSelected[1],
                                 courseId: courseCode,
@@ -215,7 +217,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 anon: isAnon,
                                 latest: true
                             };
-                            AddQuestion(questionObj, setRedirect);
+                            AddQuestion(questionObj, setRedirect, edit, oldVersion);
                         }}
                     >Submit</Button>
                 </div>
