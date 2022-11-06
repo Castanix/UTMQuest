@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { QuestionsType } from "../../../../backend/types/Questions";
 
-const GetQuestions = (courseCode: string, getApproved: boolean) => {
+const GetQuestions = (courseCode: string) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [questions, setQuestions] = useState<QuestionsType[]>([]);
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
         fetch(
-            `${process.env.REACT_APP_API_URI}/question/${courseCode}/${getApproved ? 'approved' : 'pending'}`
+            `${process.env.REACT_APP_API_URI}/question/latestQuestions/${courseCode}`
         )
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
@@ -23,7 +23,7 @@ const GetQuestions = (courseCode: string, getApproved: boolean) => {
                 setLoading(false);
             });
 
-    }, [courseCode, getApproved]);
+    }, [courseCode]);
 
     return {
         loading,

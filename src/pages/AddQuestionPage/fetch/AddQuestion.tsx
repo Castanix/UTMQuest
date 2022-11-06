@@ -19,8 +19,7 @@ const AddQuestion = async (questionObj: QuestionsType, setRedirect: Function) =>
             return res.json();
         }).then((result) => {
             message.success("Course successfully added.");
-            const id = result.insertedId;
-            setRedirect(id);
+            setRedirect(result.link);
         })
         .catch((error) => {
             message.error(error);

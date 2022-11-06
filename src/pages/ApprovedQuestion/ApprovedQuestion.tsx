@@ -39,16 +39,14 @@ const ShortAnswerTab = ({ actualQuestion, answer }: { actualQuestion: string, an
     </div>
 );
 
-const Header = ({ courseCode, courseTitle, approved, questionName, topicName, author, date }:
-    { courseCode: string, courseTitle: string, approved: boolean, questionName: string, topicName: string, author: string, date: string }) => (
+const Header = ({ courseCode, courseTitle, questionName, topicName, author, date }:
+    { courseCode: string, courseTitle: string, questionName: string, topicName: string, author: string, date: string }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Link to="/courses">Courses</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
-            {approved ?
-                <Breadcrumb.Item><Link to={`/courses/${courseCode}/browse`}>Browse Questions</Link></Breadcrumb.Item> :
-                <Breadcrumb.Item>Review Questions</Breadcrumb.Item>}
+            <Breadcrumb.Item><Link to={`/courses/${courseCode}/browse`}>Browse Questions</Link></Breadcrumb.Item>
             <Breadcrumb.Item>{questionName}</Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">
@@ -88,11 +86,11 @@ const tabList = [
     },
 ];
 
-const ApprovedQuestion = ({ approved }: { approved: boolean }) => {
+const ApprovedQuestion = () => {
     const [activeTabKey, setActiveTabKey] = useState<string>('Question');
     const params = useParams();
     const courseCode = params.courseId;
-    const id = params.id ?? '';
+    const id = params.link ?? '';
     const { loading, question, error } = GetQuestion(id);
 
     if (loading) return <Loading />;
@@ -112,7 +110,7 @@ const ApprovedQuestion = ({ approved }: { approved: boolean }) => {
     return (
         <Card
             style={{ width: '100%' }}
-            title={<Header courseCode={courseCode ?? ''} courseTitle={`${courseCode} `} approved={approved}
+            title={<Header courseCode={courseCode ?? ''} courseTitle={`${courseCode} `}
                 questionName={question.qnsName} topicName={question.topicName} author={question.authName} date={question.date} />}
             tabList={tabList}
             activeTabKey={activeTabKey}
