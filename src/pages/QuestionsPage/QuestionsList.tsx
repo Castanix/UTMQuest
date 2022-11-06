@@ -1,4 +1,4 @@
-import { DislikeOutlined, LikeOutlined, CheckOutlined, MessageOutlined, SearchOutlined, QuestionOutlined } from '@ant-design/icons';
+import { DislikeOutlined, LikeOutlined, MessageOutlined, SearchOutlined, QuestionOutlined } from '@ant-design/icons';
 import { Divider, Input, List, PageHeader, Select, Space } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -17,8 +17,8 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
     </Space>
 );
 
-const QuestionsList = ({ questions, topics, approved }: 
-    { questions: QuestionsType[], topics: TopicsType[], approved: boolean }) => {
+const QuestionsList = ({ questions, topics }: 
+    { questions: QuestionsType[], topics: TopicsType[] }) => {
     const {
         data,
         onSearchChange,
@@ -60,10 +60,8 @@ const QuestionsList = ({ questions, topics, approved }:
                         <List.Item
                             key={item._id}
                             actions={[
-                                ... approved ? 
-                                    [<IconText icon={LikeOutlined} text="156" key="list-vertical-message" />,
-                                     <IconText icon={DislikeOutlined} text="20" key="list-vertical-message" />] :
-                                    [<IconText icon={CheckOutlined} text={item.reviewStatus.toString().concat("/20")} key="list-vertical-message" />],
+                                [<IconText icon={LikeOutlined} text="156" key="list-vertical-message" />,
+                                <IconText icon={DislikeOutlined} text="20" key="list-vertical-message" />],
 
                                 <IconText icon={MessageOutlined} text={item.numDiscussions.toString()} key="list-vertical-message" />
                             ]}

@@ -7,7 +7,6 @@ import React from 'react';
 import Loading from '../../components/Loading/Loading';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import GetWidgets from './fetch/GetWidgets';
-import ReviewQuestionsTable from './ReviewQuestionTable';
 import SavedCoursesList from './SavedCoursesList';
 
 
@@ -30,7 +29,7 @@ const Header = () => (
 
 const DashboardPage = () => {
   const utorid = 'dummy22';
-  const { loading, courseData, reviewQnsData, error } = GetWidgets(utorid);
+  const { loading, courseData, error } = GetWidgets(utorid);
 
   if (loading) return <Loading />;
 
@@ -48,7 +47,8 @@ const DashboardPage = () => {
 
           <Card title="Questions Pending Review">
             <div className="card-content">
-              <ReviewQuestionsTable reviewQnsData={reviewQnsData} paginationConfig={paginationConfig} />
+              No data to show
+              {/* <ReviewQuestionsTable reviewQnsData={reviewQnsData} paginationConfig={paginationConfig} /> */}
             </div>
           </Card>
         </div>
