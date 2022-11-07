@@ -63,11 +63,11 @@ questionRouter.get("/latestQuestions/:courseId/:utorid", async (req: Request, re
 			
 			if (diff > 24 || author === question.authId) {
 				return true;
-			} else {
+			} 
 				if (showNewQuestions) {
 					return true;
 				};
-			};
+			;
 
 			return false;
 		});
