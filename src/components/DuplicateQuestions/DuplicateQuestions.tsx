@@ -10,6 +10,12 @@ interface HighlightTextsType {
     type: string;
 }
 
+interface HighightType {
+    score: number;
+    path: string;
+    texts: HighlightTextsType[];
+}
+
 function escapeSpecialChars(str: string) {
     const reg = /(<([^>]+)>)/ig;
     return str
@@ -21,7 +27,7 @@ interface DuplicateQuestionType {
     qnsName: string;
     desc: string;
     score: number;
-    highlights: [{ score: number, path: string, texts: HighlightTextsType[] }]
+    highlights: HighightType[];
 }
 
 const BoldHits = (highlights: HighlightTextsType[]) => {
@@ -67,7 +73,7 @@ const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: strin
                     bordered
                     size="small"
                     dataSource={duplicateQuestions}
-                    renderItem={item => (
+                    renderItem={item => item.highlights.length !== 0 ? (
                         <List.Item>
                             <div>
                                 <Space direction="vertical">
@@ -84,7 +90,7 @@ const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: strin
                                 </Space>
                             </div>
                         </List.Item>
-                    )}
+                    ) : null}
                 />
             </Space>
         </div>

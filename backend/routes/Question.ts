@@ -5,57 +5,62 @@ import { utmQuestCollections } from "../db/db.service";
 
 const questionRouter = Router();
 
-
 // "/:questionId"
-questionRouter.get("/oneQuestion/:link", async (req: Request, res: Response) => {
-	try {
-		const question = await utmQuestCollections.Questions?.findOne({
-			link: req.params.link,
-			latest: true
-		});
-		if (!question) {
-			res.status(404).send("No question found.");
-			return;
+questionRouter.get(
+	"/oneQuestion/:link",
+	async (req: Request, res: Response) => {
+		try {
+			const question = await utmQuestCollections.Questions?.findOne({
+				link: req.params.link,
+				latest: true,
+			});
+			if (!question) {
+				res.status(404).send("No question found.");
+				return;
+			}
+			res.status(200).send(question);
+		} catch (error) {
+			res.status(500).send(`ERROR: ${error}`);
 		}
-		res.status(200).send(question);
-	} catch (error) {
-		res.status(500).send(`ERROR: ${error}`);
 	}
-});
+);
 
+questionRouter.get(
+	"/allDiscussions/:questionId",
+	async (req: Request, res: Response) => {
+		try {
+			const discussions = await utmQuestCollections.Discussions?.findOne({
+				question: req.params.questionId,
+			});
+			if (!discussions) {
+				res.status(404).send("Cannot find discussion");
+				return;
+			}
 
-questionRouter.get("/allDiscussions/:questionId", async (req: Request, res: Response) => {
-	try {
-		const discussions = await utmQuestCollections.Discussions?.findOne({
-			question: req.params.questionId,
-		});
-		if (!discussions) {
-			res.status(404).send("Cannot find discussion");
-			return;
+			res.status(200).send(discussions);
+		} catch (error) {
+			res.status(500).send(`ERROR: ${error}`);
 		}
-
-		res.status(200).send(discussions);
-	} catch (error) {
-		res.status(500).send(`ERROR: ${error}`);
 	}
-});
-
+);
 
 // /:courseId/:qnsStatus
-questionRouter.get("/latestQuestions/:courseId/", async (req: Request, res: Response) => {
-	try {
-		const question = await utmQuestCollections.Questions?.find({
-			courseId: req.params.courseId,
-			latest: true
-		}).toArray();
+questionRouter.get(
+	"/latestQuestions/:courseId/",
+	async (req: Request, res: Response) => {
+		try {
+			const question = await utmQuestCollections.Questions?.find({
+				courseId: req.params.courseId,
+				latest: true,
+			}).toArray();
 
-		res.status(200).send(question);
-		return;
-	} catch (error) {
-		res.status(500).send(error);
+			res.status(200).send(question);
+			return;
+		} catch (error) {
+			res.status(500).send(error);
+		}
 	}
-});
-
+);
 
 questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 	// post a new question
@@ -79,7 +84,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		date: new Date().toISOString(),
 		numDiscussions: req.body.numDiscussions,
 		anon: req.body.anon,
-		latest: true
+		latest: true,
 	};
 
 	utmQuestCollections.Questions?.insertOne(question)
@@ -99,7 +104,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 					);
 					return;
 				}
-				res.status(201).send({link});
+				res.status(201).send({ link });
 			});
 		})
 		.catch((error) => {
@@ -107,19 +112,18 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		});
 });
 
-
 questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 	try {
 		const oldVersion = await utmQuestCollections.Questions?.findOne({
 			_id: new ObjectID(req.body.oldVersion),
-			latest: true
+			latest: true,
 		});
 		if (!oldVersion) {
 			res.status(404).send("No such latest question found.");
 			return;
 		}
 
-		const {link} = req.body;
+		const { link } = req.body;
 
 		const question = {
 			link,
@@ -137,7 +141,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			date: new Date().toISOString(),
 			numDiscussions: req.body.numDiscussions,
 			anon: req.body.anon,
-			latest: true
+			latest: true,
 		};
 
 		utmQuestCollections.Questions?.insertOne(question)
@@ -148,19 +152,19 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 				}
 
 				// Set previous question version's latest flag to false
-				utmQuestCollections.Questions?.updateOne(
-					oldVersion,
-					{ $set: { latest: false } }
-				).then((linkResult) => {
+				utmQuestCollections.Questions?.updateOne(oldVersion, {
+					$set: { latest: false },
+				}).then((linkResult) => {
 					if (!linkResult) {
 						res.status(500).send(
 							`Unable to update latest flag for ${req.body.oldVersion}`
 						);
 						return;
-					};
-					res.status(201).send({link});
+					}
+					res.status(201).send({ link });
 				});
-			}).catch((error) => {
+			})
+			.catch((error) => {
 				res.status(500).send(error);
 			});
 	} catch (error) {
@@ -168,63 +172,81 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 	}
 });
 
+questionRouter.get(
+	"/similar/:topicId/:term",
+	async (req: Request, res: Response) => {
+		const { topicId } = req.params;
+		const { term } = req.params;
 
-questionRouter.get("/similar/:topicId/:term", async (req: Request, res: Response) => {
-	const { topicId } = req.params;
-	const { term } = req.params;
-
-	const result = await utmQuestCollections.Questions?.aggregate([
-		{
-			$search: {
-				index: "duplicate-questions",
-				compound: {
-					must: [
-						{
-							equals: {
-								path: "topicId",
-								value: new ObjectId(topicId),
-							},
-						},
-					],
-					should: [
-						{
-							text: {
-								query: term,
-								path: ["qnsName", "desc"],
-								fuzzy: {
-									maxEdits: 2,
+		const result = await utmQuestCollections.Questions?.aggregate([
+			{
+				$search: {
+					index: "duplicate-questions",
+					compound: {
+						must: [
+							{
+								equals: {
+									path: "topicId",
+									value: new ObjectId(topicId),
 								},
 							},
-						},
-					],
+							{
+								equals: {
+									path: "latest",
+									value: true,
+								},
+							},
+						],
+						should: [
+							{
+								text: {
+									query: term,
+									path: ["qnsName", "desc"],
+									fuzzy: {
+										maxEdits: 2,
+									},
+								},
+							},
+						],
+					},
+					highlight: {
+						path: ["qnsName", "desc"],
+					},
 				},
-				highlight: {
-					path: ["qnsName", "desc"],
+			},
+			{
+				$limit: 10,
+			},
+			{
+				$project: {
+					_id: 1,
+					qnsName: 1,
+					desc: 1,
+					score: { $meta: "searchScore" },
+					highlights: { $meta: "searchHighlights" },
 				},
 			},
-		},
-		{
-			$limit: 10,
-		},
-		{
-			$project: {
-				_id: 1,
-				qnsName: 1,
-				desc: 1,
-				score: { $meta: "searchScore" },
-				highlights: { $meta: "searchHighlights" },
+			{
+				$match: {
+					score: { $gt: 1.0 },
+				},
 			},
-		},
-		{
-			$match: {
-				score: { $gt: 1.0 },
-			},
-		},
-	]).toArray();
+		]).toArray();
 
-	res.status(200).send(result);
-});
+		res.status(200).send(result);
+	}
+);
 
+questionRouter.get(
+	"/editHistory/:link",
+	async (req: Request, res: Response) => {
+		utmQuestCollections.Questions?.find({ link: req.params.link })
+			.sort({ date: -1 })
+			.toArray()
+			.then((response) => res.status(200).send(response))
+			.catch((error) => res.status(500).send(error));
+	}
+);
 
 /** ****** Currently not being used ******* */
 // questionRouter.delete("/:questionId", async (req: Request, res: Response) => {

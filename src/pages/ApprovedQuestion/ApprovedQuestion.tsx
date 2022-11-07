@@ -14,13 +14,14 @@ import { QuestionsType } from "../../../backend/types/Questions";
 import ShortAnswer from "../../components/ShortAnswer/ShortAnswer";
 import GetQuestion from "./fetch/GetQuestion";
 import Discussion from "../../components/Discussion/Discussion";
+import EditHistory from "../../components/EditHistory/EditHistory";
 
 
 const QuestionTab = ({ options, answers, actualQuestion, explanation }:
     { options: string[], answers: string[], actualQuestion: string, explanation: string }) => (
     <div>
         <Title level={3} className='divider-title'>Problem</Title>
-        <MDEditor.Markdown source={actualQuestion} />
+        <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={actualQuestion} />
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
@@ -31,7 +32,7 @@ const QuestionTab = ({ options, answers, actualQuestion, explanation }:
 const ShortAnswerTab = ({ actualQuestion, answer }: { actualQuestion: string, answer: string }) => (
     <div>
         <Title level={3} className='divider-title'>Problem</Title>
-        <MDEditor.Markdown source={actualQuestion} />
+        <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={actualQuestion} />
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
@@ -84,6 +85,10 @@ const tabList = [
         key: 'Discussion',
         tab: 'Discussion',
     },
+    {
+        key: 'EditHistory',
+        tab: 'Edit History'
+    }
 ];
 
 const ApprovedQuestion = () => {
@@ -103,7 +108,8 @@ const ApprovedQuestion = () => {
     const contentList: Record<string, React.ReactNode> = {
         Question: <QuestionType question={question} qnsType={question.qnsType as keyof TypeOfQuestion} />,
         Solution: <p>Solution</p>,
-        Discussion: <Discussion questionId={question._id} />
+        Discussion: <Discussion questionId={question._id} />,
+        EditHistory: <EditHistory link={question.link} />
     };
 
     return (

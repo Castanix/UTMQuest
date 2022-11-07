@@ -17,10 +17,11 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
     </Space>
 );
 
-const QuestionsList = ({ questions, topics }: 
+const QuestionsList = ({ questions, topics }:
     { questions: QuestionsType[], topics: TopicsType[] }) => {
     const {
         data,
+        searchTerm,
         onSearchChange,
         onSelectChange
     } = QuestionState(questions);
@@ -41,7 +42,7 @@ const QuestionsList = ({ questions, topics }:
                 >
                     {options}
                 </Select>
-                <Input placeholder="Search question" prefix={<SearchOutlined />} className='questions-search' onChange={(event) => onSearchChange(event.target.value)} />
+                <Input placeholder="Search question" prefix={<SearchOutlined />} value={searchTerm} className='questions-search' onChange={(event) => onSearchChange(event.target.value)} />
             </Space>
             <List
                 className='question-list'
@@ -60,8 +61,8 @@ const QuestionsList = ({ questions, topics }:
                         <List.Item
                             key={item._id}
                             actions={[
-                                [<IconText icon={LikeOutlined} text="156" key="list-vertical-message" />,
-                                <IconText icon={DislikeOutlined} text="20" key="list-vertical-message" />],
+                                <IconText icon={LikeOutlined} text="156" key="list-vertical-message" />,
+                                <IconText icon={DislikeOutlined} text="20" key="list-vertical-message" />,
 
                                 <IconText icon={MessageOutlined} text={item.numDiscussions.toString()} key="list-vertical-message" />
                             ]}
@@ -70,9 +71,9 @@ const QuestionsList = ({ questions, topics }:
                                 className='question-list-meta'
                                 avatar={
                                     <div className='question-list-img'>
-                                        {item.anon ? 
-                                            <QuestionOutlined /> 
-                                            : 
+                                        {item.anon ?
+                                            <QuestionOutlined />
+                                            :
                                             <p>{firstInitial.concat(lastInitial)}</p>
                                         }
                                     </div>
@@ -86,7 +87,7 @@ const QuestionsList = ({ questions, topics }:
                                             </Link>}
                                     >
                                         <div className="ant-page-header-heading-sub-title">
-                                            by {item.authName}
+                                            {item.authName}
                                             <br />
                                             {new Date(item.date).toDateString()}
                                         </div>
