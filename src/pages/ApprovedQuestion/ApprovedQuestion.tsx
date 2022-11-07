@@ -57,7 +57,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
             </div>
             <div className="icon-buttons">
                 <div className="flex-child">
-                    <Link to={`/courses/${question.courseId}/editQuestion`} state={{ question, oldVersion: question._id }}><Button type="link" icon={<EditTwoTone style={{ fontSize: '1.35rem', alignItems: 'center' }} />} /></Link>
+                    <Link to={`/courses/${question.courseId}/editQuestion`} state={{ question }}><Button type="link" icon={<EditTwoTone style={{ fontSize: '1.35rem', alignItems: 'center' }} />} /></Link>
                     <p className="icon-text">Edit</p>
                 </div>
                 <div className="flex-child">

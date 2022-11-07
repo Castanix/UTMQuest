@@ -111,7 +111,7 @@ const EditHistory = ({ link }: { link: string }) => {
         // can't restore to most recent post (should use edit instead)
         if (index !== 0) {
             actions.push(
-                <Link to={`/courses/${firstQuestion.courseId}/editQuestion`} state={{ question: firstQuestion, oldVersion: firstQuestion._id }}>
+                <Link to={`/courses/${firstQuestion.courseId}/editQuestion`} state={{ question: firstQuestion, latest: editHistory[0]  }}>
                     <Button shape="round">
                         Restore
                     </Button>
@@ -129,7 +129,7 @@ const EditHistory = ({ link }: { link: string }) => {
 
         if (editHistory.length > 1) {
             actions.push(
-                <Link to={`/courses/${originalQuestion.courseId}/editQuestion`} state={{ question: originalQuestion, oldVersion: originalQuestion._id }}>
+                <Link to={`/courses/${originalQuestion.courseId}/editQuestion`} state={{ question: originalQuestion, latest: editHistory[0] }}>
                     <Button shape="round">
                         Restore
                     </Button>

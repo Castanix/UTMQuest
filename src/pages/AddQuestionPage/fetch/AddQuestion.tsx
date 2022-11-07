@@ -18,7 +18,7 @@ const compareQnsObj = (obj1: QuestionsType, obj2: QuestionsType) => {
 
 
 const AddQuestion = async (questionObj: QuestionsType, setRedirect: Function, 
-    edit: boolean, oldQuestion: QuestionsType, oldVersion: string) => {
+    edit: boolean, oldQuestion: QuestionsType) => {
 
     if (edit) {
         if(!compareQnsObj(questionObj, oldQuestion)) {
@@ -32,7 +32,7 @@ const AddQuestion = async (questionObj: QuestionsType, setRedirect: Function,
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({...questionObj, oldVersion})
+                    body: JSON.stringify({...questionObj, oldVersion: oldQuestion._id})
                 }).then((res: Response) => {
                     if (!res.ok) {
                         throw new Error("Could not add question. Possibly not the latest version being edited");

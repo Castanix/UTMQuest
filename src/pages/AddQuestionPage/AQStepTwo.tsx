@@ -28,7 +28,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     const [isAnon, setAnon] = useState<boolean>(false);
 
 
-    const { question, oldVersion } = useLocation().state ?? "";
+    const { question, latest } = useLocation().state ?? "";
     useEffect(() => {
         const setForm = () => {
             if(question) {
@@ -219,7 +219,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 anon: isAnon,
                                 latest: true
                             };
-                            AddQuestion(questionObj, setRedirect, edit, question, oldVersion);
+                            AddQuestion(questionObj, setRedirect, edit, (latest ? latest : question));
                         }}
                     >Submit</Button>
                 </div>
