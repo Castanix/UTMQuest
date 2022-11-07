@@ -16,14 +16,16 @@ const AddQuestion = async (questionObj: QuestionsType, setRedirect: Function, ed
                 },
                 body: JSON.stringify({...questionObj, oldVersion})
             }).then((res: Response) => {
-                if (!res.ok) throw new Error("Could not add question. Please try again.");
+                if (!res.ok) {
+                    throw new Error("Could not add question. Possibly not the latest version being edited");
+                };
                 return res.json();
             }).then((result) => {
                 message.success("Question successfully added.");
                 setRedirect(result.link);
             })
             .catch((error) => {
-                message.error(error);
+                message.error(error.message);
             });
     } else {
         fetch(`${process.env.REACT_APP_API_URI}/question/addQuestion`,
@@ -45,7 +47,7 @@ const AddQuestion = async (questionObj: QuestionsType, setRedirect: Function, ed
                 setRedirect(result.link);
             })
             .catch((error) => {
-                message.error(error);
+                message.error(error.message);
             });
     }
 

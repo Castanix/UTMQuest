@@ -112,9 +112,10 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 	try {
 		const oldVersion = await utmQuestCollections.Questions?.findOne({
 			_id: new ObjectID(req.body.oldVersion),
+			latest: true
 		});
 		if (!oldVersion) {
-			res.status(404).send("No such question found.");
+			res.status(404).send("No such latest question found.");
 			return;
 		}
 

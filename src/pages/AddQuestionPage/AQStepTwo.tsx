@@ -33,6 +33,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
         const setForm = () => {
             if(question) {
                 const { link, qnsName, qnsType, desc, xplan, choices, ans } = question;
+                console.log(question.latest);
     
                 setLink(link);
                 setTitle(qnsName);
