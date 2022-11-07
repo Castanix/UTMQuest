@@ -44,23 +44,41 @@ questionRouter.get(
 	}
 );
 
-// /:courseId/:qnsStatus
-questionRouter.get(
-	"/latestQuestions/:courseId/",
-	async (req: Request, res: Response) => {
-		try {
-			const question = await utmQuestCollections.Questions?.find({
-				courseId: req.params.courseId,
-				latest: true,
-			}).toArray();
 
-			res.status(200).send(question);
-			return;
-		} catch (error) {
-			res.status(500).send(error);
-		}
+// /:courseId/:qnsStatus
+questionRouter.get("/latestQuestions/:courseId/:utorid", async (req: Request, res: Response) => {
+	try {
+		const allQuestions = await utmQuestCollections.Questions?.find({
+			courseId: req.params.courseId,
+			latest: true
+		}).sort({date: -1}).toArray();
+		
+		
+		const author = req.params.utorid;
+		const showNewQuestions = Math.random() <= 0.25;
+
+		const newArr = allQuestions?.filter(question => {
+			const now = new Date();
+			const diff = (now.getTime() - new Date(question.date).getTime()) / (60 * 60 * 1000);
+			
+			if (diff > 24 || author === question.authId) {
+				return true;
+			} else {
+				if (showNewQuestions) {
+					return true;
+				};
+			};
+
+			return false;
+		});
+
+		res.status(200).send(newArr);
+		return;
+	} catch (error) {
+		res.status(500).send(error);
 	}
-);
+});
+
 
 questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 	// post a new question
