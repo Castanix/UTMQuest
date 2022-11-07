@@ -87,17 +87,14 @@ const EditHistory = ({ link }: { link: string }) => {
 
         let display = "";
 
-        if (changes.length === 0) display += "Made no new changes.";
+        display += `Made changes to the `;
+        const list = new Intl.ListFormat('en', { style: changes.length > 3 ? "narrow" : "long", type: "conjunction" });
+        display += list.format(changes.slice(0, 3));
 
-        else {
-            display += `Made changes to the `;
-            const list = new Intl.ListFormat('en', { style: changes.length > 3 ? "narrow" : "long", type: "conjunction" });
-            display += list.format(changes.slice(0, 3));
+        if (changes.length > 3) display += `, and ${changes.length - 3} other field(s)`;
 
-            if (changes.length > 3) display += `, and ${changes.length - 3} other field(s)`;
+        else display += " field(s)";
 
-            else display += " field(s)";
-        }
 
         const actions: React.ReactNode[] = [];
 
@@ -128,13 +125,17 @@ const EditHistory = ({ link }: { link: string }) => {
     // push original post
     const originalQuestion = editHistory[editHistory.length - 1];
     if (originalQuestion) {
-        const actions: React.ReactNode[] = [
-            <Link to={`/courses/${originalQuestion.courseId}/editQuestion`} state={{ question: originalQuestion, oldVersion: originalQuestion._id }}>
-                <Button shape="round">
-                    Restore
-                </Button>
-            </Link>
-        ];
+        const actions: React.ReactNode[] = [];
+
+        if (editHistory.length > 1) {
+            actions.push(
+                <Link to={`/courses/${originalQuestion.courseId}/editQuestion`} state={{ question: originalQuestion, oldVersion: originalQuestion._id }}>
+                    <Button shape="round">
+                        Restore
+                    </Button>
+                </Link>
+            );
+        };
 
         renderList.push(GetListItem(loading, "Made the original post.", actions, originalQuestion));
     }

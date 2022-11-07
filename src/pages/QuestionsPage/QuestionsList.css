@@ -35,6 +35,10 @@
     padding: 0;
 }
 
+.ant-page-header-heading-sub-title div {
+    margin-bottom: 0 !important;
+}
+
 @media screen and (max-width: 720px) {
     .questions-table-toolbar {
         display: block;
