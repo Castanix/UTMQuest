@@ -33,7 +33,6 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
         const setForm = () => {
             if(question) {
                 const { link, qnsName, qnsType, desc, xplan, choices, ans } = question;
-                console.log(question.latest);
     
                 setLink(link);
                 setTitle(qnsName);
@@ -220,7 +219,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 anon: isAnon,
                                 latest: true
                             };
-                            AddQuestion(questionObj, setRedirect, edit, oldVersion);
+                            AddQuestion(questionObj, setRedirect, edit, question, oldVersion);
                         }}
                     >Submit</Button>
                 </div>
