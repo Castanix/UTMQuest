@@ -62,17 +62,19 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
         if (type === qnsTypeEnum.mc) {
             el = <AddMultipleChoice options={mcOption} setOptions={setMcOption} />;
         } else if (type === qnsTypeEnum.short) {
-            el = <MDEditor
-                height={300}
-                style={{ width: '35vw' }}
-                value={solValue}
-                textareaProps={{ placeholder: "Add Solution" }}
-                onChange={setSolValue}
-                highlightEnable={false}
-                previewOptions={{
-                    rehypePlugins: [[rehypeSanitize]]
-                }}
-            />;
+            el = <>
+                <MDEditor
+                    height={300}
+                    value={solValue}
+                    textareaProps={{ placeholder: "Add Solution", maxLength: 4000 }}
+                    onChange={setSolValue}
+                    highlightEnable={false}
+                    previewOptions={{
+                        rehypePlugins: [[rehypeSanitize]]
+                    }}
+                />
+                <span className="editor-count">{(solValue ?? '').length} / 4000</span>
+            </>;
         }
 
         return <Form.Item
@@ -123,8 +125,9 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                             <Input
                                 placeholder='Add Question Title'
                                 value={title}
+                                maxLength={255}
+                                showCount
                                 onChange={(e) => setTitle(e.target.value)}
-                                style={{ width: 'max(16rem, 20vw)' }}
                             />
                         </Form.Item>
                         <Form.Item name='type' label="Answer Type" initialValue={question ? question.qnsType : null} required>
@@ -143,15 +146,15 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                         <Form.Item label="Problem Description" required>
                             <MDEditor
                                 height={300}
-                                style={{ width: '35vw' }}
                                 value={problemValue}
-                                textareaProps={{ placeholder: "Add Problem" }}
+                                textareaProps={{ placeholder: "Add Problem", maxLength: 4000 }}
                                 onChange={setProblemValue}
                                 highlightEnable={false}
                                 previewOptions={{
                                     rehypePlugins: [[rehypeSanitize]]
                                 }}
                             />
+                            <span className="editor-count">{(problemValue ?? '').length} / 4000</span>
                         </Form.Item>
                     </div>
                     <div className='detail-form'>
@@ -161,15 +164,15 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                             <Form.Item label="Explanation (Optional)">
                                 <MDEditor
                                     height={300}
-                                    style={{ width: '35vw' }}
                                     value={explanationValue}
-                                    textareaProps={{ placeholder: "Add Explanation" }}
+                                    textareaProps={{ placeholder: "Add Explanation", maxLength: 4000 }}
                                     onChange={setExplanationValue}
                                     highlightEnable={false}
                                     previewOptions={{
                                         rehypePlugins: [[rehypeSanitize]]
                                     }}
                                 />
+                                <span className="editor-count">{(explanationValue ?? '').length} / 4000</span>
                             </Form.Item>
                             : null}
                     </div>
