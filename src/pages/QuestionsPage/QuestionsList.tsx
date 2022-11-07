@@ -1,5 +1,5 @@
 import { DislikeOutlined, LikeOutlined, MessageOutlined, SearchOutlined, QuestionOutlined } from '@ant-design/icons';
-import { Divider, Input, List, PageHeader, Select, Space, Typography } from 'antd';
+import { Divider, Input, List, PageHeader, Select, Space, Tag, Typography } from 'antd'; 
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionsType } from '../../../backend/types/Questions';
@@ -56,6 +56,7 @@ const QuestionsList = ({ questions, topics }:
                     const name = item.authName.split(" ");
                     const firstInitial = name[0][0];
                     const lastInitial = name[name.length - 1][0];
+                    const diff = (new Date().getTime() - new Date(item.date).getTime()) / (60 * 60 * 1000);
 
                     return (
                         <List.Item
@@ -82,9 +83,13 @@ const QuestionsList = ({ questions, topics }:
                                     <PageHeader
                                         className="question-list-page-header"
                                         title={
-                                            <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.link}`}>
-                                                {item.qnsName}
-                                            </Link>}
+                                            <>
+                                                {diff < 24 ? <Tag color="#428efa">New</Tag> : null}
+                                                <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.link}`}>
+                                                    <span className="question-name">{item.qnsName}</span>
+                                                </Link>
+                                            </>
+                                        }
                                     >
                                         <div className="ant-page-header-heading-sub-title">
                                             <Typography.Paragraph>{item.authName}</Typography.Paragraph>
