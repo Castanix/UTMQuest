@@ -93,7 +93,7 @@ test('test searching for question', () => {
     expect(document.getElementsByTagName('ul')[0].children.length).toBe(2)
 
     fireEvent.change(searchBar, { target: { value: 'Arrays' } });
-    expect(searchBar.value).toBe('Arrays');
+    expect(searchBar.value).toBe('arrays');
 
     // list now contains only one row
     expect(document.getElementsByTagName('ul')[0].children.length).toBe(1)

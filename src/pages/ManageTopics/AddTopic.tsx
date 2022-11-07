@@ -86,6 +86,7 @@ const AddTopic = ({ courseId, addTopicCallback }: { courseId: string, addTopicCa
             topic._id = response.insertedId;
             addTopicCallback(topic);
             setOpen(false);
+            message.success("Topic successfully added.");
         }).catch((error) => {
             message.error(error.message);
         });

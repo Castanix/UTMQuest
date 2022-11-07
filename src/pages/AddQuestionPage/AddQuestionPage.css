@@ -64,20 +64,32 @@
 .answer-form {
     display: inline-flex;
     flex-wrap: wrap;
-    width: max(20rem, 50%);
+    width: 50%;
     height: fit-content;
 }
 
 .detail-form {
     display: inline-flex;
-    flex-direction: column;
-    width: max(20rem, 45%);
+    flex-wrap: wrap;
+    width: 50%;
     margin-top: 7.5rem;
 }
 
-/* .problem-form {
-    margin-top: 7.5rem;
-} */
+.items-container .w-md-editor {
+    width: 35vw;
+}
+
+@media screen and (max-width: 1200px) {
+    .answer-form, 
+    .detail-form,
+    .items-container .w-md-editor {
+        width: 100%;
+    }
+
+    .detail-form {
+        margin-top: 1rem;
+    }
+}
 
 .question-form .ant-form-item {
     margin-top: 2rem;
@@ -109,8 +121,8 @@
     border-top: 1px black solid;
 }
 
-.sol-container {
-    width: 100%;
+#topic {
+    border-radius: 0 !important;
 }
 
 

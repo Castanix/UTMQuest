@@ -1,0 +1,12 @@
+.new * {
+    background-color: #d6f0df;
+}
+
+.old * {
+    background-color: #eeeeee;
+}
+
+.new *, .old * {
+    padding-inline-start: 0.2rem;
+    padding-inline-end: 0.2rem;
+}

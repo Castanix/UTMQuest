@@ -1,6 +1,8 @@
+/* eslint-disable */
+
 import { Button, Checkbox, Form, Input, Select } from 'antd';
-import { Navigate } from 'react-router-dom';
-import React, { useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import rehypeSanitize from 'rehype-sanitize';
 import { QuestionsType } from '../../../backend/types/Questions';
@@ -12,11 +14,12 @@ import DuplicateQuestions from '../../components/DuplicateQuestions/DuplicateQue
 
 const { Option } = Select;
 
-const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
-    { courseCode: string, topicSelected: [string, string], setCurrStep: Function }) => {
+const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
+    { courseCode: string, topicSelected: [string, string], setCurrStep: Function, edit: boolean }) => {
 
     const [type, setType] = useState<qnsTypeEnum>();
-    const [title, setTitle] = useState<string>('');
+    const [title, setTitle] = useState<string>();
+    const [link, setLink] = useState<string>('');
     const [problemValue, setProblemValue] = useState<string>();
     const [explanationValue, setExplanationValue] = useState<string>();
     const [mcOption, setMcOption] = useState<AddOptionType[]>([{ _id: 1, value: "", isCorrect: false }, { _id: 2, value: "", isCorrect: false }]);
@@ -24,23 +27,53 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
     const [redirect, setRedirect] = useState<string>();
     const [isAnon, setAnon] = useState<boolean>(false);
 
+
+    const { question, latest } = useLocation().state ?? "";
+    useEffect(() => {
+        const setForm = () => {
+            if (question) {
+                const { link, qnsName, qnsType, desc, xplan, choices, ans } = question;
+
+                setLink(link);
+                setTitle(qnsName);
+                setType(qnsType);
+                setProblemValue(desc);
+                setExplanationValue(xplan);
+                if (typeof (ans) === "object") {
+                    const mcArr: AddOptionType[] = [];
+                    choices.forEach((choice: string, index: number) => {
+                        mcArr.push({ _id: index + 1, value: choice, isCorrect: ans.includes(choice) });
+                    });
+                    setMcOption(mcArr);
+                };
+                if (typeof (ans) === "string") {
+                    setSolValue(ans);
+                };
+            };
+        }
+        setForm();
+    }, [question]);
+
+
     const setAnswerType = () => {
         let el: React.ReactNode;
 
         if (type === qnsTypeEnum.mc) {
             el = <AddMultipleChoice options={mcOption} setOptions={setMcOption} />;
         } else if (type === qnsTypeEnum.short) {
-            el = <MDEditor
-                height={300}
-                style={{ width: '35vw' }}
-                value={solValue}
-                textareaProps={{ placeholder: "Add Solution" }}
-                onChange={setSolValue}
-                highlightEnable={false}
-                previewOptions={{
-                    rehypePlugins: [[rehypeSanitize]]
-                }}
-            />;
+            el = <>
+                <MDEditor
+                    height={300}
+                    value={solValue}
+                    textareaProps={{ placeholder: "Add Solution", maxLength: 4000 }}
+                    onChange={setSolValue}
+                    highlightEnable={false}
+                    previewOptions={{
+                        rehypePlugins: [[rehypeSanitize]]
+                    }}
+                />
+                <span className="editor-count">{(solValue ?? '').length} / 4000</span>
+            </>;
         }
 
         return <Form.Item
@@ -60,7 +93,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                 if (!item.value.trim()) {
                     ret = false;
                     return;
-                }
+                };
                 if (item.isCorrect) numCorrect += 1;
             });
 
@@ -87,16 +120,16 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
             >
                 <div className="items-container">
                     <div className="answer-form">
-                        <Form.Item name="title" label="Question Title" required>
+                        <Form.Item name="title" label="Question Title" initialValue={question ? question.qnsName : ""} required>
                             <Input
                                 placeholder='Add Question Title'
                                 value={title}
+                                maxLength={255}
+                                showCount
                                 onChange={(e) => setTitle(e.target.value)}
-                                style={{ width: 'max(16rem, 20vw)' }}
                             />
                         </Form.Item>
-
-                        <Form.Item name='type' label="Answer Type" required>
+                        <Form.Item name='type' label="Answer Type" initialValue={question ? question.qnsType : null} required>
                             <Select
                                 placeholder="Select Type"
                                 onChange={(value: qnsTypeEnum) => { setType((value === "mc") ? qnsTypeEnum.mc : qnsTypeEnum.short); }}
@@ -107,20 +140,20 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                             </Select>
                         </Form.Item>
                         <Form.Item>
-                            {DuplicateQuestions(courseCode, topicSelected[0], title)}
+                            {DuplicateQuestions(courseCode, topicSelected[0], title ?? '', question?.link)}
                         </Form.Item>
                         <Form.Item label="Problem Description" required>
                             <MDEditor
                                 height={300}
-                                style={{ width: '35vw' }}
                                 value={problemValue}
-                                textareaProps={{ placeholder: "Add Problem" }}
+                                textareaProps={{ placeholder: "Add Problem", maxLength: 4000 }}
                                 onChange={setProblemValue}
                                 highlightEnable={false}
                                 previewOptions={{
                                     rehypePlugins: [[rehypeSanitize]]
                                 }}
                             />
+                            <span className="editor-count">{(problemValue ?? '').length} / 4000</span>
                         </Form.Item>
                     </div>
                     <div className='detail-form'>
@@ -130,15 +163,15 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                             <Form.Item label="Explanation (Optional)">
                                 <MDEditor
                                     height={300}
-                                    style={{ width: '35vw' }}
                                     value={explanationValue}
-                                    textareaProps={{ placeholder: "Add Explanation" }}
+                                    textareaProps={{ placeholder: "Add Explanation", maxLength: 4000 }}
                                     onChange={setExplanationValue}
                                     highlightEnable={false}
                                     previewOptions={{
                                         rehypePlugins: [[rehypeSanitize]]
                                     }}
                                 />
+                                <span className="editor-count">{(explanationValue ?? '').length} / 4000</span>
                             </Form.Item>
                             : null}
                     </div>
@@ -151,7 +184,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                     <Checkbox onChange={() => setAnon(!isAnon)}>Post Anonymously<br />(to other users only)</Checkbox>
                     <Button
                         type="primary"
-                        disabled={!((type && title.trim() && problemValue?.trim() && verifySol()))}
+                        disabled={!((type && (title ?? '').trim() && problemValue?.trim() && verifySol()))}
                         onClick={() => {
                             const choices: string[] = [];
                             let ans: string[] | string = solValue ?? '';
@@ -169,11 +202,11 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
 
                             const questionObj: QuestionsType = {
                                 _id: '',
-                                link: '',
+                                link,
                                 topicId: topicSelected[0],
                                 topicName: topicSelected[1],
                                 courseId: courseCode,
-                                qnsName: title,
+                                qnsName: (title ?? ''),
                                 qnsType: type,
                                 desc: problemValue ?? "",
                                 xplan: explanationValue ?? "",
@@ -186,7 +219,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep }:
                                 anon: isAnon,
                                 latest: true
                             };
-                            AddQuestion(questionObj, setRedirect);
+                            AddQuestion(questionObj, setRedirect, edit, (latest ? latest : question));
                         }}
                     >Submit</Button>
                 </div>
