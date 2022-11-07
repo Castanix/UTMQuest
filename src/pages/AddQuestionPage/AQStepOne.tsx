@@ -1,20 +1,35 @@
 import { Alert, Button, Form, message, Select } from "antd";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import TopicsType from "../../../backend/types/Topics";
 
 const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }: 
     { courseCode: string, topics: TopicsType[], setCurrStep: Function, setTopicSelected: Function }) => {
 
+    const fullTopicList = topics;
     const [selected, setSelected] = useState<string>();
     const [searchValue, setSearchValue] = useState<string>();
+
+    
+    const { question } = useLocation().state ?? "";
+    useEffect(() => {
+        if(question) {
+            const topicId = topics.filter(item => item.topicName === question.topicName)[0]._id;
+
+            setTopicSelected([topicId, question.topicName]);
+            setSelected(topicId);
+        };
+    }, [question, topics, setTopicSelected]);
+    
+
+    
 
     const { Option } = Select;
 
     const initSelect = () => {
         const topicArr: React.ReactNode[] = [];
 
-        topics.forEach(item => {
+        fullTopicList.forEach(item => {
             topicArr.push(<Option key={item._id} value={item._id}>{item.topicName}</Option>);
         });
 
@@ -38,6 +53,7 @@ const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
                         label="Select the topic this question is for"
                         colon
                         required
+                        initialValue={question ? question.topicName : null}
                     >
                         <Select
                             showSearch
@@ -56,7 +72,7 @@ const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
                         disabled={!selected}
                         onClick={() => {
                             if(selected) {
-                                const name = topics.find(item => item._id === selected)?.topicName;
+                                const name = fullTopicList.find(item => item._id === selected)?.topicName;
 
                                 setTopicSelected([selected, name]);
                                 setCurrStep(1);

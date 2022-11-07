@@ -1,0 +1,31 @@
+html {
+    scroll-behavior: smooth;
+}
+
+.ant-list-item-action, .edit-history-list-meta {
+    margin: 0 !important;
+}
+
+.edit-history-list-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 1px solid #f0f0f0;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.edit-history-list-img p {
+    margin-top: 1.25rem;
+    font-size: 1.25rem;
+}
+
+.edit-history-list-img svg {
+    font-size: 1.25rem;
+}
+
+.edit-history-list-display {
+    margin-bottom: 0 !important;
+}

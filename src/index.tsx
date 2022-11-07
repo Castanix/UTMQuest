@@ -24,8 +24,9 @@ root.render(
         <Route path="/courses" element={<CourseBoard />} />
         <Route path="/courses/:id" element={<CoursePage />} />
         <Route path="/courses/:id/topics" element={<ManageTopics />} />
+        <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
+        <Route path="/courses/:id/editQuestion" element={<AddQuestionPage edit />} />
         <Route path="/courses/:id/browse" element={<QuestionsPage />} />
-        <Route path="/courses/:id/addQuestion" element={<AddQuestionPage />} />
         <Route path="/courses/:courseId/question/:link" element={<ApprovedQuestion />} />
         <Route path="/profile" element={<div>Coming soon</div>} />
         <Route path="*" element={<div>Page not found</div>} />

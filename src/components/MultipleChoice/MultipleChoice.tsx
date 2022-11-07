@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Divider, Space } from "antd";
 import "./MultipleChoice.css";
+import Title from 'antd/lib/typography/Title';
+import MDEditor from "@uiw/react-md-editor";
 import MultipleChoiceState from "./MultipleChoiceState";
+
 
 const MultipleChoice = ({ options, answers, explanation }: { options: string[], answers: string[], explanation: string }) => {
 
-    const [revealExplanation, setRevealExplanation] = useState<boolean>(false); 
+    const [revealExplanation, setRevealExplanation] = useState<boolean>(false);
     const [isActive, setIsActive] = useState(false);
-    
-    const showExplanation = () => { 
-        setRevealExplanation(!revealExplanation); 
-        setIsActive(!isActive); 
+
+    const showExplanation = () => {
+        setRevealExplanation(!revealExplanation);
+        setIsActive(!isActive);
     };
 
 
@@ -55,13 +58,13 @@ const MultipleChoice = ({ options, answers, explanation }: { options: string[], 
             </div>
 
             {revealExplanation && <div className="explanation-container">
-                <h3 className="explanation-title">
+                <Title level={3} className="explanation-title">
                     Explanation
-                </h3>
-                <p> 
-                    {explanation}
+                </Title>
+                <p>
+                    <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={explanation} />
                 </p>
-            </div> }
+            </div>}
         </div>
     );
 };

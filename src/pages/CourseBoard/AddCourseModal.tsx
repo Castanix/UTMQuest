@@ -2,6 +2,7 @@ import { Form, Modal, Select } from 'antd';
 import React, { useState } from 'react';
 import AddCourse from './fetch/AddCourse';
 import CoursesType from '../../../backend/types/Courses';
+import "./CourseBoard.css";
 
 const { Option, OptGroup } = Select;
 
@@ -73,7 +74,7 @@ const AddCourseModal = (props: any) => {
             destroyOnClose
         >
             <Form layout="vertical">
-                <Form.Item label="Select Course to Add:">
+                <Form.Item label="Select Course to Add:" name="course">
                     <Select
                         showSearch
                         searchValue={searchInput}

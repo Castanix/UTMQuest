@@ -27,6 +27,10 @@
     overflow-x: none;
 }
 
+#course {
+    border-radius: 0 !important;
+}
+
 .ant-select-selector, .ant-select-dropdown {
     border-radius: 25px !important;
 }

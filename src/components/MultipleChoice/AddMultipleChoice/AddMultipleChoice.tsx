@@ -62,13 +62,14 @@ const AddMultipleChoice = (
             </div>
             <div className="add-mc">
                 {options.map((item, index) =>
-                    <Checkbox key={`checkbox_${item._id}`} onChange={() => onCheckboxChange(index)}>
+                    <Checkbox key={`checkbox_${item._id}`} onChange={() => onCheckboxChange(index)} checked={options[index].isCorrect}>
                         <TextArea
                             className="add-mc-textarea"
                             key={`input_${item._id}`}
                             maxLength={1000}
                             onChange={e => updateOptionValue(index, e.target.value)}
                             placeholder={`Option ${String.fromCharCode(65 + index)}`}
+                            defaultValue={options[index].value ?? ''}
                             autoSize
                         />
                     </Checkbox>

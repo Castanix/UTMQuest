@@ -233,6 +233,7 @@ async function initDB() {
 							bsonType: "string",
 							description:
 								"'qnsName' must be a string and is required",
+							maxLength: 255
 						},
 						qnsType: {
 							enum: ["mc", "short"],
@@ -243,11 +244,13 @@ async function initDB() {
 							bsonType: "string",
 							description:
 								"'desc' must be a string or empty, and is required",
+							maxLength: 4000
 						},
 						xplan: {
 							bsonType: "string",
 							description:
 								"'xplan' must be a string or empty, and is required",
+							maxLength: 4000
 						},
 						choices: {
 							bsonType: "array",
@@ -270,6 +273,7 @@ async function initDB() {
 								description:
 									"items in array must be a string or empty",
 							},
+							maxLength: 4000
 						},
 						authId: {
 							bsonType: "string",

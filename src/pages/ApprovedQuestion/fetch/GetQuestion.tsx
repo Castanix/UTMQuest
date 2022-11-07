@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { QuestionsType } from "../../../../backend/types/Questions";
 
-const GetQuestion = (id: string) => {
+const GetQuestion = (link: string) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [question, setQuestion] = useState<QuestionsType>();
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
         fetch(
-            `${process.env.REACT_APP_API_URI}/question/oneQuestion/${id}`
+            `${process.env.REACT_APP_API_URI}/question/oneQuestion/${link}`
         )
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
@@ -23,7 +23,7 @@ const GetQuestion = (id: string) => {
                 setLoading(false);
             });
 
-    }, [id]);
+    }, [link]);
 
     return {
         loading,

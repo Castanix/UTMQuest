@@ -10,6 +10,12 @@ interface HighlightTextsType {
     type: string;
 }
 
+interface HighightType {
+    score: number;
+    path: string;
+    texts: HighlightTextsType[];
+}
+
 function escapeSpecialChars(str: string) {
     const reg = /(<([^>]+)>)/ig;
     return str
@@ -18,10 +24,11 @@ function escapeSpecialChars(str: string) {
 
 interface DuplicateQuestionType {
     _id: string;
+    link: string;
     qnsName: string;
     desc: string;
     score: number;
-    highlights: [{ score: number, path: string, texts: HighlightTextsType[] }]
+    highlights: HighightType[];
 }
 
 const BoldHits = (highlights: HighlightTextsType[]) => {
@@ -40,12 +47,12 @@ const BoldHits = (highlights: HighlightTextsType[]) => {
     return { __html: `... ${text} ...` };
 };
 
-const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: string) => {
+const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: string, originalQuestionId: string) => {
     const [duplicateQuestions, setDuplicateQuestions] = useState<DuplicateQuestionType[]>([]);
 
     useEffect(() => {
         if (searchTerm.length < 3) return;
-        fetch(`${process.env.REACT_APP_API_URI}/question/similar/${topicId}/${searchTerm}`)
+        fetch(`${process.env.REACT_APP_API_URI}/question/similar/${topicId}/${originalQuestionId}/${searchTerm}`)
             .then((result) => {
                 if (!result.ok) throw new Error("Could not fetch similar questions.");
                 return result.json();
@@ -54,7 +61,7 @@ const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: strin
             }).catch((error) => {
                 message.error(error);
             });
-    }, [topicId, searchTerm]);
+    }, [topicId, searchTerm, originalQuestionId]);
 
     if (searchTerm.length < 3 || duplicateQuestions.length < 1) return <div />;
 
@@ -67,11 +74,11 @@ const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: strin
                     bordered
                     size="small"
                     dataSource={duplicateQuestions}
-                    renderItem={item => (
+                    renderItem={item => item.highlights.length !== 0 ? (
                         <List.Item>
                             <div>
                                 <Space direction="vertical">
-                                    <Link to={`/courses/${courseId}/question/${item._id}`} target="_blank">
+                                    <Link to={`/courses/${courseId}/question/${item.link}`} target="_blank">
                                         <span>
                                             <Space>
                                                 <InfoCircleOutlined />
@@ -84,7 +91,7 @@ const DuplicateQuestions = (courseId: string, topicId: string, searchTerm: strin
                                 </Space>
                             </div>
                         </List.Item>
-                    )}
+                    ) : null}
                 />
             </Space>
         </div>

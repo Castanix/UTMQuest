@@ -14,13 +14,14 @@ import { QuestionsType } from "../../../backend/types/Questions";
 import ShortAnswer from "../../components/ShortAnswer/ShortAnswer";
 import GetQuestion from "./fetch/GetQuestion";
 import Discussion from "../../components/Discussion/Discussion";
+import EditHistory from "../../components/EditHistory/EditHistory";
 
 
 const QuestionTab = ({ options, answers, actualQuestion, explanation }:
     { options: string[], answers: string[], actualQuestion: string, explanation: string }) => (
     <div>
         <Title level={3} className='divider-title'>Problem</Title>
-        <MDEditor.Markdown source={actualQuestion} />
+        <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={actualQuestion} />
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
@@ -31,7 +32,7 @@ const QuestionTab = ({ options, answers, actualQuestion, explanation }:
 const ShortAnswerTab = ({ actualQuestion, answer }: { actualQuestion: string, answer: string }) => (
     <div>
         <Title level={3} className='divider-title'>Problem</Title>
-        <MDEditor.Markdown source={actualQuestion} />
+        <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={actualQuestion} />
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
@@ -39,24 +40,24 @@ const ShortAnswerTab = ({ actualQuestion, answer }: { actualQuestion: string, an
     </div>
 );
 
-const Header = ({ courseCode, courseTitle, questionName, topicName, author, date }:
-    { courseCode: string, courseTitle: string, questionName: string, topicName: string, author: string, date: string }) => (
+
+const Header = ({ question }: { question: QuestionsType }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Link to="/courses">Courses</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseCode}/browse`}>Browse Questions</Link></Breadcrumb.Item>
-            <Breadcrumb.Item>{questionName}</Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}>{question.courseId}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}>Browse Questions</Link></Breadcrumb.Item>
+            <Breadcrumb.Item>{question.qnsName}</Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">
             <div className="title-flex">
-                <Title level={3} ellipsis>{courseTitle} <div className="subtitle">&#8226; {topicName}</div></Title>
-                <Text type="secondary">{`by ${author} on ${new Date(date).toDateString()}`}</Text>
+                <Title level={3} ellipsis>{question.courseId} <div className="subtitle">&#8226; {question.topicName}</div></Title>
+                <Text type="secondary">{`by ${question.authName} on ${new Date(question.date).toDateString()}`}</Text>
             </div>
             <div className="icon-buttons">
                 <div className="flex-child">
-                    <Button type="link" icon={<EditTwoTone style={{ fontSize: '1.35rem', alignItems: 'center' }} />} />
+                    <Link to={`/courses/${question.courseId}/editQuestion`} state={{ question }}><Button type="link" icon={<EditTwoTone style={{ fontSize: '1.35rem', alignItems: 'center' }} />} /></Link>
                     <p className="icon-text">Edit</p>
                 </div>
                 <div className="flex-child">
@@ -84,14 +85,17 @@ const tabList = [
         key: 'Discussion',
         tab: 'Discussion',
     },
+    {
+        key: 'EditHistory',
+        tab: 'Edit History'
+    }
 ];
 
 const ApprovedQuestion = () => {
     const [activeTabKey, setActiveTabKey] = useState<string>('Question');
     const params = useParams();
-    const courseCode = params.courseId;
-    const id = params.link ?? '';
-    const { loading, question, error } = GetQuestion(id);
+    const link = params.link ?? '';
+    const { loading, question, error } = GetQuestion(link);
 
     if (loading) return <Loading />;
 
@@ -104,14 +108,14 @@ const ApprovedQuestion = () => {
     const contentList: Record<string, React.ReactNode> = {
         Question: <QuestionType question={question} qnsType={question.qnsType as keyof TypeOfQuestion} />,
         Solution: <p>Solution</p>,
-        Discussion: <Discussion questionId={question._id} />
+        Discussion: <Discussion questionId={question._id} />,
+        EditHistory: <EditHistory link={question.link} />
     };
 
     return (
         <Card
             style={{ width: '100%' }}
-            title={<Header courseCode={courseCode ?? ''} courseTitle={`${courseCode} `}
-                questionName={question.qnsName} topicName={question.topicName} author={question.authName} date={question.date} />}
+            title={<Header question={question} />}
             tabList={tabList}
             activeTabKey={activeTabKey}
             onTabChange={key => {

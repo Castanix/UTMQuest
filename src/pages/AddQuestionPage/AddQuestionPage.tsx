@@ -1,8 +1,11 @@
+/* eslint-disable */
+
 import { Breadcrumb, Card, Steps, Typography } from 'antd';
 import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Loading from '../../components/Loading/Loading';
+import GetQuestion from '../ApprovedQuestion/fetch/GetQuestion';
 import GetAllTopics from '../ManageTopics/fetch/GetTopics';
 import "./AddQuestionPage.css";
 import AQStepOne from './AQStepOne';
@@ -27,7 +30,7 @@ const Header = ({ courseCode }:
     </div>
 );
 
-const AddQuestionPage = () => {
+const AddQuestionPage = ({edit} : {edit: boolean}) => {
     const [currStep, setCurrStep] = useState<number>(0);
     const [topicSelected, setTopicSelected] = useState<[string, string]>(["", ""]);
     
@@ -57,7 +60,7 @@ const AddQuestionPage = () => {
                     />
                 </div>
                 <div style={(currStep) ? { display: "block" } : {display: "none"}}>
-                    <AQStepTwo courseCode={courseCode ?? ''} topicSelected={topicSelected} setCurrStep={setCurrStep} />
+                    <AQStepTwo courseCode={courseCode ?? ''} topicSelected={topicSelected} setCurrStep={setCurrStep} edit={edit} />
                 </div>
             </main>
         </Card>
