@@ -53,7 +53,7 @@ questionRouter.get("/latestQuestions/:courseId/:utorid", async (req: Request, re
 			latest: true
 		}).sort({date: -1}).toArray();
 		
-		
+
 		const author = req.params.utorid;
 		const showNewQuestions = Math.random() <= 0.25;
 
