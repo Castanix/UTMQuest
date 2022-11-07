@@ -6,6 +6,11 @@
     margin-top: 1rem;
 }
 
+.question-name {
+    line-height: 1rem !important;
+    vertical-align: -2px !important;
+}
+
 .question-list-select {
     width: 15.7rem;
 }
