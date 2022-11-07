@@ -1,5 +1,5 @@
 import { DislikeOutlined, LikeOutlined, MessageOutlined, SearchOutlined, QuestionOutlined } from '@ant-design/icons';
-import { Divider, Input, List, PageHeader, Select, Space } from 'antd';
+import { Divider, Input, List, PageHeader, Select, Space, Typography } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionsType } from '../../../backend/types/Questions';
@@ -87,9 +87,8 @@ const QuestionsList = ({ questions, topics }:
                                             </Link>}
                                     >
                                         <div className="ant-page-header-heading-sub-title">
-                                            {item.authName}
-                                            <br />
-                                            {new Date(item.date).toDateString()}
+                                            <Typography.Paragraph>{item.authName}</Typography.Paragraph>
+                                            <Typography.Text type="secondary">{new Date(item.date).toDateString()}</Typography.Text>
                                         </div>
                                     </PageHeader>
                                 }

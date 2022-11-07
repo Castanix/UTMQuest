@@ -1,18 +1,6 @@
-/* .edit-history-container .ant-list-items > li:first-child {
-    border-top: 0;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+html {
+    scroll-behavior: smooth;
 }
-
-.edit-history-container .ant-list-items > li {
-    border-left: 0;
-    border-right: 0;
-}
-
-.edit-history-container .ant-list-items > li:last-child {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-} */
 
 .ant-list-item-action, .edit-history-list-meta {
     margin: 0 !important;
@@ -38,6 +26,6 @@
     font-size: 1.25rem;
 }
 
-html {
-    scroll-behavior: smooth;
-  }
+.edit-history-list-display {
+    margin-bottom: 0 !important;
+}

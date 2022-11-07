@@ -43,8 +43,7 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
     return (
         <Skeleton avatar title={false} loading={loading} active>
             <List.Item
-                actions={[...actions, <Link to={`/courses/${question.courseId}/editQuestion`} state={{ question, oldVersion: question._id }}><Button shape="round">Restore</Button></Link>]}
-            >
+                actions={[...actions]}>
                 <List.Item.Meta
                     avatar={
                         <div className='edit-history-list-img'>
@@ -53,16 +52,20 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
                     }
                     title={
                         <div>
-                            <Space direction="vertical">
+                            <Space direction="vertical" size={0}>
                                 {name.join(" ")}
-                                <Typography.Text type="secondary">{date}</Typography.Text>
+                                < Typography.Text type="secondary">{date}</Typography.Text>
                             </Space>
                         </div>
                     }
-                    description={display}
+                    description={
+                        <Typography.Paragraph className="edit-history-list-display">
+                            {display}
+                        </Typography.Paragraph>
+                    }
                 />
             </List.Item>
-        </Skeleton>
+        </Skeleton >
     );
 };
 
@@ -96,26 +99,44 @@ const EditHistory = ({ link }: { link: string }) => {
             else display += " field(s)";
         }
 
-        renderList.push(
-            // <Button onClick={() => setChangeLog(ViewChanges(firstQuestion, secondQuestion))}>View Changes</Button>
-            // <ViewChangesModal firstQuestion={firstQuestion} secondQuestion={secondQuestion} />
-            GetListItem(loading, display, changes.length > 0 ? [
+        const actions: React.ReactNode[] = [];
+
+        if (changes.length > 0) {
+            actions.push(
                 <Button
                     href="#change-log"
                     onClick={() => setChangeLog(ViewChanges(firstQuestion, secondQuestion))}>
                     View Changes
                 </Button>
-            ] :
-                [], firstQuestion)
-        );
+            );
+        };
+
+        // can't restore to most recent post (should use edit instead)
+        if (index !== 0) {
+            actions.push(
+                <Link to={`/courses/${firstQuestion.courseId}/editQuestion`} state={{ question: firstQuestion, oldVersion: firstQuestion._id }}>
+                    <Button shape="round">
+                        Restore
+                    </Button>
+                </Link>
+            );
+        };
+
+        renderList.push(GetListItem(loading, display, actions, firstQuestion));
     }
 
     // push original post
-    const name = editHistory[editHistory.length - 1]?.authName.split(" ");
-    if (name) {
-        renderList.push(
-            GetListItem(loading, "Made the original post.", [], editHistory[editHistory.length - 1])
-        );
+    const originalQuestion = editHistory[editHistory.length - 1];
+    if (originalQuestion) {
+        const actions: React.ReactNode[] = [
+            <Link to={`/courses/${originalQuestion.courseId}/editQuestion`} state={{ question: originalQuestion, oldVersion: originalQuestion._id }}>
+                <Button shape="round">
+                    Restore
+                </Button>
+            </Link>
+        ];
+
+        renderList.push(GetListItem(loading, "Made the original post.", actions, originalQuestion));
     }
 
     return (
