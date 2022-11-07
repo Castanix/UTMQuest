@@ -173,9 +173,10 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 });
 
 questionRouter.get(
-	"/similar/:topicId/:term",
+	"/similar/:topicId/:originalQuestionId/:term",
 	async (req: Request, res: Response) => {
 		const { topicId } = req.params;
+		const { originalQuestionId } = req.params;
 		const { term } = req.params;
 
 		const result = await utmQuestCollections.Questions?.aggregate([
@@ -194,6 +195,14 @@ questionRouter.get(
 								equals: {
 									path: "latest",
 									value: true,
+								},
+							},
+						],
+						mustNot: [
+							{
+								text: {
+									path: "link",
+									query: originalQuestionId,
 								},
 							},
 						],
@@ -220,6 +229,7 @@ questionRouter.get(
 			{
 				$project: {
 					_id: 1,
+					link: 1,
 					qnsName: 1,
 					desc: 1,
 					score: { $meta: "searchScore" },
@@ -229,6 +239,7 @@ questionRouter.get(
 			{
 				$match: {
 					score: { $gt: 1.0 },
+					highlights: { $exists: true, $ne: [] },
 				},
 			},
 		]).toArray();

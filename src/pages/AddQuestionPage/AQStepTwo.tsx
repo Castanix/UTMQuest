@@ -31,29 +31,29 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     const { question, latest } = useLocation().state ?? "";
     useEffect(() => {
         const setForm = () => {
-            if(question) {
+            if (question) {
                 const { link, qnsName, qnsType, desc, xplan, choices, ans } = question;
-    
+
                 setLink(link);
                 setTitle(qnsName);
                 setType(qnsType);
                 setProblemValue(desc);
                 setExplanationValue(xplan);
-                if(typeof(ans) === "object") {
+                if (typeof (ans) === "object") {
                     const mcArr: AddOptionType[] = [];
                     choices.forEach((choice: string, index: number) => {
-                        mcArr.push({_id: index+1, value: choice, isCorrect: ans.includes(choice)});
+                        mcArr.push({ _id: index + 1, value: choice, isCorrect: ans.includes(choice) });
                     });
                     setMcOption(mcArr);
                 };
-                if(typeof(ans) === "string") {
+                if (typeof (ans) === "string") {
                     setSolValue(ans);
                 };
             };
         }
         setForm();
     }, [question]);
-    
+
 
     const setAnswerType = () => {
         let el: React.ReactNode;
@@ -140,7 +140,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                             </Select>
                         </Form.Item>
                         <Form.Item>
-                            {DuplicateQuestions(courseCode, topicSelected[0], (title ?? ''))}
+                            {DuplicateQuestions(courseCode, topicSelected[0], title ?? '', question?.link)}
                         </Form.Item>
                         <Form.Item label="Problem Description" required>
                             <MDEditor
