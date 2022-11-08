@@ -2,6 +2,7 @@ import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
 import { utmQuestCollections } from "../db/db.service";
+import seedrandom from "seedrandom";
 
 const questionRouter = Router();
 
@@ -44,41 +45,56 @@ questionRouter.get(
 	}
 );
 
-
 // /:courseId/:qnsStatus
-questionRouter.get("/latestQuestions/:courseId/:utorid", async (req: Request, res: Response) => {
-	try {
-		const allQuestions = await utmQuestCollections.Questions?.find({
-			courseId: req.params.courseId,
-			latest: true
-		}).sort({date: -1}).toArray();
-		
+questionRouter.get(
+	"/latestQuestions/:courseId/:utorid",
+	async (req: Request, res: Response) => {
+		try {
+			const allQuestions = await utmQuestCollections.Questions?.find({
+				courseId: req.params.courseId,
+				latest: true,
+			})
+				.sort({ date: -1 })
+				.toArray();
 
-		const author = req.params.utorid;
-		const showNewQuestions = Math.random() <= 0.25;
+			/* Create a seed using the number of days between today     */
+			/* and the startingDate. This will allow different people   */
+			/* to view new questions daily.					  			*/
 
-		const newArr = allQuestions?.filter(question => {
-			const now = new Date();
-			const diff = (now.getTime() - new Date(question.date).getTime()) / (60 * 60 * 1000);
-			
-			if (diff > 24 || author === question.authId) {
-				return true;
-			} 
+			const author = req.params.utorid;
+
+			const startingDate = new Date(2000, 1, 1); // starting date for seed
+			const currentDate = new Date();
+
+			const diff = currentDate.getTime() - startingDate.getTime();
+			const diffInDays = Math.ceil(diff / (1000 * 3600 * 24)).toString();
+
+			const randomGen = seedrandom(diffInDays + author);
+			const randomNum = randomGen();
+			const showNewQuestions = randomNum <= 0.25;
+
+			const newArr = allQuestions?.filter((question) => {
+				const now = new Date();
+				const diff =
+					(now.getTime() - new Date(question.date).getTime()) /
+					(60 * 60 * 1000);
+
+				if (diff > 24 || author === question.authId) {
+					return true;
+				}
 				if (showNewQuestions) {
 					return true;
-				};
-			;
+				}
+				return false;
+			});
 
-			return false;
-		});
-
-		res.status(200).send(newArr);
-		return;
-	} catch (error) {
-		res.status(500).send(error);
+			res.status(200).send(newArr);
+			return;
+		} catch (error) {
+			res.status(500).send(error);
+		}
 	}
-});
-
+);
 
 questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 	// post a new question
