@@ -17,11 +17,12 @@ const compareQnsObj = (obj1: QuestionsType, obj2: QuestionsType) => {
 };
 
 
-const AddQuestion = async (questionObj: QuestionsType, setRedirect: Function, 
-    edit: boolean, oldQuestion: QuestionsType) => {
+const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function, 
+    edit: boolean, latestQuestion: QuestionsType) => {
 
     if (edit) {
-        if(!compareQnsObj(questionObj, oldQuestion)) {
+        const recovery = Date.parse(addableQuestion.date) < Date.parse(latestQuestion.date);
+        if(!compareQnsObj(addableQuestion, latestQuestion)) {
             fetch(`${process.env.REACT_APP_API_URI}/question/editQuestion`,
                 {
                     method: 'POST',
@@ -32,21 +33,29 @@ const AddQuestion = async (questionObj: QuestionsType, setRedirect: Function,
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({...questionObj, oldVersion: oldQuestion._id})
+                    body: JSON.stringify({...addableQuestion, oldVersion: latestQuestion._id})
                 }).then((res: Response) => {
                     if (!res.ok) {
                         throw new Error("Could not add question. Possibly not the latest version being edited");
                     };
                     return res.json();
                 }).then((result) => {
-                    message.success("Question successfully added.");
+                    if(recovery) {
+                        message.success("Question successfully restored.");
+                    } else {
+                        message.success("Question successfully edited.");
+                    };
                     setRedirect(result.link);
                 })
                 .catch((error) => {
                     message.error(error.message);
                 });
             } else {
-                message.error("No changes were made");
+                if(recovery) {
+                    message.error("Changes are too identical to latest version");
+                } else {
+                    message.error("No changes were made");
+                };
             }
     } else {
         fetch(`${process.env.REACT_APP_API_URI}/question/addQuestion`,
@@ -59,7 +68,7 @@ const AddQuestion = async (questionObj: QuestionsType, setRedirect: Function,
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(questionObj)
+                body: JSON.stringify(addableQuestion)
             }).then((res: Response) => {
                 if (!res.ok) throw new Error("Could not add question. Please try again.");
                 return res.json();
