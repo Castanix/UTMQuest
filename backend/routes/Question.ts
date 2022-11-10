@@ -1,8 +1,8 @@
 import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
-import { utmQuestCollections } from "../db/db.service";
 import seedrandom from "seedrandom";
+import { utmQuestCollections } from "../db/db.service";
 
 const questionRouter = Router();
 
@@ -66,7 +66,7 @@ questionRouter.get(
 			const startingDate = new Date(2000, 1, 1); // starting date for seed
 			const currentDate = new Date();
 
-			const diff = currentDate.getTime() - startingDate.getTime();
+			let diff = currentDate.getTime() - startingDate.getTime();
 			const diffInDays = Math.ceil(diff / (1000 * 3600 * 24)).toString();
 
 			const randomGen = seedrandom(diffInDays + author);
@@ -75,7 +75,7 @@ questionRouter.get(
 
 			const newArr = allQuestions?.filter((question) => {
 				const now = new Date();
-				const diff =
+				diff =
 					(now.getTime() - new Date(question.date).getTime()) /
 					(60 * 60 * 1000);
 
