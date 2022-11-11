@@ -6,6 +6,40 @@ import { utmQuestCollections } from "../db/db.service";
 
 const questionRouter = Router();
 
+
+const updateBadge = async (utorid: string) => {
+	const failed = {code: 500, message: `Update 'questionsEdited' field for badges collection failed. Reverting all changes.`, questionStatus: null};
+
+	return utmQuestCollections.Badges?.findOne({ utorid })
+		.then(findRes => {
+			if(!findRes){
+				return {code: 404, message: `Could not find badge progression for ${utorid}`, questionStatus: null};
+			};
+
+			return utmQuestCollections.Badges?.updateOne(
+				findRes,
+				{ $inc: {questionsEdited: 1} }
+			).then(updateRes => {
+				if(!updateRes) {
+					return failed;
+				};
+				return {code: 200, message: `success`, questionStatus: findRes.questionsEdited + 1};
+			}).catch(() => failed);
+
+		}).catch(() => failed);
+};
+
+const updateLatest = (question: any, set: boolean) => {
+	const result = utmQuestCollections.Questions?.updateOne(
+		question,
+		{ $set: {latest: set} }
+	);
+
+	return !!result;
+};
+
+
+
 // "/:questionId"
 questionRouter.get(
 	"/oneQuestion/:link",
@@ -45,7 +79,7 @@ questionRouter.get(
 	}
 );
 
-// /:courseId/:qnsStatus
+
 questionRouter.get(
 	"/latestQuestions/:courseId/:utorid",
 	async (req: Request, res: Response) => {
@@ -206,6 +240,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			latest: true,
 		};
 
+		// Add edited questions doc into db
 		utmQuestCollections.Questions?.insertOne(question)
 			.then((result) => {
 				if (!result) {
@@ -213,20 +248,36 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 					return;
 				}
 
-				// Set previous question version's latest flag to false
-				utmQuestCollections.Questions?.updateOne(oldVersion, {
-					$set: { latest: false },
-				}).then((linkResult) => {
-					if (!linkResult) {
-						res.status(500).send(
-							`Unable to update latest flag for ${req.body.oldVersion}`
-						);
-						return;
-					}
+				// Attempts to update latest from old questions doc, reverts any changes if failed
+				const latestStatus = updateLatest(oldVersion, false);
+				if(!latestStatus) {
+					utmQuestCollections.Questions?.deleteOne(question);
+					res.status(500).send(`Update 'latest' flag for previous question failed. Reverting any changes.`);
+					return;
+				};
+
+				// Attempts to update badge progression for specified utorid, reverts all changes if failed
+				if(!req.body.anon) {
+					updateBadge(req.body.authId).then(updateRes => {
+						if(!updateRes) {
+							updateLatest(oldVersion, true);
+							utmQuestCollections.Questions?.deleteOne(question);
+							res.status(500).send("Unable to update badges. Reverting all changes.");
+							return;
+						}
+						const {code, message, questionStatus} = updateRes;
+
+						if(code === 200) {
+							res.status(201).send({ link, questionStatus, edit: true });
+						} else {
+							res.status(code).send(message);
+						};
+						
+					});
+				} else {
 					res.status(201).send({ link });
-				});
-			})
-			.catch((error) => {
+				}
+			}).catch((error) => {
 				res.status(500).send(error);
 			});
 	} catch (error) {
