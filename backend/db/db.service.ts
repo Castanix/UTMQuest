@@ -22,7 +22,13 @@ export default async function connectDB() {
 
 	utmQuestCollections.Questions = db.collection("Questions");
 
+<<<<<<< HEAD
 	utmQuestCollections.Discussions = db.collection("Discussions");
 
 	utmQuestCollections.Badges = db.collection("Badges");
+=======
+  utmQuestCollections.Discussions = db.collection('Discussions');
+
+  utmQuestCollections.Badges = db.collection('Badges');
+>>>>>>> Add progressive badge for question edits
 }
