@@ -121,6 +121,15 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		latest: true,
 	};
 
+	const badge = await utmQuestCollections.Badges?.findOne({
+		utorid: question.authId,
+	});
+
+	if (!badge) {
+		res.status(404).send("Could not find badge progression for user.");
+		return;
+	}
+
 	utmQuestCollections.Questions?.insertOne(question)
 		.then((result) => {
 			if (!result) {
@@ -138,8 +147,27 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 					);
 					return;
 				}
-				res.status(201).send({ link });
 			});
+
+			// Increment question added
+			if (!question.anon) {
+				utmQuestCollections.Badges?.updateOne(badge, {
+					$inc: { questionsAdded: 1 },
+				}).then((incrementResult) => {
+					if (!incrementResult) {
+						res.status(500).send(
+							"Unable to increment questionsAdded for badge progression."
+						);
+					} else {
+						res.status(201).send({
+							link,
+							questionsAdded: badge.questionsAdded + 1,
+						});
+					}
+				});
+			} else {
+				res.status(201).send({ link });
+			}
 		})
 		.catch((error) => {
 			res.status(500).send(error);
