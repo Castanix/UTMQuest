@@ -92,7 +92,8 @@ tr th {
 input,
 .ant-select-selection-item,
 .ant-checkbox-inner,
-.ant-checkbox-checked:after {
+.ant-checkbox-checked:after,
+.ant-notification-notice {
   border-radius: var(--radius) !important;
 }
 
