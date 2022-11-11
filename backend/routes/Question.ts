@@ -145,7 +145,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 					res.status(500).send(
 						`Unable to increment numQuestions for ${req.body.topicName}`
 					);
-					return;
+					
 				}
 			});
 
