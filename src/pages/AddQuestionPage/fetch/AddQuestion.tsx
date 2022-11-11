@@ -4,10 +4,16 @@ import { QuestionsType } from "../../../../backend/types/Questions";
 const compareQnsObj = (obj1: QuestionsType, obj2: QuestionsType) => {
     // NOTE: Clone object to avoid mutating original!
     const keys = ['_id', 'anon', 'numDiscussions', 'authName', 'authId', 'date', 'latest'];
+<<<<<<< HEAD
     const objClone1 = { ...obj1 };
     const objClone2 = { ...obj2 };
     // objClone = JSON.parse(JSON.stringify(objClone));
 
+=======
+    const objClone1 = {...obj1};
+    const objClone2 = {...obj2};
+  
+>>>>>>> Add progressive badge for question edits
     keys.forEach(key => {
         delete objClone1[key as keyof QuestionsType];
         delete objClone2[key as keyof QuestionsType];
@@ -17,7 +23,45 @@ const compareQnsObj = (obj1: QuestionsType, obj2: QuestionsType) => {
 };
 
 
+<<<<<<< HEAD
 const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function,
+=======
+const checkBadge = (anon: boolean, result: any, goal: [number, number, number]) => {
+    // result.questionStatus will contain questionsAdded or questionsEdited
+
+    /* Tier 1 - a questions */
+    /* Tier 2 - b questions */
+    /* Tier 3 - c questions */
+    const [a, b, c] = goal;
+    if (!anon && result.questionStatus <= c) {
+        let total = a;
+        if (result.questionStatus >= a && result.questionStatus < b) total = b;
+        if (result.questionStatus >= b && result.questionStatus < c) total = c;
+
+        if (result.questionStatus === a || result.questionStatus === b) {
+            notification.success({
+                message: "Unlocked a new badge tier!",
+                description: `${result.edit ? "Edit" : "Add"} ${total - result.questionStatus} more question(s) to unlock the next tier (${result.questionStatus}/${total}).`,
+                placement: "bottom"
+            });
+        } else if (result.questionStatus === c) {
+            notification.success({
+                message: "Unlocked the final badge tier!",
+                placement: "bottom"
+            });
+        } else if (result.questionStatus !== c) {
+            notification.success({
+                message: `Getting closer to a new badge tier...`,
+                description: `${result.edit ? "Edit" : "Add"} ${total - result.questionStatus} more question(s) (${result.questionStatus}/${total}).`,
+                placement: "bottom"
+            });
+        };
+    };
+};
+
+
+const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function, 
+>>>>>>> Add progressive badge for question edits
     edit: boolean, latestQuestion: QuestionsType) => {
 
     if (edit) {
@@ -45,18 +89,28 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                     } else {
                         message.success("Question successfully edited.");
                     };
-                    setRedirect(result.link);
-                })
-                .catch((error) => {
+
+                    checkBadge(addableQuestion.anon, result, [3, 7, 15]);
+                    setRedirect(result.link);   
+                }).catch((error) => {
                     message.error(error.message);
                 });
         } else {
             if (recovery) {
                 message.error("Changes are too identical to latest version");
             } else {
+<<<<<<< HEAD
                 message.error("No changes were made");
             };
         }
+=======
+                if(recovery) {
+                    message.error("Changes are too identical to latest version");
+                } else {
+                    message.error("No changes were made");
+                };
+            };
+>>>>>>> Add progressive badge for question edits
     } else {
         fetch(`${process.env.REACT_APP_API_URI}/question/addQuestion`,
             {
