@@ -48,7 +48,7 @@ app.put("/incrementLoginStreak", async (req: Request, res: Response) => {
 	const lastLogin = new Date(badge.lastLogin);
 
 	const diffInHours =
-		(currDate.getTime() - lastLogin.getTime()) / (1000 * 3600 * 24);
+		(currDate.getTime() - lastLogin.getTime()) / (1000 * 60 * 60);
 
 	if (diffInHours < 24) {
 		res.status(400).send(
