@@ -4,16 +4,9 @@ import { QuestionsType } from "../../../../backend/types/Questions";
 const compareQnsObj = (obj1: QuestionsType, obj2: QuestionsType) => {
     // NOTE: Clone object to avoid mutating original!
     const keys = ['_id', 'anon', 'numDiscussions', 'authName', 'authId', 'date', 'latest'];
-<<<<<<< HEAD
     const objClone1 = { ...obj1 };
     const objClone2 = { ...obj2 };
-    // objClone = JSON.parse(JSON.stringify(objClone));
-
-=======
-    const objClone1 = {...obj1};
-    const objClone2 = {...obj2};
   
->>>>>>> Add progressive badge for question edits
     keys.forEach(key => {
         delete objClone1[key as keyof QuestionsType];
         delete objClone2[key as keyof QuestionsType];
@@ -23,9 +16,6 @@ const compareQnsObj = (obj1: QuestionsType, obj2: QuestionsType) => {
 };
 
 
-<<<<<<< HEAD
-const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function,
-=======
 const checkBadge = (anon: boolean, result: any, goal: [number, number, number]) => {
     // result.questionStatus will contain questionsAdded or questionsEdited
 
@@ -61,7 +51,6 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number]) 
 
 
 const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function, 
->>>>>>> Add progressive badge for question edits
     edit: boolean, latestQuestion: QuestionsType) => {
 
     if (edit) {
@@ -99,18 +88,9 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
             if (recovery) {
                 message.error("Changes are too identical to latest version");
             } else {
-<<<<<<< HEAD
                 message.error("No changes were made");
             };
         }
-=======
-                if(recovery) {
-                    message.error("Changes are too identical to latest version");
-                } else {
-                    message.error("No changes were made");
-                };
-            };
->>>>>>> Add progressive badge for question edits
     } else {
         fetch(`${process.env.REACT_APP_API_URI}/question/addQuestion`,
             {
@@ -128,34 +108,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                 return res.json();
             }).then((result) => {
                 message.success("Question successfully added.");
-                /* Added questions badge: */
-                /* Tier 1 - 5 questions */
-                /* Tier 2 - 15 questions */
-                /* Tier 3 - 30 questions */
-                if (!addableQuestion.anon && result.questionsAdded <= 30) {
-                    let total = 5;
-                    if (result.questionsAdded >= 5 && result.questionsAdded < 15) total = 15;
-                    if (result.questionsAdded >= 15 && result.questionsAdded < 30) total = 30;
-
-                    if (result.questionsAdded === 5 || result.questionsAdded === 15) {
-                        notification.success({
-                            message: "Unlocked a new badge tier!",
-                            description: `Add ${total - result.questionsAdded} more question(s) to unlock the next tier (${result.questionsAdded}/${total}).`,
-                            placement: "bottom"
-                        });
-                    } else if (result.questionsAdded === 30) {
-                        notification.success({
-                            message: "Unlocked the final badge tier!",
-                            placement: "bottom"
-                        });
-                    } else if (result.questionsAdded !== 30) {
-                        notification.success({
-                            message: `Getting closer to a new badge tier...`,
-                            description: `Add ${total - result.questionsAdded} more question(s) (${result.questionsAdded}/${total}).`,
-                            placement: "bottom"
-                        });
-                    }
-                }
+                checkBadge(addableQuestion.anon, result, [5, 15, 30]);
                 setRedirect(result.link);
             })
             .catch((error) => {

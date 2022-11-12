@@ -195,7 +195,8 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 					} else {
 						res.status(201).send({
 							link,
-							questionsAdded: badge.questionsAdded + 1,
+							questionStatus: badge.questionsAdded + 1,
+							edit: false
 						});
 					}
 				});
