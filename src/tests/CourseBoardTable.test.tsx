@@ -1,7 +1,7 @@
 import React from 'react';
 import CoursesType from '../../backend/types/Courses';
 import { fireEvent, getByPlaceholderText, prettyDOM, render, screen, waitFor } from '@testing-library/react';
-import CourseBoardTable from '../pages/CourseBoard/CourseBoardTable';
+import CourseBoardTable from '../components/CourseBoard/CourseBoardTable';
 import { BrowserRouter } from 'react-router-dom';
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
