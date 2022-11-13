@@ -7,13 +7,12 @@ import { FireTwoTone } from '@ant-design/icons';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Topbar from './components/Topbar/Topbar';
 import reportWebVitals from './reportWebVitals';
-import DashboardPage from './pages/DashboardPage/DashboardPage';
 import CoursePage from './pages/CoursePage/CoursePage';
 import ManageTopics from './pages/ManageTopics/ManageTopics';
-import CourseBoard from './pages/CourseBoard/CourseBoard';
 import QuestionsPage from './pages/QuestionsPage/QuestionsPage';
 import AddQuestionPage from './pages/AddQuestionPage/AddQuestionPage';
 import ApprovedQuestion from './pages/ApprovedQuestion/ApprovedQuestion';
+import LandingPage from './pages/LandingPage/LandingPage';
 
 
 const root = ReactDOM.createRoot(
@@ -46,8 +45,7 @@ root.render(
   <BrowserRouter>
     <Topbar>
       <Routes>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/courses" element={<CourseBoard />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/courses/:id" element={<CoursePage />} />
         <Route path="/courses/:id/topics" element={<ManageTopics />} />
         <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
