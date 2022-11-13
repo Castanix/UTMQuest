@@ -20,10 +20,11 @@ const CourseBoardTable = (props: any) => {
         }
     });
 
-    const [allData, setAllData] = useState<CoursesType[]>(added);
+    const [allAddedData, setAllAddedData] = useState<CoursesType[]>(added);
     const [searchValue, setSearchValue] = useState<string>("");
-    const [displayData, setDisplayData] = useState<CoursesType[]>(added);
+    const [tableDisplayData, setTableDisplayData] = useState<CoursesType[]>(added);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [modalData, setModalData] = useState<CoursesType[]>(unadded);
 
     const columns: ColumnsType<CoursesType> = [{
         title: "Course Code",
@@ -46,26 +47,27 @@ const CourseBoardTable = (props: any) => {
 
     const handleSearch = (value: string) => {
         setSearchValue(value);
-        setDisplayData(value ? allData.filter(item =>
+        setTableDisplayData(value ? allAddedData.filter(item =>
             item.courseId.toLowerCase().includes(value.toLowerCase()) ||
             item.courseName.toLowerCase().includes(value.toLowerCase())
-        ) : allData);
+        ) : allAddedData);
     };
 
     // Locally renders new course on the courseboard. Renders by fetching from db happens on initial page load.
-    const rerender = (code: string, name: string) => {
+    const rerender = (_id: string, code: string, name: string) => {
         setSearchValue("");
 
-        const courses = [...allData, {
-            _id: "temp",
+        const courses = [...allAddedData, {
+            _id,
             courseId: code,
             courseName: name,
             numTopics: 0,
             added: true
         }];
 
-        setAllData(courses);
-        setDisplayData(courses);
+        setTableDisplayData(courses);
+        setAllAddedData(courses);
+        
     };
 
     return (
@@ -78,16 +80,16 @@ const CourseBoardTable = (props: any) => {
             </div>
             <br />
             <Table
-                dataSource={displayData}
+                dataSource={tableDisplayData}
                 columns={columns}
                 rowKey="_id"
             />
             <AddCourseModal
                 modalState={isModalOpen}
                 setModalState={setIsModalOpen}
-                setDisplayData={setDisplayData}
                 rerender={rerender}
-                unadded={unadded}
+                modalData={modalData}
+                setModalData={setModalData}
             />
         </div>
     );

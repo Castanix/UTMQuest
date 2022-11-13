@@ -62,8 +62,11 @@ courseRouter.put('/addCourse', async (req: Request, res: Response) => {
   ).then((result) => {
     if (!result) {
       res.status(400).send('Unable to update the course');
-    }
-    res.status(200).send(`course ${course.courseId} has been updated successfully`);
+    };
+    res.status(200).send({
+      message: `course ${course.courseId} has been updated successfully`,
+      _id: result.value?._id
+    });
   }).catch((error) => {
     res.status(500).send(error);
   });

@@ -1,7 +1,7 @@
 import { message } from "antd";
 import CoursesType from "../../../../backend/types/Courses";
 
-const AddCourse = async (courseId: string, courseName: string, courses: CoursesType[], rerender: Function, setCourses: Function) => {
+const AddCourse = async (courseId: string, courseName: string, modalData: CoursesType[], rerender: Function, setModalData: Function) => {
     await fetch(`${process.env.REACT_APP_API_URI}/course/addCourse`,
         {
             method: 'PUT',
@@ -14,14 +14,15 @@ const AddCourse = async (courseId: string, courseName: string, courses: CoursesT
             body: JSON.stringify({ courseId })
         }).then((res: Response) => {
             if (!res.ok) {
-                message.error("Could not add course. Please try again.");
-                return;
+                throw new Error("Could not add course. Please try again.");
             }
-            rerender(courseId, courseName);
-            setCourses(courses.filter((item => item.courseId !== courseId)));
+            return res.json();
+        }).then(result => {
+            rerender(result._id, courseId, courseName);
+            setModalData(modalData.filter((item => item.courseId !== courseId)));
             message.success("Course successfully added.");
-        }).catch(() => {
-            message.error("Could not add course. Please try again.");
+        }).catch((error) => {
+            message.error(error.message);
         });
 };
 
