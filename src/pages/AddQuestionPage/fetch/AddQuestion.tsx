@@ -109,6 +109,22 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
             }).then((result) => {
                 message.success("Question successfully added.");
                 checkBadge(addableQuestion.anon, result, [5, 15, 30]);
+                
+                if(result.consecutivePosting) {
+                    if(result.consecutivePosting === 7) {
+                        notification.success({
+                            message: "Unlocked badge for 7 day consecutive posting!",
+                            placement: "bottom"
+                        });
+                    } else {
+                        notification.success({
+                            message: `Posted ${result.consecutivePosting} consecutive days`,
+                            description: `Post consecutively for ${7 - result.consecutivePosting} more days to get a badge.`,
+                            placement: "bottom"
+                        });
+                    }
+                }
+
                 setRedirect(result.link);
             })
             .catch((error) => {

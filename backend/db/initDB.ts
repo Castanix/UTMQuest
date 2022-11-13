@@ -406,20 +406,23 @@ async function initDB() {
 			);
 		});
 
-
 	// Creates the Badges collection in Mongo Atlas with validation
 	await db
 		.createCollection("Badges", {
 			validator: {
 				$jsonSchema: {
 					bsonType: "object",
-					title: "Tracking Badges Object Validation",
+					title: "Badges Object Validation",
 					required: [
 						"utorid",
 						"questionsAdded",
 						"questionsEdited",
 						"threadResponses",
-						"loginStreak"
+						"currLoginStreak",
+						"longestLoginStreak",
+						"lastLogin",
+						"firstPostToday",
+						"consecutivePosting"
 					],
 					additionalProperties: false,
 					properties: {
@@ -447,21 +450,41 @@ async function initDB() {
 							description:
 								"'threadResponses' must be an int and is required",
 						},
-						loginStreak: {
+						currLoginStreak: {
 							bsonType: "int",
 							description:
-								"'loginStreak' must be an int and is required",
+								"'currLoginStreak' must be an int and is required",
+						},
+						longestLoginStreak: {
+							bsonType: "int",
+							description:
+								"'longestLoginStreak' must be an int and is required",
+						},
+						lastLogin: {
+							bsonType: "string",
+							description:
+								"'lastLogin' must be a string and is required",
+						},
+						firstPostToday: {
+							bsonType: "string",
+							description:
+								"'firstPostToday' must be a string and is required",
+						},
+						consecutivePosting: {
+							bsonType: "int",
+							description:
+								"'consecutivePosting' must be an int and is required",
 						},
 					},
 				},
 			},
 		})
 		.then(() => {
-			console.log("Successfully created Tracking Badges collection");
+			console.log("Successfully created Badges collection");
 		})
 		.catch(() => {
 			console.log(
-				"Error creating collections or Tracking Badges collection already exists"
+				"Error creating collections or Badges collection already exists"
 			);
 		});
 
