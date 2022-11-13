@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import ReviewQuestionsTable from '../pages/DashboardPage/ReviewQuestionTable';
-import WidgetType from '../pages/DashboardPage/types/Widget';
+import ReviewQuestionsTable from '../components/DashboardPage/ReviewQuestionTable';
+import WidgetType from '../components/DashboardPage/types/Widget';
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {

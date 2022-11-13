@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import SavedCoursesList from '../pages/DashboardPage/SavedCoursesList';
+import SavedCoursesList from '../components/DashboardPage/SavedCoursesList';
 import { BrowserRouter } from 'react-router-dom';
 
 Object.defineProperty(window, 'matchMedia', {

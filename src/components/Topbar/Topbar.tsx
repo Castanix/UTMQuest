@@ -36,11 +36,6 @@ const Topbar = ({ children }: { children: React.ReactNode }) => (
         mode="horizontal"
         selectable={false}
       >
-        <Menu.Item key="courses">
-          <Link to="/courses">
-            Courses
-          </Link>
-        </Menu.Item>
         <Menu.SubMenu
           key="subMenu"
           className="subMenu"
@@ -49,7 +44,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => (
               Username
               <CaretDownFilled />
             </span>
-              )}
+          )}
         >
           <Menu.Item key="profile" icon={<UserOutlined />}>
             <Link to="/profile">
