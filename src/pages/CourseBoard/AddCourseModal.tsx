@@ -7,10 +7,9 @@ import "./CourseBoard.css";
 const { Option, OptGroup } = Select;
 
 const AddCourseModal = (props: any) => {
-    const { modalState, setModalState, rerender, unadded }:
-        { modalState: boolean, setModalState: Function, rerender: Function, unadded: CoursesType[] } = props;
+    const { modalState, setModalState, rerender, modalData, setModalData }:
+        { modalState: boolean, setModalState: Function, rerender: Function, modalData: CoursesType[], setModalData: Function } = props;
 
-    const [displayCourses, setDisplayCourses] = useState<CoursesType[]>(unadded);
     const [searchInput, setSearchInput] = useState<string>();
     const [selected, setSelected] = useState<string>();
 
@@ -36,7 +35,7 @@ const AddCourseModal = (props: any) => {
             return newData;
         };
 
-        courseSort(displayCourses).forEach((item: CoursesType) => {
+        courseSort(modalData).forEach((item: CoursesType) => {
             const code = item.courseId.slice(0, 3);
 
             if (oldCode === code) {
@@ -60,7 +59,7 @@ const AddCourseModal = (props: any) => {
             // Slices the selected string to get the course name
             const name = selected.slice(6);
 
-            AddCourse(code || '', name, displayCourses, rerender, setDisplayCourses);
+            AddCourse(code || '', name, modalData, rerender, setModalData);
         }
         setModalState(false);
     };
