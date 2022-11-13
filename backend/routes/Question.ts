@@ -38,8 +38,6 @@ const updateLatest = (question: any, set: boolean) => {
 	return !!result;
 };
 
-
-
 // "/:questionId"
 questionRouter.get(
 	"/oneQuestion/:link",
@@ -183,26 +181,95 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 				}
 			});
 
-			// Increment question added
+			// Update badge progression
 			if (!question.anon) {
-				utmQuestCollections.Badges?.updateOne(badge, {
-					$inc: { questionsAdded: 1 },
-				}).then((incrementResult) => {
-					if (!incrementResult) {
-						res.status(500).send(
-							"Unable to increment questionsAdded for badge progression."
-						);
+				const now = new Date();
+				
+				if(badge.firstPostToday === "") {
+					utmQuestCollections.Badges?.updateOne(badge, {
+						$set: { firstPostToday: now.toISOString(),
+								consecutivePosting: 1 },
+						$inc: { questionsAdded: 1 }
+					}).then((updateResult) => {
+						if (!updateResult) {
+							res.status(500).send(
+								"Unable to update badge progression."
+							);
+						} else {
+							res.status(201).send({
+								link,
+								questionStatus: badge.questionsAdded + 1,
+								consecutivePosting: 1,
+								edit: false
+							});
+						}
+					});
+				} else {
+					const currTime = now.getTime() / (60 * 60 * 1000);
+					const lastPostTime = Date.parse(badge.firstPostToday) / (60 * 60 * 1000);
+					const timeDiff = currTime - lastPostTime;
+
+					if(timeDiff < 48 && timeDiff > 24 && badge.consecutivePosting < 7) {
+						utmQuestCollections.Badges?.updateOne(badge, {
+							$set: { firstPostToday: now.toISOString() },
+							$inc: { consecutivePosting: 1,
+									questionsAdded: 1 }
+						}).then((updateResult) => {
+							if (!updateResult) {
+								res.status(500).send(
+									"Unable to update badge progression."
+								);
+							} else {
+								res.status(201).send({
+									link,
+									questionStatus: badge.questionsAdded + 1,
+									consecutivePosting: badge.consecutivePosting + 1,
+									edit: false
+								});
+							}
+						});
+					} else if (timeDiff > 48 && badge.consecutivePosting < 7) {
+						utmQuestCollections.Badges?.updateOne(badge, {
+							$set: { firstPostToday: now.toISOString(),
+									consecutivePosting: 1 },
+							$inc: { questionsAdded: 1 }
+						}).then((updateResult) => {
+							if (!updateResult) {
+								res.status(500).send(
+									"Unable to update badge progression."
+								);
+							} else {
+								res.status(201).send({
+									link,
+									questionStatus: badge.questionsAdded + 1,
+									consecutivePosting: 1,
+									edit: false
+								});
+							}
+						});
 					} else {
-						res.status(201).send({
-							link,
-							questionStatus: badge.questionsAdded + 1,
-							edit: false
+						utmQuestCollections.Badges?.updateOne(badge, {
+							$inc: { questionsAdded: 1 }
+						}).then((incrementResult) => {
+							if (!incrementResult) {
+								res.status(500).send(
+									"Unable to increment questionsAdded for badge progression."
+								);
+							} else {
+								res.status(201).send({
+									link,
+									questionStatus: badge.questionsAdded + 1,
+									edit: false
+								});
+							}
 						});
 					}
-				});
+				}
 			} else {
 				res.status(201).send({ link });
-			}
+			};
+
+
 		})
 		.catch((error) => {
 			res.status(500).send(error);
