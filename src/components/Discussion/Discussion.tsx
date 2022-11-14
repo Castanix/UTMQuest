@@ -8,9 +8,9 @@ import Editor from "./Editor";
 import DisplayComment from "./DisplayComment";
 
 
-const Discussion = ({ questionId }: { questionId: string }) => {
+const Discussion = ({ questionLink }: { questionLink: string }) => {
     
-    const { loading, comments: opComments, error } = GetOPComments(questionId);
+    const { loading, comments: opComments, error } = GetOPComments(questionLink);
     const [comments, setComments] = useState<DiscussionFrontEndType[]>(opComments);
 
     const updateComments = (newComment: DiscussionFrontEndType) => {
@@ -23,7 +23,7 @@ const Discussion = ({ questionId }: { questionId: string }) => {
 
     return (
         <div>
-            <Editor discussionId={null} questionId={questionId} op updateComments={updateComments} />
+            <Editor discussionId={null} questionLink={questionLink} op updateComments={updateComments} />
             <Divider orientation="left">Replies</Divider>
             {comments.filter(i => i.op).map((item) => (
                 <DisplayComment key={item._id} comment={item} />
