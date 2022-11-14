@@ -6,7 +6,7 @@ const courseRouter = Router();
 courseRouter.get('/getAllCourses', async (req: Request, res: Response) => {
   try {
     const courseLst = await utmQuestCollections.Courses?.find().toArray();
-    res.json(courseLst);
+    res.status(200).send(courseLst);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -30,10 +30,11 @@ courseRouter.post('/', async (req: Request, res: Response) => {
   const course = {
     courseId: req.body.courseId,
     courseName: req.body.courseName,
-    topics: req.body.courseTopics,
+    numTopics: 0,
+    added: false
   };
 
-  const item = await utmQuestCollections.Courses?.findOne(course);
+  const item = await utmQuestCollections.Courses?.findOne({courseId: course.courseId});
   if (item) {
     res.status(409).send({ error: 'data already exists' });
     return;
@@ -71,51 +72,5 @@ courseRouter.put('/addCourse', async (req: Request, res: Response) => {
     res.status(500).send(error);
   });
 });
-
-
-courseRouter.put('/incrementTopic', async (req: Request, res: Response) => {
-  const course = {
-    courseId: req.body.courseId
-  };
-
-  utmQuestCollections.Courses?.findOneAndUpdate(course, 
-    { 
-      $int: { numTopics: 1 } 
-    }
-  ).then((result) => {
-    if (!result) {
-      res.status(400).send(`Unable to increment numTopics for ${course.courseId}`);
-    }
-    res.status(200).send(`course ${course.courseId} has been updated successfully`);
-  }).catch((error) => {
-    res.status(500).send(error);
-  });
-});
-
-courseRouter.put('/decrementTopic', async (req: Request, res: Response) => {
-  const course = {
-    courseId: req.body.courseId
-  };
-
-  utmQuestCollections.Courses?.findOneAndUpdate(course, 
-    { 
-      $cond: {
-        if: {
-          numTopics: { $gt: 0 }
-        },
-        then: {$int: { numTopics: -1 }},
-        else: {$set: { numTopics: 0 }}
-      }
-    }
-  ).then((result) => {
-    if (!result) {
-      res.status(400).send(`Unable to decrement numTopics for ${course.courseId}`);
-    }
-    res.status(200).send(`course ${course.courseId} has been updated successfully`);
-  }).catch((error) => {
-    res.status(500).send(error);
-  });
-});
-
 
 export default courseRouter;

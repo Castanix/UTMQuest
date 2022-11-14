@@ -58,26 +58,7 @@ questionRouter.get(
 	}
 );
 
-questionRouter.get(
-	"/allDiscussions/:questionId",
-	async (req: Request, res: Response) => {
-		try {
-			const discussions = await utmQuestCollections.Discussions?.findOne({
-				question: req.params.questionId,
-			});
-			if (!discussions) {
-				res.status(404).send("Cannot find discussion");
-				return;
-			}
-
-			res.status(200).send(discussions);
-		} catch (error) {
-			res.status(500).send(`ERROR: ${error}`);
-		}
-	}
-);
-
-
+// /:courseId/:qnsStatus
 questionRouter.get(
 	"/latestQuestions/:courseId/:utorid",
 	async (req: Request, res: Response) => {
