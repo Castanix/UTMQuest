@@ -29,6 +29,23 @@ topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 		});
 });
 
+topicRouter.get('/getTopic/:topicId', async (req: Request, res: Response) => { 
+	try { 
+		const { topicId } = req.params;
+		const topic = await utmQuestCollections.Topics?.findOne({_id: new ObjectID(topicId)});
+		
+		if (!topic){
+			res.status(404).send("No such topic found");
+			return;
+		}
+
+		res.status(200).send(topic);
+
+	} catch (error) { 
+		res.status(500).send(error);
+	}	
+});
+
 
 topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 	if (!mongoDB.ObjectId.isValid(req.body._id)) {
