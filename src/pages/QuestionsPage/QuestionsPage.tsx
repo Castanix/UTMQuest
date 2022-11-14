@@ -13,7 +13,6 @@ const Header = ({ courseCode, title }:
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to="/courses">Courses</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
             <Breadcrumb.Item>Browse Questions</Breadcrumb.Item>
         </Breadcrumb>

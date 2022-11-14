@@ -29,7 +29,6 @@ const Header = ({ courseCode, courseName, favourite, setFavourite }:
   <div>
     <Breadcrumb>
       <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-      <Breadcrumb.Item><Link to="/courses">Courses</Link></Breadcrumb.Item>
       <Breadcrumb.Item>{courseCode}</Breadcrumb.Item>
     </Breadcrumb>
     <div className="title">
@@ -41,10 +40,10 @@ const Header = ({ courseCode, courseName, favourite, setFavourite }:
               Manage Topics
             </Button>
           </Link>
-          <Button 
-            type="primary" 
-            icon={favourite ? <StarFilled /> : <StarOutlined />} 
-            shape="round" 
+          <Button
+            type="primary"
+            icon={favourite ? <StarFilled /> : <StarOutlined />}
+            shape="round"
             onClick={() => {
               SaveCourse(courseCode, favourite, setFavourite);
             }}
@@ -60,7 +59,7 @@ const CoursePage = () => {
   const params = useParams();
   const courseCode = params.id;
   const { loadingCourses, courseName, errorCourses } = GetCourse(courseCode ?? '');
-  
+
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const { loadingSaved, errorSaved } = CheckSaved(courseCode ?? '', setIsSaved);
 
