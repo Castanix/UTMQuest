@@ -1,8 +1,9 @@
 /* eslint-disable */
 
-import { Avatar, BackTop, Breadcrumb, Button, Card, Divider, List, RadioChangeEvent, Select, Timeline, Typography, PageHeader } from "antd";
+import { Avatar, BackTop, Card, Divider, Timeline, Typography, PageHeader, Popover, Button } from "antd";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import BadgePicker from "../../components/BadgePicker/BadgePicker";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loading from "../../components/Loading/Loading";
 import GetAllQuestions from "./fetch/GetAllQuestions";
@@ -20,12 +21,10 @@ export interface TimelineType {
 
 const ProfilePage = () => {
     const [name, setName] = useState<string>("");
-    const [savedColour, setSavedColour] = useState<string>("");
-    const [currentColour, setCurrentColour] = useState<string>("");
     const [badges, setBadges] = useState<string[]>([]);
     const [timeline, setTimeline] = useState<TimelineType[]>();
     
-    const { loadingProfile, errorProfile } = GetProfile("dummy22", setName, setSavedColour, setCurrentColour, setBadges);
+    const { loadingProfile, errorProfile } = GetProfile("dummy22", setName, setBadges);
     const { loadingQuestions, errorQuestions } = GetAllQuestions("dummy22", setTimeline);
 
     if (loadingProfile || loadingQuestions) return <Loading />
@@ -47,11 +46,6 @@ const ProfilePage = () => {
         </div>
     );
 
-    const onColourSave = () => {
-        UpdateProfile("dummy22", currentColour, setSavedColour);
-    }
-
-
     // dataType to be determined (currently assuming tuple of [string, string])
     const loadTimeline = () => {
         // Should be added in order from newest to oldest
@@ -72,30 +66,45 @@ const ProfilePage = () => {
             <BackTop />
             <main className="main-container profile">
                 <div className="profile-container">
-                    <Button shape="round" disabled={savedColour === currentColour} onClick={onColourSave}>Save</Button>
                     <div className="user-container">   
-                        <label className="colour-picker">
-                            <Avatar 
-                                size={160} 
-                                style={{
-                                    backgroundColor: currentColour, 
-                                    fontSize: "2.5rem", 
-                                    border: "1px solid #f0f0f0"
-                                }}
-                            >
+                            <Avatar className="avatar" size={160}>
                                 {firstInitial.concat(lastInitial)}
                             </Avatar>
-                            <input type="color" value={currentColour} onChange={(e) => setCurrentColour(e.target.value)} style={{display:"none"}} />
-                        </label>
                         <div className="user-details">
                             <Text strong>{name}</Text>
                         </div>
                     </div>
                     <div className="badge-container">
+                        {/* <Button shape="round" onClick={() => {
+                            document.querySelector('.badge-picker')?.classList.toggle('active');
+                        }}>Customize badges</Button> */}
+                        <BadgePicker />
                         <Divider>Badges</Divider>
                         <div className="badges">
-                            Reserved space for badges
-                            {/* badges */}
+                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
+                                <img src="/image/images.png" />
+                            </Popover>
+                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
+                                <img src="/image/images.png" />
+                            </Popover>
+                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
+                                <img src="/image/images.png" />
+                            </Popover>
+                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
+                                <img src="/image/images.png" />
+                            </Popover>
+                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
+                                <img src="/image/images.png" />
+                            </Popover>
+                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
+                                <img src="/image/images.png" />
+                            </Popover>
+                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
+                                <img src="/image/images.png" />
+                            </Popover>
+                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
+                                <img src="/image/images.png" />
+                            </Popover>
                         </div>
                     </div>
                 </div>
@@ -106,54 +115,6 @@ const ProfilePage = () => {
                         <>
                             <Timeline mode="left" style={{marginTop: "2.75rem", width: "40vw"}}>
                                 {loadTimeline()}
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
-                                <Timeline.Item label="Today">reygreshyresyhse4tyse45ye4y77ey</Timeline.Item>
                             </Timeline>
                         </>}
                     <Divider></Divider>
