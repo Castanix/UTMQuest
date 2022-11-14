@@ -47,11 +47,6 @@ async function initDB() {
 									"items in array must be a string referencing the Courses collection or empty",
 							},
 						},
-						colour: {
-							bsonType: "string",
-							description:
-								"'colour' must be a string and is required",
-						},
 						badges: {
 							bsonType: "array",
 							description:

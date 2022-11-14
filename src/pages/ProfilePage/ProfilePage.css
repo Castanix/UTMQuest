@@ -1,14 +1,32 @@
+.ant-avatar {
+    color: black;
+    background-color: white !important;
+    font-size: 2.5rem !important;
+    border: 1px solid #f0f0f0 !important;
+}
+
+.badges {
+    width: 10rem;
+    margin: auto;
+}
+
 .profile {
     display: flex;
     justify-content: space-around;
     margin-inline: 10vw;
 }
 
+.badges img {
+    object-fit: contain;
+    width: 2.25rem;
+    margin: 0.25rem;
+}
+
 @media screen and (max-width: 600px) {
     .profile {
         display: flex;
         margin-inline: 0;
-    } 
+    }
 }
 
 .profile-container {
@@ -32,39 +50,13 @@
 
 .badges {
     height: 40vh;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 
 .timeline-container {
     /* margin-inline: auto; */
     text-align: center;
     font-size: max(0.5rem, 1vw);
-}
-
-.colour-list-container {
-    display: none;
-}
-
-.colour-list-container.active {
-    display: block;
-}
-
-.colour-list-container .ant-list {
-    width: 100%;
-    position: absolute; 
-    text-align: center; 
-    z-index: 1; 
-    background-color: white;
-}
-
-.colour-list-container .ant-list-item:hover,
-.colour-list-container .ant-list-item:focus {
-    cursor: pointer;
-    background-color: beige;
-}
-
-.colour-picker {
-    cursor: url(data:image/x-icon;base64,AAABAAEAEBAAAAAAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAAAAD///8BAAAAfwAAAIH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8BAAAAcQAAAN8AAADTAAAArwAAAE8AAAAJ////Af///wH///8B////Af///wH///8B////Af///wH///8B////AQAAAJEAAADLAAAAEwAAAHsAAADDAAAA3wAAADP///8B////Af///wH///8B////Af///wH///8B////Af///wH///8BAAAAuQAAAHX///8B////AQAAAF0AAADtAAAAOf///wH///8B////Af///wH///8B////Af///wH///8B////AQAAAFMAAAC/////Af///wH///8BAAAAUQAAAO0AAAA5////Af///wH///8B////Af///wH///8B////Af///wEAAAANAAAA5wAAAFH///8B////Af///wEAAABRAAAA7QAAADn///8B////Af///wH///8B////Af///wH///8B////AQAAAD0AAADtAAAARf///wH///8B////AQAAAFEAAADtAAAAOQAAACP///8B////Af///wH///8B////Af///wH///8BAAAARQAAAO0AAABF////Af///wH///8BAAAAUQAAAO0AAADvAAAAmf///wH///8B////Af///wH///8B////Af///wEAAABFAAAA7QAAAEX///8B////AQAAADUAAADxAAAA/wAAAPcAAAAr////Af///wH///8B////Af///wH///8B////AQAAAEUAAADtAAAARQAAADUAAADvAAAA/wAAAPcAAABFAAAALf///wH///8B////Af///wH///8B////Af///wH///8BAAAARQAAAO0AAADvAAAA/wAAAPcAAABFAAAAgwAAAPsAAABX////Af///wH///8B////Af///wH///8B////AQAAACUAAADvAAAA/wAAAPcAAABFAAAAgwAAAP8AAAD/AAAA+wAAAE////8B////Af///wH///8B////Af///wEAAAADAAAAoQAAAPcAAABFAAAAgwAAAP8AAAD/AAAA/wAAAP8AAADf////Af///wH///8B////Af///wH///8B////AQAAAAMAAAAvAAAALQAAAPsAAAD/AAAA/wAAAP8AAAD/AAAA+////wH///8B////Af///wH///8B////Af///wH///8B////Af///wEAAABXAAAA+wAAAP8AAAD/AAAA/wAAALX///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////AQAAAE8AAADfAAAA+wAAALUAAAAXAAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//w==), default;
 }
 
 .profile-header {
