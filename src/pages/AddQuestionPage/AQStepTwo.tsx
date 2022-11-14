@@ -181,7 +181,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
             <div className='btn-container'>
                 <Button onClick={() => setCurrStep()}>Back</Button>
                 <div>
-                    <Checkbox onChange={() => setAnon(!isAnon)}>Post Anonymously<br />(to other users only)</Checkbox>
+                    <Checkbox onChange={() => setAnon(!isAnon)}>Post Anonymously<br />(to other users only)<br />(does not count toward badges)</Checkbox>
                     <Button
                         type="primary"
                         disabled={!((type && (title ?? '').trim() && problemValue?.trim() && verifySol()))}
@@ -200,7 +200,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 ans = ansArr;
                             }
 
-                            const questionObj: QuestionsType = {
+                            const addableQuestion: QuestionsType = {
                                 _id: '',
                                 link,
                                 topicId: topicSelected[0],
@@ -214,12 +214,12 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 ans,
                                 authId: "dummy22",
                                 authName: !isAnon ? "Dummy Test" : "Anonymous",
-                                date: '',
+                                date: (latest ? question.date : new Date().toISOString),
                                 numDiscussions: 0,
                                 anon: isAnon,
                                 latest: true
                             };
-                            AddQuestion(questionObj, setRedirect, edit, (latest ? latest : question));
+                            AddQuestion(addableQuestion, setRedirect, edit, (latest ? latest : question));
                         }}
                     >Submit</Button>
                 </div>

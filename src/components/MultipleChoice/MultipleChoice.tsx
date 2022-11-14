@@ -61,9 +61,7 @@ const MultipleChoice = ({ options, answers, explanation }: { options: string[], 
                 <Title level={3} className="explanation-title">
                     Explanation
                 </Title>
-                <p>
-                    <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={explanation} />
-                </p>
+                <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={explanation} />
             </div>}
         </div>
     );

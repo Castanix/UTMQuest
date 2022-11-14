@@ -22,7 +22,7 @@ function escapeSpecialChars(str: string) {
         .replace(reg, "");
 }
 
-interface DuplicateQuestionType {
+export interface DuplicateQuestionType {
     _id: string;
     link: string;
     qnsName: string;

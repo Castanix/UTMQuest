@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import 'antd/dist/antd.min.css';
+import { notification } from 'antd';
+import { FireTwoTone } from '@ant-design/icons';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Topbar from './components/Topbar/Topbar';
 import reportWebVitals from './reportWebVitals';
@@ -13,9 +15,33 @@ import QuestionsPage from './pages/QuestionsPage/QuestionsPage';
 import AddQuestionPage from './pages/AddQuestionPage/AddQuestionPage';
 import ApprovedQuestion from './pages/ApprovedQuestion/ApprovedQuestion';
 
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
+
+/* Once login is implemented, we can move the following within the login callback. */
+const request = {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ utorid: "dummy22" })
+};
+
+fetch(`${process.env.REACT_APP_API_URI}/incrementLoginStreak`, request)
+
+  .then((result) => {
+    if (!result.ok) throw Error("Could not increment login streak");
+    return result.json();
+  }).then((response) => {
+    notification.success({
+      message: `Daily login streak: ${response.streak}`,
+      placement: "bottom",
+      icon: <FireTwoTone />
+    });
+  }).catch((error) => {
+    console.log(error);
+  });
+
 root.render(
   <BrowserRouter>
     <Topbar>

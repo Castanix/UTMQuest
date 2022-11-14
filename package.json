@@ -69,7 +69,12 @@
       "!src/**/fetch/*",
       "!src/**/types/*",
       "!src/index.tsx",
-      "!src/reportWebVitals.ts"
+      "!src/reportWebVitals.ts",
+      "!src/pages/CoursePage/CoursePage.tsx",
+      "!src/pages/ManageTopics/ManageTopics.tsx",
+      "!src/pages/QuestionsPage/QuestionsPage.tsx",
+      "!src/pages/DashboardPage/DashboardPage.tsx",
+      "!src/pages/CourseBoard/CourseBoard.tsx"
     ]
   }
 }
