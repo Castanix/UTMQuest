@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
-import { Form, Input, Popconfirm, Table, Typography, Space, Tooltip } from 'antd';
+import { Link } from 'react-router-dom';
+import { Form, Input, Popconfirm, Table, Typography, Space, Tooltip, Alert } from 'antd';
 import React from 'react';
 import TopicsType from '../../../backend/types/Topics';
 import AddTopic from './AddTopic';
@@ -61,7 +62,8 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
         handleDelete,
         searchTerm,
         onChange,
-        addTopicCallback } = TopicState(topics);
+        addTopicCallback,
+        lastTopicAdded } = TopicState(topics);
 
     const columns = [
         {
@@ -138,6 +140,25 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
                 <AddTopic courseId={courseId} addTopicCallback={addTopicCallback} />
             </div>
             <br />
+            {lastTopicAdded != null ?
+                <div>
+                    <Alert message={`${lastTopicAdded.topicName} successfully added. Create a question for it here: `}
+                        type="success"
+                        action={
+                            <Link
+                                to={`/courses/${courseId}/addQuestion`}
+                                state={{ defaultTopicId: lastTopicAdded._id, defaultTopicName: lastTopicAdded.topicName }}
+                            >
+                                Add Question
+                            </Link>
+                        }
+                        showIcon
+                    />
+                    <br />
+                </div>
+                :
+                null
+            }
             <Table
                 components={{
                     body: {
