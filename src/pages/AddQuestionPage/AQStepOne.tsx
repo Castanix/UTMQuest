@@ -3,26 +3,26 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import TopicsType from "../../../backend/types/Topics";
 
-const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }: 
+const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
     { courseCode: string, topics: TopicsType[], setCurrStep: Function, setTopicSelected: Function }) => {
 
     const fullTopicList = topics;
     const [selected, setSelected] = useState<string>();
     const [searchValue, setSearchValue] = useState<string>();
 
-    
+    const { defaultTopicId, defaultTopicName } = useLocation().state ?? "";
     const { question } = useLocation().state ?? "";
     useEffect(() => {
-        if(question) {
+        if (question) {
             const topicId = topics.filter(item => item.topicName === question.topicName)[0]._id;
 
             setTopicSelected([topicId, question.topicName]);
             setSelected(topicId);
+        } else if (defaultTopicId && defaultTopicName) {
+            setTopicSelected([defaultTopicId, defaultTopicName]);
+            setSelected(defaultTopicId);
         };
-    }, [question, topics, setTopicSelected]);
-    
-
-    
+    }, [question, topics, setTopicSelected, defaultTopicId, defaultTopicName]);
 
     const { Option } = Select;
 
@@ -36,24 +36,32 @@ const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
         return topicArr;
     };
 
+    const GetSelectInitialValue = () => {
+        if (question) return question.topicName;
+
+        if (defaultTopicId !== '' && defaultTopicName !== '') return defaultTopicName;
+
+        return null;
+    };
+
     return (
         <>
             <Alert message="If the topic you are trying to select does not exist, please add it here:"
                 type="info"
                 action={
-                    <Link to={`/courses/${courseCode}/topics`}>Manage Topic</Link>
+                    <Link to={`/courses/${courseCode}/topics`}>Manage Topics</Link>
                 }
-                showIcon 
+                showIcon
             />
-            <br/>
+            <br />
             <div className="form-container">
                 <Form>
-                    <Form.Item 
-                        name="topic" 
+                    <Form.Item
+                        name="topic"
                         label="Select the topic this question is for"
                         colon
                         required
-                        initialValue={question ? question.topicName : null}
+                        initialValue={GetSelectInitialValue()}
                     >
                         <Select
                             showSearch
@@ -65,13 +73,13 @@ const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
                             onSearch={(value) => setSearchValue(value)}
                         >
                             {initSelect()}
-                        </Select>   
+                        </Select>
                     </Form.Item>
-                    <Button 
+                    <Button
                         type="primary"
                         disabled={!selected}
                         onClick={() => {
-                            if(selected) {
+                            if (selected) {
                                 const name = fullTopicList.find(item => item._id === selected)?.topicName;
 
                                 setTopicSelected([selected, name]);
@@ -81,7 +89,7 @@ const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
                             };
                         }}
                     >Next</Button>
-                </Form>              
+                </Form>
             </div>
         </>
     );
