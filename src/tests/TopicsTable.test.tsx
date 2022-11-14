@@ -4,6 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import TopicsTable from '../pages/ManageTopics/TopicsTable';
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
+import { BrowserRouter } from 'react-router-dom';
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -56,7 +57,7 @@ const topics: TopicsType[] = [
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<TopicsTable courseId='test' topics={topics} />)
+    const { container } = render(<TopicsTable courseId='test' topics={topics} />, { wrapper: BrowserRouter })
     document = container;
 });
 
