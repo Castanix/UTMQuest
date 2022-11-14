@@ -326,7 +326,7 @@ async function initDB() {
 					bsonType: "object",
 					title: "Dicussions Object Validation",
 					required: [
-						"question",
+						"questionLink",
 						"op",
 						"authId",
 						"authName",
@@ -342,10 +342,10 @@ async function initDB() {
 							bsonType: "objectId",
 							description: "auto-generated objectId",
 						},
-						question: {
-							bsonType: "objectId",
+						questionLink: {
+							bsonType: "string",
 							description:
-								"'question' must be a ObjectID, referencing a questionId from the questions collection, and is required",
+								"'question' must be a string, referencing the link of a question from the questions collection, and is required",
 						},
 						op: {
 							bsonType: "bool",
