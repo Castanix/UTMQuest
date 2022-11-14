@@ -45,7 +45,6 @@ const Header = ({ question }: { question: QuestionsType }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to="/courses">Courses</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}>{question.courseId}</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}>Browse Questions</Link></Breadcrumb.Item>
             <Breadcrumb.Item>{question.qnsName}</Breadcrumb.Item>

@@ -19,10 +19,9 @@ const Header = ({ courseCode }:
     { courseCode: string }) => (
     <div>
         <Breadcrumb>
-        <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-        <Breadcrumb.Item><Link to="/courses">Courses</Link></Breadcrumb.Item>
-        <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
-        <Breadcrumb.Item>Add a Question</Breadcrumb.Item>
+            <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item>Add a Question</Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">
             <Title level={3} ellipsis>Add a Question <div className="subtitle">&#8226; {courseCode}</div></Title>
@@ -30,10 +29,10 @@ const Header = ({ courseCode }:
     </div>
 );
 
-const AddQuestionPage = ({edit} : {edit: boolean}) => {
+const AddQuestionPage = ({ edit }: { edit: boolean }) => {
     const [currStep, setCurrStep] = useState<number>(0);
     const [topicSelected, setTopicSelected] = useState<[string, string]>(["", ""]);
-    
+
     const params = useParams();
     const courseCode = params.id;
 
@@ -50,16 +49,16 @@ const AddQuestionPage = ({edit} : {edit: boolean}) => {
                     <Step title={currStep ? "Done" : "Select a Topic"} />
                     <Step title="Add Question" />
                 </Steps>
-                <br/>
+                <br />
                 <div style={(currStep) ? { display: "none" } : { display: "block" }}>
-                    <AQStepOne 
-                        courseCode={courseCode ?? ''} 
-                        topics={topics} 
+                    <AQStepOne
+                        courseCode={courseCode ?? ''}
+                        topics={topics}
                         setCurrStep={setCurrStep}
                         setTopicSelected={setTopicSelected}
                     />
                 </div>
-                <div style={(currStep) ? { display: "block" } : {display: "none"}}>
+                <div style={(currStep) ? { display: "block" } : { display: "none" }}>
                     <AQStepTwo courseCode={courseCode ?? ''} topicSelected={topicSelected} setCurrStep={setCurrStep} edit={edit} />
                 </div>
             </main>
