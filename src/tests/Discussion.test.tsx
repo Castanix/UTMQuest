@@ -84,7 +84,7 @@ const deletedComment: DiscussionFrontEndType = {
 
 // mock add topic fetch call
 const server = setupServer(
-    rest.get(`${process.env.REACT_APP_API_URI}/discussion/thread/:questionId`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/discussion/thread/:questionLink`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json(topLevelComments)
@@ -102,7 +102,7 @@ const server = setupServer(
             ctx.json({ value: { ...deletedComment } })
         )
     }),
-    rest.post(`${process.env.REACT_APP_API_URI}/discussion/:questionId`, (req, res, ctx) => {
+    rest.post(`${process.env.REACT_APP_API_URI}/discussion`, (req, res, ctx) => {
         return res(
             ctx.status(201),
             ctx.json({ authorized: true, insertedId: 'abcd' })
