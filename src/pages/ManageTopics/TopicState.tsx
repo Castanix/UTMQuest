@@ -9,6 +9,7 @@ const TopicState = (topics: TopicsType[]) => {
     const [data, setData] = useState<TopicsType[]>(topics);
     const [editingKey, setEditingKey] = useState<string>('');
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const [lastTopicAdded, setLastTopicAdded] = useState<TopicsType | null>(null);
 
     const isEditing = (record: TopicsType) => record._id === editingKey;
 
@@ -18,6 +19,7 @@ const TopicState = (topics: TopicsType[]) => {
         setSearchTerm('');
         setOriginalData([...originalData, topic]);
         setData([...originalData, topic]);
+        setLastTopicAdded(topic);
     };
 
     const onChange = (value: string) => {
@@ -50,6 +52,11 @@ const TopicState = (topics: TopicsType[]) => {
             setData(newData);
             setOriginalData(newData);
             setSearchTerm('');
+
+            if (lastTopicAdded != null && key === lastTopicAdded._id) {
+                setLastTopicAdded(null);
+            }
+
         }).catch(() => {
             message.error("Could not delete topic. Please try again.");
         });
@@ -113,7 +120,8 @@ const TopicState = (topics: TopicsType[]) => {
         handleDelete,
         searchTerm,
         onChange,
-        addTopicCallback
+        addTopicCallback,
+        lastTopicAdded,
     };
 };
 
