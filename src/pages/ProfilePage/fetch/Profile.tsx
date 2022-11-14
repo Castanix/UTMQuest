@@ -1,7 +1,7 @@
 import { message } from "antd";
 import { useEffect, useState } from "react";
 
-export const GetProfile = (utorid: string, setName: Function, setSavedColour: Function, setCurrentColour: Function, setBadges: Function) => {
+export const GetProfile = (utorid: string, setName: Function, setBadges: Function) => {
 
     const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
     const [errorProfile, setErrorProfile] = useState('');
@@ -13,8 +13,6 @@ export const GetProfile = (utorid: string, setName: Function, setSavedColour: Fu
                     return res.json();
                 }).then((result) => {
                     setName(result.utorName);
-                    setSavedColour(result.colour);
-                    setCurrentColour(result.colour);
                     setBadges(result.badges);
                     setLoadingProfile(false);
                 }).catch((err) => {
@@ -22,7 +20,7 @@ export const GetProfile = (utorid: string, setName: Function, setSavedColour: Fu
                     setLoadingProfile(false);
                 });
 
-    }, [utorid, setBadges, setSavedColour, setCurrentColour, setName]);
+    }, [utorid, setBadges, setName]);
 
     return {
         loadingProfile,
