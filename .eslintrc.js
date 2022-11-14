@@ -2,6 +2,7 @@ module.exports = {
 	'env': {
 		'browser': true,
 		'es2021': true,
+		"jest/globals": true
 	},
 	'extends': ["airbnb", "airbnb/hooks", "prettier"],
 	'overrides': [
@@ -14,7 +15,8 @@ module.exports = {
 	'plugins': [
 		'react',
 		'react-hooks',
-		'@typescript-eslint'
+		'@typescript-eslint',
+		"jest"
 	],
 	'ignorePatterns': ["*.test.tsx", "cypress/*", "cypress.config.ts"],
 	'rules': {

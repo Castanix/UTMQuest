@@ -50,7 +50,7 @@ accountRouter.put('/updateSavedCourse', async (req: Request, res: Response) => {
         utmQuestCollections.Accounts?.findOneAndUpdate(account, 
             {
               $pull: {"savedCourses": req.body.courseId}
-            }
+            }, { returnDocument: "after" }
           ).then((result) => {
             if (!result) {
               res.status(400).send(`Unable to favourite course`);
@@ -62,8 +62,8 @@ accountRouter.put('/updateSavedCourse', async (req: Request, res: Response) => {
     } else {
         utmQuestCollections.Accounts?.findOneAndUpdate(account, 
             {
-              $push: {"savedCourses": req.body.courseId}
-            }
+              $push: {"savedCourses": req.body.courseId},
+            }, { returnDocument: "after" }
           ).then((result) => {
             if (!result) {
               res.status(400).send(`Unable to favourite course`);

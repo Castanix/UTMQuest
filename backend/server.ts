@@ -45,4 +45,4 @@ connectDB()
 		console.error(`Error could not connect to db: ${error}`);
 	});
 
-export default {};
+export default app;
