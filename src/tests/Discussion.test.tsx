@@ -20,7 +20,7 @@ Object.defineProperty(window, 'matchMedia', {
 const topLevelComments: DiscussionFrontEndType[] = [
     {
         _id: "123",
-        question: "abc",
+        questionLink: "abc",
         op: true,
         authId: 'test',
         authName: 'test',
@@ -32,7 +32,7 @@ const topLevelComments: DiscussionFrontEndType[] = [
     },
     {
         _id: "1234",
-        question: "abc",
+        questionLink: "abc",
         op: true,
         authId: 'test',
         authName: 'test',
@@ -44,7 +44,7 @@ const topLevelComments: DiscussionFrontEndType[] = [
     },
     {
         _id: "12345",
-        question: "abc",
+        questionLink: "abc",
         op: true,
         authId: 'test',
         authName: 'test',
@@ -58,7 +58,7 @@ const topLevelComments: DiscussionFrontEndType[] = [
 
 const childComment: DiscussionFrontEndType = {
     _id: "childComment",
-    question: "abc",
+    questionLink: "abc",
     op: false,
     authId: 'test',
     authName: 'test',
@@ -71,7 +71,7 @@ const childComment: DiscussionFrontEndType = {
 
 const deletedComment: DiscussionFrontEndType = {
     _id: "123",
-    question: "abc",
+    questionLink: "abc",
     op: true,
     authId: 'test',
     authName: 'test',
@@ -113,7 +113,7 @@ const server = setupServer(
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<Discussion questionId="abc" />, { wrapper: BrowserRouter })
+    const { container } = render(<Discussion questionLink="abc" />, { wrapper: BrowserRouter })
     document = container;
 });
 

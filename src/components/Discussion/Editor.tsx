@@ -7,11 +7,11 @@ import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 
 import "./Editor.css";
 
-const AddComment = async (discussionId: string, questionId: string, op: boolean, content: string, isAnon: boolean) => {
+const AddComment = async (discussionId: string, questionLink: string, op: boolean, content: string, isAnon: boolean) => {
     // MAKE POST CALL HERE
     const newComment: DiscussionFrontEndType = {
         _id: `id${(new Date()).getTime()}`,
-        question: questionId,
+        questionLink,
         op,
         authId: '123',
         authName: isAnon ? "Anonymous" : "Some User",
@@ -23,7 +23,7 @@ const AddComment = async (discussionId: string, questionId: string, op: boolean,
     };
 
     const postedComment: DiscussionFrontEndType = await fetch(
-        `${process.env.REACT_APP_API_URI}/discussion/${questionId}`,
+        `${process.env.REACT_APP_API_URI}/discussion`,
         {
         method: 'POST',
         headers: {
@@ -66,7 +66,7 @@ const AddComment = async (discussionId: string, questionId: string, op: boolean,
     return postedComment;
 };
 
-const Editor = ({ discussionId, questionId, op, updateComments }: { discussionId: string | null, questionId: string, op: boolean, updateComments: Function }) => {
+const Editor = ({ discussionId, questionLink, op, updateComments }: { discussionId: string | null, questionLink: string, op: boolean, updateComments: Function }) => {
     const [content, setContent] = useState<string>("");
     const [isAnon, setAnon] = useState<boolean>(false);
     const [commented, setCommented] = useState<DiscussionFrontEndType>();
@@ -76,7 +76,7 @@ const Editor = ({ discussionId, questionId, op, updateComments }: { discussionId
             message.info("Invalid comment.");
             return;
         }
-        const newComment = await AddComment(discussionId as string, questionId, op, content, isAnon);
+        const newComment = await AddComment(discussionId as string, questionLink, op, content, isAnon);
         updateComments(newComment);
         setCommented(newComment);
         setContent("");

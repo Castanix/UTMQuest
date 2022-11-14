@@ -105,7 +105,7 @@ const DisplayComment = ({ comment }: { comment: DiscussionFrontEndType }) => {
         >
             {childComments.map((item) => (<DisplayComment key={item._id} comment={item} />)
             )}
-            {showReply ? <Editor discussionId={displayComment._id} questionId={displayComment.question} op={false} updateComments={updateComments} /> : null}
+            {showReply ? <Editor discussionId={displayComment._id} questionLink={displayComment.questionLink} op={false} updateComments={updateComments} /> : null}
         </Comment>
     );
 };

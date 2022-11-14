@@ -23,16 +23,22 @@ discussionRouter.get('/:discussionId', async (req: Request, res: Response) => {
 
 
 // GET .../thread/:questionId - return all discussion where comments are from op and for a specific question
-discussionRouter.get('/thread/:questionId', async (req: Request, res: Response) => { 
+discussionRouter.get('/thread/:questionLink', async (req: Request, res: Response) => { 
     try { 
-        const question = await utmQuestCollections.Questions?.findOne({_id: new ObjectID(req.params.questionId)});
+        const question = await utmQuestCollections.Questions?.findOne({
+            link: req.params.questionLink,
+            latest: true
+        });
 
         if (!question) { 
             res.status(404).send(`Error: Unable to find question`); 
             return;
         }
 
-        const discussion = await utmQuestCollections.Discussions?.find({question: new ObjectID(req.params.questionId), op: true}).toArray();
+        const discussion = await utmQuestCollections.Discussions?.find({
+            questionLink: req.params.questionLink, 
+            op: true
+        }).toArray();
 
         res.status(200).send(discussion);
     } catch (error) { 
@@ -62,16 +68,19 @@ discussionRouter.get('/allThreads/:id', async (req: Request, res: Response) => {
 
 
 // POST .../discussion/:qnsId
-discussionRouter.post('/:questionId', async (req: Request, res: Response) => { 
+discussionRouter.post('/', async (req: Request, res: Response) => { 
     
-    const quesiton = await utmQuestCollections.Questions?.findOne({_id: new ObjectID(req.params.questionId)});
+    const quesiton = await utmQuestCollections.Questions?.findOne({
+        link: req.body.questionLink,
+        latest: true
+    });
     if (!quesiton) {
         res.status(404).send(`Error: Unable to find question`);
         return;
     };
 
     const discussion = {
-        question: new ObjectID(req.params.questionId),
+        questionLink: req.body.questionLink,
         op: req.body.op, 
         authId: req.body.authId,
         authName: req.body.authName,
