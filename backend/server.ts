@@ -95,6 +95,19 @@ app.put("/incrementLoginStreak", async (req: Request, res: Response) => {
 	}
 });
 
+app.get("/displayBadges/:utorid", async (req: Request, res: Response) => {
+	const {utorid} = req.params;
+
+	const badge = await utmQuestCollections.Badges?.findOne({ utorid });
+
+	if (!badge) {
+		res.status(404).send("Could not find badge for given user.");
+		return;
+	}
+
+	res.status(200).send(badge.displayBadges);
+});
+
 // Connect to mongoDB and listen on app
 connectDB()
 	.then(async () => {

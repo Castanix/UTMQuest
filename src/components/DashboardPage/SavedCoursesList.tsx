@@ -11,6 +11,7 @@ const SavedCoursesList = (props: any) => {
   return courseData.length
     ? (
       <List
+        className="saved-courses"
         size="small"
         bordered={false}
         dataSource={courseData}
