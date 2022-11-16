@@ -7,6 +7,7 @@ import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import GetEditHistory from './fetch/GetEditHistory';
 import ViewChanges from './ViewChanges';
 import "./EditHistory.css";
+import DisplayBadges from '../DisplayBadges/DisplayBadges';
 
 
 const onMobile = () => window.innerWidth < 480;
@@ -53,8 +54,8 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
                     title={
                         <div>
                             <Space direction="vertical" size={0}>
-                                {name.join(" ")}
-                                < Typography.Text type="secondary">{date}</Typography.Text>
+                                <span>{name.join(" ")} {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}</span>
+                                <Typography.Text type="secondary">{date}</Typography.Text>
                             </Space>
                         </div>
                     }
@@ -111,7 +112,7 @@ const EditHistory = ({ link }: { link: string }) => {
         // can't restore to most recent post (should use edit instead)
         if (index !== 0) {
             actions.push(
-                <Link to={`/courses/${firstQuestion.courseId}/editQuestion`} state={{ question: firstQuestion, latest: editHistory[0]  }}>
+                <Link to={`/courses/${firstQuestion.courseId}/editQuestion`} state={{ question: firstQuestion, latest: editHistory[0] }}>
                     <Button shape="round">
                         Restore
                     </Button>
