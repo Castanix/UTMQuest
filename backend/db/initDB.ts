@@ -125,11 +125,7 @@ async function initDB() {
 				$jsonSchema: {
 					bsonType: "object",
 					title: "Topics Object Validation",
-					required: [
-						"topicName",
-						"numQuestions",
-						"course",
-					],
+					required: ["topicName", "numQuestions", "course"],
 					additionalProperties: false,
 					properties: {
 						_id: {
@@ -212,7 +208,7 @@ async function initDB() {
 						link: {
 							bsonType: "string",
 							description:
-								"'link' must be a string, should be the original version's _id, and is shared by all the versions of a question"
+								"'link' must be a string, should be the original version's _id, and is shared by all the versions of a question",
 						},
 						topicId: {
 							bsonType: "objectId",
@@ -233,7 +229,7 @@ async function initDB() {
 							bsonType: "string",
 							description:
 								"'qnsName' must be a string and is required",
-							maxLength: 255
+							maxLength: 255,
 						},
 						qnsType: {
 							enum: ["mc", "short"],
@@ -244,13 +240,13 @@ async function initDB() {
 							bsonType: "string",
 							description:
 								"'desc' must be a string or empty, and is required",
-							maxLength: 4000
+							maxLength: 4000,
 						},
 						xplan: {
 							bsonType: "string",
 							description:
 								"'xplan' must be a string or empty, and is required",
-							maxLength: 4000
+							maxLength: 4000,
 						},
 						choices: {
 							bsonType: "array",
@@ -273,7 +269,7 @@ async function initDB() {
 								description:
 									"items in array must be a string or empty",
 							},
-							maxLength: 4000
+							maxLength: 4000,
 						},
 						authId: {
 							bsonType: "string",
@@ -298,12 +294,12 @@ async function initDB() {
 						anon: {
 							bsonType: "bool",
 							description:
-								"'anon' must be a bool, and is required"
+								"'anon' must be a bool, and is required",
 						},
 						latest: {
 							bsonType: "bool",
 							description:
-								"'latest' must be a bool which represents the latest version of a question"
+								"'latest' must be a bool which represents the latest version of a question",
 						},
 					},
 				},
@@ -334,7 +330,7 @@ async function initDB() {
 						"thread",
 						"date",
 						"deleted",
-						"anon"
+						"anon",
 					],
 					additionalProperties: false,
 					properties: {
@@ -391,7 +387,7 @@ async function initDB() {
 						anon: {
 							bsonType: "bool",
 							description:
-								"'anon' must be a bool, and is required"
+								"'anon' must be a bool, and is required",
 						},
 					},
 				},
@@ -424,7 +420,7 @@ async function initDB() {
 						"firstPostToday",
 						"consecutivePosting",
 						"unlockedBadges",
-						"displayBadges"
+						"displayBadges",
 					],
 					additionalProperties: false,
 					properties: {

@@ -1,9 +1,10 @@
 import { DislikeOutlined, LikeOutlined, MessageOutlined, SearchOutlined, QuestionOutlined } from '@ant-design/icons';
-import { Divider, Input, List, PageHeader, Select, Space, Tag, Typography } from 'antd'; 
+import { Divider, Input, List, PageHeader, Select, Space, Tag, Typography } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionsType } from '../../../backend/types/Questions';
 import TopicsType from '../../../backend/types/Topics';
+import DisplayBadges from '../../components/DisplayBadges/DisplayBadges';
 import QuestionState from './fetch/QuestionState';
 
 import "./QuestionsList.css";
@@ -92,7 +93,7 @@ const QuestionsList = ({ questions, topics }:
                                         }
                                     >
                                         <div className="ant-page-header-heading-sub-title">
-                                            <Typography.Paragraph>{item.authName}</Typography.Paragraph>
+                                            <Typography.Paragraph>{item.authName} {!item.anon ? <DisplayBadges utorid={item.authId} /> : null}</Typography.Paragraph>
                                             <Typography.Text type="secondary">{new Date(item.date).toDateString()}</Typography.Text>
                                         </div>
                                     </PageHeader>

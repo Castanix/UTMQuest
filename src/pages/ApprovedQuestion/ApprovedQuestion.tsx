@@ -15,6 +15,7 @@ import ShortAnswer from "../../components/ShortAnswer/ShortAnswer";
 import GetQuestion from "./fetch/GetQuestion";
 import Discussion from "../../components/Discussion/Discussion";
 import EditHistory from "../../components/EditHistory/EditHistory";
+import DisplayBadges from "../../components/DisplayBadges/DisplayBadges";
 
 
 const QuestionTab = ({ options, answers, actualQuestion, explanation }:
@@ -52,7 +53,8 @@ const Header = ({ question }: { question: QuestionsType }) => (
         <div className="title">
             <div className="title-flex">
                 <Title level={3} ellipsis>{question.courseId} <div className="subtitle">&#8226; {question.topicName}</div></Title>
-                <Text type="secondary">{`by ${question.authName} on ${new Date(question.date).toDateString()}`}</Text>
+                <Text type="secondary">{question.authName} {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}</Text> <br />
+                <Text type="secondary">{new Date(question.date).toDateString()}</Text>
             </div>
             <div className="icon-buttons">
                 <div className="flex-child">
