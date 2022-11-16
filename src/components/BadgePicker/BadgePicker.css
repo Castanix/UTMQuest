@@ -1,0 +1,15 @@
+.modal-img {
+    object-fit: contain;
+    width: 8rem;
+    height: 8rem;
+    margin: 0.25rem;
+}
+
+.modal-img:hover,
+.modal-img:focus {
+    border: 1px black solid;
+}
+
+.modal-img.active {
+    border: 4px green solid;
+}
