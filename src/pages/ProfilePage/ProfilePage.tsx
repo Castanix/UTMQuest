@@ -75,35 +75,16 @@ const ProfilePage = () => {
                         </div>
                     </div>
                     <div className="badge-container">
-                        {/* <Button shape="round" onClick={() => {
-                            document.querySelector('.badge-picker')?.classList.toggle('active');
-                        }}>Customize badges</Button> */}
                         <BadgePicker />
                         <Divider>Badges</Divider>
                         <div className="badges">
+
+                            {/* These are dummy badges, may want to consider creating a function to populate badges section instead of manual additions */}
                             <Popover content="Post 5 Questions (1/5)" trigger="hover">
-                                <img src="/image/images.png" />
+                                <img src="/image/image.png" />
                             </Popover>
-                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
-                                <img src="/image/images.png" />
-                            </Popover>
-                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
-                                <img src="/image/images.png" />
-                            </Popover>
-                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
-                                <img src="/image/images.png" />
-                            </Popover>
-                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
-                                <img src="/image/images.png" />
-                            </Popover>
-                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
-                                <img src="/image/images.png" />
-                            </Popover>
-                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
-                                <img src="/image/images.png" />
-                            </Popover>
-                            <Popover content="Post 5 Questions (1/5)" trigger="hover">
-                                <img src="/image/images.png" />
+                            <Popover content="Edit 3 Questions (1/5)" trigger="hover">
+                                <img src="/image/image2.png" />
                             </Popover>
                         </div>
                     </div>
