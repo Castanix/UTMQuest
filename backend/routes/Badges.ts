@@ -1,12 +1,10 @@
-import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
-import { ObjectId } from "mongodb";
 import { utmQuestCollections } from "../db/db.service";
 
 const badgeRouter = Router();
 
-badgeRouter.get('/userBadges/:utorid', (req, res) => {
-    const utorid = req.params.utorid;
+badgeRouter.get('/userBadges/:utorid', (req: Request, res: Response) => {
+    const {utorid} = req.params;
 
     utmQuestCollections.Badges?.findOne({utorid})
         .then(badges => {
@@ -18,11 +16,11 @@ badgeRouter.get('/userBadges/:utorid', (req, res) => {
             res.status(200).send({unlockedBadges: badges.unlockedBadges, displayBadges: badges.displayBadges});
         }).catch(error => {
             res.status(500).send(error);
-        })
+        });
 });
 
-badgeRouter.put('/updateBadges', async (req, res) => {
-    const utorid = req.body.utorid;
+badgeRouter.put('/updateBadges', async (req: Request, res: Response) => {
+    const {utorid} = req.body;
     const badges = await utmQuestCollections.Badges?.findOne({utorid});
 
     if(!badges) {
@@ -41,7 +39,7 @@ badgeRouter.put('/updateBadges', async (req, res) => {
         res.status(200).send(result);
     }).catch(err => {
         res.status(500).send(err);
-    })
+    });
 });
 
 export default badgeRouter;

@@ -1,7 +1,5 @@
-/* eslint-disable */
-
-import { Avatar, BackTop, Card, Divider, Timeline, Typography, PageHeader, Popover, Button } from "antd";
-import { ReactElement, useState } from "react";
+import { Avatar, BackTop, Card, Divider, Timeline, Typography, PageHeader, Popover } from "antd";
+import React, { ReactElement, useState } from "react";
 import { Link } from "react-router-dom";
 import BadgePicker from "../../components/BadgePicker/BadgePicker";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
@@ -25,6 +23,17 @@ export interface BadgesType {
     displayBadges: string[]
 }
 
+const Header = () => (
+    <div>
+        <PageHeader
+            className="profile-header"
+            onBack={() => window.history.back()}
+            title="Go back"
+        />
+        <Title level={3} ellipsis>Profile <div className="subtitle">&#8226; dummy22</div></Title>
+    </div>
+);
+
 const ProfilePage = () => {
     const [name, setName] = useState<string>("");
     const [badges, setBadges] = useState<BadgesType>({unlockedBadges: [], displayBadges: []});
@@ -34,38 +43,29 @@ const ProfilePage = () => {
     const { loadingBadges, errorBadges } = GetBadges("dummy22", setBadges);
     const { loadingQuestions, errorQuestions } = GetAllQuestions("dummy22", setTimeline);
 
-    if (loadingProfile || loadingBadges || loadingQuestions) return <Loading />
+    if (loadingProfile || loadingBadges || loadingQuestions) return <Loading />;
 
-    if (errorProfile) return <ErrorMessage title={errorProfile} link="." message="Refresh" />
-    if (errorBadges) return <ErrorMessage title={errorBadges} link="." message="Refreshing" />
-    if (errorQuestions) return <ErrorMessage title={errorQuestions} link="." message="Refreshing" />
+    if (errorProfile) return <ErrorMessage title={errorProfile} link="." message="Refresh" />;
+    if (errorBadges) return <ErrorMessage title={errorBadges} link="." message="Refreshing" />;
+    if (errorQuestions) return <ErrorMessage title={errorQuestions} link="." message="Refreshing" />;
     
 
     const firstInitial = name[0][0].toUpperCase();
     const lastInitial = name[name.length - 1][0].toUpperCase();
-    const badgesSrc: string[]= ["/image/image.png", "/image/image2.png", "/image/image3.png", "/image/image4.png"]
-    console.log(badges);
+    const badgesSrc: string[]= ["/image/image.png", "/image/image2.png", "/image/image3.png", "/image/image4.png"];
 
-
-    const Header = () => (
-        <div>
-            <PageHeader
-                className="profile-header"
-                onBack={() => window.history.back()}
-                title="Go back"
-            />
-            <Title level={3} ellipsis>Profile <div className="subtitle">&#8226; dummy22</div></Title>
-        </div>
-    );
-
-    // dataType to be determined (currently assuming tuple of [string, string])
     const loadTimeline = () => {
-        // Should be added in order from newest to oldest
-        const timelineArr: JSX.Element[] = [];
+        const timelineArr: ReactElement[] = [];
 
         if (timeline){
             timeline.forEach((item) => {
-                timelineArr.push(<Timeline.Item key={item.questionId} label={new Date(item.date).toDateString()}><Link to={`/courses/${item.courseId}/question/${item.questionId}`}>{item.questionName}</Link></Timeline.Item>);
+                timelineArr.push(
+                    <Timeline.Item key={item.questionId} label={new Date(item.date).toDateString()}>
+                        <Link to={`/courses/${item.courseId}/question/${item.questionId}`}>
+                            {item.questionName}
+                        </Link>
+                    </Timeline.Item>
+                );
             });
         };
         return timelineArr;
@@ -74,11 +74,11 @@ const ProfilePage = () => {
     const initBadges = () => {
         const badgeArr: ReactElement[] = [];
 
-        // We need to change the content to its respective requirements
+        // TODO: change content message to respective requirements
         badgesSrc.forEach(badge => {
             badgeArr.push(
                 <Popover content="Post 5 Questions (1/5)" trigger="hover">
-                    <img src={badge} />
+                    <img src={badge} alt="badge icon" />
                 </Popover>
             );
         });
@@ -103,8 +103,6 @@ const ProfilePage = () => {
                         <BadgePicker badges={badges} utorid="dummy22" />
                         <Divider>Badges</Divider>
                         <div className="badges">
-
-                            {/* These are dummy badges, may want to consider creating a function to populate badges section instead of manual additions */}
                             {initBadges()}
                         </div>
                     </div>
@@ -113,17 +111,15 @@ const ProfilePage = () => {
                     <Divider>Activity Timeline</Divider>
                     {loadingQuestions ? 
                         <Loading /> :
-                        <>
-                            <Timeline mode="left" style={{marginTop: "2.75rem", width: "40vw"}}>
+                        <Timeline mode="left" style={{marginTop: "2.75rem", width: "40vw"}}>
                                 {loadTimeline()}
-                            </Timeline>
-                        </>}
-                    <Divider></Divider>
+                            </Timeline>}
+                    <Divider />
                 </div>
             </main>
         </Card>
 
     );
-}
+};
 
 export default ProfilePage;
