@@ -1,7 +1,7 @@
 import { message } from "antd";
 import { useEffect, useState } from "react";
 
-export const GetProfile = (utorid: string, setName: Function, setBadges: Function) => {
+export const GetProfile = (utorid: string, setName: Function) => {
 
     const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
     const [errorProfile, setErrorProfile] = useState('');
@@ -13,14 +13,13 @@ export const GetProfile = (utorid: string, setName: Function, setBadges: Functio
                     return res.json();
                 }).then((result) => {
                     setName(result.utorName);
-                    setBadges(result.badges);
                     setLoadingProfile(false);
                 }).catch((err) => {
                     setErrorProfile(err.message);
                     setLoadingProfile(false);
                 });
 
-    }, [utorid, setBadges, setName]);
+    }, [utorid, setName]);
 
     return {
         loadingProfile,

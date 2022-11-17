@@ -7,6 +7,7 @@ import topicRouter from "./routes/Topic";
 import questionRouter from "./routes/Question";
 import discussionRouter from "./routes/Discussion";
 import accountRouter from "./routes/Account";
+import badgeRouter from "./routes/Badges";
 
 const app = express();
 app.use(cors());
@@ -29,6 +30,9 @@ app.use("/topic", topicRouter);
 
 // Accounts
 app.use("/account", accountRouter);
+
+// Accounts
+app.use("/badge", badgeRouter);
 
 // Test route
 app.get("/express_backend", (req: Request, res: Response) => {
