@@ -19,7 +19,7 @@ async function initDB() {
 				$jsonSchema: {
 					bsonType: "object",
 					title: "Accounts Object Validation",
-					required: ["utorid", "utorName", "savedCourses", "colour", "badges"],
+					required: ["utorid", "utorName", "savedCourses", "colour"],
 					additionalProperties: false,
 					properties: {
 						_id: {
@@ -45,17 +45,6 @@ async function initDB() {
 								bsonType: "string",
 								description:
 									"items in array must be a string referencing the Courses collection or empty",
-							},
-						},
-						badges: {
-							bsonType: "array",
-							description:
-								"'badges' must be an array and is required",
-							uniqueItems: true,
-							items: {
-								bsonType: "string",
-								description:
-									"items in array must be a string describing the badge they earned",
 							},
 						},
 					},
@@ -433,7 +422,9 @@ async function initDB() {
 						"longestLoginStreak",
 						"lastLogin",
 						"firstPostToday",
-						"consecutivePosting"
+						"consecutivePosting",
+						"unlockedBadges",
+						"displayBadges"
 					],
 					additionalProperties: false,
 					properties: {
@@ -485,6 +476,28 @@ async function initDB() {
 							bsonType: "int",
 							description:
 								"'consecutivePosting' must be an int and is required",
+						},
+						unlockedBadges: {
+							bsonType: "array",
+							description:
+								"'unlockedBadges' is an array of strings and is required",
+							uniqueItems: true,
+							items: {
+								bsonType: "string",
+								description:
+									"items in array must be string of unlocked badges",
+							},
+						},
+						displayBadges: {
+							bsonType: "array",
+							description:
+								"'displayBadges' is an array of the badge name users want to display next to their name (up to 3) and is required",
+							uniqueItems: true,
+							items: {
+								bsonType: "string",
+								description:
+									"items in array must be string of badges",
+							},
 						},
 					},
 				},
