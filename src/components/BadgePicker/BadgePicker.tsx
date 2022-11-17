@@ -1,6 +1,5 @@
-/* eslint-disable */
-import React, { ReactElement, ReactFragment, ReactHTML, ReactNode, useState } from "react";
-import "./BadgePicker.css"
+import React, { ReactElement, useState } from "react";
+import "./BadgePicker.css";
 import { Modal, Button, message } from "antd";
 import { BadgesType } from "../../pages/ProfilePage/ProfilePage";
 import UpdateBadge from "./fetch/UpdateBadges";
@@ -11,21 +10,7 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
     const [currBadgeSelected, setCurrBadgeSelected] = useState<string[]>(badgeSelected);
     const [changes, setChanges] = useState<string[]>([]);
 
-    // data should be an array of img path names
-    const initModal = () => {
-        const imgArr: ReactElement[] = [];
-
-        badges.unlockedBadges.forEach((item: string) => {
-            if (badgeSelected.includes(item)) {
-                imgArr.push(<img className="modal-img active" id={item} src={`/image/${item}.png`} onClick={() => handleSelect(item)} />);
-            } else {
-                imgArr.push(<img className="modal-img" id={item} src={`/image/${item}.png`} onClick={() => handleSelect(item)} />);
-            }   
-        });
-
-        return imgArr;
-    };
-
+    // Toggles the green border around an image depending on selection
     const toggleActive = (id: string) => {
         const el = document.getElementById(id);
         if(el?.classList.contains('active')) {
@@ -33,8 +18,9 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
         } else {
             el?.classList.add('active');
         }
-    }
+    };
 
+    // Records any changes to currBadgeSelected for resetting
     const recordChange = (selected: string) => {
         if(changes.includes(selected)) {
             setChanges(changes.filter((item) => item !== selected));
@@ -63,6 +49,20 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
         };
     };
 
+    const initModal = () => {
+        const imgArr: ReactElement[] = [];
+
+        badges.unlockedBadges.forEach((item: string) => {
+            if (badgeSelected.includes(item)) {
+                imgArr.push(<img className="modal-img active" id={item} src={`/image/${item}.png`} alt="badge icon" onClick={() => handleSelect(item)} />);
+            } else {
+                imgArr.push(<img className="modal-img" id={item} src={`/image/${item}.png`} alt="badge icon" onClick={() => handleSelect(item)} />);
+            }   
+        });
+
+        return imgArr;
+    };
+
     const onCancel = () => {
         setShowModal(false);
         resetChanges();
@@ -89,7 +89,7 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
                 {initModal()}
             </Modal>
         </>
-    )
+    );
 };
 
 export default BadgePicker;

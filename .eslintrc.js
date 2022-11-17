@@ -25,6 +25,8 @@ module.exports = {
 		'import/extensions': "off",
 		'import/no-unresolved': "off",
 		'import/no-extraneous-dependencies': "off",
+		'jsx-a11y/no-noninteractive-element-interactions': "off",
+		'jsx-a11y/click-events-have-key-events': "off",
 		"react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }],
 		"react/function-component-definition": [
 			2,
