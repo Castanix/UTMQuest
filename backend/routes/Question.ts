@@ -71,9 +71,6 @@ questionRouter.get(
 	}
 );
 
-<<<<<<< HEAD
-// /:courseId/:qnsStatus
-=======
 questionRouter.get(
 	"/allDiscussions/:questionId",
 	async (req: Request, res: Response) => {
@@ -94,7 +91,6 @@ questionRouter.get(
 );
 
 
->>>>>>> Design profile layout
 questionRouter.get(
 	"/latestQuestions/:courseId/:utorid",
 	async (req: Request, res: Response) => {
