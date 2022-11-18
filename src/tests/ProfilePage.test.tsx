@@ -98,8 +98,6 @@ test('badge images exist with popover', async() => {
         const firstBadge = screen.getAllByAltText(/badge icon/i)[0];
         expect(firstBadge).toBeInTheDocument();
 
-        // const firstBadge = document.getElementsByClassName("badges")[0].firstChild;
-
         fireEvent.mouseOver(firstBadge);
         waitFor(() => {
             expect(screen.getByText(/Post 5 Questions/i)).toBeInTheDocument();
