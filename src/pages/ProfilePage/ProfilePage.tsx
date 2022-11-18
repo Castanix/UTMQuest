@@ -19,7 +19,13 @@ export interface TimelineType {
 }
 
 export interface BadgesType {
-    unlockedBadges: string[],
+    unlockedBadges: {
+        addQuestions?: string | null,
+        editQuestions?: string | null,
+        threadReplies?: string | null,
+        consecutivePosting?: string | null,
+        dailyLogin?: string | null,
+    },
     displayBadges: string[]
 }
 
@@ -36,7 +42,7 @@ const Header = () => (
 
 const ProfilePage = () => {
     const [name, setName] = useState<string>("");
-    const [badges, setBadges] = useState<BadgesType>({unlockedBadges: [], displayBadges: []});
+    const [badges, setBadges] = useState<BadgesType>({unlockedBadges: {}, displayBadges: []});
     const [timeline, setTimeline] = useState<TimelineType[]>();
     
     const { loadingProfile, errorProfile } = GetProfile("dummy22", setName);
@@ -52,7 +58,15 @@ const ProfilePage = () => {
 
     const firstInitial = name[0][0].toUpperCase();
     const lastInitial = name[name.length - 1][0].toUpperCase();
-    const badgesSrc: string[]= ["/image/image.png", "/image/image2.png", "/image/image3.png", "/image/image4.png"];
+
+    // TODO: need to include threadreplies when edit badge routes have been set
+    const { addQuestions, editQuestions, consecutivePosting, dailyLogin } = badges.unlockedBadges;
+    const badgesSrc: string[] = [
+        ... addQuestions ? [`/image/${addQuestions}.png`] : ["/image/addbadgelocked.png"],
+        ... editQuestions ? [`/image/${editQuestions}.png`] : ["/image/editbadgelocked.png"],
+        ... consecutivePosting ? [`/image/${consecutivePosting}.png`] : ["/image/consecutivebadgelocked.png"],
+        ... dailyLogin ? [`/image/${dailyLogin}.png`] : ["/image/dailybadgelocked.png"]
+    ];
 
     const loadTimeline = () => {
         const timelineArr: ReactElement[] = [];
