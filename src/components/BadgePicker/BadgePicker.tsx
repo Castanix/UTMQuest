@@ -52,12 +52,14 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
     const initModal = () => {
         const imgArr: ReactElement[] = [];
 
-        badges.unlockedBadges.forEach((item: string) => {
-            if (badgeSelected.includes(item)) {
-                imgArr.push(<img className="modal-img active" id={item} key={item} src={`/image/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
-            } else {
-                imgArr.push(<img className="modal-img" id={item} key={item} src={`/image/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
-            }   
+        Object.values(badges.unlockedBadges).forEach((item: string | null) => {
+            if(item) {
+                if (badgeSelected.includes(item)) {
+                    imgArr.push(<img className="modal-img active" id={item} key={item} src={`/image/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
+                } else {
+                    imgArr.push(<img className="modal-img" id={item} key={item} src={`/image/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
+                } 
+            }
         });
 
         return imgArr;

@@ -478,15 +478,9 @@ async function initDB() {
 								"'consecutivePosting' must be an int and is required",
 						},
 						unlockedBadges: {
-							bsonType: "array",
+							bsonType: "object",
 							description:
-								"'unlockedBadges' is an array of strings and is required",
-							uniqueItems: true,
-							items: {
-								bsonType: "string",
-								description:
-									"items in array must be string of unlocked badges",
-							},
+								"'unlockedBadges' is an object/dictionary that keeps track of unlocked badges",
 						},
 						displayBadges: {
 							bsonType: "array",
