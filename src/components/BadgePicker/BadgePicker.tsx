@@ -54,9 +54,9 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
 
         badges.unlockedBadges.forEach((item: string) => {
             if (badgeSelected.includes(item)) {
-                imgArr.push(<img className="modal-img active" id={item} src={`/image/${item}.png`} alt="badge icon" onClick={() => handleSelect(item)} />);
+                imgArr.push(<img className="modal-img active" id={item} key={item} src={`/image/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
             } else {
-                imgArr.push(<img className="modal-img" id={item} src={`/image/${item}.png`} alt="badge icon" onClick={() => handleSelect(item)} />);
+                imgArr.push(<img className="modal-img" id={item} key={item} src={`/image/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
             }   
         });
 
@@ -85,7 +85,9 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
     return (
         <>
             <Button shape="round" onClick={() => setShowModal(!showModal)}>Customize Badges</Button>
-            <Modal open={showModal} onCancel={onCancel} onOk={onOk} >
+            <Modal title="Select up to 3 Badges to be Displayed." open={showModal} onCancel={onCancel} onOk={onOk} >
+                <div>Selected {currBadgeSelected.length}/3</div>
+                <br/>
                 {initModal()}
             </Modal>
         </>
