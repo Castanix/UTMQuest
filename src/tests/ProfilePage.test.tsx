@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import { setupServer } from 'msw/lib/node';
 import { rest } from 'msw';
@@ -29,6 +29,16 @@ const server = setupServer(
                 badges: []
             })
         )
+    }),
+
+    rest.get(`${process.env.REACT_APP_API_URI}/badge/userBadges/:utorid`, (req, res, ctx) => {
+        return res(
+            ctx.status(200),
+            ctx.json({
+                displayBadges: ["badge1"],
+                unlockedBadges: ["badge1", "badge2"]
+            })
+        );
     }),
 
     rest.get(`${process.env.REACT_APP_API_URI}/question/allPostedQuestions/:utorid`, (req, res, ctx) => {
@@ -75,8 +85,38 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 test('profile page renders correctly', async() => {
-    await waitFor(() => expect(screen.getByText(/Dummy Test/i)).toBeInTheDocument());
-    await waitFor(() => expect(screen.getAllByText(/badges/i)[0]).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByText(/Activity Timeline/i)).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByText(/String Title Test/i)).toBeInTheDocument());
-})
+    await waitFor(() => {
+        expect(screen.getByText(/Dummy Test/i)).toBeInTheDocument();
+        expect(screen.getAllByText(/badges/i)[0]).toBeInTheDocument();
+        expect(screen.getByText(/Activity Timeline/i)).toBeInTheDocument();
+        expect(screen.getByText(/String Title Test/i)).toBeInTheDocument();
+    });
+});
+
+test('badge images exist with popover', async() => {
+    await waitFor(() => {
+        const firstBadge = screen.getAllByAltText(/badge icon/i)[0];
+        expect(firstBadge).toBeInTheDocument();
+
+        // const firstBadge = document.getElementsByClassName("badges")[0].firstChild;
+
+        fireEvent.mouseOver(firstBadge);
+        waitFor(() => {
+            expect(screen.getByText(/Post 5 Questions/i)).toBeInTheDocument();
+        }, {timeout: 10000});
+    }, {timeout: 60000});
+});
+
+test('badge picker modal opens and functionality', async() => {
+    await waitFor(() => {
+        const btn = screen.getByText(/Customize Badges/i);
+        fireEvent.click(btn);
+        expect(screen.getByText(/Select up to 3 Badges to be Displayed/i)).toBeInTheDocument();
+
+        expect(screen.getByText(/Selected 1\/3/i)).toBeInTheDocument();
+        const secondBadge = screen.getAllByAltText(/badge display icon/i)[1];
+        fireEvent.click(secondBadge)
+        expect(screen.getByText(/Selected 2\/3/i)).toBeInTheDocument();
+
+    }, {timeout: 60000});
+});
