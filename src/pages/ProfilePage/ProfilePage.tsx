@@ -77,7 +77,7 @@ const ProfilePage = () => {
         // TODO: change content message to respective requirements
         badgesSrc.forEach(badge => {
             badgeArr.push(
-                <Popover content="Post 5 Questions (1/5)" trigger="hover">
+                <Popover key={badge} content="Post 5 Questions (1/5)" trigger="hover">
                     <img src={badge} alt="badge icon" />
                 </Popover>
             );
