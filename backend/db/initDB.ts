@@ -19,7 +19,7 @@ async function initDB() {
 				$jsonSchema: {
 					bsonType: "object",
 					title: "Accounts Object Validation",
-					required: ["utorid", "utorName", "savedCourses", "colour"],
+					required: ["utorid", "utorName", "savedCourses"],
 					additionalProperties: false,
 					properties: {
 						_id: {
