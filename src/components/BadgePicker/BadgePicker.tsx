@@ -4,7 +4,7 @@ import { Modal, Button, message } from "antd";
 import { BadgesType } from "../../pages/ProfilePage/ProfilePage";
 import UpdateBadge from "./fetch/UpdateBadges";
 
-const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => {
+const BadgePicker = ({ badges, utorid }: { badges: BadgesType, utorid: string }) => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [badgeSelected, setBadgeSelected] = useState<string[]>(badges.displayBadges);
     const [currBadgeSelected, setCurrBadgeSelected] = useState<string[]>(badgeSelected);
@@ -13,7 +13,7 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
     // Toggles the green border around an image depending on selection
     const toggleActive = (id: string) => {
         const el = document.getElementById(id);
-        if(el?.classList.contains('active')) {
+        if (el?.classList.contains('active')) {
             el.classList.remove('active');
         } else {
             el?.classList.add('active');
@@ -22,7 +22,7 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
 
     // Records any changes to currBadgeSelected for resetting
     const recordChange = (selected: string) => {
-        if(changes.includes(selected)) {
+        if (changes.includes(selected)) {
             setChanges(changes.filter((item) => item !== selected));
         } else {
             setChanges([...changes, selected]);
@@ -36,12 +36,12 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
     };
 
     const handleSelect = (selected: string) => {
-        if(currBadgeSelected.includes(selected)) {
+        if (currBadgeSelected.includes(selected)) {
             setCurrBadgeSelected(currBadgeSelected.filter((item) => item !== selected));
             toggleActive(selected);
             recordChange(selected);
         } else {
-            if(currBadgeSelected.length < 3) {
+            if (currBadgeSelected.length < 3) {
                 setCurrBadgeSelected([...currBadgeSelected, selected]);
                 toggleActive(selected);
                 recordChange(selected);
@@ -53,12 +53,12 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
         const imgArr: ReactElement[] = [];
 
         Object.values(badges.unlockedBadges).forEach((item: string | null) => {
-            if(item) {
+            if (item) {
                 if (badgeSelected.includes(item)) {
-                    imgArr.push(<img className="modal-img active" id={item} key={item} src={`/image/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
+                    imgArr.push(<img className="modal-img active" id={item} key={item} src={`/images/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
                 } else {
-                    imgArr.push(<img className="modal-img" id={item} key={item} src={`/image/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
-                } 
+                    imgArr.push(<img className="modal-img" id={item} key={item} src={`/images/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
+                }
             }
         });
 
@@ -76,7 +76,7 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
     const onOk = () => {
         setShowModal(false);
 
-        if(changes.length > 0) {
+        if (changes.length > 0) {
             UpdateBadge(currBadgeSelected, utorid, setBadgeSelected, resetChanges);
         } else {
             message.error("No changes were made");
@@ -89,7 +89,7 @@ const BadgePicker = ({badges, utorid}: {badges: BadgesType, utorid: string}) => 
             <Button shape="round" onClick={() => setShowModal(!showModal)}>Customize Badges</Button>
             <Modal title="Select up to 3 Badges to be Displayed." open={showModal} onCancel={onCancel} onOk={onOk} >
                 <div>Selected {currBadgeSelected.length}/3</div>
-                <br/>
+                <br />
                 {initModal()}
             </Modal>
         </>

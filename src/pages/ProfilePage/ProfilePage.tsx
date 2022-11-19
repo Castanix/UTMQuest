@@ -12,10 +12,10 @@ import "./ProfilePage.css";
 const { Text, Title } = Typography;
 
 export interface TimelineType {
-        courseId: string,
-        questionId: string,
-        questionName: string, 
-        date: string
+    courseId: string,
+    questionId: string,
+    questionName: string,
+    date: string
 }
 
 export interface BadgesType {
@@ -42,9 +42,9 @@ const Header = () => (
 
 const ProfilePage = () => {
     const [name, setName] = useState<string>("");
-    const [badges, setBadges] = useState<BadgesType>({unlockedBadges: {}, displayBadges: []});
+    const [badges, setBadges] = useState<BadgesType>({ unlockedBadges: {}, displayBadges: [] });
     const [timeline, setTimeline] = useState<TimelineType[]>();
-    
+
     const { loadingProfile, errorProfile } = GetProfile("dummy22", setName);
     const { loadingBadges, errorBadges } = GetBadges("dummy22", setBadges);
     const { loadingQuestions, errorQuestions } = GetAllQuestions("dummy22", setTimeline);
@@ -54,7 +54,7 @@ const ProfilePage = () => {
     if (errorProfile) return <ErrorMessage title={errorProfile} link="." message="Refresh" />;
     if (errorBadges) return <ErrorMessage title={errorBadges} link="." message="Refreshing" />;
     if (errorQuestions) return <ErrorMessage title={errorQuestions} link="." message="Refreshing" />;
-    
+
 
     const firstInitial = name[0][0].toUpperCase();
     const lastInitial = name[name.length - 1][0].toUpperCase();
@@ -62,16 +62,16 @@ const ProfilePage = () => {
     // TODO: need to include threadreplies when edit badge routes have been set
     const { addQuestions, editQuestions, consecutivePosting, dailyLogin } = badges.unlockedBadges;
     const badgesSrc: string[] = [
-        ... addQuestions ? [`/image/${addQuestions}.png`] : ["/image/addbadgelocked.png"],
-        ... editQuestions ? [`/image/${editQuestions}.png`] : ["/image/editbadgelocked.png"],
-        ... consecutivePosting ? [`/image/${consecutivePosting}.png`] : ["/image/consecutivebadgelocked.png"],
-        ... dailyLogin ? [`/image/${dailyLogin}.png`] : ["/image/dailybadgelocked.png"]
+        ...addQuestions ? [`/images/${addQuestions}.png`] : ["/images/addbadgelocked.png"],
+        ...editQuestions ? [`/images/${editQuestions}.png`] : ["/images/editbadgelocked.png"],
+        ...consecutivePosting ? [`/images/${consecutivePosting}.png`] : ["/images/consecutivebadgelocked.png"],
+        ...dailyLogin ? [`/images/${dailyLogin}.png`] : ["/images/dailybadgelocked.png"]
     ];
 
     const loadTimeline = () => {
         const timelineArr: ReactElement[] = [];
 
-        if (timeline){
+        if (timeline) {
             timeline.forEach((item) => {
                 timelineArr.push(
                     <Timeline.Item key={item.questionId} label={new Date(item.date).toDateString()}>
@@ -105,10 +105,10 @@ const ProfilePage = () => {
             <BackTop />
             <main className="main-container profile">
                 <div className="profile-container">
-                    <div className="user-container">   
-                            <Avatar className="avatar" size={160}>
-                                {firstInitial.concat(lastInitial)}
-                            </Avatar>
+                    <div className="user-container">
+                        <Avatar className="avatar" size={160}>
+                            {firstInitial.concat(lastInitial)}
+                        </Avatar>
                         <div className="user-details">
                             <Text strong>{name}</Text>
                         </div>
@@ -121,13 +121,13 @@ const ProfilePage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="timeline-container" style={{height: "70vh", overflowY: "auto", overflowX: "hidden", scrollbarWidth: "thin", scrollbarColor: "gray lightgray"}}>
+                <div className="timeline-container" style={{ height: "70vh", overflowY: "auto", overflowX: "hidden", scrollbarWidth: "thin", scrollbarColor: "gray lightgray" }}>
                     <Divider>Activity Timeline</Divider>
-                    {loadingQuestions ? 
+                    {loadingQuestions ?
                         <Loading /> :
-                        <Timeline mode="left" style={{marginTop: "2.75rem", width: "40vw"}}>
-                                {loadTimeline()}
-                            </Timeline>}
+                        <Timeline mode="left" style={{ marginTop: "2.75rem", width: "40vw" }}>
+                            {loadTimeline()}
+                        </Timeline>}
                     <Divider />
                 </div>
             </main>
