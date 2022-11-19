@@ -24,7 +24,7 @@ const server = setupServer(
                 _id: new Object("636544b3de321c160f0b155a"),
                 utorid: 'dummy22',
                 utorName: 'Dummy Test',
-                savedCourses: [ 'CSC108' ],
+                savedCourses: ['CSC108'],
                 colour: 'red',
                 badges: []
             })
@@ -35,8 +35,8 @@ const server = setupServer(
         return res(
             ctx.status(200),
             ctx.json({
-                displayBadges: ["badge1"],
-                unlockedBadges: ["badge1", "badge2"]
+                displayBadges: ["addbadge1"],
+                unlockedBadges: ["addbadge1", "editbadge1"]
             })
         );
     }),
@@ -55,8 +55,8 @@ const server = setupServer(
                 qnsType: 'mc',
                 desc: 'Answer is 3',
                 xplan: 'Sike',
-                choices: [ '1', '2', '3' ],
-                ans: [ '2' ],
+                choices: ['1', '2', '3'],
+                ans: ['2'],
                 authId: 'dummy22',
                 authName: 'Dummy Test',
                 date: '2022-11-04T03:17:49.838Z',
@@ -84,7 +84,7 @@ afterEach(() => server.resetHandlers());
 
 afterAll(() => server.close());
 
-test('profile page renders correctly', async() => {
+test('profile page renders correctly', async () => {
     await waitFor(() => {
         expect(screen.getByText(/Dummy Test/i)).toBeInTheDocument();
         expect(screen.getAllByText(/badges/i)[0]).toBeInTheDocument();
@@ -93,19 +93,7 @@ test('profile page renders correctly', async() => {
     });
 });
 
-test('badge images exist with popover', async() => {
-    await waitFor(() => {
-        const firstBadge = screen.getAllByAltText(/badge icon/i)[0];
-        expect(firstBadge).toBeInTheDocument();
-
-        fireEvent.mouseOver(firstBadge);
-        waitFor(() => {
-            expect(screen.getByText(/Post 5 Questions/i)).toBeInTheDocument();
-        }, {timeout: 10000});
-    }, {timeout: 60000});
-});
-
-test('badge picker modal opens and functionality', async() => {
+test('badge picker modal opens and functionality', async () => {
     await waitFor(() => {
         const btn = screen.getByText(/Customize Badges/i);
         fireEvent.click(btn);
@@ -116,5 +104,5 @@ test('badge picker modal opens and functionality', async() => {
         fireEvent.click(secondBadge)
         expect(screen.getByText(/Selected 2\/3/i)).toBeInTheDocument();
 
-    }, {timeout: 60000});
+    }, { timeout: 60000 });
 });

@@ -1,6 +1,7 @@
 import { Avatar, BackTop, Card, Divider, Timeline, Typography, PageHeader, Popover } from "antd";
 import React, { ReactElement, useState } from "react";
 import { Link } from "react-router-dom";
+import BadgeDescriptions from "../../BadgeDescriptions";
 import BadgePicker from "../../components/BadgePicker/BadgePicker";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loading from "../../components/Loading/Loading";
@@ -60,12 +61,12 @@ const ProfilePage = () => {
     const lastInitial = name[name.length - 1][0].toUpperCase();
 
     // TODO: need to include threadreplies when edit badge routes have been set
-    const { addQuestions, editQuestions, consecutivePosting, dailyLogin } = badges.unlockedBadges;
+    const { addQuestions, editQuestions, consecutivePosting } = badges.unlockedBadges;
     const badgesSrc: string[] = [
-        ...addQuestions ? [`/images/${addQuestions}.png`] : ["/images/addbadgelocked.png"],
-        ...editQuestions ? [`/images/${editQuestions}.png`] : ["/images/editbadgelocked.png"],
-        ...consecutivePosting ? [`/images/${consecutivePosting}.png`] : ["/images/consecutivebadgelocked.png"],
-        ...dailyLogin ? [`/images/${dailyLogin}.png`] : ["/images/dailybadgelocked.png"]
+        ...addQuestions ? [addQuestions] : ["addbadgelocked"],
+        ...editQuestions ? [editQuestions] : ["editbadgelocked"],
+        ...consecutivePosting ? [consecutivePosting] : ["consecutivebadgelocked"],
+        "dailybadge"
     ];
 
     const loadTimeline = () => {
@@ -88,11 +89,10 @@ const ProfilePage = () => {
     const initBadges = () => {
         const badgeArr: ReactElement[] = [];
 
-        // TODO: change content message to respective requirements
         badgesSrc.forEach(badge => {
             badgeArr.push(
-                <Popover key={badge} content="Post 5 Questions (1/5)" trigger="hover">
-                    <img src={badge} alt="badge icon" />
+                <Popover key={badge} content={BadgeDescriptions[badge as keyof typeof BadgeDescriptions]} trigger="hover">
+                    <img src={`/images/${badge}.png`} alt={badge} />
                 </Popover>
             );
         });

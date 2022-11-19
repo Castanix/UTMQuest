@@ -7,7 +7,7 @@
 
 .modal-img:hover,
 .modal-img:focus {
-    border: 1px black solid;
+    cursor: pointer;
 }
 
 .active {
