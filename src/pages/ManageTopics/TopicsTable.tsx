@@ -13,9 +13,6 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
     dataIndex: string;
     title: string;
-    inputType: string;
-    record: TopicsType;
-    index: number;
     children: React.ReactNode;
 }
 
@@ -23,9 +20,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
     editing,
     dataIndex,
     title,
-    inputType,
-    record,
-    index,
     children,
     ...restProps
 }) => (
@@ -124,8 +118,6 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
         return {
             ...col,
             onCell: (record: TopicsType) => ({
-                record,
-                inputType: 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
