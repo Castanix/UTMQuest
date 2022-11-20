@@ -1,5 +1,5 @@
 .title {
-    flex-wrap: wrap;
+    display: flex;
     justify-content: space-between;
 }
 
@@ -46,8 +46,8 @@
     }
 
     .icon-buttons {
-        margin-top: 0.5rem;
-        padding-block: 1rem;
+        margin-top: 0;
+        margin-bottom: 0;
     }
 
     .ant-tabs-nav,

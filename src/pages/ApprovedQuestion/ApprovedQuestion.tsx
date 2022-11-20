@@ -45,32 +45,39 @@ const ShortAnswerTab = ({ actualQuestion, answer }: { actualQuestion: string, an
 const Header = ({ question }: { question: QuestionsType }) => (
     <div>
         {!onMobile() ?
-            <div>
-                <Breadcrumb>
-                    <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-                    <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}>{question.courseId}</Link></Breadcrumb.Item>
-                    <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}>Browse Questions</Link></Breadcrumb.Item>
-                    <Typography.Text ellipsis>{question.qnsName}</Typography.Text>
-                </Breadcrumb>
-            </div>
+            <Breadcrumb>
+                <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+                <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}>{question.courseId}</Link></Breadcrumb.Item>
+                <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}>Browse Questions</Link></Breadcrumb.Item>
+                <Typography.Text ellipsis>{question.qnsName}</Typography.Text>
+            </Breadcrumb>
             :
             <Breadcrumb>
                 <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}><CaretLeftOutlined />Browse Questions</Link></Breadcrumb.Item>
             </Breadcrumb>
         }
         <div className="title">
-            <div className="title-flex">
+            <Title level={3} ellipsis>
+                {question.courseId}
                 {!onMobile() ?
-                    <Title level={3} ellipsis>{question.courseId} <div className="subtitle">&#8226; {question.qnsName}</div></Title>
-                    :
-                    <div>
-                        <Title level={4} ellipsis>{question.courseId}</Title>
-                        <div className="subtitle">{question.topicName}</div>
+                    <div className="subtitle">
+                        &#8226; {question.topicName}
+                    </div>
+                    : <div className="subtitle">
+                        <br />
+                        {question.topicName}
                     </div>
                 }
-                <Text type="secondary">{question.authName} {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}</Text> <br />
-                <Text type="secondary">{GetRelativeTime(new Date(question.date).getTime())}</Text>
-            </div>
+                <br />
+                <Text type="secondary">
+                    {question.authName} {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}
+                </Text>
+                <br />
+                <Text type="secondary">
+                    {GetRelativeTime(new Date(question.date).getTime())}
+                </Text>
+            </Title>
+
             <div className="icon-buttons">
                 <div className="flex-child">
                     <Link to={`/courses/${question.courseId}/editQuestion`} state={{ question }}><Button type="primary" shape="round" icon={<EditOutlined />}>Edit</Button></Link>
