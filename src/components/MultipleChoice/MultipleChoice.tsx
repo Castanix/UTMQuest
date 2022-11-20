@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Divider, Space } from "antd";
+import Title from "antd/es/typography/Title";
 import "./MultipleChoice.css";
-import Title from 'antd/lib/typography/Title';
 import MDEditor from "@uiw/react-md-editor";
 import MultipleChoiceState from "./MultipleChoiceState";
 

@@ -17,10 +17,10 @@ const { Title } = Typography;
 const GetCard = ({ cardIcon, title }:
   { cardIcon: React.ForwardRefExoticComponent<any>, title: string }) => (
   <Card className="card" hoverable bordered>
-    <Icon className="card-icon" component={cardIcon} />
-    <br />
-    <br />
-    <h2>{title}</h2>
+    <Space direction="vertical">
+      <Icon className="card-icon" component={cardIcon} />
+      <Title level={4}>{title}</Title>
+    </Space>
   </Card>
 );
 
@@ -31,7 +31,7 @@ const Header = ({ courseCode, courseName, favourite, setFavourite }:
       <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
       <Breadcrumb.Item>{courseCode}</Breadcrumb.Item>
     </Breadcrumb>
-    <div className="title">
+    <div className="course-title">
       <Title level={3} ellipsis>{courseName}</Title>
       <div>
         <Space>

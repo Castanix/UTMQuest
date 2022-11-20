@@ -1,15 +1,16 @@
 .question-list-page-header {
     padding: 0;
+    margin-top: -0.3rem;
 }
 
 .question-list {
     margin-top: 1rem;
 }
 
-.question-name {
+/* .question-name {
     line-height: 1rem !important;
     vertical-align: -2px !important;
-}
+} */
 
 .question-list-select {
     width: 15.7rem;
@@ -47,6 +48,14 @@
 .ant-page-header-heading-sub-title div, 
 .ant-page-header-heading-left {
     margin-bottom: 0 !important;
+}
+
+.ant-page-header-heading-sub-title {
+    font-weight: 500;
+}
+
+.ant-list-item-meta-title {
+    margin-top: 1rem;
 }
 
 @media screen and (max-width: 720px) {

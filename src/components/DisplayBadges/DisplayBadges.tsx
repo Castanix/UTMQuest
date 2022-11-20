@@ -34,14 +34,16 @@ const DisplayBadges = ({ utorid }: { utorid: string }) => {
 
     return (
         <Space>
-            {badges.map((item) => {
-                const path = `/images/${item}.png`;
-                return (
-                    <Popover key={item} content={BadgeDescriptions[item as keyof typeof BadgeDescriptions]} trigger="hover">
-                        <img className="display-badges" key={item} src={path} alt={item} />
-                    </Popover>
-                );
-            })}
+            {
+                badges.map((item) => {
+                    const path = `/images/${item}.png`;
+                    return (
+                        <Popover key={item} content={BadgeDescriptions[item as keyof typeof BadgeDescriptions]} trigger="hover">
+                            <img className="badge" key={item} src={path} alt={item} />
+                        </Popover>
+                    );
+                })
+            }
         </Space>
     );
 };

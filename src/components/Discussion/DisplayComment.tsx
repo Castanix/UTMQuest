@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Comment, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
+import { Comment } from '@ant-design/compatible';
 import { QuestionOutlined } from "@ant-design/icons";
 import MDEditor from "@uiw/react-md-editor";
 import { Link } from "react-router-dom";
@@ -29,17 +30,17 @@ const DisplayComment = ({ comment }: { comment: DiscussionFrontEndType }) => {
     /* executes when you delete a comment */
     const onDeleteClick = () => {
         // MAKE DELETE CALL
-        fetch(`${process.env.REACT_APP_API_URI}/discussion/${comment._id}`, { 
+        fetch(`${process.env.REACT_APP_API_URI}/discussion/${comment._id}`, {
             method: 'DELETE'
-        }).then((res: Response) => { 
+        }).then((res: Response) => {
             if (!res.ok) throw Error(res.statusText);
             return res.json();
-        }).then((result) => { 
+        }).then((result) => {
             setDisplayComment({
                 ...displayComment,
                 content: result.value.content,
                 deleted: result.value.deleted
-            });  
+            });
         });
     };
 
@@ -65,12 +66,12 @@ const DisplayComment = ({ comment }: { comment: DiscussionFrontEndType }) => {
             role="presentation"
         >
             {
-            // eslint-disable-next-line no-nested-ternary
-            !displayComment.deleted 
-                ? !showReply 
-                    ? "Reply to" 
-                    : "Close"
-                : ""
+                // eslint-disable-next-line no-nested-ternary
+                !displayComment.deleted
+                    ? !showReply
+                        ? "Reply to"
+                        : "Close"
+                    : ""
             }
         </span>,
         <span

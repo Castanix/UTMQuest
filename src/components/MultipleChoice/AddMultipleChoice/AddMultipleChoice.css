@@ -12,3 +12,11 @@
 .add-mc-actions {
     margin-bottom: 0.5rem;
 }
+
+.mc-divider {
+    margin-bottom: 0 !important;
+}
+
+.mc-subtitle {
+    margin-left: 1.7rem;
+}

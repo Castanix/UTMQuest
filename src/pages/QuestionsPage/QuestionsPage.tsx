@@ -1,5 +1,5 @@
 import { Breadcrumb, Card } from 'antd';
-import Title from 'antd/lib/typography/Title';
+import Title from 'antd/es/typography/Title';
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';

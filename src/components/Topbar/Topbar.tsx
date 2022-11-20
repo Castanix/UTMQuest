@@ -12,7 +12,7 @@ const Logo = () => (
     <BookOutlined />
     {' '}
     <Space />
-    <span className="showLogo">utmQuest</span>
+    <span className="show-logo">utmQuest</span>
   </span>
 );
 
@@ -31,14 +31,13 @@ const Topbar = ({ children }: { children: React.ReactNode }) => (
         <Logo />
       </Link>
       <Menu
-        className="menu"
         theme="dark"
         mode="horizontal"
         selectable={false}
       >
         <Menu.SubMenu
-          key="subMenu"
-          className="subMenu"
+          key="sub-menu"
+          className="sub-menu"
           title={(
             <span>
               Username

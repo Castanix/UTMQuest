@@ -65,6 +65,8 @@
     display: inline-flex;
     flex-wrap: wrap;
     width: 50%;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
     height: fit-content;
 }
 
@@ -72,7 +74,7 @@
     display: inline-flex;
     flex-wrap: wrap;
     width: 50%;
-    margin-top: 7.5rem;
+    /* margin-top: 7.5rem; */
 }
 
 .items-container .w-md-editor {
@@ -125,6 +127,10 @@
     border-radius: 0 !important;
 }
 
+.add-question-textarea > textarea {
+    width: 75vw;
+}
+
 
 /* MDEditor CSS */
 .w-md-editor-content,
@@ -143,14 +149,20 @@
 }
 
 .w-md-editor {
-    border-radius: 25px !important; 
+    border-radius: 8px !important; 
 }
 
 .w-md-editor-toolbar {
     background-color: transparent !important;
 }
 
-.w-md-editor-bar {
+/* .w-md-editor-bar {
     right: -3px !important;
     bottom: -3px !important;
+} */
+
+@media screen and (max-width: 420px) {
+    .btn-container {
+        display: block;
+    }
 }

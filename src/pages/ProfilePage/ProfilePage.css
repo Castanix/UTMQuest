@@ -22,9 +22,9 @@
     margin: 0.25rem;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 420px) {
     .profile {
-        display: flex;
+        display: block;
         margin-inline: 0;
     }
 }
@@ -46,11 +46,6 @@
     margin-inline: auto;
     width: 100%;
     text-align: center;
-}
-
-.badges {
-    height: 40vh;
-    /* border: 1px solid black; */
 }
 
 .timeline-container {

@@ -13,7 +13,7 @@
     background-color: white;
 }
 
-.title-flex h3 {
+.title-flex h3, h4 {
     margin-bottom: 0 !important;
 }
 
@@ -24,10 +24,6 @@
 .icon-buttons {
     display: flex;
     text-align: center;
-}
-
-.flex-child { 
-    flex: 1
 }
 
 .flex-child:first-child { 
@@ -48,3 +44,17 @@
     border-left: 3px solid #40a9ff !important;
     padding-left: 0.5rem;
  }
+
+ @media screen and (max-width: 420px) {
+    .title {
+        display: block;
+    }
+
+    .icon-buttons {
+        margin-top: 0.5rem;
+    }
+
+    .ant-tabs-nav {
+        padding-inline: 0;
+    }
+}

@@ -2,6 +2,7 @@ import { Alert, Button, Form, message, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import TopicsType from "../../../backend/types/Topics";
+import { onMobile } from "../../components/EditHistory/EditHistory";
 
 const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
     { courseCode: string, topics: TopicsType[], setCurrStep: Function, setTopicSelected: Function }) => {
@@ -49,13 +50,17 @@ const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
             <Alert message="If the topic you are trying to select does not exist, please add it here:"
                 type="info"
                 action={
-                    <Link to={`/courses/${courseCode}/topics`}>Manage Topics</Link>
+                    <Link to={`/courses/${courseCode}/topics`}>
+                        <Button type="link">
+                            Manage Topics
+                        </Button>
+                    </Link>
                 }
                 showIcon
             />
             <br />
             <div className="form-container">
-                <Form>
+                <Form layout={!onMobile() ? "horizontal" : "vertical"}>
                     <Form.Item
                         name="topic"
                         label="Select the topic this question is for"
@@ -76,6 +81,7 @@ const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
                         </Select>
                     </Form.Item>
                     <Button
+                        shape="round"
                         type="primary"
                         disabled={!selected}
                         onClick={() => {

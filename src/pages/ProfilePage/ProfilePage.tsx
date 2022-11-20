@@ -1,8 +1,9 @@
-import { Avatar, BackTop, Card, Divider, Timeline, Typography, PageHeader, Popover } from "antd";
+import { Avatar, Card, Divider, Timeline, Typography, Popover, Breadcrumb } from "antd";
 import React, { ReactElement, useState } from "react";
 import { Link } from "react-router-dom";
 import BadgeDescriptions from "../../BadgeDescriptions";
 import BadgePicker from "../../components/BadgePicker/BadgePicker";
+import { onMobile } from "../../components/EditHistory/EditHistory";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loading from "../../components/Loading/Loading";
 import GetAllQuestions from "./fetch/GetAllQuestions";
@@ -15,6 +16,7 @@ const { Text, Title } = Typography;
 export interface TimelineType {
     courseId: string,
     questionId: string,
+    link: string,
     questionName: string,
     date: string
 }
@@ -32,11 +34,10 @@ export interface BadgesType {
 
 const Header = () => (
     <div>
-        <PageHeader
-            className="profile-header"
-            onBack={() => window.history.back()}
-            title="Go back"
-        />
+        <Breadcrumb>
+            <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+            <Breadcrumb.Item>Profile</Breadcrumb.Item>
+        </Breadcrumb>
         <Title level={3} ellipsis>Profile <div className="subtitle">&#8226; dummy22</div></Title>
     </div>
 );
@@ -74,9 +75,10 @@ const ProfilePage = () => {
 
         if (timeline) {
             timeline.forEach((item) => {
+                const date = !onMobile() ? new Date(item.date).toDateString() : new Date(item.date).toLocaleDateString();
                 timelineArr.push(
-                    <Timeline.Item key={item.questionId} label={new Date(item.date).toDateString()}>
-                        <Link to={`/courses/${item.courseId}/question/${item.questionId}`}>
+                    <Timeline.Item key={item.questionId} label={date}>
+                        <Link to={`/courses/${item.courseId}/question/${item.link}`}>
                             {item.questionName}
                         </Link>
                     </Timeline.Item>
@@ -102,7 +104,6 @@ const ProfilePage = () => {
 
     return (
         <Card title={<Header />}>
-            <BackTop />
             <main className="main-container profile">
                 <div className="profile-container">
                     <div className="user-container">

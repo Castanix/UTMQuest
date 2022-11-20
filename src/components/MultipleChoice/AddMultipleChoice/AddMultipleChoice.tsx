@@ -1,4 +1,4 @@
-import { Button, Checkbox, Divider, Input, Space } from 'antd';
+import { Button, Checkbox, Divider, Input, Space, Typography } from 'antd';
 import React, { useState } from 'react';
 
 import "./AddMultipleChoice.css";
@@ -54,10 +54,13 @@ const AddMultipleChoice = (
     return (
         <div>
             <div className="add-mc-actions">
-                <Divider orientation="left">Add choices below. Use the checkmark to mark options as correct</Divider>
-                <Space split={<Divider type="vertical" />}>
-                    <Button shape="round" className="mc-actions-add" onClick={addOption} disabled={options.length >= 5}>Add option</Button>
-                    <Button shape="round" onClick={removeOption} disabled={options.length <= 2}>Remove option</Button>
+                <Space direction="vertical">
+                    <Divider orientation="left" className="mc-divider">Add choices below. Use the checkmark to mark options as correct</Divider>
+                    <Typography.Text type="secondary" className="mc-subtitle">Option values must be unique (case-sensitive)</Typography.Text>
+                    <Space split={<Divider type="vertical" />}>
+                        <Button shape="round" className="mc-actions-add" onClick={addOption} disabled={options.length >= 5}>Add option</Button>
+                        <Button shape="round" onClick={removeOption} disabled={options.length <= 2}>Remove option</Button>
+                    </Space>
                 </Space>
             </div>
             <div className="add-mc">

@@ -27,22 +27,29 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
             okText="Save"
             cancelText="Cancel"
             onCancel={onCancel}
-            onOk={() => {
-                form
-                    .validateFields()
-                    .then(values => {
-                        form.resetFields();
-                        const name = values.name.trim();
-                        if (name) {
-                            onCreate(name);
-                        } else {
-                            message.error('Cannot add empty topic names');
-                        }
-                    })
-                    .catch(info => {
-                        console.log('Validate Failed:', info);
-                    });
-            }}
+            footer={[
+                <Button key="cancel" shape="round" onClick={() => onCancel()}>
+                    Cancel
+                </Button>,
+                <Button key="ok" type="primary" shape="round" onClick={() => {
+                    form
+                        .validateFields()
+                        .then(values => {
+                            form.resetFields();
+                            const name = values.name.trim();
+                            if (name) {
+                                onCreate(name);
+                            } else {
+                                message.error('Cannot add empty topic names');
+                            }
+                        })
+                        .catch(info => {
+                            console.log('Validate Failed:', info);
+                        });
+                }}>
+                    Save
+                </Button>
+            ]}
         >
             <Form
                 form={form}
@@ -55,7 +62,7 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                     label="Topic Name"
                     rules={[{ required: true, message: 'Please add a topic name' }]}
                 >
-                    <Input />
+                    <Input placeholder="Add new topic" />
                 </Form.Item>
             </Form>
         </Modal>

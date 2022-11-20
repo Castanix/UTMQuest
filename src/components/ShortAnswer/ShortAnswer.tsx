@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Button, Input } from 'antd';
-import Title from 'antd/lib/typography/Title';
-import Paragraph from 'antd/lib/typography/Paragraph';
 import './ShortAnswer.css';
 import MDEditor from '@uiw/react-md-editor';
+import Title from "antd/es/typography/Title";
+import Paragraph from "antd/es/typography/Paragraph";
+import { onMobile } from "../EditHistory/EditHistory";
 
 const { TextArea } = Input;
 
@@ -23,7 +24,7 @@ const ShortAnswer = ({ answer }: { answer: string }) => {
         <div>
             {!isSubmit ?
                 <div>
-                    <TextArea showCount disabled={isSubmit} rows={5} placeholder="Type your answer here" onChange={handleTextChange} value={text} />
+                    <TextArea showCount disabled={isSubmit} rows={!onMobile() ? 5 : 2} placeholder="Type your answer here" onChange={handleTextChange} value={text} />
                     <div className="submitButton-container">
                         <Button shape="round" onClick={submitAnswer}>Submit</Button>
                     </div>

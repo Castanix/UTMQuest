@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BackTop, Divider } from "antd";
+import { FloatButton, Divider } from "antd";
 import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 import GetOPComments from "./fetch/GetOPComments";
 import Loading from "../Loading/Loading";
@@ -9,7 +9,7 @@ import DisplayComment from "./DisplayComment";
 
 
 const Discussion = ({ questionLink }: { questionLink: string }) => {
-    
+
     const { loading, comments: opComments, error } = GetOPComments(questionLink);
     const [comments, setComments] = useState<DiscussionFrontEndType[]>(opComments);
 
@@ -23,12 +23,12 @@ const Discussion = ({ questionLink }: { questionLink: string }) => {
 
     return (
         <div>
-            <Editor discussionId={null} questionLink={questionLink} op updateComments={updateComments} />
-            <Divider orientation="left">Replies</Divider>
             {comments.filter(i => i.op).map((item) => (
                 <DisplayComment key={item._id} comment={item} />
             ))}
-            <BackTop />
+            <Divider orientation="left">Your reply</Divider>
+            <Editor discussionId={null} questionLink={questionLink} op updateComments={updateComments} />
+            <FloatButton.BackTop />
         </div>
     );
 };
