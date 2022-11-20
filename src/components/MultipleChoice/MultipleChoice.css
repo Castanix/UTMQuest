@@ -40,3 +40,11 @@
     border-left: 3px solid #40a9ff !important;
     padding-left: 0.5rem;
 }
+
+/* @media screen and (max-width: 375px) {
+    .mc-component {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+} */

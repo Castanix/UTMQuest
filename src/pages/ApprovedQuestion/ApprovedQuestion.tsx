@@ -131,6 +131,7 @@ const ApprovedQuestion = () => {
             style={{ width: '100%' }}
             title={<Header question={question} />}
             tabList={tabList}
+            tabProps={onMobile() ? {tabPosition: "left"} : {tabPosition: "top"}}
             activeTabKey={activeTabKey}
             onTabChange={key => {
                 onTabChange(key);
