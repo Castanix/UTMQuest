@@ -126,7 +126,7 @@ const ProfilePage = () => {
                     <Divider>Activity Timeline</Divider>
                     {loadingQuestions ?
                         <Loading /> :
-                        <Timeline mode="left" style={{ marginTop: "2.75rem", width: "40vw" }}>
+                        <Timeline mode="left" style={{ marginTop: "2.75rem", marginInline: "auto", width: "100%" }}>
                             {loadTimeline()}
                         </Timeline>}
                     <Divider />
