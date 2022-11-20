@@ -78,7 +78,7 @@ const ProfilePage = () => {
                 timelineArr.push(
                     <Timeline.Item key={item.questionId} label={GetRelativeTime(new Date(item.date).getTime())}>
                         <Link to={`/courses/${item.courseId}/question/${item.link}`}>
-                            <Typography.Link ellipsis>{item.questionName}</Typography.Link>
+                            <Typography.Text className="timeline-link" ellipsis>{item.questionName}</Typography.Text>
                         </Link>
                     </Timeline.Item>
                 );
