@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FloatButton, Divider } from "antd";
+import { FloatButton, Divider, List } from "antd";
 import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 import GetOPComments from "./fetch/GetOPComments";
 import Loading from "../Loading/Loading";
@@ -23,9 +23,14 @@ const Discussion = ({ questionLink }: { questionLink: string }) => {
 
     return (
         <div>
-            {comments.filter(i => i.op).map((item) => (
-                <DisplayComment key={item._id} comment={item} />
-            ))}
+            <List
+                header="All Comments"
+                itemLayout="horizontal"
+                dataSource={comments}
+                renderItem={item => (
+                    <DisplayComment key={item._id} comment={item} />
+                )}
+            />
             <Divider orientation="left">Your reply</Divider>
             <Editor discussionId={null} questionLink={questionLink} op updateComments={updateComments} />
             <FloatButton.BackTop />

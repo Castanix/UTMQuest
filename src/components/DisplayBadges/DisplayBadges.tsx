@@ -7,16 +7,11 @@ import "./DisplayBadges.css";
 const DisplayBadges = ({ utorid }: { utorid: string }) => {
     const [badges, setBadges] = useState<string[]>([]);
 
-    // TODO: Replace with currently logged in user
-    const currentUser = "dummy22";
-
     useEffect(() => {
 
         const userBadges = JSON.parse(sessionStorage.getItem("userBadges") ?? JSON.stringify({}));
 
-        // refetch for currently logged in user in case they update their display badge
-        // otherwise they won't see the changes
-        if (utorid in userBadges && utorid !== currentUser) {
+        if (utorid in userBadges) {
             setBadges(userBadges[utorid]);
         } else {
             fetch(`${process.env.REACT_APP_API_URI}/displayBadges/${utorid}`).then((response) => {
