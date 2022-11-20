@@ -37,6 +37,16 @@ const updateLatest = (question: any, set: boolean) => {
 	return !!result;
 };
 
+const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
+	const result = utmQuestCollections.Topics?.findOneAndUpdate(
+		{ _id: topicId },
+		{ $inc: { numQuestions: increment ? 1 : -1 } }
+	);
+
+	return !!result;
+};
+
+
 // /courses/:courseId/question/:id
 questionRouter.get('/allPostedQuestions/:utorid', async (req: Request, res: Response) => {
     try {
@@ -145,11 +155,12 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 	// post a new question
 	const mongoId = new ObjectID();
 	const link = mongoId.toHexString();
+	const topicId = new ObjectID(req.body.topicId);
 
 	const question = {
 		_id: mongoId,
 		link,
-		topicId: new ObjectID(req.body.topicId),
+		topicId,
 		topicName: req.body.topicName,
 		courseId: req.body.courseId,
 		qnsName: req.body.qnsName,
@@ -181,18 +192,31 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 				res.status(500).send("Unable to add new question.");
 				return;
 			}
+
 			// INCREMENT COUNTER
-			utmQuestCollections.Topics?.findOneAndUpdate(
-				{ _id: new ObjectID(req.body.topicId) },
-				{ $inc: { numQuestions: 1 } }
-			).then((incrementResult) => {
-				if (!incrementResult) {
-					res.status(500).send(
-						`Unable to increment numQuestions for ${req.body.topicName}`
-					);
-					
-				}
-			});
+			const isIncremented = topicIncrementor(topicId, true);
+			if(!isIncremented) {
+				res.status(500).send(
+					`Unable to increment numQuestions for ${req.body.topicName}`
+				);
+				utmQuestCollections.Questions?.deleteOne(question);
+				return;
+			};
+
+
+			/* TODO: Delete this once certain is it not required */
+			// utmQuestCollections.Topics?.findOneAndUpdate(
+			// 	{ _id: new ObjectID(req.body.topicId) },
+			// 	{ $inc: { numQuestions: 1 } }
+			// ).then((incrementResult) => {
+			// 	if (!incrementResult) {
+			// 		res.status(500).send(
+			// 			`Unable to increment numQuestions for ${req.body.topicName}`
+			// 		);
+			// 		utmQuestCollections.Questions?.deleteOne(question);
+			// 		return;
+			// 	}
+			// });
 
 			// Update badge progression
 			if (!question.anon) {
@@ -208,6 +232,9 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 							res.status(500).send(
 								"Unable to update badge progression."
 							);
+							topicIncrementor(topicId, false);
+							utmQuestCollections.Questions?.deleteOne(question);
+							
 						} else {
 							res.status(201).send({
 								link,
@@ -232,6 +259,9 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 								res.status(500).send(
 									"Unable to update badge progression."
 								);
+								topicIncrementor(topicId, false);
+								utmQuestCollections.Questions?.deleteOne(question);
+								
 							} else {
 								res.status(201).send({
 									link,
@@ -268,6 +298,9 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 								res.status(500).send(
 									"Unable to increment questionsAdded for badge progression."
 								);
+								topicIncrementor(topicId, false);
+								utmQuestCollections.Questions?.deleteOne(question);
+								
 							} else {
 								res.status(201).send({
 									link,
