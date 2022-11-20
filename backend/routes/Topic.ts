@@ -68,12 +68,14 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		);
 		return;
 	}
+
 	utmQuestCollections.Topics?.deleteOne(topic)
 		.then((result) => {
 			if (!result.acknowledged) {
 				res.status(400).send(result);
 				return;
 			}
+
 			// DECREMENT TOPIC COUNTER IN COURSE
 			const course = {
 				courseId: topic.course,
@@ -87,6 +89,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 					res.status(500).send(
 						`Unable to decrement numTopics for ${course.courseId}`
 					);
+					utmQuestCollections.Topics?.insertOne(topic);
 					return;
 				}
 				res.status(200).send("Topic successfully deleted.");
@@ -113,6 +116,7 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
+	const oldTopicName = topic.topicName;
 	const newTopicName = req.body.newTopic.trim();
 	if (!newTopicName) {
 		res.status(400).send("Cannot update with given topic name");
@@ -134,6 +138,14 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 			).then((updateTopicResult) => {
 				if (!result.acknowledged) {
 					res.status(500).send("Could not update topic.");
+					utmQuestCollections.Questions?.updateMany(
+						{ topicId: new ObjectID(req.body._id),
+						  topicName: newTopicName },
+						{ $set: { topicName: oldTopicName } }
+					);
+					utmQuestCollections.Topics?.updateOne(topic, {
+						$set: { topicName: oldTopicName }
+					});
 					return;
 				}
 				res.status(200).send(updateTopicResult);
@@ -161,7 +173,9 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
+	const topicId = new ObjectID();
 	const newTopic = {
+		_id: topicId,
 		topicName: newTopicName,
 		course: req.body.courseId,
 		numQuestions: 0
@@ -181,6 +195,7 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 					res.status(500).send(
 						`Unable to increment numTopics for ${course.courseId}`
 					);
+					utmQuestCollections.Topics?.deleteOne(topicId);
 					return;
 				}
 				res.status(201).send(result);
