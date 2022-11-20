@@ -45,10 +45,12 @@ const AddQuestionPage = ({ edit }: { edit: boolean }) => {
     return (
         <Card title={<Header courseCode={courseCode ?? ''} />} bordered={false}>
             <main className='main-container'>
-                <Steps current={currStep}>
-                    <Step title={currStep ? "Done" : "Select a Topic"} />
-                    <Step title="Add Question" />
-                </Steps>
+                <Steps current={currStep}
+                    items={[
+                        { title: currStep ? "Done" : "Select a Topic" },
+                        { title: "Add Question" }
+                    ]}
+                />
                 <br />
                 <div style={(currStep) ? { display: "none" } : { display: "block" }}>
                     <AQStepOne

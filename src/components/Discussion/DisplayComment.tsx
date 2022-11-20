@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Comment, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
+import { Comment } from '@ant-design/compatible';
 import { QuestionOutlined } from "@ant-design/icons";
 import MDEditor from "@uiw/react-md-editor";
 import { Link } from "react-router-dom";
 import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 import GetChildComments from "./fetch/GetChildComments";
 import Editor from "./Editor";
+import GetRelativeTime from "../../RelativeTime";
 
 import "./Discussion.css";
 
@@ -29,17 +31,17 @@ const DisplayComment = ({ comment }: { comment: DiscussionFrontEndType }) => {
     /* executes when you delete a comment */
     const onDeleteClick = () => {
         // MAKE DELETE CALL
-        fetch(`${process.env.REACT_APP_API_URI}/discussion/${comment._id}`, { 
+        fetch(`${process.env.REACT_APP_API_URI}/discussion/${comment._id}`, {
             method: 'DELETE'
-        }).then((res: Response) => { 
+        }).then((res: Response) => {
             if (!res.ok) throw Error(res.statusText);
             return res.json();
-        }).then((result) => { 
+        }).then((result) => {
             setDisplayComment({
                 ...displayComment,
                 content: result.value.content,
                 deleted: result.value.deleted
-            });  
+            });
         });
     };
 
@@ -65,12 +67,12 @@ const DisplayComment = ({ comment }: { comment: DiscussionFrontEndType }) => {
             role="presentation"
         >
             {
-            // eslint-disable-next-line no-nested-ternary
-            !displayComment.deleted 
-                ? !showReply 
-                    ? "Reply to" 
-                    : "Close"
-                : ""
+                // eslint-disable-next-line no-nested-ternary
+                !displayComment.deleted
+                    ? !showReply
+                        ? "Reply to"
+                        : "Close"
+                    : ""
             }
         </span>,
         <span
@@ -89,24 +91,32 @@ const DisplayComment = ({ comment }: { comment: DiscussionFrontEndType }) => {
     const firstInitial = name[0][0];
     const lastInitial = name[name.length - 1][0];
 
+    // const formatDate = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+    // const currentDate = new Date().getTime();
+    // const postedDate = new Date(displayComment.date).getTime();
+
     return (
         <Comment
             actions={actions}
-            author={<span><Link to="/">{displayComment.authName}</Link> on {new Date(displayComment.date).toDateString()}</span>}
+            author={<Link to="/">{displayComment.authName}</Link>}
+            datetime={GetRelativeTime(new Date(displayComment.date).getTime())}
             avatar={
-                <div className='comment-img'>
-                    {displayComment.anon ?
-                        <QuestionOutlined />
-                        :
-                        <p>{firstInitial.concat(lastInitial)}</p>
+                < div className='comment-img' >
+                    {
+                        displayComment.anon ?
+                            <QuestionOutlined />
+                            :
+                            <p>{firstInitial.concat(lastInitial)}</p>
                     }
-                </div>}
+                </div >}
             content={displayComment.deleted ? <i>{displayComment.content}</i> : <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={displayComment.content} />}
         >
-            {childComments.map((item) => (<DisplayComment key={item._id} comment={item} />)
-            )}
+            {
+                childComments.map((item) => (<DisplayComment key={item._id} comment={item} />)
+                )
+            }
             {showReply ? <Editor discussionId={displayComment._id} questionLink={displayComment.questionLink} op={false} updateComments={updateComments} /> : null}
-        </Comment>
+        </Comment >
     );
 };
 

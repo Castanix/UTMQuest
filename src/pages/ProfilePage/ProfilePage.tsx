@@ -1,10 +1,11 @@
-import { Avatar, BackTop, Card, Divider, Timeline, Typography, PageHeader, Popover } from "antd";
+import { Avatar, Card, Divider, Timeline, Typography, Popover, Breadcrumb } from "antd";
 import React, { ReactElement, useState } from "react";
 import { Link } from "react-router-dom";
 import BadgeDescriptions from "../../BadgeDescriptions";
 import BadgePicker from "../../components/BadgePicker/BadgePicker";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loading from "../../components/Loading/Loading";
+import GetRelativeTime from "../../RelativeTime";
 import GetAllQuestions from "./fetch/GetAllQuestions";
 import GetBadges from "./fetch/GetBadges";
 import { GetProfile } from "./fetch/Profile";
@@ -15,6 +16,7 @@ const { Text, Title } = Typography;
 export interface TimelineType {
     courseId: string,
     questionId: string,
+    link: string,
     questionName: string,
     date: string
 }
@@ -32,11 +34,10 @@ export interface BadgesType {
 
 const Header = () => (
     <div>
-        <PageHeader
-            className="profile-header"
-            onBack={() => window.history.back()}
-            title="Go back"
-        />
+        <Breadcrumb>
+            <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+            <Breadcrumb.Item>Profile</Breadcrumb.Item>
+        </Breadcrumb>
         <Title level={3} ellipsis>Profile <div className="subtitle">&#8226; dummy22</div></Title>
     </div>
 );
@@ -75,9 +76,9 @@ const ProfilePage = () => {
         if (timeline) {
             timeline.forEach((item) => {
                 timelineArr.push(
-                    <Timeline.Item key={item.questionId} label={new Date(item.date).toDateString()}>
-                        <Link to={`/courses/${item.courseId}/question/${item.questionId}`}>
-                            {item.questionName}
+                    <Timeline.Item key={item.questionId} label={GetRelativeTime(new Date(item.date).getTime())}>
+                        <Link to={`/courses/${item.courseId}/question/${item.link}`}>
+                            <Typography.Text className="timeline-link" ellipsis>{item.questionName}</Typography.Text>
                         </Link>
                     </Timeline.Item>
                 );
@@ -102,7 +103,6 @@ const ProfilePage = () => {
 
     return (
         <Card title={<Header />}>
-            <BackTop />
             <main className="main-container profile">
                 <div className="profile-container">
                     <div className="user-container">
@@ -125,7 +125,7 @@ const ProfilePage = () => {
                     <Divider>Activity Timeline</Divider>
                     {loadingQuestions ?
                         <Loading /> :
-                        <Timeline mode="left" style={{ marginTop: "2.75rem", width: "40vw" }}>
+                        <Timeline mode="left" style={{ marginTop: "2.75rem", marginInline: "auto", width: "100%" }}>
                             {loadTimeline()}
                         </Timeline>}
                     <Divider />

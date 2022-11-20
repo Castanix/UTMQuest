@@ -13,10 +13,16 @@ const UpdateBadge = (badgeSelected: string[], utorid: string, setBadgeSelected: 
             },
             body: JSON.stringify({ displayBadges: badgeSelected, utorid })
         }).then((res) => {
-            if(!res.ok) throw new Error("Could not update displayed Badges");
+            if (!res.ok) throw new Error("Could not update displayed Badges");
 
             setBadgeSelected(badgeSelected);
             message.success("Display Badges has been updated");
+
+            // update session store for current user
+            const userBadges = JSON.parse(sessionStorage.getItem("userBadges") ?? JSON.stringify({}));
+            userBadges[utorid] = badgeSelected;
+
+            sessionStorage.setItem("userBadges", JSON.stringify(userBadges));
         }).catch(err => {
             resetChanges();
             message.error(err.message);

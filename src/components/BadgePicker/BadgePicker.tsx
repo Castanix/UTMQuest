@@ -13,10 +13,10 @@ const BadgePicker = ({ badges, utorid }: { badges: BadgesType, utorid: string })
     // Toggles the green border around an image depending on selection
     const toggleActive = (id: string) => {
         const el = document.getElementById(id);
-        if (el?.classList.contains('active')) {
-            el.classList.remove('active');
+        if (el?.classList.contains("img-active")) {
+            el.classList.remove("img-active");
         } else {
-            el?.classList.add('active');
+            el?.classList.add("img-active");
         }
     };
 
@@ -55,7 +55,7 @@ const BadgePicker = ({ badges, utorid }: { badges: BadgesType, utorid: string })
         Object.values(badges.unlockedBadges).forEach((item: string | null) => {
             if (item) {
                 if (badgeSelected.includes(item)) {
-                    imgArr.push(<img className="modal-img active" id={item} key={item} src={`/images/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
+                    imgArr.push(<img className="modal-img img-active" id={item} key={item} src={`/images/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
                 } else {
                     imgArr.push(<img className="modal-img" id={item} key={item} src={`/images/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
                 }
@@ -87,7 +87,15 @@ const BadgePicker = ({ badges, utorid }: { badges: BadgesType, utorid: string })
     return (
         <>
             <Button shape="round" onClick={() => setShowModal(!showModal)}>Customize Badges</Button>
-            <Modal title="Select up to 3 Badges to be Displayed." open={showModal} onCancel={onCancel} onOk={onOk} >
+            <Modal title="Select up to 3 Badges to be Displayed." open={showModal} onCancel={onCancel}
+                footer={[
+                    <Button key="cancel" shape="round" onClick={() => onCancel()}>
+                        Cancel
+                    </Button>,
+                    <Button key="ok" type="primary" shape="round" onClick={() => onOk()}>
+                        OK
+                    </Button>
+                ]}>
                 <div>Selected {currBadgeSelected.length}/3</div>
                 <br />
                 {initModal()}

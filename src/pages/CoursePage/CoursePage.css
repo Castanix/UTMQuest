@@ -1,6 +1,10 @@
-.title {
+.course-title {
     display: flex;
     justify-content: space-between;
+}
+
+.course-title button {
+    border-color: #1677FF;
 }
 
 .cards, .error {
@@ -20,7 +24,7 @@
 }
 
 @media screen and (max-width: 420px) {
-    .title, .cards {
+    .course-title, .cards {
         display: block;
     }
     .card {

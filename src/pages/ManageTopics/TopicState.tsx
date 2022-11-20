@@ -94,6 +94,9 @@ const TopicState = (topics: TopicsType[]) => {
                     message.success("Topic successfully saved.");
                     setData(newData);
                     setOriginalData(newData);
+                    if (lastTopicAdded != null && key === lastTopicAdded._id) {
+                        setLastTopicAdded({ ...item, ...row });
+                    }
                 }).catch((error) => {
                     message.error(error.message);
                 });

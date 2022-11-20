@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Avatar, Button, Checkbox, Comment, Form, message, Space, } from "antd";
+import { Avatar, Button, Checkbox, Form, message, Space, } from "antd";
+import TextArea from "antd/es/input/TextArea";
+import { Comment } from '@ant-design/compatible';
 import rehypeSanitize from "rehype-sanitize";
 import MDEditor from "@uiw/react-md-editor";
 import { Link } from "react-router-dom";
 import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 
 import "./Editor.css";
+import { onMobile } from "../EditHistory/EditHistory";
 
 const AddComment = async (discussionId: string, questionLink: string, op: boolean, content: string, isAnon: boolean) => {
     // MAKE POST CALL HERE
@@ -17,7 +20,7 @@ const AddComment = async (discussionId: string, questionLink: string, op: boolea
         authName: isAnon ? "Anonymous" : "Some User",
         content,
         thread: [],
-        date: new Date().toLocaleDateString(),
+        date: new Date().toISOString(),
         deleted: false,
         anon: isAnon,
     };
@@ -25,24 +28,25 @@ const AddComment = async (discussionId: string, questionLink: string, op: boolea
     const postedComment: DiscussionFrontEndType = await fetch(
         `${process.env.REACT_APP_API_URI}/discussion`,
         {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newComment)}
-    ).then((res: Response) => { 
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newComment)
+        }
+    ).then((res: Response) => {
         if (!res.ok) throw Error(res.statusText);
         return res.json();
-    }).then((result) => { 
+    }).then((result) => {
         newComment._id = result.insertedId;
         return newComment;
     });
-    
+
     // when making a reply discussionId is not null and therefore need to populate the comment before with the new comment id 
     // Make a get and put request HERE 
     if (discussionId !== null) {
-        const prevDiscussion = await fetch(`${process.env.REACT_APP_API_URI}/discussion/${discussionId}`).then((res: Response)=>{
+        const prevDiscussion = await fetch(`${process.env.REACT_APP_API_URI}/discussion/${discussionId}`).then((res: Response) => {
             if (!res.ok) throw Error(res.statusText);
             return res.json();
         });
@@ -92,22 +96,26 @@ const Editor = ({ discussionId, questionLink, op, updateComments }: { discussion
             content={
                 <span>
                     <Form.Item>
-                        <MDEditor
-                            height={300}
-                            value={content}
-                            textareaProps={{ placeholder: "Add a comment", maxLength: 4000 }}
-                            onChange={(e) => setContent(e ?? "")}
-                            highlightEnable={false}
-                            data-color-mode="light"
-                            previewOptions={{
-                                rehypePlugins: [[rehypeSanitize]]
-                            }}
-                        />
+                        {!onMobile() ?
+                            <MDEditor
+                                height={300}
+                                value={content}
+                                textareaProps={{ placeholder: "Add a comment", maxLength: 4000 }}
+                                onChange={(e) => setContent(e ?? "")}
+                                highlightEnable={false}
+                                data-color-mode="light"
+                                previewOptions={{
+                                    rehypePlugins: [[rehypeSanitize]]
+                                }}
+                            />
+                            :
+                            <TextArea placeholder="Add a comment" onChange={(e) => setContent(e.target.value)} value={content} rows={2} />
+                        }
                         <span className="editor-count">{content.length} / 4000</span>
                     </Form.Item>
                     <Form.Item>
-                        <Space>
-                            <Button onClick={onSubmit} type="primary">
+                        <Space className="post-toolbar">
+                            <Button shape="round" onClick={onSubmit} type="primary">
                                 Add Comment
                             </Button>
                             <Checkbox onChange={() => setAnon(!isAnon)} checked={isAnon}>

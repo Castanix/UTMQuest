@@ -13,14 +13,13 @@
     background-color: var(--theme);
 }
 
-.menu, .subMenu {
-    background-color: var(--theme) !important;
+.ant-layout-header {
+    padding-left: 1rem !important;
+    padding-right: 0 !important;
 }
 
-.menu {
-    flex: auto;
-    min-width: 0;
-    justify-content: end;
+.header, .ant-menu {
+    background-color: var(--theme) !important;
 }
 
 .logo {
@@ -36,12 +35,8 @@
     padding-top: 4rem;
 }
 
-.ant-menu-sub {
-    background-color: var(--theme) !important;
-}
-
 @media screen and (max-width: 420px) {
-    .showLogo {
+    .show-logo {
         display: none;
     }
     

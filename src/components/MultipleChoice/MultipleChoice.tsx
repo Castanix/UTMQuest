@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Divider, Space } from "antd";
+import Title from "antd/es/typography/Title";
 import "./MultipleChoice.css";
-import Title from 'antd/lib/typography/Title';
 import MDEditor from "@uiw/react-md-editor";
 import MultipleChoiceState from "./MultipleChoiceState";
 
@@ -47,7 +47,7 @@ const MultipleChoice = ({ options, answers, explanation }: { options: string[], 
                 })}
             </div>
             <div className="mc-actions">
-                <Space split={<Divider type="horizontal" />}>
+                <Space direction={(window.innerWidth > 375) ? "horizontal" : "vertical"} split={(window.innerWidth > 375) ? <Divider type="horizontal" /> : null}>
                     <Button shape="round" onClick={showAnswers}>Check Answers</Button>
                     <Button shape="round" onClick={resetAnswers}>Reset</Button>
                     <Button style={{

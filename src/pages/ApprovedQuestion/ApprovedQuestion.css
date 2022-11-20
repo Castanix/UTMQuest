@@ -1,11 +1,6 @@
 .title {
-    display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-}
-
-.title-flex {
-    display:"flex";
-    flex-direction: "column"
 }
 
 .ant-tabs-nav {
@@ -13,7 +8,7 @@
     background-color: white;
 }
 
-.title-flex h3 {
+.title-flex h3, h4 {
     margin-bottom: 0 !important;
 }
 
@@ -24,10 +19,6 @@
 .icon-buttons {
     display: flex;
     text-align: center;
-}
-
-.flex-child { 
-    flex: 1
 }
 
 .flex-child:first-child { 
@@ -48,3 +39,23 @@
     border-left: 3px solid #40a9ff !important;
     padding-left: 0.5rem;
  }
+
+ @media screen and (max-width: 420px) {
+    .title {
+        display: block;
+    }
+
+    .icon-buttons {
+        margin-top: 0.5rem;
+        padding-block: 1rem;
+    }
+
+    .ant-tabs-nav,
+    .ant-tabs-tab {
+        padding-inline: 0 !important;
+    }
+
+    .ant-tabs-nav-list {
+        padding-bottom: 1rem;
+    }
+}

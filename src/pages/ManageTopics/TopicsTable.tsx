@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { Form, Input, Popconfirm, Table, Typography, Space, Tooltip, Alert } from 'antd';
+import { Form, Input, Popconfirm, Table, Typography, Space, Tooltip, Alert, Button } from 'antd';
 import React from 'react';
 import TopicsType from '../../../backend/types/Topics';
 import AddTopic from './AddTopic';
@@ -35,7 +35,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
                     },
                 ]}
             >
-                <Input />
+                <Input showCount maxLength={255} />
             </Form.Item>
         ) : (
             children
@@ -64,13 +64,12 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
             title: 'Topic',
             dataIndex: 'topicName',
             editable: true,
-            width: '40%',
-            sorter: (a: TopicsType, b: TopicsType) => a.topicName.localeCompare(b.topicName)
+            sorter: (a: TopicsType, b: TopicsType) => a.topicName.localeCompare(b.topicName),
+            ellipsis: true,
         },
         {
-            title: '# Questions',
+            title: 'Questions',
             dataIndex: 'numQuestions',
-            width: '15%',
             sorter: (a: TopicsType, b: TopicsType) => a.numQuestions - b.numQuestions,
         },
         {
@@ -128,20 +127,22 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
     return (
         <Form form={form} component={false}>
             <div className='toolbar'>
-                <Input placeholder="Search topic" prefix={<SearchOutlined />} value={searchTerm} onChange={(event) => onChange(event.target.value)} />
+                <Input className="manage-topic-search" placeholder="Search topic" prefix={<SearchOutlined />} value={searchTerm} onChange={(event) => onChange(event.target.value)} />
                 <AddTopic courseId={courseId} addTopicCallback={addTopicCallback} />
             </div>
             <br />
             {lastTopicAdded != null ?
                 <div>
-                    <Alert message={`${lastTopicAdded.topicName} successfully added. Create a question for it here: `}
+                    <Alert message={<span><Typography.Text ellipsis>{lastTopicAdded.topicName}</Typography.Text> successfully added. Create a question for it here: </span>}
                         type="success"
                         action={
                             <Link
                                 to={`/courses/${courseId}/addQuestion`}
                                 state={{ defaultTopicId: lastTopicAdded._id, defaultTopicName: lastTopicAdded.topicName }}
                             >
-                                Add Question
+                                <Button type="link">
+                                    Add Question
+                                </Button>
                             </Link>
                         }
                         showIcon
@@ -162,8 +163,11 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
                 dataSource={data}
                 columns={mergedColumns}
                 rowClassName="editable-row"
+                bordered
                 pagination={{
                     onChange: cancel,
+                    hideOnSinglePage: true,
+                    showSizeChanger: true,
                 }}
             />
         </Form>

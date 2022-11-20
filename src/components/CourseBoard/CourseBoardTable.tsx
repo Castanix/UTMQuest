@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Table, { ColumnsType } from "antd/lib/table";
 import { Link } from "react-router-dom";
-import { Button, Input } from 'antd';
+import { Button, Input, Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import CoursesType from "../../../backend/types/Courses";
 import AddCourseModal from './AddCourseModal';
@@ -73,7 +73,7 @@ const CourseBoardTable = (props: any) => {
     return (
         <div>
             <div className='toolbar'>
-                <Input placeholder="Search Course" prefix={<SearchOutlined />} value={searchValue} onChange={(e) => { handleSearch(e.target.value); }} />
+                <Input className="course-board-search" placeholder="Search Course" prefix={<SearchOutlined />} value={searchValue} onChange={(e) => { handleSearch(e.target.value); }} />
                 <Button type="primary" icon={<PlusCircleOutlined />} shape="round" className='add-new-course' onClick={() => { setIsModalOpen(true); }}>
                     Add a Course
                 </Button>
@@ -81,7 +81,12 @@ const CourseBoardTable = (props: any) => {
             <br />
             <Table
                 dataSource={tableDisplayData}
+                bordered
                 columns={columns}
+                pagination={{
+                    hideOnSinglePage: true,
+                    showSizeChanger: true,
+                }}
                 rowKey="_id"
             />
             <AddCourseModal

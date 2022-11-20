@@ -1,5 +1,6 @@
 .question-list-page-header {
     padding: 0;
+    margin-top: -0.3rem;
 }
 
 .question-list {
@@ -7,8 +8,8 @@
 }
 
 .question-name {
-    line-height: 1rem !important;
-    vertical-align: -2px !important;
+    color: #1677ff;
+    font-size: 16px;
 }
 
 .question-list-select {
@@ -47,6 +48,14 @@
 .ant-page-header-heading-sub-title div, 
 .ant-page-header-heading-left {
     margin-bottom: 0 !important;
+}
+
+.ant-page-header-heading-sub-title {
+    font-weight: 500;
+}
+
+.ant-list-item-meta-title {
+    margin-top: 1rem;
 }
 
 @media screen and (max-width: 720px) {

@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import 'antd/dist/antd.min.css';
 import { notification } from 'antd';
 import { FireTwoTone } from '@ant-design/icons';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
