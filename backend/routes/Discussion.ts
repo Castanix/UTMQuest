@@ -70,8 +70,10 @@ discussionRouter.get('/allThreads/:id', async (req: Request, res: Response) => {
 // POST .../discussion/:qnsId
 discussionRouter.post('/', async (req: Request, res: Response) => { 
     
+    const link = req.body.questionLink;
+
     const quesiton = await utmQuestCollections.Questions?.findOne({
-        link: req.body.questionLink,
+        link,
         latest: true
     });
     if (!quesiton) {
@@ -80,7 +82,7 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
     };
 
     const discussion = {
-        questionLink: req.body.questionLink,
+        questionLink: link,
         op: req.body.op, 
         authId: req.body.authId,
         authName: req.body.authName,
@@ -99,15 +101,17 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
 
         // INCREMENT COUNTER
         utmQuestCollections.Questions?.findOneAndUpdate(
-            { _id: new ObjectID(req.params.questionId) },
+            { link, 
+              latest: true },
             { $inc: { numDiscussions: 1 } }
         ).then((incrementResult) => {
             if (!incrementResult) {
                 res.status(500).send(
                     `Unable to increment numDiscussions for ${req.params.questionId}`
                 );
+                utmQuestCollections.Discussions?.deleteOne(discussion);
                 return;
-            }
+            };
             res.status(201).send(result);
         });
 
@@ -136,17 +140,18 @@ discussionRouter.put('/:discussionId', async (req: Request, res: Response) => {
         anon: req.body.anon
     };
 
-    await utmQuestCollections.Discussions?.findOneAndUpdate( { _id: new ObjectID(req.params.discussionId)}, {$set: discussion}).then((result) => { 
-        if (!result) { 
-            res.status(400).send(result);
-			return;
-        }
+    await utmQuestCollections.Discussions?.findOneAndUpdate( { _id: new ObjectID(req.params.discussionId)}, {$set: discussion})
+        .then((result) => { 
+            if (!result) { 
+                res.status(400).send(result);
+                return;
+            }
 
-        res.status(200).send('Succesfully updated discussion');
+            res.status(200).send('Succesfully updated discussion');
 
-    }).catch((error) => { 
-        res.status(500).send(error);
-    });
+        }).catch((error) => { 
+            res.status(500).send(error);
+        });
 }); 
 
 // DELETE .../discussion/:discussionId
