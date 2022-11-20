@@ -155,7 +155,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                             </Select>
                         </Form.Item>
                     </div>
-                    <Form.Item className="answer-form">
+                    <Form.Item>
                         {DuplicateQuestions(courseCode, topicSelected[0], title ?? '', question?.link)}
                     </Form.Item>
                     <div className="answer-form">

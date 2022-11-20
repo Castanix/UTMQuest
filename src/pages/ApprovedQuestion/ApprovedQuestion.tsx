@@ -61,7 +61,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
         <div className="title">
             <div className="title-flex">
                 {!onMobile() ?
-                    <Title level={3} ellipsis>{question.courseId} <div className="subtitle">&#8226; {question.topicName}</div></Title>
+                    <Title level={3} ellipsis>{question.courseId} <div className="subtitle">&#8226; {question.qnsName}</div></Title>
                     :
                     <div>
                         <Title level={4} ellipsis>{question.courseId}</Title>
@@ -131,7 +131,6 @@ const ApprovedQuestion = () => {
             style={{ width: '100%' }}
             title={<Header question={question} />}
             tabList={tabList}
-            tabProps={onMobile() ? {tabPosition: "left"} : {tabPosition: "top"}}
             activeTabKey={activeTabKey}
             onTabChange={key => {
                 onTabChange(key);

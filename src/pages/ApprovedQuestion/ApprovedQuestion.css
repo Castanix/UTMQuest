@@ -1,11 +1,6 @@
 .title {
-    display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-}
-
-.title-flex {
-    display:"flex";
-    flex-direction: "column"
 }
 
 .ant-tabs-nav {

@@ -64,14 +64,12 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
             title: 'Topic',
             dataIndex: 'topicName',
             editable: true,
-            width: '40%',
             sorter: (a: TopicsType, b: TopicsType) => a.topicName.localeCompare(b.topicName),
             ellipsis: true,
         },
         {
-            title: '# Questions',
+            title: 'Questions',
             dataIndex: 'numQuestions',
-            width: '15%',
             sorter: (a: TopicsType, b: TopicsType) => a.numQuestions - b.numQuestions,
         },
         {
