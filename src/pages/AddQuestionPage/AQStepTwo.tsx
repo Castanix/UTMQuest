@@ -179,8 +179,11 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
 
             <div className='btn-container'>
                 <Button shape="round" onClick={() => setCurrStep()}>Back</Button>
-                <div>
-                    <Checkbox onChange={() => setAnon(!isAnon)}>Post Anonymously<br />(to other users only)<br />(does not count toward badges)</Checkbox>
+                <div className='submit-container'>
+                    <div>
+                        <Checkbox onChange={() => setAnon(!isAnon)}>Post Anonymously</Checkbox>
+                        <Typography.Text><br />(to other users only)<br />(does not count toward badges)</Typography.Text>
+                    </div>
                     <Button
                         type="primary"
                         shape="round"

@@ -123,6 +123,10 @@
     border-top: 1px black solid;
 }
 
+.submit-container {
+    display: flex;
+}
+
 #topic {
     border-radius: 0 !important;
 }
@@ -156,13 +160,16 @@
     background-color: transparent !important;
 }
 
-/* .w-md-editor-bar {
-    right: -3px !important;
-    bottom: -3px !important;
-} */
-
 @media screen and (max-width: 420px) {
     .btn-container {
-        display: block;
+        flex-direction: column-reverse;
+        gap: 1rem;
+    }
+
+    .submit-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
     }
 }
