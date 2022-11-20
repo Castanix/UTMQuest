@@ -1,4 +1,4 @@
-import { Form, Modal, Select } from 'antd';
+import { Button, Form, Modal, Select } from 'antd';
 import React, { useState } from 'react';
 import AddCourse from './fetch/AddCourse';
 import CoursesType from '../../../backend/types/Courses';
@@ -68,8 +68,15 @@ const AddCourseModal = (props: any) => {
         <Modal
             title="Add Course"
             open={modalState}
+            footer={[
+                <Button key="cancel" shape="round" onClick={() => setModalState(false)}>
+                    Cancel
+                </Button>,
+                <Button key="ok" type="primary" shape="round" onClick={() => handleOk()}>
+                    OK
+                </Button>
+            ]}
             onCancel={() => setModalState(false)}
-            onOk={() => handleOk()}
             destroyOnClose
         >
             <Form layout="vertical">
@@ -79,7 +86,6 @@ const AddCourseModal = (props: any) => {
                         searchValue={searchInput}
                         placeholder="Select Course"
                         optionFilterProp="children"
-                        size="small"
                         onSearch={(value: string) => setSearchInput(value)}
                         onChange={(value: string) => setSelected(value)}
                     >

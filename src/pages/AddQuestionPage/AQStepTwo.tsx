@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { Button, Checkbox, Form, Input, Select } from 'antd';
+import { Button, Checkbox, Form, Input, Popover, Select, Typography } from 'antd';
 import { Navigate, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
@@ -10,9 +10,35 @@ import qnsTypeEnum from './types/QnsTypeEnum';
 import AddQuestion from './fetch/AddQuestion';
 import AddMultipleChoice, { AddOptionType } from '../../components/MultipleChoice/AddMultipleChoice/AddMultipleChoice';
 import DuplicateQuestions from '../../components/DuplicateQuestions/DuplicateQuestions';
+import { onMobile } from '../../components/EditHistory/EditHistory';
+import TextArea from 'antd/es/input/TextArea';
 
 
 const { Option } = Select;
+
+const GetEditor = (value: string | undefined, placeholder: string, onChange: any) => {
+    if (onMobile()) {
+        return <TextArea className="add-question-textarea" rows={4} placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)} maxLength={4000} showCount />
+
+    } else {
+        return (
+            <div>
+                <MDEditor
+                    height={300}
+                    value={value}
+                    textareaProps={{ placeholder, maxLength: 4000 }}
+                    onChange={onChange}
+                    highlightEnable={false}
+                    data-color-mode="light"
+                    previewOptions={{
+                        rehypePlugins: [[rehypeSanitize]]
+                    }}
+                />
+                <span className="editor-count">{(value ?? "").length} / 4000</span>
+            </div>
+        )
+    };
+}
 
 const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     { courseCode: string, topicSelected: [string, string], setCurrStep: Function, edit: boolean }) => {
@@ -26,7 +52,6 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     const [solValue, setSolValue] = useState<string>();
     const [redirect, setRedirect] = useState<string>();
     const [isAnon, setAnon] = useState<boolean>(false);
-
 
     const { question, latest } = useLocation().state ?? "";
     useEffect(() => {
@@ -54,7 +79,6 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
         setForm();
     }, [question]);
 
-
     const setAnswerType = () => {
         let el: React.ReactNode;
 
@@ -62,17 +86,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
             el = <AddMultipleChoice options={mcOption} setOptions={setMcOption} />;
         } else if (type === qnsTypeEnum.short) {
             el = <>
-                <MDEditor
-                    height={300}
-                    value={solValue}
-                    textareaProps={{ placeholder: "Add Solution", maxLength: 4000 }}
-                    onChange={setSolValue}
-                    highlightEnable={false}
-                    previewOptions={{
-                        rehypePlugins: [[rehypeSanitize]]
-                    }}
-                />
-                <span className="editor-count">{(solValue ?? '').length} / 4000</span>
+                {GetEditor(solValue, "Add Solution", setSolValue)}
             </>;
         }
 
@@ -112,11 +126,12 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
 
     return (
         <>
-            <h1>Topic: {topicSelected[1]}</h1>
+            <Typography.Title ellipsis level={3}>Topic: {topicSelected[1]}</Typography.Title>
 
             <Form
                 className='question-form'
                 labelAlign='left'
+                layout="vertical"
             >
                 <div className="items-container">
                     <div className="answer-form">
@@ -139,39 +154,23 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 <Option key='short' value='short'>Short Answer</Option>
                             </Select>
                         </Form.Item>
-                        <Form.Item>
-                            {DuplicateQuestions(courseCode, topicSelected[0], title ?? '', question?.link)}
-                        </Form.Item>
+                    </div>
+                    <Form.Item>
+                        {DuplicateQuestions(courseCode, topicSelected[0], title ?? '', question?.link)}
+                    </Form.Item>
+                    <div className="answer-form">
                         <Form.Item label="Problem Description" required>
-                            <MDEditor
-                                height={300}
-                                value={problemValue}
-                                textareaProps={{ placeholder: "Add Problem", maxLength: 4000 }}
-                                onChange={setProblemValue}
-                                highlightEnable={false}
-                                previewOptions={{
-                                    rehypePlugins: [[rehypeSanitize]]
-                                }}
-                            />
-                            <span className="editor-count">{(problemValue ?? '').length} / 4000</span>
+                            {GetEditor(problemValue, "Add Problem", setProblemValue)}
                         </Form.Item>
                     </div>
-                    <div className='detail-form'>
+                    <div className="detail-form">
                         {setAnswerType()}
+                    </div>
+                    <div>
                         {type === qnsTypeEnum.mc
                             ?
                             <Form.Item label="Explanation (Optional)">
-                                <MDEditor
-                                    height={300}
-                                    value={explanationValue}
-                                    textareaProps={{ placeholder: "Add Explanation", maxLength: 4000 }}
-                                    onChange={setExplanationValue}
-                                    highlightEnable={false}
-                                    previewOptions={{
-                                        rehypePlugins: [[rehypeSanitize]]
-                                    }}
-                                />
-                                <span className="editor-count">{(explanationValue ?? '').length} / 4000</span>
+                                {GetEditor(explanationValue, "Add Explanation", setExplanationValue)}
                             </Form.Item>
                             : null}
                     </div>
@@ -179,11 +178,15 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
             </Form>
 
             <div className='btn-container'>
-                <Button onClick={() => setCurrStep()}>Back</Button>
-                <div>
-                    <Checkbox onChange={() => setAnon(!isAnon)}>Post Anonymously<br />(to other users only)<br />(does not count toward badges)</Checkbox>
+                <Button shape="round" onClick={() => setCurrStep()}>Back</Button>
+                <div className='submit-container'>
+                    <div>
+                        <Checkbox onChange={() => setAnon(!isAnon)}>Post Anonymously</Checkbox>
+                        <Typography.Text><br />(to other users only)<br />(does not count toward badges)</Typography.Text>
+                    </div>
                     <Button
                         type="primary"
+                        shape="round"
                         disabled={!((type && (title ?? '').trim() && problemValue?.trim() && verifySol()))}
                         onClick={() => {
                             const choices: string[] = [];

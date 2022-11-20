@@ -2,3 +2,13 @@
     color: gray;
     float: right;
 }
+
+@media screen and (max-width: 420px) {
+    .post-toolbar {
+        display: block;
+    }
+
+    .post-toolbar > .ant-space-item:first-child {
+        margin-bottom: 1rem;
+    }
+}

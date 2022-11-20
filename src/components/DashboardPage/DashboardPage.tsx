@@ -10,6 +10,7 @@ const paginationConfig = (total: number, size: number) => ({
   defaultCurrent: 1,
   total,
   pageSize: size,
+  hideOnSinglePage: true
 });
 
 const DashboardPage = () => {

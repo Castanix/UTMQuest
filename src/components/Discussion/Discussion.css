@@ -13,3 +13,8 @@
     margin-top: 0.7rem;
     font-size: 0.8rem;
 }
+
+.replies-title {
+    border-left: 3px solid #40a9ff !important;
+    padding-left: 0.5rem;
+}

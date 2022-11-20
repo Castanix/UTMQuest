@@ -1,5 +1,5 @@
 .subtitle {
-    display: inline-block;
+    display: inline;
     color: gray;
 }
 
@@ -24,6 +24,11 @@
 
 .add-mc-actions {
     margin-bottom: 0.5rem;
+}
+
+.answer-form div {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 @media screen and (max-width: 1200px) {
@@ -65,6 +70,8 @@
     display: inline-flex;
     flex-wrap: wrap;
     width: 50%;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
     height: fit-content;
 }
 
@@ -72,7 +79,7 @@
     display: inline-flex;
     flex-wrap: wrap;
     width: 50%;
-    margin-top: 7.5rem;
+    /* margin-top: 7.5rem; */
 }
 
 .items-container .w-md-editor {
@@ -121,8 +128,16 @@
     border-top: 1px black solid;
 }
 
+.submit-container {
+    display: flex;
+}
+
 #topic {
     border-radius: 0 !important;
+}
+
+.add-question-textarea > textarea {
+    width: 80vw;
 }
 
 
@@ -143,14 +158,27 @@
 }
 
 .w-md-editor {
-    border-radius: 25px !important; 
+    border-radius: 8px !important; 
 }
 
 .w-md-editor-toolbar {
     background-color: transparent !important;
 }
 
-.w-md-editor-bar {
-    right: -3px !important;
-    bottom: -3px !important;
+@media screen and (max-width: 420px) {
+    .btn-container {
+        flex-direction: column-reverse;
+        gap: 1rem;
+    }
+
+    .submit-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .question-form .ant-form-item {
+        margin-top: 0rem;
+    }
 }

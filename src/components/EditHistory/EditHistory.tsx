@@ -1,4 +1,4 @@
-import { Button, Card, Col, List, Row, Skeleton, Space, Typography } from 'antd';
+import { Button, Card, Col, Divider, List, Row, Skeleton, Space, Typography } from 'antd';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionOutlined } from '@ant-design/icons';
@@ -8,9 +8,10 @@ import GetEditHistory from './fetch/GetEditHistory';
 import ViewChanges from './ViewChanges';
 import "./EditHistory.css";
 import DisplayBadges from '../DisplayBadges/DisplayBadges';
+import GetRelativeTime from '../../RelativeTime';
 
 
-const onMobile = () => window.innerWidth < 480;
+export const onMobile = () => window.innerWidth < 420;
 
 /* Given two questions, find the difference in their fields */
 const GetDiff = (firstQuestion: QuestionsType, secondQuestion: QuestionsType) => {
@@ -38,13 +39,17 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
     const name = question.authName.split(" ");
     const firstInitial = name[0][0];
     const lastInitial = name[name.length - 1][0];
-    const date = onMobile() ? new Date(question.date).toLocaleDateString() : new Date(question.date).toDateString();
     const photo = question.anon ? <QuestionOutlined /> : <p>{firstInitial.concat(lastInitial)}</p>;
 
     return (
         <Skeleton avatar title={false} loading={loading} active>
             <List.Item
-                actions={[...actions]}>
+                actions={[
+                    <Space className="edit-history-list-actions" direction={!onMobile() ? "horizontal" : "vertical"} split={<Divider className="edit-history-list-action-divider" type="vertical" />}>
+                        {actions.map((item: any) => <span key={item?.key}>{item}</span>)}
+                    </Space>
+                ]}
+            >
                 <List.Item.Meta
                     avatar={
                         <div className='edit-history-list-img'>
@@ -55,7 +60,7 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
                         <div>
                             <Space direction="vertical" size={0}>
                                 <span>{name.join(" ")} {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}</span>
-                                <Typography.Text type="secondary">{date}</Typography.Text>
+                                <Typography.Text type="secondary">{GetRelativeTime(new Date(question.date).getTime())}</Typography.Text>
                             </Space>
                         </div>
                     }
@@ -102,7 +107,9 @@ const EditHistory = ({ link }: { link: string }) => {
         if (changes.length > 0) {
             actions.push(
                 <Button
+                    key={`${firstQuestion._id} change-log`}
                     href="#change-log"
+                    shape="round"
                     onClick={() => setChangeLog(ViewChanges(firstQuestion, secondQuestion))}>
                     View Changes
                 </Button>
@@ -112,7 +119,7 @@ const EditHistory = ({ link }: { link: string }) => {
         // can't restore to most recent post (should use edit instead)
         if (index !== 0) {
             actions.push(
-                <Link to={`/courses/${firstQuestion.courseId}/editQuestion`} state={{ question: firstQuestion, latest: editHistory[0] }}>
+                <Link key={`${firstQuestion._id} restore`} to={`/courses/${firstQuestion.courseId}/editQuestion`} state={{ question: firstQuestion, latest: editHistory[0] }}>
                     <Button shape="round">
                         Restore
                     </Button>
@@ -130,7 +137,7 @@ const EditHistory = ({ link }: { link: string }) => {
 
         if (editHistory.length > 1) {
             actions.push(
-                <Link to={`/courses/${originalQuestion.courseId}/editQuestion`} state={{ question: originalQuestion, latest: editHistory[0] }}>
+                <Link key={originalQuestion._id} to={`/courses/${originalQuestion.courseId}/editQuestion`} state={{ question: originalQuestion, latest: editHistory[0] }}>
                     <Button shape="round">
                         Restore
                     </Button>
@@ -147,8 +154,11 @@ const EditHistory = ({ link }: { link: string }) => {
                 <Col xs={24} sm={24} md={24} lg={24} xl={changeLog ? 12 : 24}>
                     <List
                         size="large"
+                        bordered
                         pagination={{
                             pageSize: 10,
+                            showSizeChanger: true,
+                            hideOnSinglePage: true,
                         }}
                         className="edit-history-list"
                         itemLayout={onMobile() ? "vertical" : "horizontal"}

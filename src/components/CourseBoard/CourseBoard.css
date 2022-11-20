@@ -23,17 +23,21 @@
     height: auto;
 }
 
+.course-board-search {
+    width: 250px;
+}
+
 .options {
     overflow-x: none;
 }
 
-#course {
+/* #course {
     border-radius: 0 !important;
-}
+} */
 
-.ant-select-selector, .ant-select-dropdown {
+/* .ant-select-selector, .ant-select-dropdown {
     border-radius: 25px !important;
-}
+} */
 
 @media screen and (max-width: 420px) {
     .add-new-course {

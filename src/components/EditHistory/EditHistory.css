@@ -2,8 +2,13 @@ html {
     scroll-behavior: smooth;
 }
 
-.ant-list-item-action, .edit-history-list-meta {
+/* .ant-list-item-action, .edit-history-list-meta {
     margin: 0 !important;
+} */
+
+.edit-history-list .ant-list-item {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
 }
 
 .edit-history-list-img {
@@ -22,10 +27,29 @@ html {
     font-size: 1.25rem;
 }
 
+.ant-list-item-meta-title {
+    font-weight: 500;
+}
+
 .edit-history-list-img svg {
     font-size: 1.25rem;
 }
 
 .edit-history-list-display {
     margin-bottom: 0 !important;
+}
+
+@media screen and (max-width: 420px) {
+    .edit-history-list-img {
+        margin-top: 1.45rem;
+    }
+
+    .edit-history-list-actions {
+        /* display: block; */
+        margin-left: 5rem;
+    }
+
+    .edit-history-list-action-divider {
+        display: none;
+    }
 }

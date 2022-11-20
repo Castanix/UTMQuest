@@ -6,7 +6,7 @@ const compareQnsObj = (obj1: QuestionsType, obj2: QuestionsType) => {
     const keys = ['_id', 'anon', 'numDiscussions', 'authName', 'authId', 'date', 'latest'];
     const objClone1 = { ...obj1 };
     const objClone2 = { ...obj2 };
-  
+
     keys.forEach(key => {
         delete objClone1[key as keyof QuestionsType];
         delete objClone2[key as keyof QuestionsType];
@@ -50,7 +50,7 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number]) 
 };
 
 
-const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function, 
+const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function,
     edit: boolean, latestQuestion: QuestionsType) => {
 
     if (edit) {
@@ -69,7 +69,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                     body: JSON.stringify({ ...addableQuestion, oldVersion: latestQuestion._id })
                 }).then((res: Response) => {
                     if (!res.ok) {
-                        throw new Error("Could not add question. Possibly not the latest version being edited");
+                        throw new Error(res.statusText);
                     };
                     return res.json();
                 }).then((result) => {
@@ -80,7 +80,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                     };
 
                     checkBadge(addableQuestion.anon, result, [3, 7, 15]);
-                    setRedirect(result.link);   
+                    setRedirect(result.link);
                 }).catch((error) => {
                     message.error(error.message);
                 });
@@ -109,9 +109,9 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
             }).then((result) => {
                 message.success("Question successfully added.");
                 checkBadge(addableQuestion.anon, result, [5, 15, 30]);
-                
-                if(result.consecutivePosting) {
-                    if(result.consecutivePosting === 7) {
+
+                if (result.consecutivePosting) {
+                    if (result.consecutivePosting === 7) {
                         notification.success({
                             message: "Unlocked badge for 7 day consecutive posting!",
                             placement: "bottom"
