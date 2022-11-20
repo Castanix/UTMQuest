@@ -2,7 +2,7 @@ import {
   Card, Breadcrumb, Button, Space, Typography
 } from 'antd';
 import Icon, {
-  SettingOutlined, StarOutlined, StarFilled, ContainerTwoTone, PlusCircleTwoTone, DiffTwoTone,
+  SettingTwoTone, StarOutlined, StarFilled, ContainerTwoTone, PlusCircleTwoTone,
 } from '@ant-design/icons';
 import { Link, useParams } from 'react-router-dom';
 import './CoursePage.css';
@@ -34,21 +34,14 @@ const Header = ({ courseCode, courseName, favourite, setFavourite }:
     <div className="course-title">
       <Title level={3} ellipsis>{courseName}</Title>
       <div>
-        <Space>
-          <Link to={`/courses/${courseCode}/topics`}>
-            <Button type="primary" icon={<SettingOutlined />} shape="round">
-              Manage Topics
-            </Button>
-          </Link>
           <Button
-            type="primary"
-            icon={favourite ? <StarFilled /> : <StarOutlined />}
+            type={favourite ? "primary" : "default"}
+            icon={favourite ? <StarFilled /> : <StarOutlined style={{color: "#1677FF"}} />}
             shape="round"
             onClick={() => {
               SaveCourse(courseCode, favourite, setFavourite);
             }}
           />
-        </Space>
       </div>
     </div>
   </div>
@@ -74,7 +67,7 @@ const CoursePage = () => {
         <div className="cards">
           <Link to={`/courses/${courseCode}/browse`}><GetCard cardIcon={ContainerTwoTone} title="Browse Questions" /></Link>
           <Link to={`/courses/${courseCode}/addQuestion`}><GetCard cardIcon={PlusCircleTwoTone} title="Add a Question" /></Link>
-          <Link to={`/courses/${courseCode}/review`}><GetCard cardIcon={DiffTwoTone} title="Review Questions" /></Link>
+          <Link to={`/courses/${courseCode}/topics`}><GetCard cardIcon={SettingTwoTone} title="Manage Topics" /></Link>
         </div>
       </main>
     </Card>
