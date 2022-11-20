@@ -3,9 +3,9 @@ import React, { ReactElement, useState } from "react";
 import { Link } from "react-router-dom";
 import BadgeDescriptions from "../../BadgeDescriptions";
 import BadgePicker from "../../components/BadgePicker/BadgePicker";
-import { onMobile } from "../../components/EditHistory/EditHistory";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loading from "../../components/Loading/Loading";
+import GetRelativeTime from "../../RelativeTime";
 import GetAllQuestions from "./fetch/GetAllQuestions";
 import GetBadges from "./fetch/GetBadges";
 import { GetProfile } from "./fetch/Profile";
@@ -75,11 +75,10 @@ const ProfilePage = () => {
 
         if (timeline) {
             timeline.forEach((item) => {
-                const date = !onMobile() ? new Date(item.date).toDateString() : new Date(item.date).toLocaleDateString();
                 timelineArr.push(
-                    <Timeline.Item key={item.questionId} label={date}>
+                    <Timeline.Item key={item.questionId} label={GetRelativeTime(new Date(item.date).getTime())}>
                         <Link to={`/courses/${item.courseId}/question/${item.link}`}>
-                            {item.questionName}
+                            <Typography.Text className="timeline-link" ellipsis>{item.questionName}</Typography.Text>
                         </Link>
                     </Timeline.Item>
                 );

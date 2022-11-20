@@ -62,7 +62,7 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                     label="Topic Name"
                     rules={[{ required: true, message: 'Please add a topic name' }]}
                 >
-                    <Input placeholder="Add new topic" />
+                    <Input placeholder="Add new topic" showCount maxLength={255} />
                 </Form.Item>
             </Form>
         </Modal>

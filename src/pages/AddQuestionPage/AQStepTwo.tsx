@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { Button, Checkbox, Form, Input, Select, Typography } from 'antd';
+import { Button, Checkbox, Form, Input, Popover, Select, Typography } from 'antd';
 import { Navigate, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
@@ -126,7 +126,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
 
     return (
         <>
-            <Typography.Title level={3}>Topic: {topicSelected[1]}</Typography.Title>
+            <Typography.Title ellipsis level={3}>Topic: {topicSelected[1]}</Typography.Title>
 
             <Form
                 className='question-form'

@@ -14,6 +14,7 @@ import GetQuestion from "./fetch/GetQuestion";
 import Discussion from "../../components/Discussion/Discussion";
 import EditHistory, { onMobile } from "../../components/EditHistory/EditHistory";
 import DisplayBadges from "../../components/DisplayBadges/DisplayBadges";
+import GetRelativeTime from "../../RelativeTime";
 
 const { Text, Title } = Typography;
 
@@ -44,12 +45,14 @@ const ShortAnswerTab = ({ actualQuestion, answer }: { actualQuestion: string, an
 const Header = ({ question }: { question: QuestionsType }) => (
     <div>
         {!onMobile() ?
-            <Breadcrumb>
-                <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-                <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}>{question.courseId}</Link></Breadcrumb.Item>
-                <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}>Browse Questions</Link></Breadcrumb.Item>
-                <Breadcrumb.Item>{question.qnsName}</Breadcrumb.Item>
-            </Breadcrumb>
+            <div>
+                <Breadcrumb>
+                    <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+                    <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}>{question.courseId}</Link></Breadcrumb.Item>
+                    <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}>Browse Questions</Link></Breadcrumb.Item>
+                    <Typography.Text ellipsis>{question.qnsName}</Typography.Text>
+                </Breadcrumb>
+            </div>
             :
             <Breadcrumb>
                 <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}><CaretLeftOutlined />Browse Questions</Link></Breadcrumb.Item>
@@ -66,7 +69,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
                     </div>
                 }
                 <Text type="secondary">{question.authName} {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}</Text> <br />
-                <Text type="secondary">{new Date(question.date).toDateString()}</Text>
+                <Text type="secondary">{GetRelativeTime(new Date(question.date).getTime())}</Text>
             </div>
             <div className="icon-buttons">
                 <div className="flex-child">

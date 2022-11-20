@@ -20,7 +20,7 @@ const AddComment = async (discussionId: string, questionLink: string, op: boolea
         authName: isAnon ? "Anonymous" : "Some User",
         content,
         thread: [],
-        date: new Date().toLocaleDateString(),
+        date: new Date().toISOString(),
         deleted: false,
         anon: isAnon,
     };
