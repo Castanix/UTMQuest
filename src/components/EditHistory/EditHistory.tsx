@@ -8,6 +8,7 @@ import GetEditHistory from './fetch/GetEditHistory';
 import ViewChanges from './ViewChanges';
 import "./EditHistory.css";
 import DisplayBadges from '../DisplayBadges/DisplayBadges';
+import GetRelativeTime from '../../RelativeTime';
 
 
 export const onMobile = () => window.innerWidth < 420;
@@ -38,7 +39,6 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
     const name = question.authName.split(" ");
     const firstInitial = name[0][0];
     const lastInitial = name[name.length - 1][0];
-    const date = onMobile() ? new Date(question.date).toLocaleDateString() : new Date(question.date).toDateString();
     const photo = question.anon ? <QuestionOutlined /> : <p>{firstInitial.concat(lastInitial)}</p>;
 
     return (
@@ -60,7 +60,7 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
                         <div>
                             <Space direction="vertical" size={0}>
                                 <span>{name.join(" ")} {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}</span>
-                                <Typography.Text type="secondary">{date}</Typography.Text>
+                                <Typography.Text type="secondary">{GetRelativeTime(new Date(question.date).getTime())}</Typography.Text>
                             </Space>
                         </div>
                     }

@@ -7,10 +7,10 @@
     margin-top: 1rem;
 }
 
-/* .question-name {
-    line-height: 1rem !important;
-    vertical-align: -2px !important;
-} */
+.question-name {
+    color: #1677ff;
+    font-size: 16px;
+}
 
 .question-list-select {
     width: 15.7rem;

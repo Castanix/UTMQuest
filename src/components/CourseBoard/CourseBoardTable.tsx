@@ -73,7 +73,7 @@ const CourseBoardTable = (props: any) => {
     return (
         <div>
             <div className='toolbar'>
-                <Input placeholder="Search Course" prefix={<SearchOutlined />} value={searchValue} onChange={(e) => { handleSearch(e.target.value); }} />
+                <Input className="course-board-search" placeholder="Search Course" prefix={<SearchOutlined />} value={searchValue} onChange={(e) => { handleSearch(e.target.value); }} />
                 <Button type="primary" icon={<PlusCircleOutlined />} shape="round" className='add-new-course' onClick={() => { setIsModalOpen(true); }}>
                     Add a Course
                 </Button>

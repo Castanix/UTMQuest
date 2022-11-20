@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { QuestionsType } from '../../../backend/types/Questions';
 import TopicsType from '../../../backend/types/Topics';
 import DisplayBadges from '../../components/DisplayBadges/DisplayBadges';
+import GetRelativeTime from '../../RelativeTime';
 import QuestionState from './fetch/QuestionState';
 
 import "./QuestionsList.css";
@@ -87,12 +88,12 @@ const QuestionsList = ({ questions, topics }:
                                         <div className="question-list-page-header">
                                             {diff < 24 ? <Tag color="#428efa">New</Tag> : null}
                                             <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.link}`}>
-                                                <span className="question-name">{item.qnsName}</span>
+                                                <Typography.Text ellipsis className="question-name">{item.qnsName}</Typography.Text>
                                             </Link>
                                         </div>
                                         <div className="ant-page-header-heading-sub-title">
                                             <Typography.Paragraph>{item.authName} {!item.anon ? <DisplayBadges utorid={item.authId} /> : null}</Typography.Paragraph>
-                                            <Typography.Text type="secondary">{new Date(item.date).toDateString()}</Typography.Text>
+                                            <Typography.Text type="secondary">{GetRelativeTime(new Date(item.date).getTime())}</Typography.Text>
                                         </div>
                                     </div>
                                 }

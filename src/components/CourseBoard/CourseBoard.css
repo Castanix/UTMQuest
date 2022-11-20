@@ -23,6 +23,10 @@
     height: auto;
 }
 
+.course-board-search {
+    width: 250px;
+}
+
 .options {
     overflow-x: none;
 }

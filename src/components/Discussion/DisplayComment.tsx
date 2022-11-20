@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 import GetChildComments from "./fetch/GetChildComments";
 import Editor from "./Editor";
+import GetRelativeTime from "../../RelativeTime";
 
 import "./Discussion.css";
 
@@ -90,24 +91,32 @@ const DisplayComment = ({ comment }: { comment: DiscussionFrontEndType }) => {
     const firstInitial = name[0][0];
     const lastInitial = name[name.length - 1][0];
 
+    // const formatDate = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+    // const currentDate = new Date().getTime();
+    // const postedDate = new Date(displayComment.date).getTime();
+
     return (
         <Comment
             actions={actions}
-            author={<span><Link to="/">{displayComment.authName}</Link> on {new Date(displayComment.date).toDateString()}</span>}
+            author={<Link to="/">{displayComment.authName}</Link>}
+            datetime={GetRelativeTime(new Date(displayComment.date).getTime())}
             avatar={
-                <div className='comment-img'>
-                    {displayComment.anon ?
-                        <QuestionOutlined />
-                        :
-                        <p>{firstInitial.concat(lastInitial)}</p>
+                < div className='comment-img' >
+                    {
+                        displayComment.anon ?
+                            <QuestionOutlined />
+                            :
+                            <p>{firstInitial.concat(lastInitial)}</p>
                     }
-                </div>}
+                </div >}
             content={displayComment.deleted ? <i>{displayComment.content}</i> : <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={displayComment.content} />}
         >
-            {childComments.map((item) => (<DisplayComment key={item._id} comment={item} />)
-            )}
+            {
+                childComments.map((item) => (<DisplayComment key={item._id} comment={item} />)
+                )
+            }
             {showReply ? <Editor discussionId={displayComment._id} questionLink={displayComment.questionLink} op={false} updateComments={updateComments} /> : null}
-        </Comment>
+        </Comment >
     );
 };
 
