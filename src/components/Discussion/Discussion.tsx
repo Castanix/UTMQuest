@@ -31,7 +31,7 @@ const Discussion = ({ questionLink, questionDate }: { questionLink: string, ques
                     <DisplayComment key={item._id} comment={item} questionDate={questionDate} />
                 )}
             />
-            <Divider orientation="left">Your reply</Divider>
+            <Divider orientation="left">Post a Comment</Divider>
             <Editor discussionId={null} questionLink={questionLink} op oldContent="" updateComments={updateComments} thread={[]} />
             <FloatButton.BackTop />
         </div>

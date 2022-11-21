@@ -27,6 +27,7 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
                 content: newComment.content,
                 date: newComment.date
             });
+            setShowEdit(false);
         } else {
             setChildComments([...childComments, newComment]);
             setDisplayComment({
@@ -81,9 +82,11 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
                 role="presentation">
                 {
                     // eslint-disable-next-line no-nested-ternary
-                    showEdit ? 
-                        "Close" :
-                        "Edit"
+                    !displayComment.deleted
+                        ? showEdit
+                            ? "Close"
+                            : "Edit" 
+                        : ""
                 }
             </span> : null,
         <span
