@@ -129,7 +129,7 @@ const ApprovedQuestion = () => {
     const contentList: Record<string, React.ReactNode> = {
         Question: <QuestionType question={question} qnsType={question.qnsType as keyof TypeOfQuestion} />,
         Solution: <p>Solution</p>,
-        Discussion: <Discussion questionLink={question.link} />,
+        Discussion: <Discussion questionLink={question.link} questionDate={question.date} />,
         EditHistory: <EditHistory link={question.link} />
     };
 

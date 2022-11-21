@@ -16,13 +16,14 @@ const AddComment = async (discussionId: string, questionLink: string, op: boolea
         _id: `id${(new Date()).getTime()}`,
         questionLink,
         op,
-        authId: '123',
+        authId: 'dummy22',
         authName: isAnon ? "Anonymous" : "Some User",
         content,
         thread: [],
         date: new Date().toISOString(),
         deleted: false,
         anon: isAnon,
+        edited: false
     };
 
     const postedComment: DiscussionFrontEndType = await fetch(
@@ -70,8 +71,38 @@ const AddComment = async (discussionId: string, questionLink: string, op: boolea
     return postedComment;
 };
 
-const Editor = ({ discussionId, questionLink, op, updateComments }: { discussionId: string | null, questionLink: string, op: boolean, updateComments: Function }) => {
-    const [content, setContent] = useState<string>("");
+const EditComment = async (discussionId: string, questionLink: string, op: boolean, content: string, isAnon: boolean, thread: string[]) => {
+    const editComment: DiscussionFrontEndType = {
+        _id: discussionId,
+        questionLink,
+        op,
+        authId: 'dummy22',
+        authName: isAnon ? "Anonymous" : "Some User",
+        content,
+        thread,
+        date: new Date().toISOString(),
+        deleted: false,
+        anon: isAnon,
+        edited: true
+    };
+
+    const editedComment: DiscussionFrontEndType = await fetch(`${process.env.REACT_APP_API_URI}/discussion/updatePost/${discussionId}`, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editComment)
+    }).then((res: Response) => {
+        if (!res.ok) throw Error(res.statusText);
+        return res.json();
+    }).then((result) => result);
+    
+    return editedComment;
+};
+
+const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, thread }: { discussionId: string | null, questionLink: string, op: boolean, oldContent: string, updateComments: Function, thread: string[] }) => {
+    const [content, setContent] = useState<string>(oldContent);
     const [isAnon, setAnon] = useState<boolean>(false);
     const [commented, setCommented] = useState<DiscussionFrontEndType>();
 
@@ -79,12 +110,23 @@ const Editor = ({ discussionId, questionLink, op, updateComments }: { discussion
         if (content.trim().length <= 0) {
             message.info("Invalid comment.");
             return;
-        }
-        const newComment = await AddComment(discussionId as string, questionLink, op, content, isAnon);
-        updateComments(newComment);
-        setCommented(newComment);
-        setContent("");
-        setAnon(false);
+        };
+
+        if (oldContent === "") {
+            const newComment = await AddComment(discussionId as string, questionLink, op, content, isAnon);
+            updateComments(newComment, false);
+            setCommented(newComment);
+            setContent("");
+            setAnon(false);
+        } else {
+            if(oldContent === content) {
+                message.error("No update was made");
+                return;
+            }
+            const editedComment = await EditComment(discussionId as string, questionLink, op, content, isAnon, thread);
+            updateComments(editedComment, true);
+        };
+
     };
 
     return (
@@ -118,9 +160,14 @@ const Editor = ({ discussionId, questionLink, op, updateComments }: { discussion
                             <Button shape="round" onClick={onSubmit} type="primary">
                                 Add Comment
                             </Button>
-                            <Checkbox onChange={() => setAnon(!isAnon)} checked={isAnon}>
-                                Post Anonymously (to other users only)
-                            </Checkbox>
+                            {
+                                oldContent === "" ?
+                                    <Checkbox onChange={() => setAnon(!isAnon)} checked={isAnon}>
+                                        Post Anonymously (to other users only)
+                                    </Checkbox> :
+                                    ""
+                            }
+                            
                         </Space>
                     </Form.Item>
                 </span>
