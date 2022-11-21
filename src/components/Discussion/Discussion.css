@@ -18,3 +18,8 @@
     border-left: 3px solid #40a9ff !important;
     padding-left: 0.5rem;
 }
+
+.date-tags {
+    display: flex;
+    gap: 0.25rem;
+}

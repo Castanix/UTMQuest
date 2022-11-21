@@ -15,6 +15,7 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
     const [displayComment, setDisplayComment] = useState<DiscussionFrontEndType>(comment);
     const [childComments, setChildComments] = useState<DiscussionFrontEndType[]>([]);
     const [isDisplayed, setDisplay] = useState(!(displayComment.thread.length > 0));
+    const [isEdited, setIsEdited] = useState(comment.edited);
     const [showReply, setShowReply] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const actions = [];
@@ -22,11 +23,14 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
     /* callback after a new comment is successfully added to update the parent comment */
     const updateComments = (newComment: DiscussionFrontEndType, edited: boolean) => {
         if(edited) {
-            setDisplayComment({
-                ...displayComment,
-                content: newComment.content,
-                date: newComment.date
-            });
+            setDisplayComment(
+                // ...displayComment,
+                // content: newComment.content,
+                // date: newComment.date,
+                // edited: newComment.edited
+                newComment
+            );
+            setIsEdited(true);
             setShowEdit(false);
         } else {
             setChildComments([...childComments, newComment]);
@@ -126,7 +130,15 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
         <Comment
             actions={actions}
             author={<Link to="/">{displayComment.authName}</Link>}
-            datetime={<div>{GetRelativeTime(new Date(displayComment.date).getTime())} {displayComment.edited ? <Tag>Edited</Tag> : ""} {Date.parse(displayComment.date) < Date.parse(questionDate) ? <Tag>Possibly Outdated</Tag> : ""}</div>}
+            datetime={
+                <div className="date-tags">
+                    {GetRelativeTime(new Date(displayComment.date).getTime())} 
+                    {isEdited ? <Tag>Edited</Tag> : ""} 
+                    {Date.parse(displayComment.date) < Date.parse(questionDate) 
+                        ? <Tag>Possibly Outdated</Tag> 
+                            : ""}
+                </div>
+            }
             avatar={
                 < div className='comment-img' >
                     {
