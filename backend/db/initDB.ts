@@ -331,6 +331,7 @@ async function initDB() {
 						"date",
 						"deleted",
 						"anon",
+						"edited"
 					],
 					additionalProperties: false,
 					properties: {
@@ -389,6 +390,11 @@ async function initDB() {
 							description:
 								"'anon' must be a bool, and is required",
 						},
+						edited: {
+							bsonType: "bool",
+							description:
+								"'edited' must be a bool, and is required"
+						}
 					},
 				},
 			},

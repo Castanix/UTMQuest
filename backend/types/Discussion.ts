@@ -11,6 +11,7 @@ export interface DiscussionType extends WithId<Document> {
     deleted: boolean;
     thread: string[];
 	anon: boolean;
+	edited: boolean;
 };
 
 
@@ -25,4 +26,5 @@ export interface DiscussionFrontEndType {
 	date: string;
 	deleted: boolean;
 	anon: boolean;
+	edited: boolean;
 }

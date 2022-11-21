@@ -90,7 +90,8 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
         thread: req.body.thread, 
         date: new Date().toISOString(),
         deleted: false,
-        anon: req.body.anon
+        anon: req.body.anon,
+        edited: false,
     };     
     
     await utmQuestCollections.Discussions?.insertOne(discussion).then((result)=> { 
@@ -117,17 +118,13 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
 
     }).catch((error) => {
         res.status(500).send(error);
-    });;
+    });
 
 });
 
 
 // UPDATE .../discussion/:discussionId
 discussionRouter.put('/:discussionId', async (req: Request, res: Response) => { 
-    const today = new Date();
-    const dd = String(today.getDate()).padStart(2, '0');
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-    const yyyy = today.getFullYear();
 
     const discussion = {
         op: req.body.op, 
@@ -135,7 +132,6 @@ discussionRouter.put('/:discussionId', async (req: Request, res: Response) => {
         authName: req.body.authName,
         content: req.body.content,
         thread: req.body.thread, 
-        date: `${mm}/${dd}/${yyyy}`,
         deleted: false,
         anon: req.body.anon
     };
@@ -148,6 +144,40 @@ discussionRouter.put('/:discussionId', async (req: Request, res: Response) => {
             }
 
             res.status(200).send('Succesfully updated discussion');
+
+        }).catch((error) => { 
+            res.status(500).send(error);
+        });
+}); 
+
+// PUT .../discussion/updatePost/:discussionId
+discussionRouter.put('/updatePost/:discussionId', async (req: Request, res: Response) => { 
+    const {content} = req.body;
+    const date = new Date().toISOString();
+
+    const discussion = {
+        questionLink: req.body.questionLink,
+        op: req.body.op, 
+        authId: req.body.authId,
+        authName: req.body.authName,
+        content,
+        thread: req.body.thread, 
+        date,
+        deleted: false,
+        anon: req.body.anon,
+        edited: true
+    };
+
+    await utmQuestCollections.Discussions?.findOneAndUpdate(
+        { _id: new ObjectID(req.params.discussionId) }, 
+        { $set: discussion }
+        ).then((result) => { 
+            if (!result) { 
+                res.status(400).send(result);
+                return;
+            }
+
+            res.status(200).send({...result.value, content, date});
 
         }).catch((error) => { 
             res.status(500).send(error);

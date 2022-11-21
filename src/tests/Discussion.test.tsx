@@ -28,7 +28,8 @@ const topLevelComments: DiscussionFrontEndType[] = [
         thread: ["childComment"],
         date: new Date().toString(),
         deleted: false,
-        anon: false
+        anon: false,
+        edited: false
     },
     {
         _id: "1234",
@@ -40,7 +41,8 @@ const topLevelComments: DiscussionFrontEndType[] = [
         thread: [],
         date: new Date().toString(),
         deleted: false,
-        anon: false
+        anon: false,
+        edited: false
     },
     {
         _id: "12345",
@@ -52,7 +54,8 @@ const topLevelComments: DiscussionFrontEndType[] = [
         thread: [],
         date: new Date().toString(),
         deleted: false,
-        anon: false
+        anon: false,
+        edited: false
     }
 ]
 
@@ -66,7 +69,8 @@ const childComment: DiscussionFrontEndType = {
     thread: [],
     date: new Date().toString(),
     deleted: false,
-    anon: true
+    anon: true,
+    edited: false
 }
 
 const deletedComment: DiscussionFrontEndType = {
@@ -79,7 +83,8 @@ const deletedComment: DiscussionFrontEndType = {
     thread: ["childComment"],
     date: new Date().toString(),
     deleted: true,
-    anon: false
+    anon: false,
+    edited: false
 }
 
 // mock add topic fetch call
@@ -113,7 +118,7 @@ const server = setupServer(
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<Discussion questionLink="abc" />, { wrapper: BrowserRouter })
+    const { container } = render(<Discussion questionLink="abc" questionDate="some date" />, { wrapper: BrowserRouter })
     document = container;
 });
 
