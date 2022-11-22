@@ -1,11 +1,8 @@
-/* eslint-disable */
-
 import { Breadcrumb, Card, Steps, Typography } from 'antd';
 import React, { useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Loading from '../../components/Loading/Loading';
-import GetQuestion from '../ApprovedQuestion/fetch/GetQuestion';
 import GetAllTopics from '../ManageTopics/fetch/GetTopics';
 import "./AddQuestionPage.css";
 import AQStepOne from './AQStepOne';
@@ -13,7 +10,6 @@ import AQStepTwo from './AQStepTwo';
 
 
 const { Title } = Typography;
-const { Step } = Steps;
 
 const Header = ({ courseCode }:
     { courseCode: string }) => (

@@ -6,7 +6,7 @@ import './Loading.css';
 
 const Loading = () => (
   <Card bordered={false} className="loading">
-    <Spin indicator={<LoadingOutlined className="spinner" />} />
+    <Spin indicator={<LoadingOutlined className="spinner" />} size="large" />
   </Card>
 );
 

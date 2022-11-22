@@ -24,7 +24,7 @@ code {
 
 .main-container {
   padding-inline: 10vw;
-  background-color: white;
+  background-color: transparent;
 }
 
 /* 
@@ -116,11 +116,26 @@ tr th {
   border-top: var(--border) solid #f0f0f0;
 } */
 
+.wmde-markdown {
+  background-color: transparent !important;
+}
+
+.wmde-markdown * {
+  font-size: 14px;
+}
+
 @media screen and (max-width: 720px) {
   .main-container {
     padding-inline: 0;
   }
 }
+
+@media screen and (max-width: 420px) {
+  .wmde-markdown * {
+    font-size: 12px;
+  }
+}
+
 
 
 /* Webkit css */

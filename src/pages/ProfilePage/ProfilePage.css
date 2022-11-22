@@ -1,8 +1,24 @@
 .ant-avatar {
-    color: black;
-    background-color: white !important;
+    /* color: black; */
+    /* background-color: white !important; */
     font-size: 2.5rem !important;
-    border: 1px solid #f0f0f0 !important;
+    /* border: 1px solid #f0f0f0 !important; */
+}
+
+.avatar {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 1px solid #f0f0f0;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.avatar p {
+    margin-top: 2.7rem;
+    font-size: 2.5rem;
 }
 
 .badge-under-name img {
@@ -70,5 +86,5 @@
 }
 
 .timeline-link {
-    color: #1677ff;
+    color: #3a8af9;
 }
