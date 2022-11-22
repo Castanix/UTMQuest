@@ -31,7 +31,7 @@ const DisplayBadges = ({ utorid }: { utorid: string }) => {
         <Space>
             {
                 badges.map((item) => {
-                    const path = `/images/${item}.png`;
+                    const path = `/images/${item}.svg`;
                     return (
                         <Popover key={item} content={BadgeDescriptions[item as keyof typeof BadgeDescriptions]} trigger="hover">
                             <img className="badge" key={item} src={path} alt={item} />

@@ -93,7 +93,7 @@ const ProfilePage = () => {
         badgesSrc.forEach(badge => {
             badgeArr.push(
                 <Popover key={badge} content={BadgeDescriptions[badge as keyof typeof BadgeDescriptions]} trigger="hover">
-                    <img src={`/images/${badge}.png`} alt={badge} />
+                    <img src={`/images/${badge}.svg`} alt={badge} />
                 </Popover>
             );
         });
