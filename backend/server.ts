@@ -96,7 +96,7 @@ app.put("/incrementLoginStreak", async (req: Request, res: Response) => {
 });
 
 app.get("/displayBadges/:utorid", async (req: Request, res: Response) => {
-	const {utorid} = req.params;
+	const { utorid } = req.params;
 
 	const badge = await utmQuestCollections.Badges?.findOne({ utorid });
 
@@ -105,7 +105,10 @@ app.get("/displayBadges/:utorid", async (req: Request, res: Response) => {
 		return;
 	}
 
-	res.status(200).send(badge.displayBadges);
+	res.status(200).send({
+		displayBadges: badge.displayBadges,
+		longestLoginStreak: badge.longestLoginStreak,
+	});
 });
 
 // Connect to mongoDB and listen on app

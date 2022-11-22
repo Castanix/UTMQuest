@@ -1,6 +1,6 @@
 import { message } from "antd";
 
-const UpdateBadge = (badgeSelected: string[], utorid: string, setBadgeSelected: Function, resetChanges: Function) => {
+const UpdateBadge = (badgeSelected: string[], utorid: string, setBadgeSelected: Function, resetChanges: Function, longestLoginStreak: number) => {
     fetch(`${process.env.REACT_APP_API_URI}/badge/updateBadges`,
         {
             method: 'PUT',
@@ -20,7 +20,7 @@ const UpdateBadge = (badgeSelected: string[], utorid: string, setBadgeSelected: 
 
             // update session store for current user
             const userBadges = JSON.parse(sessionStorage.getItem("userBadges") ?? JSON.stringify({}));
-            userBadges[utorid] = badgeSelected;
+            userBadges[utorid] = { displayBadges: badgeSelected, longestLoginStreak };
 
             sessionStorage.setItem("userBadges", JSON.stringify(userBadges));
         }).catch(err => {

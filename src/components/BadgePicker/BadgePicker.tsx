@@ -77,7 +77,7 @@ const BadgePicker = ({ badges, utorid }: { badges: BadgesType, utorid: string })
         setShowModal(false);
 
         if (changes.length > 0) {
-            UpdateBadge(currBadgeSelected, utorid, setBadgeSelected, resetChanges);
+            UpdateBadge(currBadgeSelected, utorid, setBadgeSelected, resetChanges, badges.longestLoginStreak);
         } else {
             message.error("No changes were made");
         };
