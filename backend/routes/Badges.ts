@@ -13,7 +13,11 @@ badgeRouter.get('/userBadges/:utorid', (req: Request, res: Response) => {
                 return;
             };
         
-            res.status(200).send({unlockedBadges: badges.unlockedBadges, displayBadges: badges.displayBadges});
+            res.status(200).send({
+                unlockedBadges: badges.unlockedBadges, 
+                displayBadges: badges.displayBadges,
+                longestLoginStreak: badges.longestLoginStreak
+            });
         }).catch(error => {
             res.status(500).send(error);
         });

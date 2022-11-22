@@ -5,8 +5,19 @@
     border: 1px solid #f0f0f0 !important;
 }
 
+.badge-under-name img {
+    object-fit: 'contain';
+    width: 2rem;
+}
+
+.badge-under-name div {
+    display: inline-block;
+    vertical-align: 0.5rem;
+    padding-left: 0.25rem;
+}
+
 .badges {
-    width: 10rem;
+    width: 9rem;
     margin: auto;
 }
 
