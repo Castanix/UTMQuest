@@ -2,15 +2,16 @@ import {
   Card, Breadcrumb, Button, Space, Typography
 } from 'antd';
 import Icon, {
-  SettingTwoTone, StarOutlined, StarFilled, ContainerTwoTone, PlusCircleTwoTone,
+  SettingTwoTone, StarOutlined, StarFilled, ContainerTwoTone, PlusCircleTwoTone, ContainerFilled, PlusCircleFilled, SettingFilled,
 } from '@ant-design/icons';
 import { Link, useParams } from 'react-router-dom';
 import './CoursePage.css';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Loading from '../../components/Loading/Loading';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import GetCourse from './fetch/GetCourse';
 import { CheckSaved, SaveCourse } from './fetch/SavedCourses';
+import { ThemeContext } from '../../components/Topbar/Topbar';
 
 const { Title } = Typography;
 
@@ -34,14 +35,14 @@ const Header = ({ courseCode, courseName, favourite, setFavourite }:
     <div className="course-title">
       <Title level={3} ellipsis>{courseName}</Title>
       <div>
-          <Button
-            type={favourite ? "primary" : "default"}
-            icon={favourite ? <StarFilled /> : <StarOutlined style={{color: "#1677FF"}} />}
-            shape="round"
-            onClick={() => {
-              SaveCourse(courseCode, favourite, setFavourite);
-            }}
-          />
+        <Button
+          type={favourite ? "primary" : "default"}
+          icon={favourite ? <StarFilled /> : <StarOutlined style={{ color: "#1677FF" }} />}
+          shape="round"
+          onClick={() => {
+            SaveCourse(courseCode, favourite, setFavourite);
+          }}
+        />
       </div>
     </div>
   </div>
@@ -56,6 +57,8 @@ const CoursePage = () => {
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const { loadingSaved, errorSaved } = CheckSaved(courseCode ?? '', setIsSaved);
 
+  const isLightMode = useContext(ThemeContext);
+
   if (loadingCourses || loadingSaved) return <Loading />;
 
   if (errorCourses !== '') return <ErrorMessage title={errorCourses} link="/courses" message="Go back to courses" />;
@@ -65,9 +68,9 @@ const CoursePage = () => {
     <Card title={<Header courseCode={courseCode ?? ''} courseName={courseName ?? ''} favourite={isSaved} setFavourite={setIsSaved} />} bordered={false}>
       <main className="main-container">
         <div className="cards">
-          <Link to={`/courses/${courseCode}/browse`}><GetCard cardIcon={ContainerTwoTone} title="Browse Questions" /></Link>
-          <Link to={`/courses/${courseCode}/addQuestion`}><GetCard cardIcon={PlusCircleTwoTone} title="Add a Question" /></Link>
-          <Link to={`/courses/${courseCode}/topics`}><GetCard cardIcon={SettingTwoTone} title="Manage Topics" /></Link>
+          <Link to={`/courses/${courseCode}/browse`}><GetCard cardIcon={isLightMode ? ContainerTwoTone : ContainerFilled} title="Browse Questions" /></Link>
+          <Link to={`/courses/${courseCode}/addQuestion`}><GetCard cardIcon={isLightMode ? PlusCircleTwoTone : PlusCircleFilled} title="Add a Question" /></Link>
+          <Link to={`/courses/${courseCode}/topics`}><GetCard cardIcon={isLightMode ? SettingTwoTone : SettingFilled} title="Manage Topics" /></Link>
         </div>
       </main>
     </Card>
