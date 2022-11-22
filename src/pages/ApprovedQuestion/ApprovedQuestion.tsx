@@ -62,7 +62,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
                 {question.courseId}
                 {!onMobile() ?
                     <div className="subtitle">
-                        &#8226; {question.topicName}
+                        &nbsp; &#8226; {question.topicName}
                     </div>
                     : <div className="subtitle">
                         <br />
