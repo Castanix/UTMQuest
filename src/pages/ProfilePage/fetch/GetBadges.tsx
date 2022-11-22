@@ -14,7 +14,7 @@ const GetBadges = (utorid: string, setBadges: Function) => {
 
                 return res.json();
             }).then(result => {
-                setBadges({unlockedBadges: result.unlockedBadges, displayBadges: result.displayBadges});
+                setBadges({unlockedBadges: result.unlockedBadges, displayBadges: result.displayBadges, longestLoginStreak: result.longestLoginStreak});
                 setLoadingBadges(false);
             }).catch((err) => {
                 setErrorBadges(err.message);

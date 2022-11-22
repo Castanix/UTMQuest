@@ -24,12 +24,13 @@ export interface TimelineType {
 export interface BadgesType {
     unlockedBadges: {
         addQuestions?: string | null,
+        dailyLogin?: string | null,
         editQuestions?: string | null,
         threadReplies?: string | null,
         consecutivePosting?: string | null,
-        dailyLogin?: string | null,
     },
-    displayBadges: string[]
+    displayBadges: string[],
+    longestLoginStreak: number
 }
 
 const Header = () => (
@@ -44,7 +45,7 @@ const Header = () => (
 
 const ProfilePage = () => {
     const [name, setName] = useState<string>("");
-    const [badges, setBadges] = useState<BadgesType>({ unlockedBadges: {}, displayBadges: [] });
+    const [badges, setBadges] = useState<BadgesType>({ unlockedBadges: {}, displayBadges: [], longestLoginStreak: 0 });
     const [timeline, setTimeline] = useState<TimelineType[]>();
 
     const { loadingProfile, errorProfile } = GetProfile("dummy22", setName);
@@ -91,11 +92,13 @@ const ProfilePage = () => {
         const badgeArr: ReactElement[] = [];
 
         badgesSrc.forEach(badge => {
-            badgeArr.push(
-                <Popover key={badge} content={BadgeDescriptions[badge as keyof typeof BadgeDescriptions]} trigger="hover">
-                    <img src={`/images/${badge}.svg`} alt={badge} />
-                </Popover>
-            );
+            if(badge !== "dailybadge") {
+                badgeArr.push(
+                    <Popover key={badge} content={BadgeDescriptions[badge as keyof typeof BadgeDescriptions]} trigger="hover">
+                        <img src={`/images/${badge}.png`} alt={badge} />
+                    </Popover>       
+                );
+            }
         });
 
         return badgeArr;
@@ -111,6 +114,10 @@ const ProfilePage = () => {
                         </Avatar>
                         <div className="user-details">
                             <Text strong>{name}</Text>
+                            <div className="badge-under-name">
+                                <img src="/images/dailybadge.png" alt="dailybadge" />
+                                <div>{badges.longestLoginStreak}</div>
+                            </div>
                         </div>
                     </div>
                     <div className="badge-container">
