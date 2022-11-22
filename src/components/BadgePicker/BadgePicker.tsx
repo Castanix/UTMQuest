@@ -55,9 +55,9 @@ const BadgePicker = ({ badges, utorid }: { badges: BadgesType, utorid: string })
         Object.values(badges.unlockedBadges).forEach((item: string | null) => {
             if (item) {
                 if (badgeSelected.includes(item)) {
-                    imgArr.push(<img className="modal-img img-active" id={item} key={item} src={`/images/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
+                    imgArr.push(<img className="modal-img img-active" id={item} key={item} src={`/images/${item}.svg`} alt="badge display icon" onClick={() => handleSelect(item)} />);
                 } else {
-                    imgArr.push(<img className="modal-img" id={item} key={item} src={`/images/${item}.png`} alt="badge display icon" onClick={() => handleSelect(item)} />);
+                    imgArr.push(<img className="modal-img" id={item} key={item} src={`/images/${item}.svg`} alt="badge display icon" onClick={() => handleSelect(item)} />);
                 }
             }
         });
