@@ -1,8 +1,7 @@
-/* eslint-disable */
-
-import { Button, Checkbox, Form, Input, Popover, Select, Typography } from 'antd';
+import { Button, Checkbox, Form, Input, Select, Typography } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 import { Navigate, useLocation } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import rehypeSanitize from 'rehype-sanitize';
 import { QuestionsType } from '../../../backend/types/Questions';
@@ -11,34 +10,32 @@ import AddQuestion from './fetch/AddQuestion';
 import AddMultipleChoice, { AddOptionType } from '../../components/MultipleChoice/AddMultipleChoice/AddMultipleChoice';
 import DuplicateQuestions from '../../components/DuplicateQuestions/DuplicateQuestions';
 import { onMobile } from '../../components/EditHistory/EditHistory';
-import TextArea from 'antd/es/input/TextArea';
-
+import { ThemeContext } from '../../components/Topbar/Topbar';
 
 const { Option } = Select;
 
 const GetEditor = (value: string | undefined, placeholder: string, onChange: any) => {
+    const isLightMode = useContext(ThemeContext);
     if (onMobile()) {
-        return <TextArea className="add-question-textarea" rows={4} placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)} maxLength={4000} showCount />
-
-    } else {
-        return (
-            <div>
-                <MDEditor
-                    height={300}
-                    value={value}
-                    textareaProps={{ placeholder, maxLength: 4000 }}
-                    onChange={onChange}
-                    highlightEnable={false}
-                    data-color-mode="light"
-                    previewOptions={{
-                        rehypePlugins: [[rehypeSanitize]]
-                    }}
-                />
-                <span className="editor-count">{(value ?? "").length} / 4000</span>
-            </div>
-        )
-    };
-}
+        return <TextArea className="add-question-textarea" rows={4} placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)} maxLength={4000} showCount />;
+    }
+    return (
+        <div>
+            <MDEditor
+                height={300}
+                value={value}
+                textareaProps={{ placeholder, maxLength: 4000 }}
+                onChange={onChange}
+                highlightEnable={false}
+                data-color-mode={isLightMode ? "light" : "dark"}
+                previewOptions={{
+                    rehypePlugins: [[rehypeSanitize]]
+                }}
+            />
+            <span className="editor-count">{(value ?? "").length} / 4000</span>
+        </div>
+    );
+};
 
 const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     { courseCode: string, topicSelected: [string, string], setCurrStep: Function, edit: boolean }) => {
@@ -57,9 +54,9 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     useEffect(() => {
         const setForm = () => {
             if (question) {
-                const { link, qnsName, qnsType, desc, xplan, choices, ans } = question;
+                const { qnsName, qnsType, desc, xplan, choices, ans } = question;
 
-                setLink(link);
+                setLink(question.link);
                 setTitle(qnsName);
                 setType(qnsType);
                 setProblemValue(desc);
@@ -75,7 +72,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                     setSolValue(ans);
                 };
             };
-        }
+        };
         setForm();
     }, [question]);
 
@@ -222,7 +219,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 anon: isAnon,
                                 latest: true
                             };
-                            AddQuestion(addableQuestion, setRedirect, edit, (latest ? latest : question));
+                            AddQuestion(addableQuestion, setRedirect, edit, (latest || question));
                         }}
                     >Submit</Button>
                 </div>

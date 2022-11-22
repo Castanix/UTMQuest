@@ -33,6 +33,15 @@
 
 .content {
     padding-top: 4rem;
+    height: 100vh;
+}
+
+.light { 
+    background-color: white;
+}
+
+.dark {
+    background-color: #141414;
 }
 
 @media screen and (max-width: 420px) {
