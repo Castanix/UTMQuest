@@ -1,7 +1,5 @@
-/* eslint-disable */
 import { useEffect, useState } from "react";
 import { QuestionsType } from "../../../../backend/types/Questions";
-import qnsTypeEnum from "../../../pages/AddQuestionPage/types/QnsTypeEnum";
 
 const GetEditHistory = (link: string) => {
     const [loading, setLoading] = useState<boolean>(true);

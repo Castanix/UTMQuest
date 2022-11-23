@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Popconfirm, Tag } from "antd";
 import { Comment } from '@ant-design/compatible';
 import { QuestionOutlined } from "@ant-design/icons";
@@ -10,6 +10,7 @@ import Editor from "./Editor";
 import GetRelativeTime from "../../RelativeTime";
 
 import "./Discussion.css";
+import { ThemeContext } from "../Topbar/Topbar";
 
 const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEndType, questionDate: string }) => {
     const [displayComment, setDisplayComment] = useState<DiscussionFrontEndType>(comment);
@@ -20,9 +21,11 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
     const [showEdit, setShowEdit] = useState(false);
     const actions = [];
 
+    const isLightMode = useContext(ThemeContext);
+
     /* callback after a new comment is successfully added to update the parent comment */
     const updateComments = (newComment: DiscussionFrontEndType, edited: boolean) => {
-        if(edited) {
+        if (edited) {
             setDisplayComment(
                 // ...displayComment,
                 // content: newComment.content,
@@ -77,11 +80,11 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
     actions.push([
         // Need to check if 'user' is author when we get user auth
         displayComment.authId === "dummy22" ?
-            <span 
+            <span
                 onClick={() => {
                     setShowReply(false);
                     setShowEdit(!showEdit);
-                }} 
+                }}
                 key="comment-nested-edit"
                 role="presentation">
                 {
@@ -89,7 +92,7 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
                     !displayComment.deleted
                         ? showEdit
                             ? "Close"
-                            : "Edit" 
+                            : "Edit"
                         : ""
                 }
             </span> : null,
@@ -132,11 +135,11 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
             author={<Link to="/">{displayComment.authName}</Link>}
             datetime={
                 <div className="date-tags">
-                    {GetRelativeTime(new Date(displayComment.date).getTime())} 
-                    {isEdited ? <Tag>Edited</Tag> : ""} 
-                    {Date.parse(displayComment.date) < Date.parse(questionDate) 
-                        ? <Tag>Possibly Outdated</Tag> 
-                            : ""}
+                    {GetRelativeTime(new Date(displayComment.date).getTime())}
+                    {isEdited ? <Tag>Edited</Tag> : ""}
+                    {Date.parse(displayComment.date) < Date.parse(questionDate)
+                        ? <Tag>Possibly Outdated</Tag>
+                        : ""}
                 </div>
             }
             avatar={
@@ -149,26 +152,26 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
                     }
                 </div >}
             content={
-                displayComment.deleted ? 
-                    <i>{displayComment.content}</i> : 
-                    <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={displayComment.content} />
-                }
+                displayComment.deleted ?
+                    <i>{displayComment.content}</i> :
+                    <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={displayComment.content} />
+            }
         >
             {
                 childComments.map((item) => (
                     <DisplayComment key={item._id} comment={item} questionDate={questionDate} />
                 ))
             }
-            
+
             {
-                showReply ? 
-                    <Editor discussionId={displayComment._id} questionLink={displayComment.questionLink} op={false} oldContent="" updateComments={updateComments} thread={[]} /> : 
+                showReply ?
+                    <Editor discussionId={displayComment._id} questionLink={displayComment.questionLink} op={false} oldContent="" updateComments={updateComments} thread={[]} /> :
                     null
             }
 
             {
-                showEdit ? 
-                    <Editor discussionId={displayComment._id} questionLink={displayComment.questionLink} op={displayComment.op} oldContent={displayComment.content} updateComments={updateComments} thread={displayComment.thread} /> : 
+                showEdit ?
+                    <Editor discussionId={displayComment._id} questionLink={displayComment.questionLink} op={displayComment.op} oldContent={displayComment.content} updateComments={updateComments} thread={displayComment.thread} /> :
                     null
             }
         </Comment >

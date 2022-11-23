@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import './ApprovedQuestion.css';
 import MDEditor from '@uiw/react-md-editor';
 import { Breadcrumb, Button, Card, Typography } from 'antd';
@@ -15,14 +15,15 @@ import Discussion from "../../components/Discussion/Discussion";
 import EditHistory, { onMobile } from "../../components/EditHistory/EditHistory";
 import DisplayBadges from "../../components/DisplayBadges/DisplayBadges";
 import GetRelativeTime from "../../RelativeTime";
+import { ThemeContext } from "../../components/Topbar/Topbar";
 
 const { Text, Title } = Typography;
 
-const QuestionTab = ({ options, answers, actualQuestion, explanation }:
-    { options: string[], answers: string[], actualQuestion: string, explanation: string }) => (
+const QuestionTab = ({ options, answers, actualQuestion, explanation, isLightMode }:
+    { options: string[], answers: string[], actualQuestion: string, explanation: string, isLightMode: boolean }) => (
     <div>
         <Title level={3} className='divider-title'>Problem</Title>
-        <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={actualQuestion} />
+        <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={actualQuestion} />
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
@@ -30,10 +31,10 @@ const QuestionTab = ({ options, answers, actualQuestion, explanation }:
     </div>
 );
 
-const ShortAnswerTab = ({ actualQuestion, answer }: { actualQuestion: string, answer: string }) => (
+const ShortAnswerTab = ({ actualQuestion, answer, isLightMode }: { actualQuestion: string, answer: string, isLightMode: boolean }) => (
     <div>
         <Title level={3} className='divider-title'>Problem</Title>
-        <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={actualQuestion} />
+        <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={actualQuestion} />
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
@@ -61,7 +62,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
                 {question.courseId}
                 {!onMobile() ?
                     <div className="subtitle">
-                        &#8226; {question.topicName}
+                        &nbsp; &#8226; {question.topicName}
                     </div>
                     : <div className="subtitle">
                         <br />
@@ -90,12 +91,12 @@ const Header = ({ question }: { question: QuestionsType }) => (
     </div>
 );
 
-const getQuestionType = (question: QuestionsType) => ({
-    mc: <QuestionTab options={question.choices} answers={question.ans as string[]} actualQuestion={question.desc} explanation={question.xplan} />,
-    short: <ShortAnswerTab actualQuestion={question.desc} answer={question.ans as string} />
+const getQuestionType = (question: QuestionsType, isLightMode: boolean) => ({
+    mc: <QuestionTab options={question.choices} answers={question.ans as string[]} actualQuestion={question.desc} explanation={question.xplan} isLightMode={isLightMode} />,
+    short: <ShortAnswerTab actualQuestion={question.desc} answer={question.ans as string} isLightMode={isLightMode} />
 });
 
-const QuestionType = ({ question, qnsType }: { question: QuestionsType, qnsType: keyof TypeOfQuestion }) => <div>{getQuestionType(question)[qnsType]}</div>;
+const QuestionType = ({ question, qnsType, isLightMode }: { question: QuestionsType, qnsType: keyof TypeOfQuestion, isLightMode: boolean }) => <div>{getQuestionType(question, isLightMode)[qnsType]}</div>;
 
 const tabList = [
     {
@@ -118,6 +119,8 @@ const ApprovedQuestion = () => {
     const link = params.link ?? '';
     const { loading, question, error } = GetQuestion(link);
 
+    const isLightMode = useContext(ThemeContext);
+
     if (loading) return <Loading />;
 
     if (error !== '' || question === undefined) return <ErrorMessage title={error !== '' ? error : 'Could not find question'} link="/courses" message="Go back to courses" />;
@@ -127,7 +130,7 @@ const ApprovedQuestion = () => {
     };
 
     const contentList: Record<string, React.ReactNode> = {
-        Question: <QuestionType question={question} qnsType={question.qnsType as keyof TypeOfQuestion} />,
+        Question: <QuestionType question={question} qnsType={question.qnsType as keyof TypeOfQuestion} isLightMode={isLightMode} />,
         Solution: <p>Solution</p>,
         Discussion: <Discussion questionLink={question.link} questionDate={question.date} />,
         EditHistory: <EditHistory link={question.link} />

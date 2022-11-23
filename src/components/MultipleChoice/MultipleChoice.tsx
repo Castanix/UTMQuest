@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Checkbox, Divider, Space } from "antd";
 import Title from "antd/es/typography/Title";
 import "./MultipleChoice.css";
 import MDEditor from "@uiw/react-md-editor";
 import MultipleChoiceState from "./MultipleChoiceState";
+import { ThemeContext } from "../Topbar/Topbar";
 
 
 const MultipleChoice = ({ options, answers, explanation }: { options: string[], answers: string[], explanation: string }) => {
@@ -16,6 +17,7 @@ const MultipleChoice = ({ options, answers, explanation }: { options: string[], 
         setIsActive(!isActive);
     };
 
+    const isLightMode = useContext(ThemeContext);
 
     const {
         showingAnswer,
@@ -61,7 +63,7 @@ const MultipleChoice = ({ options, answers, explanation }: { options: string[], 
                 <Title level={3} className="explanation-title">
                     Explanation
                 </Title>
-                <MDEditor.Markdown warpperElement={{ "data-color-mode": "light" }} source={explanation} />
+                <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={explanation} />
             </div>}
         </div>
     );
