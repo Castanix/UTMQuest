@@ -74,11 +74,14 @@ badgeRouter.put("/unlockTier", async (req: Request, res: Response) => {
 		consecutivePosting,
 	}
 
+	// base badge must be one of the unlockable badges
 	if (!(baseBadge in BaseBadges)) {
 		res.status(400).send("Invalid base badge specified.");
 		return;
 	}
 
+	// newBadgeTier and oldBadgeTier must be an existing badge tier
+	// (empty string represents the locked badge)
 	if (!(newBadgeTier in BadgeTiers) || !(oldBadgeTier in BadgeTiers)) {
 		res.status(400).send("Invalid badge tier specified.");
 		return;
@@ -91,11 +94,13 @@ badgeRouter.put("/unlockTier", async (req: Request, res: Response) => {
 		return;
 	}
 
+	// update badge tier given the baseBadge
 	const newUnlockedBadges: { [baseName: string]: string } = {};
 	Object.assign(newUnlockedBadges, badges.unlockedBadges);
 	newUnlockedBadges[baseBadge] = newBadgeTier;
 
 	// update display badges if needed
+	// by finding the oldTier and replacing it with the new tier
 	const index = badges.displayBadges.findIndex(
 		(item: string) => oldBadgeTier === item
 	);

@@ -1,9 +1,9 @@
 import { message, notification } from "antd";
 import { QuestionsType } from "../../../../backend/types/Questions";
 
-type BaseBadge = "addQuestions" | "editQuestions";
+type BaseBadge = "addQuestions" | "editQuestions" | "consecutivePosting";
 
-const unlockBadge = (utorid: string, baseBadge: string, newBadgeTier: string, oldBadgeTier: string) => {
+const unlockBadge = (utorid: string, baseBadge: BaseBadge, newBadgeTier: string, oldBadgeTier: string) => {
     const request = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
