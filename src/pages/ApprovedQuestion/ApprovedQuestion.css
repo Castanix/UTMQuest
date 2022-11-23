@@ -5,7 +5,10 @@
 
 .ant-tabs-nav {
     padding-inline: 10vw;
-    background-color: white;
+}
+
+.ant-tabs-nav::before {
+    display: none;
 }
 
 .title-flex h3, h4 {

@@ -1,8 +1,6 @@
-/* eslint-disable */
-
 enum qnsTypeEnum {
 	mc = "mc",
-	short = "short"
-};
+	short = "short",
+}
 
 export default qnsTypeEnum;

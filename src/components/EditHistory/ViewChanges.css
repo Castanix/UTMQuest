@@ -6,6 +6,14 @@
     background-color: #eeeeee;
 }
 
+.new-dark * {
+    background-color: #162312;
+}
+
+.old-dark * {
+    background-color: #311c1e;
+}
+
 .new *, .old * {
     padding-inline-start: 0.2rem;
     padding-inline-end: 0.2rem;

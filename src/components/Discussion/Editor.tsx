@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Avatar, Button, Checkbox, Form, message, Space, } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { Comment } from '@ant-design/compatible';
@@ -9,6 +9,7 @@ import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 
 import "./Editor.css";
 import { onMobile } from "../EditHistory/EditHistory";
+import { ThemeContext } from "../Topbar/Topbar";
 
 const AddComment = async (discussionId: string, questionLink: string, op: boolean, content: string, isAnon: boolean) => {
     // MAKE POST CALL HERE
@@ -97,7 +98,7 @@ const EditComment = async (discussionId: string, questionLink: string, op: boole
         if (!res.ok) throw Error(res.statusText);
         return res.json();
     }).then((result) => result);
-    
+
     return editedComment;
 };
 
@@ -105,6 +106,8 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
     const [content, setContent] = useState<string>(oldContent);
     const [isAnon, setAnon] = useState<boolean>(false);
     const [commented, setCommented] = useState<DiscussionFrontEndType>();
+
+    const isLightMode = useContext(ThemeContext);
 
     const onSubmit = async () => {
         if (content.trim().length <= 0) {
@@ -119,7 +122,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
             setContent("");
             setAnon(false);
         } else {
-            if(oldContent === content) {
+            if (oldContent === content) {
                 message.error("No update was made");
                 return;
             }
@@ -145,7 +148,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
                                 textareaProps={{ placeholder: "Add a comment", maxLength: 4000 }}
                                 onChange={(e) => setContent(e ?? "")}
                                 highlightEnable={false}
-                                data-color-mode="light"
+                                data-color-mode={isLightMode ? "light" : "dark"}
                                 previewOptions={{
                                     rehypePlugins: [[rehypeSanitize]]
                                 }}
@@ -167,7 +170,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
                                     </Checkbox> :
                                     ""
                             }
-                            
+
                         </Space>
                     </Form.Item>
                 </span>

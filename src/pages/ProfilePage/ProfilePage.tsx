@@ -1,4 +1,4 @@
-import { Avatar, Card, Divider, Timeline, Typography, Popover, Breadcrumb } from "antd";
+import { Card, Divider, Timeline, Typography, Popover, Breadcrumb } from "antd";
 import React, { ReactElement, useState } from "react";
 import { Link } from "react-router-dom";
 import BadgeDescriptions from "../../BadgeDescriptions";
@@ -109,9 +109,9 @@ const ProfilePage = () => {
             <main className="main-container profile">
                 <div className="profile-container">
                     <div className="user-container">
-                        <Avatar className="avatar" size={160}>
-                            {firstInitial.concat(lastInitial)}
-                        </Avatar>
+                        <div className="avatar">
+                            <p>{firstInitial.concat(lastInitial)}</p>
+                        </div>
                         <div className="user-details">
                             <Text strong>{name}</Text>
                             <div className="badge-under-name">
