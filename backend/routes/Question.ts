@@ -7,32 +7,44 @@ import { utmQuestCollections } from "../db/db.service";
 const questionRouter = Router();
 
 const updateBadge = async (utorid: string) => {
-	const failed = {code: 500, message: `Update 'questionsEdited' field for badges collection failed. Reverting all changes.`, questionStatus: null};
+	const failed = {
+		code: 500,
+		message: `Update 'questionsEdited' field for badges collection failed. Reverting all changes.`,
+		questionStatus: null,
+	};
 
 	return utmQuestCollections.Badges?.findOne({ utorid })
-		.then(findRes => {
-			if(!findRes){
-				return {code: 404, message: `Could not find badge progression for ${utorid}`, questionStatus: null};
-			};
-
-			return utmQuestCollections.Badges?.updateOne(
-				findRes,
-				{ $inc: {questionsEdited: 1} }
-			).then(updateRes => {
-				if(!updateRes) {
-					return failed;
+		.then((findRes) => {
+			if (!findRes) {
+				return {
+					code: 404,
+					message: `Could not find badge progression for ${utorid}`,
+					questionStatus: null,
 				};
-				return {code: 200, message: `success`, questionStatus: findRes.questionsEdited + 1};
-			}).catch(() => failed);
+			}
 
-		}).catch(() => failed);
+			return utmQuestCollections.Badges?.updateOne(findRes, {
+				$inc: { questionsEdited: 1 },
+			})
+				.then((updateRes) => {
+					if (!updateRes) {
+						return failed;
+					}
+					return {
+						code: 200,
+						message: `success`,
+						questionStatus: findRes.questionsEdited + 1,
+					};
+				})
+				.catch(() => failed);
+		})
+		.catch(() => failed);
 };
 
 const updateLatest = (question: any, set: boolean) => {
-	const result = utmQuestCollections.Questions?.updateOne(
-		question,
-		{ $set: {latest: set} }
-	);
+	const result = utmQuestCollections.Questions?.updateOne(question, {
+		$set: { latest: set },
+	});
 
 	return !!result;
 };
@@ -46,20 +58,24 @@ const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
 	return !!result;
 };
 
-
 // /courses/:courseId/question/:id
-questionRouter.get('/allPostedQuestions/:utorid', async (req: Request, res: Response) => {
-    try {
-        const questions = await utmQuestCollections.Questions?.find({ authId: req.params.utorid }).toArray();
-        if (!questions) { 
-            res.status(404).send("No question found.");
-            return;
-        }
-        res.status(200).send(questions);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
+questionRouter.get(
+	"/allPostedQuestions/:utorid",
+	async (req: Request, res: Response) => {
+		try {
+			const questions = await utmQuestCollections.Questions?.find({
+				authId: req.params.utorid,
+			}).toArray();
+			if (!questions) {
+				res.status(404).send("No question found.");
+				return;
+			}
+			res.status(200).send(questions);
+		} catch (error) {
+			res.status(500).send(error);
+		}
+	}
+);
 
 // "/:questionId"
 questionRouter.get(
@@ -99,7 +115,6 @@ questionRouter.get(
 		}
 	}
 );
-
 
 questionRouter.get(
 	"/latestQuestions/:courseId/:utorid",
@@ -195,14 +210,13 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 
 			// INCREMENT COUNTER
 			const isIncremented = topicIncrementor(topicId, true);
-			if(!isIncremented) {
+			if (!isIncremented) {
 				res.status(500).send(
 					`Unable to increment numQuestions for ${req.body.topicName}`
 				);
 				utmQuestCollections.Questions?.deleteOne(question);
 				return;
-			};
-
+			}
 
 			/* TODO: Delete this once certain is it not required */
 			// utmQuestCollections.Topics?.findOneAndUpdate(
@@ -221,12 +235,14 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 			// Update badge progression
 			if (!question.anon) {
 				const now = new Date();
-				
-				if(badge.firstPostToday === "") {
+
+				if (badge.firstPostToday === "") {
 					utmQuestCollections.Badges?.updateOne(badge, {
-						$set: { firstPostToday: now.toISOString(),
-								consecutivePosting: 1 },
-						$inc: { questionsAdded: 1 }
+						$set: {
+							firstPostToday: now.toISOString(),
+							consecutivePosting: 1,
+						},
+						$inc: { questionsAdded: 1 },
 					}).then((updateResult) => {
 						if (!updateResult) {
 							res.status(500).send(
@@ -234,48 +250,57 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 							);
 							topicIncrementor(topicId, false);
 							utmQuestCollections.Questions?.deleteOne(question);
-							
 						} else {
 							res.status(201).send({
 								link,
 								questionStatus: badge.questionsAdded + 1,
 								consecutivePosting: 1,
-								edit: false
+								unlockedBadges: badge.unlockedBadges,
+								edit: false,
 							});
 						}
 					});
 				} else {
 					const currTime = now.getTime() / (60 * 60 * 1000);
-					const lastPostTime = Date.parse(badge.firstPostToday) / (60 * 60 * 1000);
+					const lastPostTime =
+						Date.parse(badge.firstPostToday) / (60 * 60 * 1000);
 					const timeDiff = currTime - lastPostTime;
 
-					if(timeDiff < 48 && timeDiff > 24 && badge.consecutivePosting < 7) {
+					if (
+						timeDiff < 48 &&
+						timeDiff > 24 &&
+						badge.consecutivePosting < 7
+					) {
 						utmQuestCollections.Badges?.updateOne(badge, {
 							$set: { firstPostToday: now.toISOString() },
-							$inc: { consecutivePosting: 1,
-									questionsAdded: 1 }
+							$inc: { consecutivePosting: 1, questionsAdded: 1 },
 						}).then((updateResult) => {
 							if (!updateResult) {
 								res.status(500).send(
 									"Unable to update badge progression."
 								);
 								topicIncrementor(topicId, false);
-								utmQuestCollections.Questions?.deleteOne(question);
-								
+								utmQuestCollections.Questions?.deleteOne(
+									question
+								);
 							} else {
 								res.status(201).send({
 									link,
 									questionStatus: badge.questionsAdded + 1,
-									consecutivePosting: badge.consecutivePosting + 1,
-									edit: false
+									consecutivePosting:
+										badge.consecutivePosting + 1,
+									unlockedBadges: badge.unlockedBadges,
+									edit: false,
 								});
 							}
 						});
 					} else if (timeDiff > 48 && badge.consecutivePosting < 7) {
 						utmQuestCollections.Badges?.updateOne(badge, {
-							$set: { firstPostToday: now.toISOString(),
-									consecutivePosting: 1 },
-							$inc: { questionsAdded: 1 }
+							$set: {
+								firstPostToday: now.toISOString(),
+								consecutivePosting: 1,
+							},
+							$inc: { questionsAdded: 1 },
 						}).then((updateResult) => {
 							if (!updateResult) {
 								res.status(500).send(
@@ -286,26 +311,29 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 									link,
 									questionStatus: badge.questionsAdded + 1,
 									consecutivePosting: 1,
-									edit: false
+									unlockedBadges: badge.unlockedBadges,
+									edit: false,
 								});
 							}
 						});
 					} else {
 						utmQuestCollections.Badges?.updateOne(badge, {
-							$inc: { questionsAdded: 1 }
+							$inc: { questionsAdded: 1 },
 						}).then((incrementResult) => {
 							if (!incrementResult) {
 								res.status(500).send(
 									"Unable to increment questionsAdded for badge progression."
 								);
 								topicIncrementor(topicId, false);
-								utmQuestCollections.Questions?.deleteOne(question);
-								
+								utmQuestCollections.Questions?.deleteOne(
+									question
+								);
 							} else {
 								res.status(201).send({
 									link,
 									questionStatus: badge.questionsAdded + 1,
-									edit: false
+									unlockedBadges: badge.unlockedBadges,
+									edit: false,
 								});
 							}
 						});
@@ -313,9 +341,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 				}
 			} else {
 				res.status(201).send({ link });
-			};
-
-
+			}
 		})
 		.catch((error) => {
 			res.status(500).send(error);
@@ -330,6 +356,15 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		});
 		if (!oldVersion) {
 			res.status(404).send("No such latest question found.");
+			return;
+		}
+
+		const badge = await utmQuestCollections.Badges?.findOne({
+			utorid: req.body.authId,
+		});
+
+		if (!badge) {
+			res.status(404).send("Could not find badge progression for user.");
 			return;
 		}
 
@@ -364,34 +399,43 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 
 				// Attempts to update latest from old questions doc, reverts any changes if failed
 				const latestStatus = updateLatest(oldVersion, false);
-				if(!latestStatus) {
+				if (!latestStatus) {
 					utmQuestCollections.Questions?.deleteOne(question);
-					res.status(500).send(`Update 'latest' flag for previous question failed. Reverting any changes.`);
+					res.status(500).send(
+						`Update 'latest' flag for previous question failed. Reverting any changes.`
+					);
 					return;
-				};
+				}
 
 				// Attempts to update badge progression for specified utorid, reverts all changes if failed
-				if(!req.body.anon) {
-					updateBadge(req.body.authId).then(updateRes => {
-						if(!updateRes) {
+				if (!req.body.anon) {
+					updateBadge(req.body.authId).then((updateRes) => {
+						if (!updateRes) {
 							updateLatest(oldVersion, true);
 							utmQuestCollections.Questions?.deleteOne(question);
-							res.status(500).send("Unable to update badges. Reverting all changes.");
+							res.status(500).send(
+								"Unable to update badges. Reverting all changes."
+							);
 							return;
 						}
-						const {code, message, questionStatus} = updateRes;
+						const { code, message, questionStatus } = updateRes;
 
-						if(code === 200) {
-							res.status(201).send({ link, questionStatus, edit: true });
+						if (code === 200) {
+							res.status(201).send({
+								link,
+								questionStatus,
+								unlockedBadges: badge.unlockedBadges,
+								edit: true,
+							});
 						} else {
 							res.status(code).send(message);
-						};
-						
+						}
 					});
 				} else {
 					res.status(201).send({ link });
 				}
-			}).catch((error) => {
+			})
+			.catch((error) => {
 				res.status(500).send(error);
 			});
 	} catch (error) {
@@ -485,8 +529,6 @@ questionRouter.get(
 			.catch((error) => res.status(500).send(error));
 	}
 );
-
-
 
 /** ****** Currently not being used ******* */
 // questionRouter.delete("/:questionId", async (req: Request, res: Response) => {

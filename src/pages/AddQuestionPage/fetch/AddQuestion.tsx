@@ -62,39 +62,76 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
     /* Tier 2 - b questions */
     /* Tier 3 - c questions */
     const [a, b, c] = goal;
-    if (!anon && result.questionStatus <= c) {
+    let isUnlocked = false;
+
+    if (!anon) {
         let total = a;
         if (result.questionStatus >= a && result.questionStatus < b) total = b;
         if (result.questionStatus >= b && result.questionStatus < c) total = c;
 
-        if (result.questionStatus === a || result.questionStatus === b) {
-            notification.success({
-                message: "Unlocked a new badge tier!",
-                description: `${result.edit ? "Edit" : "Add"} ${total - result.questionStatus} more question(s) to unlock the next tier (${result.questionStatus}/${total}).`,
-                placement: "bottom"
-            });
+        if (result.questionStatus >= a && result.questionStatus < b) {
 
-            if (result.questionStatus === a) {
-
-                if (baseBadge === "addQuestions") unlockBadge(utorid, baseBadge, "addbadge1", "");
-                else unlockBadge(utorid, baseBadge, "editbadge1", "");
-
-            } else if (result.questionStatus === b) {
-
-                if (baseBadge === "addQuestions") unlockBadge(utorid, baseBadge, "addbadge2", "addbadge1");
-                else unlockBadge(utorid, baseBadge, "editbadge2", "editbadge1");
+            if (baseBadge === "addQuestions" && result.unlockedBadges.addQuestions !== "addbadge1") {
+                unlockBadge(utorid, baseBadge, "addbadge1", "");
+                isUnlocked = true;
             }
 
-        } else if (result.questionStatus === c) {
-            notification.success({
-                message: "Unlocked the final badge tier!",
-                placement: "bottom"
-            });
+            else if (baseBadge === "editQuestions" && result.unlockedBadges.editQuestions !== "editbadge1") {
+                unlockBadge(utorid, baseBadge, "editbadge1", "");
+                isUnlocked = true;
+            }
 
-            if (baseBadge === "addQuestions") unlockBadge(utorid, baseBadge, "addbadge3", "addbadge2");
-            else unlockBadge(utorid, baseBadge, "editbadge3", "editbadge2");
+            if (isUnlocked) {
+                notification.success({
+                    message: "Unlocked a new badge tier!",
+                    description: `${result.edit ? "Edit" : "Add"} ${total - result.questionStatus} more question(s) to unlock the next tier (${result.questionStatus}/${total}).`,
+                    placement: "bottom"
+                });
+            }
+        }
 
-        } else if (result.questionStatus !== c) {
+        else if (result.questionStatus >= b && result.questionStatus < c) {
+
+            if (baseBadge === "addQuestions" && result.unlockedBadges.addQuestions !== "addbadge2") {
+                unlockBadge(utorid, baseBadge, "addbadge2", "addbadge1");
+                isUnlocked = true;
+            }
+
+            else if (baseBadge === "editQuestions" && result.unlockedBadges.editQuestions !== "editbadge2") {
+                unlockBadge(utorid, baseBadge, "editbadge2", "editbadge1");
+                isUnlocked = true;
+            }
+
+            if (isUnlocked) {
+                notification.success({
+                    message: "Unlocked a new badge tier!",
+                    description: `${result.edit ? "Edit" : "Add"} ${total - result.questionStatus} more question(s) to unlock the next tier (${result.questionStatus}/${total}).`,
+                    placement: "bottom"
+                });
+            }
+        }
+
+        else {
+
+            if (baseBadge === "addQuestions" && result.unlockedBadges.addQuestions !== "addbadge3") {
+                unlockBadge(utorid, baseBadge, "addbadge3", "addbadge2");
+                isUnlocked = true;
+            }
+
+            else if (baseBadge === "editQuestions" && result.unlockedBadges.editQuestions !== "editbadge3") {
+                unlockBadge(utorid, baseBadge, "editbadge3", "editbadge2");
+                isUnlocked = true;
+            }
+
+            if (isUnlocked) {
+                notification.success({
+                    message: "Unlocked the final badge tier!",
+                    placement: "bottom"
+                });
+            }
+        }
+
+        if (result.questionStatus !== a && result.questionStatus !== b && result.questionStatus < c) {
             notification.success({
                 message: `Getting closer to a new badge tier...`,
                 description: `${result.edit ? "Edit" : "Add"} ${total - result.questionStatus} more question(s) (${result.questionStatus}/${total}).`,
@@ -166,7 +203,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                 checkBadge(addableQuestion.anon, result, [5, 15, 30], "addQuestions", addableQuestion.authId);
 
                 if (result.consecutivePosting) {
-                    if (result.consecutivePosting === 7) {
+                    if (result.consecutivePosting >= 7 && result.unlockedBadges.consecutivePosting !== "consecutivebadge") {
                         notification.success({
                             message: "Unlocked badge for 7 day consecutive posting!",
                             placement: "bottom"
