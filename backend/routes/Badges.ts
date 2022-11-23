@@ -59,6 +59,7 @@ badgeRouter.put("/unlockTier", async (req: Request, res: Response) => {
 
 	enum BadgeTiers {
 		"",
+		consecutivebadge,
 		addbadge1,
 		addbadge2,
 		addbadge3,
@@ -67,7 +68,13 @@ badgeRouter.put("/unlockTier", async (req: Request, res: Response) => {
 		editbadge3,
 	}
 
-	if (baseBadge !== "addQuestions" && baseBadge !== "editQuestions") {
+	enum BaseBadges {
+		addQuestions,
+		editQuestions,
+		consecutivePosting,
+	}
+
+	if (!(baseBadge in BaseBadges)) {
 		res.status(400).send("Invalid base badge specified.");
 		return;
 	}

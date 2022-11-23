@@ -3,7 +3,7 @@ import { QuestionsType } from "../../../../backend/types/Questions";
 
 type BaseBadge = "addQuestions" | "editQuestions";
 
-const unlockBadgeTier = (utorid: string, baseBadge: string, newBadgeTier: string, oldBadgeTier: string) => {
+const unlockBadge = (utorid: string, baseBadge: string, newBadgeTier: string, oldBadgeTier: string) => {
     const request = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -76,13 +76,13 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
 
             if (result.questionStatus === a) {
 
-                if (baseBadge === "addQuestions") unlockBadgeTier(utorid, baseBadge, "addbadge1", "");
-                else unlockBadgeTier(utorid, baseBadge, "editbadge1", "");
+                if (baseBadge === "addQuestions") unlockBadge(utorid, baseBadge, "addbadge1", "");
+                else unlockBadge(utorid, baseBadge, "editbadge1", "");
 
             } else if (result.questionStatus === b) {
 
-                if (baseBadge === "addQuestions") unlockBadgeTier(utorid, baseBadge, "addbadge2", "addbadge1");
-                else unlockBadgeTier(utorid, baseBadge, "editbadge2", "editbadge1");
+                if (baseBadge === "addQuestions") unlockBadge(utorid, baseBadge, "addbadge2", "addbadge1");
+                else unlockBadge(utorid, baseBadge, "editbadge2", "editbadge1");
             }
 
         } else if (result.questionStatus === c) {
@@ -91,8 +91,8 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
                 placement: "bottom"
             });
 
-            if (baseBadge === "addQuestions") unlockBadgeTier(utorid, baseBadge, "addbadge3", "addbadge2");
-            else unlockBadgeTier(utorid, baseBadge, "editbadge3", "editbadge2");
+            if (baseBadge === "addQuestions") unlockBadge(utorid, baseBadge, "addbadge3", "addbadge2");
+            else unlockBadge(utorid, baseBadge, "editbadge3", "editbadge2");
 
         } else if (result.questionStatus !== c) {
             notification.success({
@@ -171,6 +171,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                             message: "Unlocked badge for 7 day consecutive posting!",
                             placement: "bottom"
                         });
+                        unlockBadge(addableQuestion.authId, "consecutivePosting", "consecutivebadge", "");
                     } else {
                         notification.success({
                             message: `Posted ${result.consecutivePosting} consecutive days`,
