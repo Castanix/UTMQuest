@@ -1,6 +1,45 @@
 import { message, notification } from "antd";
 import { QuestionsType } from "../../../../backend/types/Questions";
 
+type BaseBadge = "addQuestions" | "editQuestions";
+
+const unlockBadgeTier = (utorid: string, baseBadge: string, newBadgeTier: string, oldBadgeTier: string) => {
+    const request = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ utorid, baseBadge, newBadgeTier, oldBadgeTier })
+    };
+
+    fetch(`${process.env.REACT_APP_API_URI}/badge/unlockTier`, request
+    ).then((result) => {
+        if (!result.ok) throw new Error(result.statusText);
+
+        // update session storage if needed
+        if (sessionStorage.getItem("userBadges") !== null) {
+            const userBadges = JSON.parse(sessionStorage.getItem("userBadges") ?? JSON.stringify({}));
+
+            // update display badges if needed
+            if (utorid in userBadges) {
+                const index = userBadges[utorid].displayBadges.findIndex(
+                    (item: string) => oldBadgeTier === item
+                );
+
+                const displayBadges = [...userBadges[utorid].displayBadges];
+
+                if (index !== -1) {
+                    displayBadges.splice(index, 1, newBadgeTier);
+                }
+
+                userBadges[utorid].displayBadges = displayBadges;
+                sessionStorage.setItem("userBadges", JSON.stringify(userBadges));
+            }
+        }
+
+    }).catch((error) => {
+        console.log(error);
+    });
+};
+
 const compareQnsObj = (obj1: QuestionsType, obj2: QuestionsType) => {
     // NOTE: Clone object to avoid mutating original!
     const keys = ['_id', 'anon', 'numDiscussions', 'authName', 'authId', 'date', 'latest'];
@@ -16,7 +55,7 @@ const compareQnsObj = (obj1: QuestionsType, obj2: QuestionsType) => {
 };
 
 
-const checkBadge = (anon: boolean, result: any, goal: [number, number, number]) => {
+const checkBadge = (anon: boolean, result: any, goal: [number, number, number], baseBadge: BaseBadge, utorid: string) => {
     // result.questionStatus will contain questionsAdded or questionsEdited
 
     /* Tier 1 - a questions */
@@ -34,11 +73,27 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number]) 
                 description: `${result.edit ? "Edit" : "Add"} ${total - result.questionStatus} more question(s) to unlock the next tier (${result.questionStatus}/${total}).`,
                 placement: "bottom"
             });
+
+            if (result.questionStatus === a) {
+
+                if (baseBadge === "addQuestions") unlockBadgeTier(utorid, baseBadge, "addbadge1", "");
+                else unlockBadgeTier(utorid, baseBadge, "editbadge1", "");
+
+            } else if (result.questionStatus === b) {
+
+                if (baseBadge === "addQuestions") unlockBadgeTier(utorid, baseBadge, "addbadge2", "addbadge1");
+                else unlockBadgeTier(utorid, baseBadge, "editbadge2", "editbadge1");
+            }
+
         } else if (result.questionStatus === c) {
             notification.success({
                 message: "Unlocked the final badge tier!",
                 placement: "bottom"
             });
+
+            if (baseBadge === "addQuestions") unlockBadgeTier(utorid, baseBadge, "addbadge3", "addbadge2");
+            else unlockBadgeTier(utorid, baseBadge, "editbadge3", "editbadge2");
+
         } else if (result.questionStatus !== c) {
             notification.success({
                 message: `Getting closer to a new badge tier...`,
@@ -79,7 +134,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                         message.success("Question successfully edited.");
                     };
 
-                    checkBadge(addableQuestion.anon, result, [3, 7, 15]);
+                    checkBadge(addableQuestion.anon, result, [3, 7, 15], "editQuestions", addableQuestion.authId);
                     setRedirect(result.link);
                 }).catch((error) => {
                     message.error(error.message);
@@ -108,7 +163,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                 return res.json();
             }).then((result) => {
                 message.success("Question successfully added.");
-                checkBadge(addableQuestion.anon, result, [5, 15, 30]);
+                checkBadge(addableQuestion.anon, result, [5, 15, 30], "addQuestions", addableQuestion.authId);
 
                 if (result.consecutivePosting) {
                     if (result.consecutivePosting === 7) {
