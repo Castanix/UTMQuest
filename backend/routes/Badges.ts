@@ -109,7 +109,7 @@ badgeRouter.put("/unlockTier", async (req: Request, res: Response) => {
 	utmQuestCollections.Badges?.updateOne(badges, {
 		$set: {
 			unlockedBadges: newUnlockedBadges,
-			displayBadges: displayBadges,
+			displayBadges,
 		},
 	})
 		.then((result) => {
