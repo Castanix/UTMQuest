@@ -33,10 +33,20 @@
     margin: 0.25rem;
 }
 
+.ant-timeline {
+    width: 40vw !important;
+    margin-top: 2.75rem; 
+    margin-inline: auto;
+}
+
 @media screen and (max-width: 420px) {
     .profile {
         display: block;
         margin-inline: 0;
+    }
+
+    .ant-timeline {
+        width: 100% !important;
     }
 }
 
