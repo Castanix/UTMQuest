@@ -43,7 +43,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
         }).catch((error) => {
           console.log(error);
     });
-  });
+  }, []);
 
   const onThemeChange = () => setLightMode(!isLightMode);
 

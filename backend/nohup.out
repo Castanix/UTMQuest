@@ -36,3 +36,9 @@ Error: listen EADDRINUSE: address already in use :::3000
   address: '::',
   port: 3000
 }
+
+> backend@1.0.0 start
+> npx ts-node ./server.ts
+
+Listening on port 3000
+Terminated

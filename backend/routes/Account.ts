@@ -48,12 +48,12 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 					return;
 				}
 
-					res.status(201).send({ firstName: firstName });
+					res.status(201).send({ firstName });
 					
 			});
 		});
 	} else {
-		res.status(418).send({ firstName: firstName });
+		res.status(418).send({ firstName });
 	}
 });
 
