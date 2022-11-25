@@ -22,11 +22,10 @@ const root = ReactDOM.createRoot(
 const request = {
   method: 'PUT',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ utorid: "dummy22" })
+  body: JSON.stringify({ utorid: "dummy22", utorName: "Dummy Test" })
 };
 
 fetch(`${process.env.REACT_APP_API_URI}/incrementLoginStreak`, request)
-
   .then((result) => {
     if (!result.ok) throw Error("Could not increment login streak");
     return result.json();

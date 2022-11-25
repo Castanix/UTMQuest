@@ -117,13 +117,14 @@ const ApprovedQuestion = () => {
     const [activeTabKey, setActiveTabKey] = useState<string>('Question');
     const params = useParams();
     const link = params.link ?? '';
+    const courseCode = params.courseId ?? '';
     const { loading, question, error } = GetQuestion(link);
 
     const isLightMode = useContext(ThemeContext);
 
     if (loading) return <Loading />;
 
-    if (error !== '' || question === undefined) return <ErrorMessage title={error !== '' ? error : 'Could not find question'} link="/courses" message="Go back to courses" />;
+    if (error !== '' || question === undefined) return <ErrorMessage title={error !== '' ? error : 'Could not find question'} link={`/courses/${courseCode}/browse`} message="Go back to questions" />;
 
     const onTabChange = (key: string) => {
         setActiveTabKey(key);

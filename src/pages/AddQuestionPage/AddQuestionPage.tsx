@@ -36,7 +36,7 @@ const AddQuestionPage = ({ edit }: { edit: boolean }) => {
 
     if (loading) return <Loading />;
 
-    if (error !== '') return <ErrorMessage title={error} link='/courses' message='Go back to courses' />;
+    if (error !== '') return <ErrorMessage title={error} link={`/courses/${courseCode}`} message='Go back' />;
 
     return (
         <Card title={<Header courseCode={courseCode ?? ''} />} bordered={false}>

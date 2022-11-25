@@ -61,8 +61,8 @@ const CoursePage = () => {
 
   if (loadingCourses || loadingSaved) return <Loading />;
 
-  if (errorCourses !== '') return <ErrorMessage title={errorCourses} link="/courses" message="Go back to courses" />;
-  if (errorSaved !== '') return <ErrorMessage title={errorSaved} link="/courses" message="Go back to courses" />;
+  if (errorCourses !== '') return <ErrorMessage title={errorCourses} link="/" message="Home" />;
+  if (errorSaved !== '') return <ErrorMessage title={errorSaved} link="/" message="Home" />;
 
   return (
     <Card title={<Header courseCode={courseCode ?? ''} courseName={courseName ?? ''} favourite={isSaved} setFavourite={setIsSaved} />} bordered={false}>

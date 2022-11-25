@@ -29,7 +29,7 @@ const QuestionsPage = () => {
 
     if (loading || loadingTopics) return <Loading />;
 
-    if (error !== '' || errorTopics !== '') return <ErrorMessage title={error !== '' ? error : errorTopics} link="/courses" message="Go back to courses" />;
+    if (error !== '' || errorTopics !== '') return <ErrorMessage title={error !== '' ? error : errorTopics} link={`/courses/${courseCode}`} message="Go back to course" />;
 
     return (
         <Card title={<Header courseCode={courseCode ?? ''} title={`Browse Questions for ${courseCode}`} />} bordered={false}>

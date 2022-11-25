@@ -1,13 +1,9 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import connectDB, { utmQuestCollections } from "./db/db.service";
-import courseRouter from "./routes/Courses";
-import topicRouter from "./routes/Topic";
-import questionRouter from "./routes/Question";
-import discussionRouter from "./routes/Discussion";
-import accountRouter from "./routes/Account";
-import badgeRouter from "./routes/Badges";
+import path from "path";
+import connectDB from "./db/db.service";
+import apiRouter from "./api";
 
 const app = express();
 app.use(cors());
@@ -16,96 +12,24 @@ const port = process.env.PORT || 5001;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Questions
-app.use("/question", questionRouter);
+app.use(express.static(path.join("/var/www/html", "quest")));
 
-// Discussion
-app.use("/discussion", discussionRouter);
-
-// Courses
-app.use("/course", courseRouter);
-
-// Topics
-app.use("/topic", topicRouter);
-
-// Accounts
-app.use("/account", accountRouter);
-
-// Accounts
-app.use("/badge", badgeRouter);
-
-// Test route
-app.get("/express_backend", (req: Request, res: Response) => {
-	res.send({ express: "YOUR EXPRESS BACKEND IS CONNECTED TO REACT" });
+// ensure all requests are authorized
+app.use((req, res, next) => {
+	// should be hard to spoof the utorid
+    if (req.headers.utorid !== undefined) {
+        next();
+    } else {
+        // handle if shib is not enabled for some reaso
+		res.status(401).send({status: "Unauthorized"});
+		
+    }
 });
 
-app.put("/incrementLoginStreak", async (req: Request, res: Response) => {
-	const { utorid } = req.body;
-	const badge = await utmQuestCollections.Badges?.findOne({ utorid });
+app.use("/api", apiRouter);
 
-	if (!badge) {
-		res.status(404).send("Could not find badge progression for user.");
-		return;
-	}
-
-	const currDate = new Date();
-	const lastLogin = new Date(badge.lastLogin);
-
-	const diffInHours =
-		(currDate.getTime() - lastLogin.getTime()) / (1000 * 60 * 60);
-
-	if (diffInHours < 24) {
-		res.status(400).send(
-			`Can't increment when logging in within one day (${diffInHours}).`
-		);
-	} else if (diffInHours >= 24 && diffInHours < 48) {
-		utmQuestCollections.Badges?.findOneAndUpdate(badge, {
-			$inc: { currLoginStreak: 1 },
-			$set: {
-				longestLoginStreak: Math.max(
-					badge.currLoginStreak + 1,
-					badge.longestLoginStreak
-				),
-				lastLogin: currDate.toISOString(),
-			},
-		})
-			.then((result) => {
-				if (!result.ok)
-					res.status(500).send("Could not update login streak.");
-				res.status(201).send({ streak: badge.currLoginStreak + 1 });
-			})
-			.catch((error) => {
-				res.status(500).send(error);
-			});
-	} else {
-		utmQuestCollections.Badges?.findOneAndUpdate(badge, {
-			$set: {
-				currLoginStreak: 1,
-				lastLogin: currDate.toISOString(),
-			},
-		})
-			.then((result) => {
-				if (!result.ok)
-					res.status(500).send("Could not reset login streak.");
-				res.status(201).send({ streak: 1 });
-			})
-			.catch((error) => {
-				res.status(500).send(error);
-			});
-	}
-});
-
-app.get("/displayBadges/:utorid", async (req: Request, res: Response) => {
-	const {utorid} = req.params;
-
-	const badge = await utmQuestCollections.Badges?.findOne({ utorid });
-
-	if (!badge) {
-		res.status(404).send("Could not find badge for given user.");
-		return;
-	}
-
-	res.status(200).send(badge.displayBadges);
+app.get("/*", (req, res) => {
+	res.sendFile(path.join("/var/www/html", "quest", "index.html"));
 });
 
 // Connect to mongoDB and listen on app

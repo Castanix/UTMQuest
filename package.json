@@ -25,9 +25,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "startCrossEnv": "cross-env GENERATE_SOURCEMAP=false react-scripts start",
+    "start": "PORT=3001 react-scripts start",
+    "startCrossEnv": "cross-env GENERATE_SOURCEMAP=false PORT=3001 react-scripts start",
+    "startBack": "cd backend && npm run start",
     "build": "react-scripts build",
+    "sendProd": "sudo cp -r ./build/* /var/www/html/quest",
     "buildBack": "cd backend && npm run build",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!@uiw)/'",
     "eject": "react-scripts eject",
@@ -57,7 +59,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5001",
   "devDependencies": {
     "concurrently": "^7.4.0",
     "cross-env": "^7.0.3",

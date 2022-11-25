@@ -3,11 +3,64 @@ import { utmQuestCollections } from '../db/db.service';
 
 const accountRouter = Router();
 
+accountRouter.put("/setup", async (req: Request, res: Response) => {
+	const {utorid} = req.headers;
+	const email: string = req.headers.http_mail as string;
+	const name = (email.split("@"))[0].split(".");
+	const firstName = name[0].charAt(0).toUpperCase() + name[0].slice(1);
+	const lastName = name[name.length - 1].charAt(0).toUpperCase() + name[name.length - 1].slice(1);
+
+	const user = await utmQuestCollections.Accounts?.findOne({ utorid });
+
+	if (!user) {
+		utmQuestCollections.Accounts?.insertOne({
+			utorid,
+			utorName: `${firstName  } ${  lastName}`,
+			savedCourses: []
+		}).then((result) => {
+			if(!result) {
+				res.status(500).send("Unable to perform first time sign in.");
+				return;
+			}
+
+			utmQuestCollections.Badges?.insertOne({
+				utorid,
+				questionsAdded: 0,
+				questionsEdited: 0,
+				threadResponses: 0,
+				currLoginStreak: 1,
+				longestLoginStreak: 1,
+				lastLogin: new Date().toISOString(),
+				firstPostToday: "",
+				consecutivePosting: 0,
+				displayBadges: [],
+				unlockedBadges: {
+					addQuestions: null,
+					editQuestions: null,
+					consecutivePosting: null,
+					dailyLogin: null,
+					threadReplies: null,
+				}
+			}).then(badgeResult => {
+				if(!badgeResult) {
+					utmQuestCollections.Accounts?.deleteOne({ utorid });
+					res.status(500).send("Unable to perform first time sign in.");
+					return;
+				}
+
+					res.status(201).send({ firstName: firstName });
+					
+			});
+		});
+	} else {
+		res.status(418).send({ firstName: firstName });
+	}
+});
+
 accountRouter.get("/getAccount/:utorid", (req: Request, res: Response) => {
 	utmQuestCollections.Accounts?.findOne({ utorid: req.params.utorid })
 		.then((doc) => {
 			if (doc == null) {
-				// set custom statusText to be displayed to user
 				res.statusMessage = "No such account found.";
 				res.status(404).end();
 			} else {

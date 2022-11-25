@@ -31,7 +31,7 @@ const ManageTopics = () => {
 
     if (loading) return <Loading />;
 
-    if (error !== '') return <ErrorMessage title={error} link='/courses' message='Go back to courses' />;
+    if (error !== '') return <ErrorMessage title={error} link={`/courses/${courseCode}`} message='Go back to course' />;
 
     return (
         <Card title={<Header courseCode={courseCode ?? ''} title={`Topics for ${courseCode}`} />} bordered={false}>

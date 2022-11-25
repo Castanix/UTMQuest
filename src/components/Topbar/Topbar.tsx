@@ -3,7 +3,7 @@ import {
   CaretDownFilled, BookOutlined, UserOutlined, LogoutOutlined,
 } from '@ant-design/icons';
 import './Topbar.css';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Dark from '../../Dark';
 import Light from '../../Light';
@@ -31,8 +31,25 @@ const LightModeIcon = () => (
 const Topbar = ({ children }: { children: React.ReactNode }) => {
 
   const [isLightMode, setLightMode] = useState(true);
+  const [firstName, setFirstName] = useState("");
+
+  useEffect(() => {
+      fetch(`${process.env.REACT_APP_API_URI}/account/setup`, { method: "PUT" })
+        .then((result) => {
+          if (result.status !== 418 && result.status !== 201) throw Error("Could not perform first time login");
+          return result.json();
+        }).then(response => {
+          setFirstName(response.firstName);
+        }).catch((error) => {
+          console.log(error);
+    });
+  });
 
   const onThemeChange = () => setLightMode(!isLightMode);
+
+  const signOut = () => {
+    window.location.href = "/Shibboleth.sso/Logout";
+  };
 
   return (
     <Layout>
@@ -50,7 +67,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
             className="sub-menu"
             title={(
               <span>
-                Username
+                {firstName}
                 <CaretDownFilled />
               </span>
             )}
@@ -66,7 +83,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
                 {isLightMode ? "Dark Mode" : "Light Mode"}
               </Space>
             </Menu.Item>
-            <Menu.Item key="logout" icon={<LogoutOutlined />}>Sign out</Menu.Item>
+            <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={signOut}>Sign out</Menu.Item>
           </Menu.SubMenu>
 
         </Menu>
