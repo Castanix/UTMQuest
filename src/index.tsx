@@ -13,6 +13,7 @@ import AddQuestionPage from './pages/AddQuestionPage/AddQuestionPage';
 import ApprovedQuestion from './pages/ApprovedQuestion/ApprovedQuestion';
 import LandingPage from './pages/LandingPage/LandingPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -58,6 +59,8 @@ root.render(
     </Topbar>
   </BrowserRouter>
 );
+
+serviceWorkerRegistration.register();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
