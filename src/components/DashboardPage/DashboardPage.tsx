@@ -14,8 +14,7 @@ const paginationConfig = (total: number, size: number) => ({
 });
 
 const DashboardPage = () => {
-  const utorid = 'dummy22';
-  const { loading, courseData, error } = GetWidgets(utorid);
+  const { loading, courseData, error } = GetWidgets();
 
   if (loading) return <Loading />;
 

@@ -3,8 +3,8 @@ import { utmQuestCollections } from "../db/db.service";
 
 const badgeRouter = Router();
 
-badgeRouter.get('/userBadges/:utorid', (req: Request, res: Response) => {
-    const {utorid} = req.params;
+badgeRouter.get('/userBadges', (req: Request, res: Response) => {
+    const {utorid} = req.headers;
 
     utmQuestCollections.Badges?.findOne({utorid})
         .then(badges => {
@@ -24,11 +24,11 @@ badgeRouter.get('/userBadges/:utorid', (req: Request, res: Response) => {
 });
 
 badgeRouter.put('/updateBadges', async (req: Request, res: Response) => {
-    const {utorid} = req.body;
-    const badges = await utmQuestCollections.Badges?.findOne({utorid});
+    const { utorid } = req.headers;
+    const badges = await utmQuestCollections.Badges?.findOne({ utorid });
 
     if(!badges) {
-        res.status(404).send(`Cannot find badges document for ${utorid}`);
+        res.status(404).send(`Cannot find badges document for ${ utorid }`);
         return;
     };
 
@@ -40,7 +40,7 @@ badgeRouter.put('/updateBadges', async (req: Request, res: Response) => {
             return;
         }
         
-        res.status(200).send(result);
+        res.status(200).send({ utorid });
     }).catch(err => {
         res.status(500).send(err);
     });

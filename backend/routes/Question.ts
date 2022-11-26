@@ -48,9 +48,9 @@ const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
 
 
 // /courses/:courseId/question/:id
-questionRouter.get('/allPostedQuestions/:utorid', async (req: Request, res: Response) => {
+questionRouter.get('/allUserPostedQuestions', async (req: Request, res: Response) => {
     try {
-        const questions = await utmQuestCollections.Questions?.find({ authId: req.params.utorid }).toArray();
+        const questions = await utmQuestCollections.Questions?.find({ authId: req.headers.utorid }).toArray();
         if (!questions) { 
             res.status(404).send("No question found.");
             return;
@@ -102,7 +102,7 @@ questionRouter.get(
 
 
 questionRouter.get(
-	"/latestQuestions/:courseId/:utorid",
+	"/latestQuestions/:courseId",
 	async (req: Request, res: Response) => {
 		try {
 			const allQuestions = await utmQuestCollections.Questions?.find({
@@ -116,7 +116,7 @@ questionRouter.get(
 			/* and the startingDate. This will allow different people   */
 			/* to view new questions daily.					  			*/
 
-			const author = req.params.utorid;
+			const { utorid } = req.headers;
 
 			const startingDate = new Date(2000, 1, 1); // starting date for seed
 			const currentDate = new Date();
@@ -124,9 +124,9 @@ questionRouter.get(
 			let diff = currentDate.getTime() - startingDate.getTime();
 			const diffInDays = Math.ceil(diff / (1000 * 3600 * 24)).toString();
 
-			const randomGen = seedrandom(diffInDays + author);
+			const randomGen = seedrandom(diffInDays + utorid);
 			const randomNum = randomGen();
-			const showNewQuestions = randomNum <= 0.25;
+			const showNewQuestions = randomNum <= 0.15;
 
 			const newArr = allQuestions?.filter((question) => {
 				const now = new Date();
@@ -134,7 +134,7 @@ questionRouter.get(
 					(now.getTime() - new Date(question.date).getTime()) /
 					(60 * 60 * 1000);
 
-				if (diff > 24 || author === question.authId) {
+				if (diff > 24 || utorid === question.authId) {
 					return true;
 				}
 				if (showNewQuestions) {
@@ -156,6 +156,13 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 	const mongoId = new ObjectID();
 	const link = mongoId.toHexString();
 	const topicId = new ObjectID(req.body.topicId);
+	const isAnon = req.body.anon;
+	const utorid = req.headers.utorid as string;
+
+	const email: string = req.headers.http_mail as string;
+	const name = (email.split("@"))[0].split(".");
+	const firstName = name[0].charAt(0).toUpperCase() + name[0].slice(1);
+	const lastName = name[name.length - 1].charAt(0).toUpperCase() + name[name.length - 1].slice(1);
 
 	const question = {
 		_id: mongoId,
@@ -169,17 +176,15 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		xplan: req.body.xplan,
 		choices: req.body.choices,
 		ans: req.body.ans,
-		authId: req.body.authId,
-		authName: req.body.authName,
+		authId: utorid,
+		authName: isAnon? "Anonymous" : firstName + " " + lastName,
 		date: new Date().toISOString(),
 		numDiscussions: req.body.numDiscussions,
 		anon: req.body.anon,
 		latest: true,
 	};
 
-	const badge = await utmQuestCollections.Badges?.findOne({
-		utorid: question.authId,
-	});
+	const badge = await utmQuestCollections.Badges?.findOne({ utorid });
 
 	if (!badge) {
 		res.status(404).send("Could not find badge progression for user.");
@@ -334,6 +339,13 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		}
 
 		const { link } = req.body;
+		const isAnon = req.body.anon;
+		const utorid = req.headers.utorid as string;
+
+		const email: string = req.headers.http_mail as string;
+		const name = (email.split("@"))[0].split(".");
+		const firstName = name[0].charAt(0).toUpperCase() + name[0].slice(1);
+		const lastName = name[name.length - 1].charAt(0).toUpperCase() + name[name.length - 1].slice(1);
 
 		const question = {
 			link,
@@ -346,8 +358,8 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			xplan: req.body.xplan,
 			choices: req.body.choices,
 			ans: req.body.ans,
-			authId: req.body.authId,
-			authName: req.body.authName,
+			authId: utorid,
+			authName: isAnon? "Anonymous" : firstName + " " + lastName,
 			date: new Date().toISOString(),
 			numDiscussions: req.body.numDiscussions,
 			anon: req.body.anon,
@@ -372,7 +384,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 
 				// Attempts to update badge progression for specified utorid, reverts all changes if failed
 				if(!req.body.anon) {
-					updateBadge(req.body.authId).then(updateRes => {
+					updateBadge(utorid).then(updateRes => {
 						if(!updateRes) {
 							updateLatest(oldVersion, true);
 							utmQuestCollections.Questions?.deleteOne(question);

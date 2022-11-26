@@ -4,7 +4,7 @@ import TextArea from "antd/es/input/TextArea";
 import { Comment } from '@ant-design/compatible';
 import rehypeSanitize from "rehype-sanitize";
 import MDEditor from "@uiw/react-md-editor";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 
 import "./Editor.css";
@@ -17,8 +17,8 @@ const AddComment = async (discussionId: string, questionLink: string, op: boolea
         _id: `id${(new Date()).getTime()}`,
         questionLink,
         op,
-        authId: 'dummy22',
-        authName: isAnon ? "Anonymous" : "Some User",
+        authId: 'To be filled in the backend',
+        authName: 'To be filled in the backend',
         content,
         thread: [],
         date: new Date().toISOString(),
@@ -42,6 +42,7 @@ const AddComment = async (discussionId: string, questionLink: string, op: boolea
         return res.json();
     }).then((result) => {
         newComment._id = result.insertedId;
+        newComment.authName = result.authName;
         return newComment;
     });
 
@@ -77,8 +78,8 @@ const EditComment = async (discussionId: string, questionLink: string, op: boole
         _id: discussionId,
         questionLink,
         op,
-        authId: 'dummy22',
-        authName: isAnon ? "Anonymous" : "Some User",
+        authId: 'To be filled in the backend',
+        authName: 'To be filled in the backend',
         content,
         thread,
         date: new Date().toISOString(),
@@ -105,7 +106,7 @@ const EditComment = async (discussionId: string, questionLink: string, op: boole
 const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, thread }: { discussionId: string | null, questionLink: string, op: boolean, oldContent: string, updateComments: Function, thread: string[] }) => {
     const [content, setContent] = useState<string>(oldContent);
     const [isAnon, setAnon] = useState<boolean>(false);
-    const [commented, setCommented] = useState<DiscussionFrontEndType>();
+    // const [commented, setCommented] = useState<DiscussionFrontEndType>();
 
     const isLightMode = useContext(ThemeContext);
 
@@ -118,7 +119,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
         if (oldContent === "") {
             const newComment = await AddComment(discussionId as string, questionLink, op, content, isAnon);
             updateComments(newComment, false);
-            setCommented(newComment);
+            // setCommented(newComment);
             setContent("");
             setAnon(false);
         } else {
@@ -137,7 +138,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
             avatar={
                 <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
             }
-            author={<Link to="/">{commented?.authName ?? 'Anonymous'}</Link>}
+            // author={<Link to="/">{commented?.authName ?? 'Anonymous'}</Link>}
             content={
                 <span>
                     <Form.Item>

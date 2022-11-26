@@ -4,7 +4,7 @@ import { Modal, Button, message } from "antd";
 import { BadgesType } from "../../pages/ProfilePage/ProfilePage";
 import UpdateBadge from "./fetch/UpdateBadges";
 
-const BadgePicker = ({ badges, utorid }: { badges: BadgesType, utorid: string }) => {
+const BadgePicker = ({ badges }: { badges: BadgesType }) => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [badgeSelected, setBadgeSelected] = useState<string[]>(badges.displayBadges);
     const [currBadgeSelected, setCurrBadgeSelected] = useState<string[]>(badgeSelected);
@@ -77,7 +77,7 @@ const BadgePicker = ({ badges, utorid }: { badges: BadgesType, utorid: string })
         setShowModal(false);
 
         if (changes.length > 0) {
-            UpdateBadge(currBadgeSelected, utorid, setBadgeSelected, resetChanges);
+            UpdateBadge(currBadgeSelected, setBadgeSelected, resetChanges);
         } else {
             message.error("No changes were made");
         };

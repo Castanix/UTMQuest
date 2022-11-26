@@ -4,7 +4,7 @@ import { utmQuestCollections } from '../db/db.service';
 const accountRouter = Router();
 
 accountRouter.put("/setup", async (req: Request, res: Response) => {
-	const {utorid} = req.headers;
+	const { utorid } = req.headers;
 	const email: string = req.headers.http_mail as string;
 	const name = (email.split("@"))[0].split(".");
 	const firstName = name[0].charAt(0).toUpperCase() + name[0].slice(1);
@@ -57,8 +57,8 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 	}
 });
 
-accountRouter.get("/getAccount/:utorid", (req: Request, res: Response) => {
-	utmQuestCollections.Accounts?.findOne({ utorid: req.params.utorid })
+accountRouter.get("/getAccount", (req: Request, res: Response) => {
+	utmQuestCollections.Accounts?.findOne({ utorid: req.headers.utorid })
 		.then((doc) => {
 			if (doc == null) {
 				res.statusMessage = "No such account found.";
@@ -72,12 +72,9 @@ accountRouter.get("/getAccount/:utorid", (req: Request, res: Response) => {
 		});
 });
 
-accountRouter.get("/checkSaved/:utorid/:courseId", (req: Request, res: Response) => {
-	const account = {
-		utorid: req.params.utorid
-	};
-
-	utmQuestCollections.Accounts?.findOne(account)
+accountRouter.get("/checkSaved/:courseId", (req: Request, res: Response) => {
+	
+	utmQuestCollections.Accounts?.findOne({ utorid: req.headers.utorid })
 		.then((doc) => {
 			if (doc == null) {
 				// set custom statusText to be displayed to user
@@ -95,12 +92,10 @@ accountRouter.get("/checkSaved/:utorid/:courseId", (req: Request, res: Response)
 
 
 accountRouter.put('/updateSavedCourse', async (req: Request, res: Response) => {
-    const account = {
-      utorid: req.body.utorid
-    };
-  
+	const { utorid } = req.headers;
+
     if (req.body.favourite) {
-        utmQuestCollections.Accounts?.findOneAndUpdate(account, 
+        utmQuestCollections.Accounts?.findOneAndUpdate({ utorid }, 
             {
               $pull: {"savedCourses": req.body.courseId}
             }, { returnDocument: "after" }
@@ -113,7 +108,7 @@ accountRouter.put('/updateSavedCourse', async (req: Request, res: Response) => {
             res.status(500).send(error);
           });
     } else {
-        utmQuestCollections.Accounts?.findOneAndUpdate(account, 
+        utmQuestCollections.Accounts?.findOneAndUpdate({ utorid }, 
             {
               $push: {"savedCourses": req.body.courseId},
             }, { returnDocument: "after" }

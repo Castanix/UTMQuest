@@ -10,7 +10,7 @@ import DisplayComment from "./DisplayComment";
 
 const Discussion = ({ questionLink, questionDate }: { questionLink: string, questionDate: string }) => {
 
-    const { loading, comments: opComments, error } = GetOPComments(questionLink);
+    const { loading, comments: opComments, utorid, error } = GetOPComments(questionLink);
     const [comments, setComments] = useState<DiscussionFrontEndType[]>(opComments);
 
     const updateComments = (newComment: DiscussionFrontEndType) => {
@@ -28,7 +28,7 @@ const Discussion = ({ questionLink, questionDate }: { questionLink: string, ques
                 itemLayout="horizontal"
                 dataSource={comments}
                 renderItem={item => (
-                    <DisplayComment key={item._id} comment={item} questionDate={questionDate} />
+                    <DisplayComment key={item._id} comment={item} questionDate={questionDate} utorid={utorid} />
                 )}
             />
             <Divider orientation="left">Post a Comment</Divider>

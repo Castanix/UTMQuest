@@ -40,7 +40,7 @@ discussionRouter.get('/thread/:questionLink', async (req: Request, res: Response
             op: true
         }).toArray();
 
-        res.status(200).send(discussion);
+        res.status(200).send({ discussion, utorid: req.headers.utorid });
     } catch (error) { 
         res.status(500).send(error);
     }
@@ -71,11 +71,19 @@ discussionRouter.get('/allThreads/:id', async (req: Request, res: Response) => {
 discussionRouter.post('/', async (req: Request, res: Response) => { 
     
     const link = req.body.questionLink;
+    const isAnon = req.body.anon;
+    const utorid = req.headers.utorid as string;
+
+    const email: string = req.headers.http_mail as string;
+    const name = (email.split("@"))[0].split(".");
+    const firstName = name[0].charAt(0).toUpperCase() + name[0].slice(1);
+    const lastName = name[name.length - 1].charAt(0).toUpperCase() + name[name.length - 1].slice(1);
 
     const quesiton = await utmQuestCollections.Questions?.findOne({
         link,
         latest: true
     });
+
     if (!quesiton) {
         res.status(404).send(`Error: Unable to find question`);
         return;
@@ -84,8 +92,8 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
     const discussion = {
         questionLink: link,
         op: req.body.op, 
-        authId: req.body.authId,
-        authName: req.body.authName,
+        authId: utorid,
+        authName: isAnon? "Anonymous" : firstName + " " + lastName,
         content: req.body.content,
         thread: req.body.thread, 
         date: new Date().toISOString(),
@@ -113,7 +121,7 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
                 utmQuestCollections.Discussions?.deleteOne(discussion);
                 return;
             };
-            res.status(201).send(result);
+            res.status(201).send({ insertedId: result.insertedId, authName: isAnon? "Anonymous" : firstName + " " + lastName });
         });
 
     }).catch((error) => {
@@ -124,12 +132,20 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
 
 
 // UPDATE .../discussion/:discussionId
-discussionRouter.put('/:discussionId', async (req: Request, res: Response) => { 
+discussionRouter.put('/:discussionId', async (req: Request, res: Response) => {
+
+    const isAnon = req.body.anon;
+    const utorid = req.headers.utorid as string;
+
+    const email: string = req.headers.http_mail as string;
+    const name = (email.split("@"))[0].split(".");
+    const firstName = name[0].charAt(0).toUpperCase() + name[0].slice(1);
+    const lastName = name[name.length - 1].charAt(0).toUpperCase() + name[name.length - 1].slice(1);
 
     const discussion = {
         op: req.body.op, 
-        authId: req.body.authId,
-        authName: req.body.authName,
+        authId: utorid,
+        authName: isAnon? "Anonymous" : firstName + " " + lastName,
         content: req.body.content,
         thread: req.body.thread, 
         deleted: false,
@@ -155,11 +171,19 @@ discussionRouter.put('/updatePost/:discussionId', async (req: Request, res: Resp
     const {content} = req.body;
     const date = new Date().toISOString();
 
+    const isAnon = req.body.anon;
+    const utorid = req.headers.utorid as string;
+
+    const email: string = req.headers.http_mail as string;
+    const name = (email.split("@"))[0].split(".");
+    const firstName = name[0].charAt(0).toUpperCase() + name[0].slice(1);
+    const lastName = name[name.length - 1].charAt(0).toUpperCase() + name[name.length - 1].slice(1);
+
     const discussion = {
         questionLink: req.body.questionLink,
         op: req.body.op, 
-        authId: req.body.authId,
-        authName: req.body.authName,
+        authId: utorid,
+        authName: isAnon? "Anonymous" : firstName + " " + lastName,
         content,
         thread: req.body.thread, 
         date,

@@ -12,7 +12,7 @@ import GetRelativeTime from "../../RelativeTime";
 import "./Discussion.css";
 import { ThemeContext } from "../Topbar/Topbar";
 
-const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEndType, questionDate: string }) => {
+const DisplayComment = ({ comment, questionDate, utorid }: { comment: DiscussionFrontEndType, questionDate: string, utorid: string }) => {
     const [displayComment, setDisplayComment] = useState<DiscussionFrontEndType>(comment);
     const [childComments, setChildComments] = useState<DiscussionFrontEndType[]>([]);
     const [isDisplayed, setDisplay] = useState(!(displayComment.thread.length > 0));
@@ -79,7 +79,7 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
 
     actions.push([
         // Need to check if 'user' is author when we get user auth
-        displayComment.authId === "dummy22" ?
+        displayComment.authId === utorid ?
             <span
                 onClick={() => {
                     setShowReply(false);
@@ -159,7 +159,7 @@ const DisplayComment = ({ comment, questionDate }: { comment: DiscussionFrontEnd
         >
             {
                 childComments.map((item) => (
-                    <DisplayComment key={item._id} comment={item} questionDate={questionDate} />
+                    <DisplayComment key={item._id} comment={item} questionDate={questionDate} utorid={utorid} />
                 ))
             }
 

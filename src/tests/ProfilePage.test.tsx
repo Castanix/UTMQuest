@@ -17,7 +17,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 // mock add topic fetch call
 const server = setupServer(
-    rest.get(`${process.env.REACT_APP_API_URI}/account/getAccount/:utorid`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/account/getAccount`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json({
@@ -31,7 +31,7 @@ const server = setupServer(
         )
     }),
 
-    rest.get(`${process.env.REACT_APP_API_URI}/badge/userBadges/:utorid`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/badge/userBadges`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json({
@@ -41,7 +41,7 @@ const server = setupServer(
         );
     }),
 
-    rest.get(`${process.env.REACT_APP_API_URI}/question/allPostedQuestions/:utorid`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/question/allUserPostedQuestions`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json([{

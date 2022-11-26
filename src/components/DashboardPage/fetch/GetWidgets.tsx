@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import WidgetType from "../types/Widget";
 
-const GetWidgets = (utorid: string) => {
+const GetWidgets = () => {
 
     const [loading, setLoading] = useState<boolean>(true);
     const [courseData, setCourseData] = useState<[string, string][]>([]);
@@ -10,10 +10,9 @@ const GetWidgets = (utorid: string) => {
 
     useEffect(() => {
         const courseArr: [string, string][] = [];
-        // const qnsArr: DataType[] = [];
 
         const fetchData = async () => {
-            await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorid}`)
+            await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount`)
                 .then((res: Response) => {
                     if (!res.ok) throw Error(res.statusText);
                     return res.json();
@@ -22,11 +21,7 @@ const GetWidgets = (utorid: string) => {
                         courseArr.push([`/courses/${courseId}`, courseId]);
                     });
 
-                    // TODO: create a type for qns
-                    // Query questions collection for pending questions added by the user
-
                     setCourseData(courseArr);
-                    // setReviewQnsData(qnsArr);
                     setLoading(false);
                 }).catch((err) => {
                     setError(err.message);
@@ -35,7 +30,7 @@ const GetWidgets = (utorid: string) => {
         };
 
         fetchData();
-    }, [setCourseData, setReviewQnsData, utorid]);
+    }, [setCourseData, setReviewQnsData]);
 
     return {
         loading,

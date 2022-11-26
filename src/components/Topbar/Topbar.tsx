@@ -73,7 +73,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
             )}
           >
             <Menu.Item key="profile" icon={<UserOutlined />}>
-              <Link to="/profile/dummy22">
+              <Link to="/profile">
                 Profile
               </Link>
             </Menu.Item>

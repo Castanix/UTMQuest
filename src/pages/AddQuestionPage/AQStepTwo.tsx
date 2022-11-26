@@ -201,7 +201,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                             }
 
                             const addableQuestion: QuestionsType = {
-                                _id: '',
+                                _id: "To be filled in by the backend",
                                 link,
                                 topicId: topicSelected[0],
                                 topicName: topicSelected[1],
@@ -212,8 +212,8 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 xplan: explanationValue ?? "",
                                 choices,
                                 ans,
-                                authId: "dummy22",
-                                authName: !isAnon ? "Dummy Test" : "Anonymous",
+                                authId: "To be filled in by the backend",
+                                authName: "To be filled in by the backend",
                                 date: (latest ? question.date : new Date().toISOString),
                                 numDiscussions: 0,
                                 anon: isAnon,

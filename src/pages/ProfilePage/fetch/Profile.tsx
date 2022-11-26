@@ -1,13 +1,13 @@
-import { message } from "antd";
+// import { message } from "antd";
 import { useEffect, useState } from "react";
 
-export const GetProfile = (utorid: string, setName: Function) => {
+const GetProfile = (setName: Function) => {
 
     const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
     const [errorProfile, setErrorProfile] = useState('');
 
     useEffect(() => {
-            fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorid}`)
+            fetch(`${process.env.REACT_APP_API_URI}/account/getAccount`)
                 .then((res: Response) => {
                     if (!res.ok) throw Error(res.statusText);
                     return res.json();
@@ -19,7 +19,7 @@ export const GetProfile = (utorid: string, setName: Function) => {
                     setLoadingProfile(false);
                 });
 
-    }, [utorid, setName]);
+    }, [setName]);
 
     return {
         loadingProfile,
@@ -27,22 +27,26 @@ export const GetProfile = (utorid: string, setName: Function) => {
     };
 };
 
-export const UpdateProfile = (utorid: string, colour: string, setSavedColour: Function) => {
-        fetch(`${process.env.REACT_APP_API_URI}/account/updateColour`,
-            {
-                method: 'PUT',
-                redirect: "follow",
-                mode: 'cors',
-                cache: 'no-cache',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ utorid, colour })
-            }).then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                setSavedColour(colour);
-            }).catch((err) => {
-                message.error(err);
-            });
-};
+export default GetProfile;
+
+
+// Not currently updaing profile icon color
+// export const UpdateProfile = (utorid: string, colour: string, setSavedColour: Function) => {
+//         fetch(`${process.env.REACT_APP_API_URI}/account/updateColour`,
+//             {
+//                 method: 'PUT',
+//                 redirect: "follow",
+//                 mode: 'cors',
+//                 cache: 'no-cache',
+//                 credentials: 'same-origin',
+//                 headers: {
+//                     'Content-Type': 'application/json'
+//                 },
+//                 body: JSON.stringify({ utorid, colour })
+//             }).then((res: Response) => {
+//                 if (!res.ok) throw Error(res.statusText);
+//                 setSavedColour(colour);
+//             }).catch((err) => {
+//                 message.error(err);
+//             });
+// };

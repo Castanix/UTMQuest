@@ -7,7 +7,7 @@ export const CheckSaved = (courseId: string, setTest: Function) => {
     const [errorSaved, setErrorSaved] = useState<string>("");
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URI}/account/checkSaved/dummy22/${courseId}`)
+        fetch(`${process.env.REACT_APP_API_URI}/account/checkSaved/${courseId}`)
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
                 return res.json();
@@ -37,7 +37,7 @@ export const SaveCourse = (courseId: string, favourite: boolean, setFavourite: F
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({utorid: "dummy22", courseId, favourite})
+            body: JSON.stringify({courseId, favourite})
         }).then((res: Response) => {
             if (!res.ok) throw new Error("Could not add course. Please try again.");
             setFavourite(!favourite);

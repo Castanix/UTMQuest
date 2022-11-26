@@ -8,7 +8,7 @@ import Loading from "../../components/Loading/Loading";
 import GetRelativeTime from "../../RelativeTime";
 import GetAllQuestions from "./fetch/GetAllQuestions";
 import GetBadges from "./fetch/GetBadges";
-import { GetProfile } from "./fetch/Profile";
+import GetProfile from "./fetch/Profile";
 import "./ProfilePage.css";
 
 const { Text, Title } = Typography;
@@ -39,7 +39,7 @@ const Header = () => (
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
             <Breadcrumb.Item>Profile</Breadcrumb.Item>
         </Breadcrumb>
-        <Title level={3} ellipsis>Profile <div className="subtitle">&#8226; dummy22</div></Title>
+        <Title level={3} ellipsis>Profile</Title>
     </div>
 );
 
@@ -48,9 +48,9 @@ const ProfilePage = () => {
     const [badges, setBadges] = useState<BadgesType>({ unlockedBadges: {}, displayBadges: [], longestLoginStreak: 0 });
     const [timeline, setTimeline] = useState<TimelineType[]>();
 
-    const { loadingProfile, errorProfile } = GetProfile("dummy22", setName);
-    const { loadingBadges, errorBadges } = GetBadges("dummy22", setBadges);
-    const { loadingQuestions, errorQuestions } = GetAllQuestions("dummy22", setTimeline);
+    const { loadingProfile, errorProfile } = GetProfile(setName);
+    const { loadingBadges, errorBadges } = GetBadges(setBadges);
+    const { loadingQuestions, errorQuestions } = GetAllQuestions(setTimeline);
 
     if (loadingProfile || loadingBadges || loadingQuestions) return <Loading />;
 
@@ -60,7 +60,7 @@ const ProfilePage = () => {
 
 
     const firstInitial = name[0][0].toUpperCase();
-    const lastInitial = name[name.length - 1][0].toUpperCase();
+    const lastInitial = name.split(" ")[1][0].toUpperCase() ?? "";
 
     // TODO: need to include threadreplies when edit badge routes have been set
     const { addQuestions, editQuestions, consecutivePosting } = badges.unlockedBadges;
@@ -121,7 +121,7 @@ const ProfilePage = () => {
                         </div>
                     </div>
                     <div className="badge-container">
-                        <BadgePicker badges={badges} utorid="dummy22" />
+                        <BadgePicker badges={badges} />
                         <Divider>Badges</Divider>
                         <div className="badges">
                             {initBadges()}
