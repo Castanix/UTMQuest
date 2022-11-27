@@ -38,7 +38,7 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 					addQuestions: null,
 					editQuestions: null,
 					consecutivePosting: null,
-					dailyLogin: null,
+					dailyLogin: "dailybadge",
 					threadReplies: null,
 				}
 			}).then(badgeResult => {

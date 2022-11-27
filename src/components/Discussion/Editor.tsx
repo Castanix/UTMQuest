@@ -43,6 +43,7 @@ const AddComment = async (discussionId: string, questionLink: string, op: boolea
     }).then((result) => {
         newComment._id = result.insertedId;
         newComment.authName = result.authName;
+        newComment.authId = result.authId;
         return newComment;
     });
 

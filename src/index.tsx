@@ -19,13 +19,8 @@ const root = ReactDOM.createRoot(
 );
 
 /* Once login is implemented, we can move the following within the login callback. */
-const request = {
-  method: 'PUT',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ utorid: "dummy22", utorName: "Dummy Test" })
-};
 
-fetch(`${process.env.REACT_APP_API_URI}/incrementLoginStreak`, request)
+fetch(`${process.env.REACT_APP_API_URI}/incrementLoginStreak`, { method: "PUT" })
   .then((result) => {
     if (!result.ok) throw Error("Could not increment login streak");
     return result.json();

@@ -34,15 +34,15 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
   const [firstName, setFirstName] = useState("");
 
   useEffect(() => {
-      fetch(`${process.env.REACT_APP_API_URI}/account/setup`, { method: "PUT" })
-        .then((result) => {
-          if (result.status !== 418 && result.status !== 201) throw Error("Could not perform first time login");
-          return result.json();
-        }).then(response => {
-          setFirstName(response.firstName);
-        }).catch((error) => {
-          console.log(error);
-    });
+    fetch(`${process.env.REACT_APP_API_URI}/account/setup`, { method: "PUT" })
+      .then((result) => {
+        if (result.status !== 418 && result.status !== 201) throw Error("Could not perform first time login");
+        return result.json();
+      }).then(response => {
+        setFirstName(response.firstName);
+      }).catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   const onThemeChange = () => setLightMode(!isLightMode);

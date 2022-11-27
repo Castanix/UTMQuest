@@ -43,7 +43,7 @@ apiRouter.get ('/user', (req) => {
 });
 
 apiRouter.put("/incrementLoginStreak", async (req: Request, res: Response) => {
-	const { utorid } = req.body;
+	const { utorid } = req.headers;
 	const badge = await utmQuestCollections.Badges?.findOne({ utorid });
 
 	if (!badge) {

@@ -121,7 +121,7 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
                 utmQuestCollections.Discussions?.deleteOne(discussion);
                 return;
             };
-            res.status(201).send({ insertedId: result.insertedId, authName: isAnon? "Anonymous" : firstName + " " + lastName });
+            res.status(201).send({ insertedId: result.insertedId, authName: isAnon? "Anonymous" : firstName + " " + lastName, authId: utorid });
         });
 
     }).catch((error) => {
