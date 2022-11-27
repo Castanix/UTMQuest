@@ -13,6 +13,8 @@ const GetWidgets = () => {
         const courseArr: [string, string][] = [];
 
         const fetchData = async () => {
+            if (utorid === "") return;
+
             await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorid}`)
                 .then((res: Response) => {
                     if (!res.ok) throw Error(res.statusText);
@@ -24,15 +26,13 @@ const GetWidgets = () => {
 
                     setCourseData(courseArr);
                     setLoading(false);
+                    setError("");
                 }).catch((err) => {
                     setError(err.message);
                     setLoading(false);
                 });
         };
-
-        if (utorid !== "") {
-            fetchData();
-        }
+        fetchData();
     }, [utorid]);
 
     return {

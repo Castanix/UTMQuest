@@ -84,6 +84,12 @@ const server = setupServer(
             ctx.json(editHistory)
         )
     }),
+    rest.get(`${process.env.REACT_APP_API_URI}/displayBadges/:utorid`, (req, res, ctx) => {
+        return res(
+            ctx.status(200),
+            ctx.json({ displayBadges: [], longestLoginStreak: 1 })
+        )
+    })
 )
 
 let document: HTMLElement;
