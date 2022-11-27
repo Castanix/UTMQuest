@@ -24,7 +24,7 @@ const server = setupServer(
             ctx.json({})
         )
     }),
-)
+);
 
 
 const courses: CoursesType[] = [
@@ -49,7 +49,7 @@ const courses: CoursesType[] = [
         numTopics: 0,
         added: false
     }
-]
+];
 
 let document: HTMLElement;
 
@@ -67,26 +67,26 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 
-test('test table content', () => {
-    const firstCourse = screen.getByText(/Introduction to Computer Science/i);
-    const secondCourse = screen.getByText(/VERY PAINFUL COURSE/i);
+// test('test table content', () => {
+//     const firstCourse = screen.getByText(/Introduction to Computer Science/i);
+//     const secondCourse = screen.getByText(/VERY PAINFUL COURSE/i);
 
-    expect(firstCourse).toBeInTheDocument();
-    expect(secondCourse).toBeInTheDocument();
-});
+//     expect(firstCourse).toBeInTheDocument();
+//     expect(secondCourse).toBeInTheDocument();
+// });
 
-test('test searching for course', () => {
-    const searchBar: HTMLInputElement = screen.getByPlaceholderText(/Search Course/i);
+// test('test searching for course', () => {
+//     const searchBar: HTMLInputElement = screen.getByPlaceholderText(/Search Course/i);
 
-    // table contains two rows
-    expect(document.getElementsByTagName('tbody')[0].children.length).toBe(2);
+//     // table contains two rows
+//     expect(document.getElementsByTagName('tbody')[0].children.length).toBe(2);
 
-    fireEvent.change(searchBar, { target: { value: '108' } });
-    expect(searchBar.value).toBe('108');
+//     fireEvent.change(searchBar, { target: { value: '108' } });
+//     expect(searchBar.value).toBe('108');
 
-    // table now contains only one row
-    expect(document.getElementsByTagName('tbody')[0].children.length).toBe(1);
-})
+//     // table now contains only one row
+//     expect(document.getElementsByTagName('tbody')[0].children.length).toBe(1);
+// })
 
 test('test adding a course', async () => {
 

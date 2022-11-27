@@ -14,8 +14,7 @@ import { ThemeContext, UserContext } from '../../components/Topbar/Topbar';
 
 const { Option } = Select;
 
-const GetEditor = (value: string | undefined, placeholder: string, onChange: any) => {
-    const isLightMode = useContext(ThemeContext);
+const GetEditor = (value: string | undefined, placeholder: string, onChange: any, isLightMode: boolean) => {
     if (onMobile()) {
         return <TextArea className="add-question-textarea" rows={4} placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)} maxLength={4000} showCount />;
     }
@@ -51,6 +50,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     const [isAnon, setAnon] = useState<boolean>(false);
 
     const { utorid, username } = useContext(UserContext);
+    const isLightMode = useContext(ThemeContext);
 
     const { question, latest } = useLocation().state ?? "";
     useEffect(() => {
@@ -85,7 +85,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
             el = <AddMultipleChoice options={mcOption} setOptions={setMcOption} />;
         } else if (type === qnsTypeEnum.short) {
             el = <>
-                {GetEditor(solValue, "Add Solution", setSolValue)}
+                {GetEditor(solValue, "Add Solution", setSolValue, isLightMode)}
             </>;
         }
 
@@ -159,7 +159,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                     </Form.Item>
                     <div className="answer-form">
                         <Form.Item label="Problem Description" required>
-                            {GetEditor(problemValue, "Add Problem", setProblemValue)}
+                            {GetEditor(problemValue, "Add Problem", setProblemValue, isLightMode)}
                         </Form.Item>
                     </div>
                     <div className="detail-form">
@@ -169,7 +169,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                         {type === qnsTypeEnum.mc
                             ?
                             <Form.Item label="Explanation (Optional)">
-                                {GetEditor(explanationValue, "Add Explanation", setExplanationValue)}
+                                {GetEditor(explanationValue, "Add Explanation", setExplanationValue, isLightMode)}
                             </Form.Item>
                             : null}
                     </div>

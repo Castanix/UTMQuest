@@ -123,6 +123,11 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
+	if (newTopicName.length > 255) {
+		res.status(400).send("Topic name must be <= 255 characters.");
+		return;
+	}
+
 	utmQuestCollections.Topics?.updateOne(topic, {
 		$set: { topicName: newTopicName },
 	})
@@ -167,9 +172,14 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
-	const newTopicName = req.body.topicName.trim();
+	const newTopicName: string = req.body.topicName.trim();
 	if (!newTopicName) {
 		res.status(400).send("Cannot add with given topic name");
+		return;
+	}
+
+	if (newTopicName.length > 255) {
+		res.status(400).send("Topic name must be <= 255 characters.");
 		return;
 	}
 
