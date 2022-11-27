@@ -14,6 +14,8 @@
     align-items: center;
     display: flex;
     justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .avatar p {
@@ -51,7 +53,7 @@
 
 .ant-timeline {
     width: 40vw !important;
-    margin-top: 2.75rem; 
+    margin-top: 2.75rem;
     margin-inline: auto;
 }
 
