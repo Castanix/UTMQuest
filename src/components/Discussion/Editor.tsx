@@ -108,6 +108,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
     const [content, setContent] = useState<string>(oldContent);
     const [isAnon, setAnon] = useState<boolean>(false);
     // const [commented, setCommented] = useState<DiscussionFrontEndType>();
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const isLightMode = useContext(ThemeContext);
 
@@ -116,6 +117,8 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
             message.info("Invalid comment.");
             return;
         };
+
+        setSubmitDisabled(true);
 
         if (oldContent === "") {
             const newComment = await AddComment(discussionId as string, questionLink, op, content, isAnon);
@@ -132,6 +135,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
             updateComments(editedComment, true);
         };
 
+        setSubmitDisabled(false);
     };
 
     return (
@@ -162,7 +166,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
                     </Form.Item>
                     <Form.Item>
                         <Space className="post-toolbar">
-                            <Button shape="round" onClick={onSubmit} type="primary">
+                            <Button shape="round" onClick={onSubmit} type="primary" disabled={submitDisabled}>
                                 Add Comment
                             </Button>
                             {

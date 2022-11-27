@@ -1,4 +1,4 @@
-import { DislikeOutlined, LikeOutlined, MessageOutlined, SearchOutlined, QuestionOutlined } from '@ant-design/icons';
+import { MessageOutlined, SearchOutlined, QuestionOutlined } from '@ant-design/icons';
 import { Divider, Input, List, Select, Space, Tag, Typography } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -75,9 +75,8 @@ const QuestionsList = ({ questions, topics }:
                         <List.Item
                             key={item._id}
                             actions={[
-                                <IconText icon={LikeOutlined} text="156" key="list-vertical-message" />,
-                                <IconText icon={DislikeOutlined} text="20" key="list-vertical-message" />,
-
+                                // <IconText icon={LikeOutlined} text="156" key="list-vertical-message" />,
+                                // <IconText icon={DislikeOutlined} text="20" key="list-vertical-message" />,
                                 <IconText icon={MessageOutlined} text={item.numDiscussions.toString()} key="list-vertical-message" />
                             ]}
                         >

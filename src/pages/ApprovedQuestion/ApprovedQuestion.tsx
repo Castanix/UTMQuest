@@ -3,7 +3,7 @@ import './ApprovedQuestion.css';
 import MDEditor from '@uiw/react-md-editor';
 import { Breadcrumb, Button, Card, Typography } from 'antd';
 import { Link, useParams } from 'react-router-dom';
-import { CaretLeftOutlined, EditOutlined, WarningFilled } from "@ant-design/icons";
+import { CaretLeftOutlined, EditOutlined } from "@ant-design/icons";
 import MultipleChoice from "../../components/MultipleChoice/MultipleChoice";
 import Loading from "../../components/Loading/Loading";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
@@ -83,9 +83,9 @@ const Header = ({ question }: { question: QuestionsType }) => (
                 <div className="flex-child">
                     <Link to={`/courses/${question.courseId}/editQuestion`} state={{ question }}><Button type="primary" shape="round" icon={<EditOutlined />}>Edit</Button></Link>
                 </div>
-                <div className="flex-child">
+                {/* <div className="flex-child">
                     <Button type="primary" shape="round" danger icon={<WarningFilled />}>Report</Button>
-                </div>
+                </div> */}
             </div>
         </div>
     </div>

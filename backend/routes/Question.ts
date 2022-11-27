@@ -49,8 +49,18 @@ const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
 
 // /courses/:courseId/question/:id
 questionRouter.get('/allUserPostedQuestions/:utorid', async (req: Request, res: Response) => {
+
     try {
-        const questions = await utmQuestCollections.Questions?.find({ authId: req.params.utorid }).toArray();
+		let questions;
+
+		// visiting your own profile = fetch all contributions
+		// visting somebody else's profile = fetch only public contributions
+		if (req.params.utorid === req.headers.utorid) {
+        	questions = await utmQuestCollections.Questions?.find({ authId: req.params.utorid }).toArray();
+		} else {
+			questions = await utmQuestCollections.Questions?.find({ authId: req.params.utorid, anon: false }).toArray();
+		}
+
         if (!questions) { 
             res.status(404).send("No question found.");
             return;

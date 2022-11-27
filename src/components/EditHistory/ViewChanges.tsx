@@ -57,13 +57,13 @@ const RenderDiff = ({ title, oldField, newField }: { title: string, newField: st
 
 const ViewChanges = (firstQuestion: QuestionsType, secondQuestion: QuestionsType) => (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-        {firstQuestion.topicId !== secondQuestion.topicId ? <RenderDiff title="Topic" oldField={firstQuestion.topicName} newField={secondQuestion.topicName} /> : null}
-        {firstQuestion.qnsName !== secondQuestion.qnsName ? <RenderDiff title="Title" oldField={firstQuestion.qnsName} newField={secondQuestion.qnsName} /> : null}
-        {firstQuestion.qnsType !== secondQuestion.qnsType ? <RenderDiff title="Topic" oldField={firstQuestion.qnsType ?? ""} newField={secondQuestion.qnsType ?? ""} /> : null}
-        {firstQuestion.desc !== secondQuestion.desc ? <RenderDiff title="Problem Description" oldField={firstQuestion.desc} newField={secondQuestion.desc} /> : null}
-        {JSON.stringify(firstQuestion.choices) !== JSON.stringify(secondQuestion.choices) ? <RenderDiff title="Multiple Choice Options" oldField={firstQuestion.choices.join(", ")} newField={secondQuestion.choices.join(", ")} /> : null}
-        {JSON.stringify(firstQuestion.ans) !== JSON.stringify(secondQuestion.ans) ? <RenderDiff title="Answer" oldField={Array.isArray(firstQuestion.ans) ? firstQuestion.ans.join(", ") : firstQuestion.ans} newField={Array.isArray(secondQuestion.ans) ? secondQuestion.ans.join(", ") : secondQuestion.ans} /> : null}
-        {firstQuestion.xplan !== secondQuestion.xplan ? <RenderDiff title="Explanation" oldField={firstQuestion.xplan} newField={secondQuestion.xplan} /> : null}
+        {firstQuestion.topicId !== secondQuestion.topicId ? <RenderDiff title="Topic" newField={firstQuestion.topicName} oldField={secondQuestion.topicName} /> : null}
+        {firstQuestion.qnsName !== secondQuestion.qnsName ? <RenderDiff title="Title" newField={firstQuestion.qnsName} oldField={secondQuestion.qnsName} /> : null}
+        {firstQuestion.qnsType !== secondQuestion.qnsType ? <RenderDiff title="Topic" newField={firstQuestion.qnsType ?? ""} oldField={secondQuestion.qnsType ?? ""} /> : null}
+        {firstQuestion.desc !== secondQuestion.desc ? <RenderDiff title="Problem Description" newField={firstQuestion.desc} oldField={secondQuestion.desc} /> : null}
+        {JSON.stringify(firstQuestion.choices) !== JSON.stringify(secondQuestion.choices) ? <RenderDiff title="Multiple Choice Options" newField={firstQuestion.choices.join(", ")} oldField={secondQuestion.choices.join(", ")} /> : null}
+        {JSON.stringify(firstQuestion.ans) !== JSON.stringify(secondQuestion.ans) ? <RenderDiff title="Answer" newField={Array.isArray(firstQuestion.ans) ? firstQuestion.ans.join(", ") : firstQuestion.ans} oldField={Array.isArray(secondQuestion.ans) ? secondQuestion.ans.join(", ") : secondQuestion.ans} /> : null}
+        {firstQuestion.xplan !== secondQuestion.xplan ? <RenderDiff title="Explanation" newField={firstQuestion.xplan} oldField={secondQuestion.xplan} /> : null}
     </Space>
 );
 
