@@ -3,7 +3,7 @@ import {
   CaretDownFilled, BookOutlined, UserOutlined, LogoutOutlined,
 } from '@ant-design/icons';
 import './Topbar.css';
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Dark from '../../Dark';
 import Light from '../../Light';
@@ -20,7 +20,7 @@ const Logo = () => (
 );
 const { compactAlgorithm } = theme;
 export const ThemeContext = createContext(true);
-export const UserContext = createContext("");
+export const UserContext = createContext({ username: "", utorid: "" });
 
 const DarkModeIcon = () => <svg className="theme" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="24" height="22"><path fill="#002a5c" fillRule="evenodd" stroke="#abb4c5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17a5 5 0 0 0-10 0M12 8V1M4.22 9.22l1.42 1.42M1 17h2M21 17h2M18.36 10.64l1.42-1.42M23 21H1M16 4l-4 4-4-4" /></svg>;
 
@@ -32,7 +32,7 @@ const LightModeIcon = () => (
 const Topbar = ({ children }: { children: React.ReactNode }) => {
 
   const [isLightMode, setLightMode] = useState(true);
-  const [firstName, setFirstName] = useState("");
+  const [username, setUsername] = useState("");
   const [utorid, setUtorid] = useState("");
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
         if (result.status !== 418 && result.status !== 201) throw Error("Could not perform first time login");
         return result.json();
       }).then(response => {
-        setFirstName(response.firstName);
+        setUsername(response.username);
         setUtorid(response.utorid);
       }).catch((error) => {
         console.log(error);
@@ -53,6 +53,8 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
   const signOut = () => {
     window.location.href = "/Shibboleth.sso/Logout";
   };
+
+  const userContextValues = useMemo(() => ({ username, utorid }), [username, utorid]);
 
   return (
     <Layout>
@@ -70,7 +72,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
             className="sub-menu"
             title={(
               <span>
-                {firstName}
+                {username.split(" ")[0]}
                 <CaretDownFilled />
               </span>
             )}
@@ -98,7 +100,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
             algorithm: onMobile() ? [compactAlgorithm] : []
           }}>
             <ThemeContext.Provider value={isLightMode}>
-              <UserContext.Provider value={utorid}>
+              <UserContext.Provider value={userContextValues}>
                 {children}
               </UserContext.Provider>
             </ThemeContext.Provider>

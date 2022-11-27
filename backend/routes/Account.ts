@@ -48,12 +48,12 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 					return;
 				}
 
-					res.status(201).send({ firstName, utorid });
+					res.status(201).send({ username: firstName.concat(" ").concat(lastName), utorid });
 					
 			});
 		});
 	} else {
-		res.status(418).send({ firstName, utorid });
+		res.status(418).send({ username: firstName.concat(" ").concat(lastName), utorid });
 	}
 });
 

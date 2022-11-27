@@ -9,6 +9,7 @@ import ViewChanges from './ViewChanges';
 import "./EditHistory.css";
 import DisplayBadges from '../DisplayBadges/DisplayBadges';
 import GetRelativeTime from '../../RelativeTime';
+import { GetUserInitials } from '../../pages/QuestionsPage/QuestionsList';
 
 
 export const onMobile = () => window.innerWidth < 420;
@@ -46,10 +47,7 @@ export const GetUsername = (question: QuestionsType) => {
 
 /* Render a list item for each edit in the history */
 const GetListItem = (loading: boolean, display: string, actions: React.ReactNode[], question: QuestionsType) => {
-    const name = question.authName.split(" ");
-    const firstInitial = name[0][0];
-    const lastInitial = name[name.length - 1][0];
-    const photo = question.anon ? <QuestionOutlined /> : <p>{firstInitial.concat(lastInitial)}</p>;
+    const photo = question.anon ? <QuestionOutlined /> : <p>{GetUserInitials(question.authName)}</p>;
 
     return (
         <Skeleton avatar title={false} loading={loading} active>

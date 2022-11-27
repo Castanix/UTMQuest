@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Avatar, Button, Checkbox, Form, message, Space, } from "antd";
+import { Button, Checkbox, Form, message, Space, } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { Comment } from '@ant-design/compatible';
 import rehypeSanitize from "rehype-sanitize";
@@ -9,7 +9,8 @@ import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 
 import "./Editor.css";
 import { onMobile } from "../EditHistory/EditHistory";
-import { ThemeContext } from "../Topbar/Topbar";
+import { ThemeContext, UserContext } from "../Topbar/Topbar";
+import { GetUserInitials } from "../../pages/QuestionsPage/QuestionsList";
 
 const AddComment = async (discussionId: string, questionLink: string, op: boolean, content: string, isAnon: boolean) => {
     // MAKE POST CALL HERE
@@ -111,6 +112,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const isLightMode = useContext(ThemeContext);
+    const { username } = useContext(UserContext);
 
     const onSubmit = async () => {
         if (content.trim().length <= 0) {
@@ -141,7 +143,9 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
     return (
         <Comment
             avatar={
-                <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
+                <div className="comment-img">
+                    <p>{GetUserInitials(username)}</p>
+                </div>
             }
             // author={<Link to="/">{commented?.authName ?? 'Anonymous'}</Link>}
             content={

@@ -7,6 +7,7 @@ import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loading from "../../components/Loading/Loading";
 import { UserContext } from "../../components/Topbar/Topbar";
 import GetRelativeTime from "../../RelativeTime";
+import { GetUserInitials } from "../QuestionsPage/QuestionsList";
 import GetAllQuestions from "./fetch/GetAllQuestions";
 import GetBadges from "./fetch/GetBadges";
 import GetProfile from "./fetch/Profile";
@@ -51,7 +52,7 @@ const ProfilePage = () => {
 
     const params = useParams();
     const utorid = params.utorid ?? "";
-    const loggedInUser = useContext(UserContext);
+    const { utorid: loggedInUser } = useContext(UserContext);
 
     const { loadingProfile, errorProfile } = GetProfile(utorid, setName);
     const { loadingBadges, errorBadges } = GetBadges(utorid, setBadges);
@@ -62,10 +63,6 @@ const ProfilePage = () => {
     if (errorProfile) return <ErrorMessage title={errorProfile} link="." message="Refresh" />;
     if (errorBadges) return <ErrorMessage title={errorBadges} link="." message="Refreshing" />;
     if (errorQuestions) return <ErrorMessage title={errorQuestions} link="." message="Refreshing" />;
-
-
-    const firstInitial = name[0][0].toUpperCase();
-    const lastInitial = name.split(" ")[1][0].toUpperCase() ?? "";
 
     // TODO: need to include threadreplies when edit badge routes have been set
     const { addQuestions, editQuestions, consecutivePosting } = badges.unlockedBadges;
@@ -115,7 +112,7 @@ const ProfilePage = () => {
                 <div className="profile-container">
                     <div className="user-container">
                         <div className="avatar">
-                            <p>{firstInitial.concat(lastInitial)}</p>
+                            <p>{GetUserInitials(name)}</p>
                         </div>
                         <div className="user-details">
                             <Text strong>{name}</Text>

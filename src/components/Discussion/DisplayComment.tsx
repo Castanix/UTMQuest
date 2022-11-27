@@ -11,6 +11,7 @@ import GetRelativeTime from "../../RelativeTime";
 
 import "./Discussion.css";
 import { ThemeContext } from "../Topbar/Topbar";
+import { GetUserInitials } from "../../pages/QuestionsPage/QuestionsList";
 
 const GetUsername = (comment: DiscussionFrontEndType) => {
     const { anon, authId, authName } = comment;
@@ -135,10 +136,6 @@ const DisplayComment = ({ comment, questionDate, utorid }: { comment: Discussion
         </span>
     ]);
 
-    const name = displayComment.authName.split(" ");
-    const firstInitial = name[0][0];
-    const lastInitial = name[name.length - 1][0];
-
     return (
         <Comment
             actions={actions}
@@ -158,7 +155,7 @@ const DisplayComment = ({ comment, questionDate, utorid }: { comment: Discussion
                         displayComment.anon ?
                             <QuestionOutlined />
                             :
-                            <p>{firstInitial.concat(lastInitial)}</p>
+                            <p>{GetUserInitials(displayComment.authName)}</p>
                     }
                 </div >}
             content={

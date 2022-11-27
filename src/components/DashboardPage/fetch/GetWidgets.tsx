@@ -7,7 +7,7 @@ const GetWidgets = () => {
     const [courseData, setCourseData] = useState<[string, string][]>([]);
     const [error, setError] = useState('');
 
-    const utorid = useContext(UserContext);
+    const { utorid } = useContext(UserContext);
 
     useEffect(() => {
         const courseArr: [string, string][] = [];

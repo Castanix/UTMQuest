@@ -28,6 +28,14 @@ const GetAuthorName = (question: QuestionsType) => {
     return <Link to={`/profile/${authId}`}>{authName}</Link>;
 };
 
+export const GetUserInitials = (username: string) => {
+    const name = username.split(" ");
+    const firstInitial = name[0][0].toUpperCase();
+    const lastInitial = name[name.length - 1][0].toUpperCase();
+
+    return firstInitial.concat(lastInitial);
+};
+
 const QuestionsList = ({ questions, topics }:
     { questions: QuestionsType[], topics: TopicsType[] }) => {
     const {
@@ -66,9 +74,6 @@ const QuestionsList = ({ questions, topics }:
                 }}
                 dataSource={data}
                 renderItem={item => {
-                    const name = item.authName.split(" ");
-                    const firstInitial = name[0][0];
-                    const lastInitial = name[name.length - 1][0];
                     const diff = (new Date().getTime() - new Date(item.date).getTime()) / (60 * 60 * 1000);
 
                     return (
@@ -87,7 +92,7 @@ const QuestionsList = ({ questions, topics }:
                                         {item.anon ?
                                             <QuestionOutlined />
                                             :
-                                            <p>{firstInitial.concat(lastInitial)}</p>
+                                            <p>{GetUserInitials(item.authName)}</p>
                                         }
                                     </div>
                                 }
