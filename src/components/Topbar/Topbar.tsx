@@ -20,6 +20,7 @@ const Logo = () => (
 );
 const { compactAlgorithm } = theme;
 export const ThemeContext = createContext(true);
+export const UserContext = createContext("");
 
 const DarkModeIcon = () => <svg className="theme" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="24" height="22"><path fill="#002a5c" fillRule="evenodd" stroke="#abb4c5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17a5 5 0 0 0-10 0M12 8V1M4.22 9.22l1.42 1.42M1 17h2M21 17h2M18.36 10.64l1.42-1.42M23 21H1M16 4l-4 4-4-4" /></svg>;
 
@@ -32,6 +33,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
 
   const [isLightMode, setLightMode] = useState(true);
   const [firstName, setFirstName] = useState("");
+  const [utorid, setUtorid] = useState("");
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URI}/account/setup`, { method: "PUT" })
@@ -40,6 +42,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
         return result.json();
       }).then(response => {
         setFirstName(response.firstName);
+        setUtorid(response.utorid);
       }).catch((error) => {
         console.log(error);
       });
@@ -73,7 +76,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
             )}
           >
             <Menu.Item key="profile" icon={<UserOutlined />}>
-              <Link to="/profile">
+              <Link to={`/profile/${utorid}`}>
                 Profile
               </Link>
             </Menu.Item>
@@ -95,7 +98,9 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
             algorithm: onMobile() ? [compactAlgorithm] : []
           }}>
             <ThemeContext.Provider value={isLightMode}>
-              {children}
+              <UserContext.Provider value={utorid}>
+                {children}
+              </UserContext.Provider>
             </ThemeContext.Provider>
           </ConfigProvider>
         </div>

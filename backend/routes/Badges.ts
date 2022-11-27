@@ -3,8 +3,8 @@ import { utmQuestCollections } from "../db/db.service";
 
 const badgeRouter = Router();
 
-badgeRouter.get('/userBadges', (req: Request, res: Response) => {
-    const {utorid} = req.headers;
+badgeRouter.get('/userBadges/:utorid', (req: Request, res: Response) => {
+    const {utorid} = req.params;
 
     utmQuestCollections.Badges?.findOne({utorid})
         .then(badges => {

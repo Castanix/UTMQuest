@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Popconfirm, Tag } from "antd";
+import { Popconfirm, Tag, Typography } from "antd";
 import { Comment } from '@ant-design/compatible';
 import { QuestionOutlined } from "@ant-design/icons";
 import MDEditor from "@uiw/react-md-editor";
@@ -11,6 +11,16 @@ import GetRelativeTime from "../../RelativeTime";
 
 import "./Discussion.css";
 import { ThemeContext } from "../Topbar/Topbar";
+
+const GetUsername = (comment: DiscussionFrontEndType) => {
+    const { anon, authId, authName } = comment;
+
+    if (anon) {
+        return <Typography.Text>{authName}</Typography.Text>;
+    }
+
+    return <Link to={`/profile/${authId}`}>{authName}</Link>;
+};
 
 const DisplayComment = ({ comment, questionDate, utorid }: { comment: DiscussionFrontEndType, questionDate: string, utorid: string }) => {
     const [displayComment, setDisplayComment] = useState<DiscussionFrontEndType>(comment);
@@ -132,7 +142,7 @@ const DisplayComment = ({ comment, questionDate, utorid }: { comment: Discussion
     return (
         <Comment
             actions={actions}
-            author={<Link to="/">{displayComment.authName}</Link>}
+            author={GetUsername(displayComment)}
             datetime={
                 <div className="date-tags">
                     {GetRelativeTime(new Date(displayComment.date).getTime())}

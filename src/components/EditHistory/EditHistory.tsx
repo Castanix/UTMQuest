@@ -34,6 +34,16 @@ const GetDiff = (firstQuestion: QuestionsType, secondQuestion: QuestionsType) =>
     return changes;
 };
 
+export const GetUsername = (question: QuestionsType) => {
+    const { anon, authId, authName } = question;
+
+    if (anon) {
+        return <Typography.Text>{authName}</Typography.Text>;
+    }
+
+    return <Link to={`/profile/${authId}`}>{authName}</Link>;
+};
+
 /* Render a list item for each edit in the history */
 const GetListItem = (loading: boolean, display: string, actions: React.ReactNode[], question: QuestionsType) => {
     const name = question.authName.split(" ");
@@ -59,7 +69,10 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
                     title={
                         <div>
                             <Space direction="vertical" size={0}>
-                                <span>{name.join(" ")} {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}</span>
+                                <span>
+                                    {GetUsername(question)}
+                                    {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}
+                                </span>
                                 <Typography.Text type="secondary">{GetRelativeTime(new Date(question.date).getTime())}</Typography.Text>
                             </Space>
                         </div>

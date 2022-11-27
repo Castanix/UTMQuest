@@ -48,17 +48,17 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 					return;
 				}
 
-					res.status(201).send({ firstName });
+					res.status(201).send({ firstName, utorid });
 					
 			});
 		});
 	} else {
-		res.status(418).send({ firstName });
+		res.status(418).send({ firstName, utorid });
 	}
 });
 
-accountRouter.get("/getAccount", (req: Request, res: Response) => {
-	utmQuestCollections.Accounts?.findOne({ utorid: req.headers.utorid })
+accountRouter.get("/getAccount/:utorid", (req: Request, res: Response) => {
+	utmQuestCollections.Accounts?.findOne({ utorid: req.params.utorid })
 		.then((doc) => {
 			if (doc == null) {
 				res.statusMessage = "No such account found.";
@@ -68,7 +68,7 @@ accountRouter.get("/getAccount", (req: Request, res: Response) => {
 			}
 		})
 		.catch((error) => {
-			res.status(500).send(`ERROR: ${error}`);
+			res.status(500).send(error);
 		});
 });
 
@@ -86,7 +86,7 @@ accountRouter.get("/checkSaved/:courseId", (req: Request, res: Response) => {
 			}
 		})
 		.catch((error) => {
-			res.status(500).send(`ERROR: ${error}`);
+			res.status(500).send(error);
 		});
 });
 

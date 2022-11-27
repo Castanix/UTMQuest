@@ -1,10 +1,11 @@
 import { Card, Divider, Timeline, Typography, Popover, Breadcrumb } from "antd";
-import React, { ReactElement, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { ReactElement, useContext, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import BadgeDescriptions from "../../BadgeDescriptions";
 import BadgePicker from "../../components/BadgePicker/BadgePicker";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Loading from "../../components/Loading/Loading";
+import { UserContext } from "../../components/Topbar/Topbar";
 import GetRelativeTime from "../../RelativeTime";
 import GetAllQuestions from "./fetch/GetAllQuestions";
 import GetBadges from "./fetch/GetBadges";
@@ -48,9 +49,13 @@ const ProfilePage = () => {
     const [badges, setBadges] = useState<BadgesType>({ unlockedBadges: {}, displayBadges: [], longestLoginStreak: 0 });
     const [timeline, setTimeline] = useState<TimelineType[]>();
 
-    const { loadingProfile, errorProfile } = GetProfile(setName);
-    const { loadingBadges, errorBadges } = GetBadges(setBadges);
-    const { loadingQuestions, errorQuestions } = GetAllQuestions(setTimeline);
+    const params = useParams();
+    const utorid = params.utorid ?? "";
+    const loggedInUser = useContext(UserContext);
+
+    const { loadingProfile, errorProfile } = GetProfile(utorid, setName);
+    const { loadingBadges, errorBadges } = GetBadges(utorid, setBadges);
+    const { loadingQuestions, errorQuestions } = GetAllQuestions(utorid, setTimeline);
 
     if (loadingProfile || loadingBadges || loadingQuestions) return <Loading />;
 
@@ -92,11 +97,11 @@ const ProfilePage = () => {
         const badgeArr: ReactElement[] = [];
 
         badgesSrc.forEach(badge => {
-            if(badge !== "dailybadge") {
+            if (badge !== "dailybadge") {
                 badgeArr.push(
                     <Popover key={badge} content={BadgeDescriptions[badge as keyof typeof BadgeDescriptions]} trigger="hover">
                         <img src={`/images/${badge}.png`} alt={badge} />
-                    </Popover>       
+                    </Popover>
                 );
             }
         });
@@ -121,7 +126,11 @@ const ProfilePage = () => {
                         </div>
                     </div>
                     <div className="badge-container">
-                        <BadgePicker badges={badges} />
+                        {utorid === loggedInUser ?
+                            <BadgePicker badges={badges} />
+                            :
+                            null
+                        }
                         <Divider>Badges</Divider>
                         <div className="badges">
                             {initBadges()}

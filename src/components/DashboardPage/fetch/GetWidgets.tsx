@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react";
-import WidgetType from "../types/Widget";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../Topbar/Topbar";
 
 const GetWidgets = () => {
 
     const [loading, setLoading] = useState<boolean>(true);
     const [courseData, setCourseData] = useState<[string, string][]>([]);
-    const [reviewQnsData, setReviewQnsData] = useState<WidgetType[]>([]);
     const [error, setError] = useState('');
+
+    const utorid = useContext(UserContext);
 
     useEffect(() => {
         const courseArr: [string, string][] = [];
 
         const fetchData = async () => {
-            await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount`)
+            await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorid}`)
                 .then((res: Response) => {
                     if (!res.ok) throw Error(res.statusText);
                     return res.json();
@@ -29,13 +30,14 @@ const GetWidgets = () => {
                 });
         };
 
-        fetchData();
-    }, [setCourseData, setReviewQnsData]);
+        if (utorid !== "") {
+            fetchData();
+        }
+    }, [utorid]);
 
     return {
         loading,
         courseData,
-        reviewQnsData,
         error
     };
 };

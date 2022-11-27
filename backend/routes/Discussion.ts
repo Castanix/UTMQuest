@@ -93,7 +93,7 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
         questionLink: link,
         op: req.body.op, 
         authId: utorid,
-        authName: isAnon? "Anonymous" : firstName + " " + lastName,
+        authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
         content: req.body.content,
         thread: req.body.thread, 
         date: new Date().toISOString(),
@@ -121,7 +121,7 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
                 utmQuestCollections.Discussions?.deleteOne(discussion);
                 return;
             };
-            res.status(201).send({ insertedId: result.insertedId, authName: isAnon? "Anonymous" : firstName + " " + lastName, authId: utorid });
+            res.status(201).send({ insertedId: result.insertedId, authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`, authId: utorid });
         });
 
     }).catch((error) => {
@@ -145,7 +145,7 @@ discussionRouter.put('/:discussionId', async (req: Request, res: Response) => {
     const discussion = {
         op: req.body.op, 
         authId: utorid,
-        authName: isAnon? "Anonymous" : firstName + " " + lastName,
+        authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
         content: req.body.content,
         thread: req.body.thread, 
         deleted: false,
@@ -183,7 +183,7 @@ discussionRouter.put('/updatePost/:discussionId', async (req: Request, res: Resp
         questionLink: req.body.questionLink,
         op: req.body.op, 
         authId: utorid,
-        authName: isAnon? "Anonymous" : firstName + " " + lastName,
+        authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
         content,
         thread: req.body.thread, 
         date,

@@ -48,9 +48,9 @@ const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
 
 
 // /courses/:courseId/question/:id
-questionRouter.get('/allUserPostedQuestions', async (req: Request, res: Response) => {
+questionRouter.get('/allUserPostedQuestions/:utorid', async (req: Request, res: Response) => {
     try {
-        const questions = await utmQuestCollections.Questions?.find({ authId: req.headers.utorid }).toArray();
+        const questions = await utmQuestCollections.Questions?.find({ authId: req.params.utorid }).toArray();
         if (!questions) { 
             res.status(404).send("No question found.");
             return;
@@ -177,7 +177,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		choices: req.body.choices,
 		ans: req.body.ans,
 		authId: utorid,
-		authName: isAnon? "Anonymous" : firstName + " " + lastName,
+		authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
 		date: new Date().toISOString(),
 		numDiscussions: req.body.numDiscussions,
 		anon: req.body.anon,
@@ -359,7 +359,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			choices: req.body.choices,
 			ans: req.body.ans,
 			authId: utorid,
-			authName: isAnon? "Anonymous" : firstName + " " + lastName,
+			authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
 			date: new Date().toISOString(),
 			numDiscussions: req.body.numDiscussions,
 			anon: req.body.anon,

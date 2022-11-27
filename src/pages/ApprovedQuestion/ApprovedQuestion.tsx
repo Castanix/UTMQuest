@@ -12,7 +12,7 @@ import { QuestionsType } from "../../../backend/types/Questions";
 import ShortAnswer from "../../components/ShortAnswer/ShortAnswer";
 import GetQuestion from "./fetch/GetQuestion";
 import Discussion from "../../components/Discussion/Discussion";
-import EditHistory, { onMobile } from "../../components/EditHistory/EditHistory";
+import EditHistory, { GetUsername, onMobile } from "../../components/EditHistory/EditHistory";
 import DisplayBadges from "../../components/DisplayBadges/DisplayBadges";
 import GetRelativeTime from "../../RelativeTime";
 import { ThemeContext } from "../../components/Topbar/Topbar";
@@ -71,7 +71,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
                 }
                 <br />
                 <Text type="secondary">
-                    {question.authName} {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}
+                    {GetUsername(question)} {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}
                 </Text>
                 <br />
                 <Text type="secondary">
