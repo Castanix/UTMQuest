@@ -209,6 +209,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                             placement: "bottom"
                         });
                         unlockBadge(addableQuestion.authId, "consecutivePosting", "consecutivebadge", "");
+
                     } else if (result.consecutivePosting < 7) {
                         notification.success({
                             message: `Posted ${result.consecutivePosting} consecutive days`,
