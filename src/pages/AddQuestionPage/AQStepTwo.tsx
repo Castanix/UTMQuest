@@ -10,7 +10,7 @@ import AddQuestion from './fetch/AddQuestion';
 import AddMultipleChoice, { AddOptionType } from '../../components/MultipleChoice/AddMultipleChoice/AddMultipleChoice';
 import DuplicateQuestions from '../../components/DuplicateQuestions/DuplicateQuestions';
 import { onMobile } from '../../components/EditHistory/EditHistory';
-import { ThemeContext } from '../../components/Topbar/Topbar';
+import { ThemeContext, UserContext } from '../../components/Topbar/Topbar';
 
 const { Option } = Select;
 
@@ -49,6 +49,8 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     const [solValue, setSolValue] = useState<string>();
     const [redirect, setRedirect] = useState<string>();
     const [isAnon, setAnon] = useState<boolean>(false);
+
+    const { utorid, username } = useContext(UserContext);
 
     const { question, latest } = useLocation().state ?? "";
     useEffect(() => {
@@ -212,8 +214,8 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 xplan: explanationValue ?? "",
                                 choices,
                                 ans,
-                                authId: "To be filled in by the backend",
-                                authName: "To be filled in by the backend",
+                                authId: utorid,
+                                authName: username,
                                 date: (latest ? question.date : new Date().toISOString),
                                 numDiscussions: 0,
                                 anon: isAnon,

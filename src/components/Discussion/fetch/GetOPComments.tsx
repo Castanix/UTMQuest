@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DiscussionFrontEndType } from "../../../../backend/types/Discussion";
 
 const GetOPComments = (questionLink: string) => {
     const [loading, setLoading] = useState<boolean>(true);
-    const comments: DiscussionFrontEndType[] = [];
+    const comments: DiscussionFrontEndType[] = useMemo(() => [], []);
     const [utorid, setUtorid] = useState<string>("");
     const [error, setError] = useState<string>("");
 
@@ -24,7 +24,7 @@ const GetOPComments = (questionLink: string) => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [questionLink]);
+    }, [comments, questionLink]);
 
     return {
         loading,

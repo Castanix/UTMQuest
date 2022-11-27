@@ -4,6 +4,7 @@ enum BadgeDescriptions {
 	addbadge3 = "Post 30 questions",
 	addbadgelocked = "Post questions to unlock",
 	consecutivebadge = "Post questions for 7 consecutive days",
+	consecutivebadgelocked = "Post questions for 7 consecutive days to unlock",
 	dailybadge = "Number of daily logins",
 	editbadge1 = "Edit 3 questions",
 	editbadge2 = "Edit 7 questions",

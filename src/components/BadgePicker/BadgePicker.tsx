@@ -1,14 +1,17 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useContext, useState } from "react";
 import "./BadgePicker.css";
 import { Modal, Button, message } from "antd";
 import { BadgesType } from "../../pages/ProfilePage/ProfilePage";
 import UpdateBadge from "./fetch/UpdateBadges";
+import { UserContext } from "../Topbar/Topbar";
 
 const BadgePicker = ({ badges }: { badges: BadgesType }) => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [badgeSelected, setBadgeSelected] = useState<string[]>(badges.displayBadges);
     const [currBadgeSelected, setCurrBadgeSelected] = useState<string[]>(badgeSelected);
     const [changes, setChanges] = useState<string[]>([]);
+
+    const { utorid } = useContext(UserContext);
 
     // Toggles the green border around an image depending on selection
     const toggleActive = (id: string) => {
@@ -77,7 +80,7 @@ const BadgePicker = ({ badges }: { badges: BadgesType }) => {
         setShowModal(false);
 
         if (changes.length > 0) {
-            UpdateBadge(currBadgeSelected, setBadgeSelected, resetChanges);
+            UpdateBadge(currBadgeSelected, utorid, setBadgeSelected, resetChanges, badges.longestLoginStreak);
         } else {
             message.error("No changes were made");
         };

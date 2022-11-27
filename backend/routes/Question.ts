@@ -255,6 +255,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 								link,
 								questionStatus: badge.questionsAdded + 1,
 								consecutivePosting: 1,
+								unlockedBadges: badge.unlockedBadges,
 								edit: false
 							});
 						}
@@ -282,6 +283,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 									link,
 									questionStatus: badge.questionsAdded + 1,
 									consecutivePosting: badge.consecutivePosting + 1,
+									unlockedBadges: badge.unlockedBadges,
 									edit: false
 								});
 							}
@@ -301,6 +303,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 									link,
 									questionStatus: badge.questionsAdded + 1,
 									consecutivePosting: 1,
+									unlockedBadges: badge.unlockedBadges,
 									edit: false
 								});
 							}
@@ -320,6 +323,8 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 								res.status(201).send({
 									link,
 									questionStatus: badge.questionsAdded + 1,
+									consecutivePosting: badge.consecutivePosting,
+									unlockedBadges: badge.unlockedBadges,
 									edit: false
 								});
 							}
@@ -351,6 +356,15 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		const { link } = req.body;
 		const isAnon = req.body.anon;
 		const utorid = req.headers.utorid as string;
+
+		const badge = await utmQuestCollections.Badges?.findOne({
+			utorid,
+		});
+
+		if (!badge) {
+			res.status(404).send("Could not find badge progression for user.");
+			return;
+		}
 
 		const email: string = req.headers.http_mail as string;
 		const name = (email.split("@"))[0].split(".");
@@ -404,7 +418,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 						const {code, message, questionStatus} = updateRes;
 
 						if(code === 200) {
-							res.status(201).send({ link, questionStatus, edit: true });
+							res.status(201).send({ link, questionStatus, unlockedBadges: badge.unlockedBadges, edit: true });
 						} else {
 							res.status(code).send(message);
 						};
