@@ -48,6 +48,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     const [solValue, setSolValue] = useState<string>();
     const [redirect, setRedirect] = useState<string>();
     const [isAnon, setAnon] = useState<boolean>(false);
+    const [isSubmit, setIsSubmit] = useState<boolean>(false);
 
     const { utorid, username } = useContext(UserContext);
     const isLightMode = useContext(ThemeContext);
@@ -186,8 +187,10 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                     <Button
                         type="primary"
                         shape="round"
-                        disabled={!((type && (title ?? '').trim() && problemValue?.trim() && verifySol()))}
+                        disabled={!(type && (title ?? '').trim() && problemValue?.trim() && verifySol()) || isSubmit}
                         onClick={() => {
+                            setIsSubmit(true);
+
                             const choices: string[] = [];
                             let ans: string[] | string = solValue ?? '';
 
@@ -221,7 +224,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 anon: isAnon,
                                 latest: true
                             };
-                            AddQuestion(addableQuestion, setRedirect, edit, (latest || question));
+                            AddQuestion(addableQuestion, setRedirect, edit, (latest || question), setIsSubmit);
                         }}
                     >Submit</Button>
                 </div>

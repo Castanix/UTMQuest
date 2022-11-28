@@ -1,4 +1,4 @@
-import { ConfigProvider, Layout, Menu, Space, theme } from 'antd';
+import { ConfigProvider, Layout, Menu, Modal, Space, theme } from 'antd';
 import {
   CaretDownFilled, BookOutlined, UserOutlined, LogoutOutlined,
 } from '@ant-design/icons';
@@ -34,6 +34,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
   const [isLightMode, setLightMode] = useState(true);
   const [username, setUsername] = useState("");
   const [utorid, setUtorid] = useState("");
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URI}/account/setup`, { method: "PUT" })
@@ -51,6 +52,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
   const onThemeChange = () => setLightMode(!isLightMode);
 
   const signOut = () => {
+    setShowModal(false);
     window.location.href = "/Shibboleth.sso/Logout";
   };
 
@@ -88,10 +90,16 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
                 {isLightMode ? "Dark Mode" : "Light Mode"}
               </Space>
             </Menu.Item>
-            <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={signOut}>Sign out</Menu.Item>
+            <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() => setShowModal(true)}>Sign out</Menu.Item>
           </Menu.SubMenu>
 
         </Menu>
+        <Modal 
+          title="Confirm Logout?"
+          onCancel={() => setShowModal(false)} 
+          onOk={signOut}
+          open={showModal}
+        />
       </Header>
       <Content>
         <div className={`content`.concat(isLightMode ? " light" : " dark")}>

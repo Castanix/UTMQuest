@@ -11,7 +11,8 @@
     "start": "npx ts-node ./server.ts",
     "build": "tsc -p .",
     "dev": "nodemon ./server.ts",
-    "fetchCourses": "ts-node ./fetchUTMCourses.ts"
+    "fetchCourses": "ts-node ./fetchUTMCourses.ts",
+    "startInProd": "NODE_ENV=production npx ts-node ./server.ts"
   },
   "keywords": [],
   "author": "",

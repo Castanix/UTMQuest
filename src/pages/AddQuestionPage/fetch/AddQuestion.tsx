@@ -143,7 +143,7 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
 
 
 const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function,
-    edit: boolean, latestQuestion: QuestionsType) => {
+    edit: boolean, latestQuestion: QuestionsType, setIsSubmit: Function) => {
 
     if (edit) {
         const recovery = Date.parse(addableQuestion.date) < Date.parse(latestQuestion.date);
@@ -220,6 +220,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                 }
 
                 setRedirect(result.link);
+                setIsSubmit(false);
             })
             .catch((error) => {
                 message.error(error.message);

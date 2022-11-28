@@ -36,11 +36,9 @@ app.use((req, res, next) => {
 
 app.use("/api", apiRouter);
 
-if (env !== "dev") {
-	app.get("/*", (req, res) => {
-		res.sendFile(path.join("/var/www/html", "quest", "index.html"));
-	});
-}
+app.get("/*", (req, res) => {
+	res.sendFile(path.join("/var/www/html", "quest", "index.html"));
+});
 
 // Connect to mongoDB and listen on app
 connectDB()
