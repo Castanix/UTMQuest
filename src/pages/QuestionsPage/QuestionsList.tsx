@@ -38,14 +38,21 @@ export const GetUserInitials = (username: string) => {
     return firstInitial.concat(lastInitial);
 };
 
-const QuestionsList = ({ questions, topics }:
-    { questions: QuestionsType[], topics: TopicsType[] }) => {
+const QuestionsList = ({ questions, topics, courseCode }:
+    { questions: QuestionsType[], topics: TopicsType[], courseCode: string }) => {
+
+    let initFilter: string[] = [];
+
+    if(Object.keys(JSON.parse(sessionStorage.getItem("questionFilter") ?? '{}'))[0] === courseCode) {
+        initFilter = Object.values(JSON.parse(sessionStorage.getItem("questionFilter") ?? ""))[0] as string[];
+    };
+
     const {
         data,
         searchTerm,
         onSearchChange,
         onSelectChange
-    } = QuestionState(questions);
+    } = QuestionState(questions, initFilter);
 
     const options: React.ReactNode[] = [];
 
@@ -59,7 +66,11 @@ const QuestionsList = ({ questions, topics }:
                     size="middle"
                     placeholder="Filter by topic"
                     className='question-list-select'
-                    onChange={onSelectChange}
+                    defaultValue={initFilter}
+                    onChange={(value: string[]) => {
+                        sessionStorage.setItem("questionFilter", JSON.stringify({[courseCode]: value}));
+                        onSelectChange(value);
+                    }}
                 >
                     {options}
                 </Select>

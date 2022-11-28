@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { QuestionsType } from "../../../../backend/types/Questions";
 
-const QuestionState = (questions: QuestionsType[]) => {
+const QuestionState = (questions: QuestionsType[], initFilter: string[]) => {
     const [originalData] = useState<QuestionsType[]>(questions);
-    const [data, setData] = useState<QuestionsType[]>(questions);
+    const [topicFilters, setTopicFilters] = useState<Set<string>>(new Set(initFilter));
+    const filteredData = topicFilters.size !== 0 ? originalData.filter(item => topicFilters.has(item.topicName.toLowerCase())) : questions;
+    
+    const [data, setData] = useState<QuestionsType[]>(filteredData);
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [topicFilters, setTopicFilters] = useState<Set<string>>(new Set());
 
     const onSearchChange = (value: string) => {
         if (value.length === 0) {

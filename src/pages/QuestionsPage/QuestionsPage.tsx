@@ -34,7 +34,7 @@ const QuestionsPage = () => {
     return (
         <Card title={<Header courseCode={courseCode ?? ''} title={`Browse Questions for ${courseCode}`} />} bordered={false}>
             <main className='main-container'>
-                <QuestionsList questions={questions} topics={topics} />
+                <QuestionsList questions={questions} topics={topics} courseCode={courseCode ?? ""} />
             </main>
         </Card>
     );
