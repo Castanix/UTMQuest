@@ -77,7 +77,13 @@ const Header = ({ question }: { question: QuestionsType }) => (
                 <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
                 <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}>{question.courseId}</Link></Breadcrumb.Item>
                 <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}>Browse Questions</Link></Breadcrumb.Item>
-                <Typography.Text ellipsis>{question.qnsName}</Typography.Text>
+                <Breadcrumb.Item>
+                    <Text
+                        style={{ width: 100 }}
+                        ellipsis
+                    >
+                        {question.qnsName}
+                    </Text></Breadcrumb.Item>
             </Breadcrumb>
             :
             <Breadcrumb>
