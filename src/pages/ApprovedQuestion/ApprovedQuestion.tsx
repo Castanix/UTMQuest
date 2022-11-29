@@ -162,7 +162,7 @@ const ApprovedQuestion = () => {
     const onTabChange = (key: string) => {
         setActiveTabKey(key);
         searchParams.set("activeTab", key);
-        setSearchParams(searchParams);
+        setSearchParams(searchParams, { replace: true });
     };
 
     const contentList: Record<string, React.ReactNode> = {
