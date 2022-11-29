@@ -219,8 +219,8 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 ans,
                                 authId: utorid,
                                 authName: username,
-                                date: (latest ? question.date : new Date().toISOString),
-                                numDiscussions: 0,
+                                date: latest ? question.date : new Date().toISOString(),
+                                numDiscussions: question ? question.numDiscussions : 0,
                                 anon: isAnon,
                                 latest: true
                             };

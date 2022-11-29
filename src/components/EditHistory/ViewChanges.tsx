@@ -59,7 +59,7 @@ const ViewChanges = (firstQuestion: QuestionsType, secondQuestion: QuestionsType
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
         {firstQuestion.topicId !== secondQuestion.topicId ? <RenderDiff title="Topic" newField={firstQuestion.topicName} oldField={secondQuestion.topicName} /> : null}
         {firstQuestion.qnsName !== secondQuestion.qnsName ? <RenderDiff title="Title" newField={firstQuestion.qnsName} oldField={secondQuestion.qnsName} /> : null}
-        {firstQuestion.qnsType !== secondQuestion.qnsType ? <RenderDiff title="Topic" newField={firstQuestion.qnsType ?? ""} oldField={secondQuestion.qnsType ?? ""} /> : null}
+        {firstQuestion.qnsType !== secondQuestion.qnsType ? <RenderDiff title="Question type" newField={firstQuestion.qnsType ?? ""} oldField={secondQuestion.qnsType ?? ""} /> : null}
         {firstQuestion.desc !== secondQuestion.desc ? <RenderDiff title="Problem Description" newField={firstQuestion.desc} oldField={secondQuestion.desc} /> : null}
         {JSON.stringify(firstQuestion.choices) !== JSON.stringify(secondQuestion.choices) ? <RenderDiff title="Multiple Choice Options" newField={firstQuestion.choices.join(", ")} oldField={secondQuestion.choices.join(", ")} /> : null}
         {JSON.stringify(firstQuestion.ans) !== JSON.stringify(secondQuestion.ans) ? <RenderDiff title="Answer" newField={Array.isArray(firstQuestion.ans) ? firstQuestion.ans.join(", ") : firstQuestion.ans} oldField={Array.isArray(secondQuestion.ans) ? secondQuestion.ans.join(", ") : secondQuestion.ans} /> : null}

@@ -178,7 +178,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                 });
         } else {
             if (recovery) {
-                message.error("Changes are too identical to latest version");
+                message.error("Changes are identical to the latest version");
             } else {
                 message.error("No changes were made");
             };
@@ -226,6 +226,8 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                 message.error(error.message);
             });
     }
+
+    setIsSubmit(false);
 
 };
 export default AddQuestion;

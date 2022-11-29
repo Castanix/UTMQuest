@@ -131,6 +131,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
         } else {
             if (oldContent === content) {
                 message.error("No update was made");
+                setSubmitDisabled(false);
                 return;
             }
             const editedComment = await EditComment(discussionId as string, questionLink, op, content, isAnon, thread);
@@ -170,9 +171,6 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
                     </Form.Item>
                     <Form.Item>
                         <Space className="post-toolbar">
-                            <Button shape="round" onClick={onSubmit} type="primary" disabled={submitDisabled}>
-                                Add Comment
-                            </Button>
                             {
                                 oldContent === "" ?
                                     <Checkbox onChange={() => setAnon(!isAnon)} checked={isAnon}>
@@ -180,7 +178,9 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
                                     </Checkbox> :
                                     ""
                             }
-
+                            <Button shape="round" onClick={onSubmit} type="primary" disabled={submitDisabled}>
+                                Add Comment
+                            </Button>
                         </Space>
                     </Form.Item>
                 </span>

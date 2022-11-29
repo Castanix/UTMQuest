@@ -136,7 +136,7 @@ questionRouter.get(
 
 			const randomGen = seedrandom(diffInDays + utorid);
 			const randomNum = randomGen();
-			const showNewQuestions = randomNum <= 0.15;
+			const showNewQuestions = randomNum <= 1;
 
 			const newArr = allQuestions?.filter((question) => {
 				const now = new Date();

@@ -126,6 +126,8 @@ const ApprovedQuestion = () => {
 
     if (error !== '' || question === undefined) return <ErrorMessage title={error !== '' ? error : 'Could not find question'} link={`/courses/${courseCode}/browse`} message="Go back to questions" />;
 
+    if (courseCode !== question.courseId) return <ErrorMessage title="Could not find course" link="/" message="Home" />;
+
     const onTabChange = (key: string) => {
         setActiveTabKey(key);
     };

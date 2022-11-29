@@ -32,7 +32,10 @@ const DisplayBadges = ({ utorid }: { utorid: string }) => {
 
     return (
         <span>
-            <Divider type="vertical" />
+            {badges.length > 0 ?
+                <Divider type="vertical" />
+                : null
+            }
             <Space split={<Divider type="vertical" />} size={2}>
                 {
                     badges.map((item) => {
