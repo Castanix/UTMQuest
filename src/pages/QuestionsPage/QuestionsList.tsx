@@ -43,7 +43,7 @@ const QuestionsList = ({ questions, topics, courseCode }:
 
     let initFilter: string[] = [];
 
-    if(Object.keys(JSON.parse(sessionStorage.getItem("questionFilter") ?? '{}'))[0] === courseCode) {
+    if (Object.keys(JSON.parse(sessionStorage.getItem("questionFilter") ?? '{}'))[0] === courseCode) {
         initFilter = Object.values(JSON.parse(sessionStorage.getItem("questionFilter") ?? ""))[0] as string[];
     };
 
@@ -68,7 +68,7 @@ const QuestionsList = ({ questions, topics, courseCode }:
                     className='question-list-select'
                     defaultValue={initFilter}
                     onChange={(value: string[]) => {
-                        sessionStorage.setItem("questionFilter", JSON.stringify({[courseCode]: value}));
+                        sessionStorage.setItem("questionFilter", JSON.stringify({ [courseCode]: value }));
                         onSelectChange(value);
                     }}
                 >
@@ -82,7 +82,6 @@ const QuestionsList = ({ questions, topics, courseCode }:
                 bordered
                 size="small"
                 pagination={{
-                    hideOnSinglePage: true,
                     showSizeChanger: true,
                 }}
                 dataSource={data}

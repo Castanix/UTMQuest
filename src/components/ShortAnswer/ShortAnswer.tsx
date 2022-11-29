@@ -26,7 +26,7 @@ const ShortAnswer = ({ answer }: { answer: string }) => {
         <div>
             {!isSubmit ?
                 <div>
-                    <TextArea showCount disabled={isSubmit} rows={!onMobile() ? 5 : 2} placeholder="Type your answer here" onChange={handleTextChange} value={text} />
+                    <TextArea showCount disabled={isSubmit} rows={!onMobile() ? 5 : 2} placeholder="Type your answer here" onChange={handleTextChange} value={text} maxLength={4000} />
                     <div className="submitButton-container">
                         <Button shape="round" onClick={submitAnswer}>Submit</Button>
                     </div>

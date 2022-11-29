@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import './ApprovedQuestion.css';
 import MDEditor from '@uiw/react-md-editor';
 import { Breadcrumb, Button, Card, Typography } from 'antd';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { CaretLeftOutlined, EditOutlined } from "@ant-design/icons";
 import MultipleChoice from "../../components/MultipleChoice/MultipleChoice";
 import Loading from "../../components/Loading/Loading";
@@ -19,26 +19,53 @@ import { ThemeContext } from "../../components/Topbar/Topbar";
 
 const { Text, Title } = Typography;
 
-const QuestionTab = ({ options, answers, actualQuestion, explanation, isLightMode }:
-    { options: string[], answers: string[], actualQuestion: string, explanation: string, isLightMode: boolean }) => (
+const GetTabKey = (key: string) => {
+
+    switch (key) {
+
+        case "Question": return "Question";
+        case "Discussion": return "Discussion";
+        case "EditHistory": return "EditHistory";
+
+        default: return "Question";
+    }
+};
+
+const QuestionTab = ({ question, isLightMode }: { question: QuestionsType, isLightMode: boolean }) => (
     <div>
-        <Title level={3} className='divider-title'>Problem</Title>
-        <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={actualQuestion} />
+        <Typography.Paragraph
+            ellipsis={{
+                rows: 2,
+                expandable: true,
+            }}
+            className='divider-title'
+        >
+            {question.qnsName}
+        </Typography.Paragraph>
+        <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.desc} />
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
-        <MultipleChoice options={options} answers={answers} explanation={explanation} />
+        <MultipleChoice options={question.choices} answers={question.ans as string[]} explanation={question.xplan} />
     </div>
 );
 
-const ShortAnswerTab = ({ actualQuestion, answer, isLightMode }: { actualQuestion: string, answer: string, isLightMode: boolean }) => (
+const ShortAnswerTab = ({ question, isLightMode }: { question: QuestionsType, isLightMode: boolean }) => (
     <div>
-        <Title level={3} className='divider-title'>Problem</Title>
-        <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={actualQuestion} />
+        <Typography.Paragraph
+            ellipsis={{
+                rows: 2,
+                expandable: true,
+            }}
+            className='divider-title'
+        >
+            {question.qnsName}
+        </Typography.Paragraph>
+        <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.desc} />
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
-        <ShortAnswer answer={answer} />
+        <ShortAnswer answer={question.ans as string} />
     </div>
 );
 
@@ -59,15 +86,12 @@ const Header = ({ question }: { question: QuestionsType }) => (
         }
         <div className="title">
             <Title level={3} ellipsis>
-                {question.courseId}
+                {question.courseId}&nbsp;
                 {!onMobile() ?
                     <div className="subtitle">
-                        &nbsp; &#8226; {question.topicName}
+                        &#8226; {question.topicName}
                     </div>
-                    : <div className="subtitle">
-                        <br />
-                        {question.topicName}
-                    </div>
+                    : null
                 }
                 <br />
                 <Text type="secondary">
@@ -92,8 +116,8 @@ const Header = ({ question }: { question: QuestionsType }) => (
 );
 
 const getQuestionType = (question: QuestionsType, isLightMode: boolean) => ({
-    mc: <QuestionTab options={question.choices} answers={question.ans as string[]} actualQuestion={question.desc} explanation={question.xplan} isLightMode={isLightMode} />,
-    short: <ShortAnswerTab actualQuestion={question.desc} answer={question.ans as string} isLightMode={isLightMode} />
+    mc: <QuestionTab question={question} isLightMode={isLightMode} />,
+    short: <ShortAnswerTab question={question} isLightMode={isLightMode} />
 });
 
 const QuestionType = ({ question, qnsType, isLightMode }: { question: QuestionsType, qnsType: keyof TypeOfQuestion, isLightMode: boolean }) => <div>{getQuestionType(question, isLightMode)[qnsType]}</div>;
@@ -114,7 +138,8 @@ const tabList = [
 ];
 
 const ApprovedQuestion = () => {
-    const [activeTabKey, setActiveTabKey] = useState<string>('Question');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [activeTabKey, setActiveTabKey] = useState<string>(GetTabKey(searchParams.get("activeTab") ?? ""));
     const params = useParams();
     const link = params.link ?? '';
     const courseCode = params.courseId ?? '';
@@ -130,6 +155,8 @@ const ApprovedQuestion = () => {
 
     const onTabChange = (key: string) => {
         setActiveTabKey(key);
+        searchParams.set("activeTab", key);
+        setSearchParams(searchParams);
     };
 
     const contentList: Record<string, React.ReactNode> = {

@@ -41,6 +41,8 @@
 .divider-title {
     border-left: 3px solid #40a9ff !important;
     padding-left: 0.5rem;
+    font-size: 24px;
+    font-weight: 600;
  }
 
  @media screen and (max-width: 420px) {

@@ -169,7 +169,6 @@ const EditHistory = ({ link }: { link: string }) => {
                         pagination={{
                             pageSize: 10,
                             showSizeChanger: true,
-                            hideOnSinglePage: true,
                         }}
                         className="edit-history-list"
                         itemLayout={onMobile() ? "vertical" : "horizontal"}

@@ -166,7 +166,6 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
                 bordered
                 pagination={{
                     onChange: cancel,
-                    hideOnSinglePage: true,
                     showSizeChanger: true,
                 }}
             />

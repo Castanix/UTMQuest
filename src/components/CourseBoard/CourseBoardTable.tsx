@@ -84,7 +84,6 @@ const CourseBoardTable = (props: any) => {
                 bordered
                 columns={columns}
                 pagination={{
-                    hideOnSinglePage: true,
                     showSizeChanger: true,
                 }}
                 rowKey="_id"
