@@ -1,10 +1,15 @@
 import React from 'react';
-import { fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom';
 import TopicsType from '../../backend/types/Topics';
 import AQStepOne from '../pages/AddQuestionPage/AQStepOne';
 import AQStepTwo from '../pages/AddQuestionPage/AQStepTwo';
 import { ThemeContext } from '../components/Topbar/Topbar';
+import { QuestionsType } from '../../backend/types/Questions';
+import qnsTypeEnum from '../pages/AddQuestionPage/types/QnsTypeEnum';
+import AddQuestionPage from '../pages/AddQuestionPage/AddQuestionPage';
+import { setupServer } from 'msw/lib/node';
+import { rest } from 'msw';
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -23,6 +28,115 @@ const req: TopicsType = {
     course: "ABC123",
     numQuestions: 0
 }
+
+const question: QuestionsType = {
+    _id: 'abcd',
+    link: 'abcd',
+    topicId: '12345',
+    topicName: 'ABCD',
+    courseId: 'ABC123',
+    qnsName: 'Hello World Strings',
+    qnsType: qnsTypeEnum.mc,
+    desc: 'description',
+    xplan: 'none',
+    choices: [],
+    ans: '',
+    authId: 'Bob',
+    authName: 'Bob Bob',
+    date: 'Mon Oct 24 2022',
+    numDiscussions: 1,
+    anon: false,
+    latest: true,
+}
+
+
+const customRender = (
+    <MemoryRouter
+      initialEntries={["/courses/ABC123/addQuestion"]}
+    >
+      <Routes>
+        <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
+      </Routes>
+    </MemoryRouter>
+);
+
+const customRenderEdit = (
+    <MemoryRouter
+    initialEntries={[{ pathname: "/courses/ABC123/editQuestion", state: { question } }]}
+    >
+        <Routes>
+            <Route path="/courses/:id/editQuestion" element={<AddQuestionPage edit={true} />} />
+        </Routes>
+    </MemoryRouter>
+)
+
+
+
+// mock server calls
+const server = setupServer(
+    rest.get(`${process.env.REACT_APP_API_URI}/topic/getTopics/:courseCode`, (req, res, ctx) => {
+        return res(
+            ctx.status(200),
+            ctx.json([{
+                _id: "abcd1234",
+                topicName: "ABCD",
+                course: "ABC123",
+                numQuestions: 0
+            }])
+        )
+    }),
+
+    rest.get(`${process.env.REACT_APP_API_URI}/question/similar/abcd1234/:originalQuestionId/:term`, (req, res, ctx) => {
+        return res(
+            ctx.status(200),
+            ctx.json({})
+        )
+    }),
+
+    rest.put(`${process.env.REACT_APP_API_URI}/badge/unlockTier`, (req, res, ctx) => {
+        return res(
+            ctx.status(201),
+            ctx.json({
+                link:"abcde",
+                questionStatus:1,
+                consecutivePosting:1,
+                unlockedBadges: {
+                    addQuestions:null,
+                    consecutivePosting:null,
+                    dailyLogin:"dailybadge",
+                    editQuestions:null,
+                    threadReplies:null
+                },
+                edit:false
+            })
+        )
+    })
+);
+
+beforeAll(() => {
+    server.listen();
+})
+
+afterEach(() => server.resetHandlers());
+
+afterAll(() => server.close());
+
+describe('AddQuestionPage -> Header', () => {
+    let document: HTMLElement;
+
+    beforeEach(() => {
+        // const { container } = render(<Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />, { wrapper: wrapperProviders });
+        const { container } = render(customRender);
+        document = container;
+    });
+    
+    test('header', async () => {
+        await waitFor(() => {
+            expect(screen.getAllByText(/Add a Question/i).length).toBe(2);
+            expect(screen.getAllByText(/ABC123/i).length).toBe(2);
+        })
+    })
+})
 
 describe('AQStepOne', () => {
     let document: HTMLElement;
@@ -52,7 +166,7 @@ describe('AQStepOne', () => {
 
         const combobox = screen.getByRole('combobox');
         fireEvent.mouseDown(combobox);
-
+        // expect(screen.getByText(/ABCD/i)).toBeInTheDocument();
         fireEvent.click(screen.getByText('ABCD'));
 
         expect(screen.getByText(/Next/i).parentElement).toBeEnabled();
@@ -76,7 +190,6 @@ describe('AQStepTwo', () => {
         const { container } = render(<Wrapper />, { wrapper: BrowserRouter });
         document = container;
     });
-
 
     test('check if part two of add question loads', () => {
         const topic = screen.getByText(/Topic: ABCD/i);
@@ -116,6 +229,50 @@ describe('AQStepTwo', () => {
 
         expect(screen.getByText(/Submit/i).parentElement).toBeEnabled();
     })
+
+    test('check if MDEditor preview works', () => {
+        const problemInput = screen.getByPlaceholderText(/Add Problem/i);
+        fireEvent.change(problemInput, { target: { value: "There is problem" } });
+        
+        const previewButton = screen.getByTitle("Preview code (ctrl + 9)");
+        fireEvent.click(previewButton);
+
+        expect(screen.getByText(/There is problem/i)).toBeInTheDocument();
+    })
+})
+
+
+describe('Load editable question from useLocation', () => {
+    let document: HTMLElement;
+
+    beforeEach(() => {
+
+        const { container } = render(customRenderEdit);
+        document = container;
+    });
+
+    test('check if AQStepOne is loaded with state', async () => {
+        await waitFor(() => {
+            // Select value goes by title
+            expect(screen.getByTitle(/ABCD/i)).toBeInTheDocument();
+            expect(screen.getByText(/Next/i).parentElement).toBeEnabled();
+        });
+    });
+
+    test('check if AQStepTwo is loaded with state', async () => {
+        await waitFor(() => {
+            // Select value goes by title
+            const next = screen.getByText(/Next/i).parentElement;
+
+            if(next) {
+                fireEvent.click(next);
+            }
+
+            expect(screen.getByPlaceholderText(/Add Question Title/i)).toHaveValue("Hello World Strings");
+
+        }, { timeout: 60000 });
+    });
+
 })
 
 

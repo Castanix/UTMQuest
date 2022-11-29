@@ -117,7 +117,7 @@ badgeRouter.put("/unlockTier", async (req: Request, res: Response) => {
 				res.status(400).send(`Could not update unlocked badges`);
 				return;
 			}
-
+			
 			res.status(201).send(result);
 		})
 		.catch((err) => {

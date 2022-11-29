@@ -31,11 +31,15 @@ const GetAuthorName = (question: QuestionsType) => {
 export const GetUserInitials = (username: string) => {
     if (username === "") return "";
 
-    const name = username.split(" ");
-    const firstInitial = name[0][0].toUpperCase();
-    const lastInitial = name[name.length - 1][0].toUpperCase();
+    if (username) {
+        const name = username.split(" ");
+        const firstInitial = name[0][0].toUpperCase();
+        const lastInitial = name[name.length - 1][0].toUpperCase();
+    
+        return firstInitial.concat(lastInitial);
+    }
 
-    return firstInitial.concat(lastInitial);
+    return "";
 };
 
 const QuestionsList = ({ questions, topics, courseCode }:

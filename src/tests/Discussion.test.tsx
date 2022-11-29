@@ -142,48 +142,48 @@ test('test loading 3 top level comments content', async () => {
     });
 });
 
-// test('test expanding a thread', async () => {
+test('test expanding a thread', async () => {
 
-//     await waitFor(async () => {
-//         expect(document.getElementsByClassName('ant-comment').length).toBe(4);
-//         const expandAction = screen.getByText(/View more replies/i);
-//         fireEvent.click(expandAction);
+    await waitFor(async () => {
+        expect(document.getElementsByClassName('ant-comment').length).toBe(4);
+        const expandAction = screen.getByText(/View more replies/i);
+        fireEvent.click(expandAction);
 
-//         await waitFor(() => {
-//             expect(screen.getByText(/Inner comment/i)).toBeInTheDocument()
+        await waitFor(() => {
+            expect(screen.getByText(/Inner comment/i)).toBeInTheDocument()
 
-//             // should contain 5 elements (4 user comments + 1 comment editor)
-//             expect(document.getElementsByClassName('ant-comment').length).toBe(5);
-//         });
-//     });
-// });
+            // should contain 5 elements (4 user comments + 1 comment editor)
+            expect(document.getElementsByClassName('ant-comment').length).toBe(5);
+        });
+    });
+});
 
-// test('test deleting a comment', async () => {
+test('test deleting a comment', async () => {
 
-//     await waitFor(async () => {
-//         expect(document.getElementsByClassName('ant-comment').length).toBe(4);
-//         const deleteAction = screen.getAllByText(/Delete/i)[0];
-//         fireEvent.click(deleteAction);
-//         fireEvent.click(screen.getByText(/OK/i));
+    await waitFor(async () => {
+        expect(document.getElementsByClassName('ant-comment').length).toBe(4);
+        const deleteAction = screen.getAllByText(/Delete/i)[0];
+        fireEvent.click(deleteAction);
+        fireEvent.click(screen.getByText(/OK/i));
 
-//         await waitFor(() => {
-//             expect(screen.getByText(/This message was deleted by the original author or a moderator/i)).toBeInTheDocument();
-//             expect(document.getElementsByClassName('ant-comment').length).toBe(4);
-//         });
-//     })
-// });
+        await waitFor(() => {
+            expect(screen.getByText(/This message was deleted by the original author or a moderator/i)).toBeInTheDocument();
+            expect(document.getElementsByClassName('ant-comment').length).toBe(4);
+        });
+    })
+});
 
-// test('test making a new top level comment', async () => {
+test('test making a new top level comment', async () => {
 
-//     await waitFor(async () => {
-//         expect(document.getElementsByClassName('ant-comment').length).toBe(4);
+    await waitFor(async () => {
+        expect(document.getElementsByClassName('ant-comment').length).toBe(4);
 
-//         const editor = screen.getByPlaceholderText(/Add a comment/i);
+        const editor = screen.getByPlaceholderText(/Add a comment/i);
 
-//         fireEvent.change(editor, { target: { value: 'New comment' } });
+        fireEvent.change(editor, { target: { value: 'New comment' } });
 
-//         fireEvent.click(screen.getByText(/Add Comment/i));
+        fireEvent.click(screen.getByText(/Add Comment/i));
 
-//         await waitFor(() => expect(document.getElementsByClassName('ant-comment').length).toBe(5));
-//     })
-// });
+        await waitFor(() => expect(document.getElementsByClassName('ant-comment').length).toBe(5));
+    }, { timeout: 60000 })
+});

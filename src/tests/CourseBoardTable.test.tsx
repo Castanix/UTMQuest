@@ -5,6 +5,8 @@ import CourseBoardTable from '../components/CourseBoard/CourseBoardTable';
 import { BrowserRouter } from 'react-router-dom';
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
+import CourseBoard from '../components/CourseBoard/CourseBoard';
+import { TIMEOUT } from 'dns';
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -18,6 +20,12 @@ Object.defineProperty(window, 'matchMedia', {
 
 // mock add topic fetch call
 const server = setupServer(
+    rest.get(`${process.env.REACT_APP_API_URI}/course/getAllCourses`, (req, res, ctx) => {
+        return res(
+            ctx.status(200),
+            ctx.json(courses)
+        )
+    }),
     rest.put(`${process.env.REACT_APP_API_URI}/course/addCourse`, (req, res, ctx) => {
         return res(
             ctx.status(200),
@@ -53,52 +61,72 @@ const courses: CoursesType[] = [
 
 let document: HTMLElement;
 
-beforeEach(() => {
-    const { container } = render(<CourseBoardTable dataSource={courses} />, { wrapper: BrowserRouter })
-    document = container;
+
+describe('CourseBoard', () => {
+    beforeEach(() => {
+        const { container } = render(<CourseBoard />, { wrapper: BrowserRouter })
+        document = container;
+    })
+    
+    beforeAll(() => {
+        server.listen();
+    })
+    
+    afterEach(() => server.resetHandlers());
+    
+    afterAll(() => server.close());
+
+    test('test adding a course', async () => {
+
+        await waitFor(() => {
+            expect(screen.getByText(/Add a Course/i)).toBeInTheDocument();
+
+            // open the modal and open dropdown
+            fireEvent.click(screen.getByText(/Add a Course/i));
+        
+            const combobox = screen.getAllByRole('combobox')[1];
+            fireEvent.mouseDown(combobox);
+        
+            // select course
+            fireEvent.click(screen.getByText('ABC101: ABC'));
+            fireEvent.click(screen.getByText(/OK/i));
+    
+        
+            waitFor(() => expect(document.getElementsByTagName('tbody')[0].children.length).toBe(3));
+        }, { timeout: 60000 });
+    })
 })
 
-beforeAll(() => {
-    server.listen();
-})
 
-afterEach(() => server.resetHandlers());
-
-afterAll(() => server.close());
-
-
-// test('test table content', () => {
-//     const firstCourse = screen.getByText(/Introduction to Computer Science/i);
-//     const secondCourse = screen.getByText(/VERY PAINFUL COURSE/i);
-
-//     expect(firstCourse).toBeInTheDocument();
-//     expect(secondCourse).toBeInTheDocument();
-// });
-
-// test('test searching for course', () => {
-//     const searchBar: HTMLInputElement = screen.getByPlaceholderText(/Search Course/i);
-
-//     // table contains two rows
-//     expect(document.getElementsByTagName('tbody')[0].children.length).toBe(2);
-
-//     fireEvent.change(searchBar, { target: { value: '108' } });
-//     expect(searchBar.value).toBe('108');
-
-//     // table now contains only one row
-//     expect(document.getElementsByTagName('tbody')[0].children.length).toBe(1);
+// describe('CourseBoardTable', () => {
+//     beforeEach(() => {
+//         const { container } = render(<CourseBoardTable dataSource={courses} />, { wrapper: BrowserRouter })
+//         document = container;
+//     })
+    
+//     beforeAll(() => {
+//         server.listen();
+//     })
+    
+//     afterEach(() => server.resetHandlers());
+    
+//     afterAll(() => server.close());
+    
+    
+//     test('test adding a course', async () => {
+    
+//         // open the modal and open dropdown
+//         fireEvent.click(screen.getByText(/Add a Course/i));
+    
+//         const combobox = screen.getAllByRole('combobox')[1];
+//         fireEvent.mouseDown(combobox);
+    
+//         // select course
+//         fireEvent.click(screen.getByText('ABC101: ABC'));
+//         fireEvent.click(screen.getByText(/OK/i));
+    
+//         await waitFor(() => 
+//             expect(document.getElementsByTagName('tbody')[0].children.length).toBe(3)
+//         );
+//     })
 // })
-
-test('test adding a course', async () => {
-
-    // open the modal and open dropdown
-    fireEvent.click(screen.getByText(/Add a Course/i));
-
-    const combobox = screen.getByRole('combobox');
-    fireEvent.mouseDown(combobox);
-
-    // select course
-    fireEvent.click(screen.getByText('ABC101: ABC'));
-    fireEvent.click(screen.getByText(/OK/i))
-
-    await waitFor(() => expect(document.getElementsByTagName('tbody')[0].children.length).toBe(3));
-})

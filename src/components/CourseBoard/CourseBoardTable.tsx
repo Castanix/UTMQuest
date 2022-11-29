@@ -29,6 +29,7 @@ const CourseBoardTable = (props: any) => {
     const columns: ColumnsType<CoursesType> = [{
         title: "Course Code",
         dataIndex: "courseId",
+        key: "courseId",
         render: text => <Link to={`/courses/${text}`}>{text}</Link>,
         sorter: (a: CoursesType, b: CoursesType) => a.courseId.localeCompare(b.courseId),
         defaultSortOrder: 'ascend'
@@ -36,11 +37,13 @@ const CourseBoardTable = (props: any) => {
     {
         title: "Title",
         dataIndex: "courseName",
+        key: "courseName",
         sorter: (a: CoursesType, b: CoursesType) => a.courseName.localeCompare(b.courseName)
     },
     {
         title: "# of Topics",
         dataIndex: "numTopics",
+        key: "_id",
         width: '10%',
         sorter: (a: CoursesType, b: CoursesType) => a.numTopics - b.numTopics
     }];
