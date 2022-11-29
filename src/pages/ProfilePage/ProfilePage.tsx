@@ -117,8 +117,10 @@ const ProfilePage = () => {
                         <div className="user-details">
                             <Text strong>{name}</Text>
                             <div className="badge-under-name">
-                                <img src="/images/dailybadge.png" alt="dailybadge" />
-                                <div>{badges.longestLoginStreak}</div>
+                                <Popover content={BadgeDescriptions.dailybadge} trigger="hover">
+                                    <img src="/images/dailybadge.png" alt="dailybadge" />
+                                    <div>{badges.longestLoginStreak}</div>
+                                </Popover>
                             </div>
                         </div>
                     </div>
