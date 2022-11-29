@@ -79,11 +79,14 @@
     display: inline-flex;
     flex-wrap: wrap;
     width: 50%;
-    /* margin-top: 7.5rem; */
 }
 
 .items-container .w-md-editor {
     width: 35vw;
+}
+
+.w-md-editor-fullscreen {
+    width: 100% !important;
 }
 
 @media screen and (max-width: 1200px) {
