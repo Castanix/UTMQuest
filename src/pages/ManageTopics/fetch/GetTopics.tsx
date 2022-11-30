@@ -1,33 +1,20 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import TopicsType from "../../../../backend/types/Topics";
 
-const GetAllTopics = (courseCode: string) => {
-    const [loading, setLoading] = useState<boolean>(true);
-    const [topics, setTopics] = useState<TopicsType[]>([]);
-    const [error, setError] = useState<string>("");
+const fetchTopics = async (courseId: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/topic/getTopics/${courseId}`);
+    if (!response.ok) throw Error("Could not process request.");
+    return response.json();
+};
 
-    useEffect(() => {
-        fetch(
-            `${process.env.REACT_APP_API_URI}/topic/getTopics/${courseCode}`
-        )
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            })
-            .then((result) => {
-                setTopics(result);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
-    }, [courseCode]);
+const GetAllTopics = (courseId: string) => {
+
+    const result = useQuery(["fetchTopics", courseId], () => fetchTopics(courseId), { staleTime: 30000 });
 
     return {
-        topics,
-        loading,
-        error,
+        loading: result.isLoading,
+        topics: result.data as TopicsType[],
+        error: result.error
     };
 };
 

@@ -1,5 +1,7 @@
+/* eslint-disable */
 import { Button, Form, Modal, Select } from 'antd';
 import React, { useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import AddCourse from './fetch/AddCourse';
 import CoursesType from '../../../backend/types/Courses';
 import "./CourseBoard.css";
@@ -12,6 +14,20 @@ const AddCourseModal = (props: any) => {
 
     const [searchInput, setSearchInput] = useState<string>();
     const [selected, setSelected] = useState<string>();
+
+    const queryClient = useQueryClient();
+    const mutation = useMutation((courseId: string) => AddCourse(courseId), {
+        onSuccess: (data) => {
+            const oldData: CoursesType[] = queryClient.getQueryData("getAllCourses") ?? [];
+            const newData = oldData.map(course => {
+                if (course._id == data._id) {
+                    return { ...course, added: true };
+                }
+                return course;
+            });
+            queryClient.setQueryData("getAllCourses", newData);
+        }
+    });
 
     const setupOptions = () => {
         let courseArr: React.ReactNode[] = [];
@@ -59,7 +75,8 @@ const AddCourseModal = (props: any) => {
             // Slices the selected string to get the course name
             const name = selected.slice(6);
 
-            AddCourse(code || '', name, modalData, rerender, setModalData);
+            mutation.mutate(code);
+            // AddCourse(code || '', name, modalData, rerender, setModalData);
         }
         setModalState(false);
     };

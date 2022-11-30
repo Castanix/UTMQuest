@@ -1,34 +1,20 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { QuestionsType } from "../../../../backend/types/Questions";
 
-const GetQuestions = (courseCode: string) => {
-    const [loading, setLoading] = useState<boolean>(true);
-    const [questions, setQuestions] = useState<QuestionsType[]>([]);
-    const [error, setError] = useState<string>("");
+const fetchQuestions = async (courseId: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/question/latestQuestions/${courseId}`);
+    if (!response.ok) throw Error("Could not process request.");
+    return response.json();
+};
 
-    useEffect(() => {
-        fetch(
-            `${process.env.REACT_APP_API_URI}/question/latestQuestions/${courseCode}`
-        )
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            })
-            .then((result) => {
-                setQuestions(result);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
+const GetQuestions = (courseId: string) => {
 
-    }, [courseCode]);
+    const result = useQuery(["fetchQuestions", courseId], () => fetchQuestions(courseId), { staleTime: 30000 });
 
     return {
-        loading,
-        questions,
-        error,
+        loading: result.isLoading,
+        questions: result.data as QuestionsType[],
+        error: result.error
     };
 };
 

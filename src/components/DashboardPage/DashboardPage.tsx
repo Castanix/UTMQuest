@@ -14,18 +14,18 @@ const paginationConfig = (total: number, size: number) => ({
 });
 
 const DashboardPage = () => {
-  const { loading, courseData, error } = GetWidgets();
+  const { loading, courseArr, error } = GetWidgets();
 
   if (loading) return <Loading />;
 
-  if (error !== '') return <ErrorMessage title={error} link='.' message='Refresh' />;
+  if (error instanceof Error) return <ErrorMessage title={error.message} link='.' message='Refresh' />;
 
   return (
     <div className="dashboard-content">
       <Space direction="vertical">
         <Card title="Saved Courses" className="saved-courses">
           <div className="card-content">
-            <SavedCoursesList courseData={courseData} paginationConfig={paginationConfig} />
+            <SavedCoursesList courseData={courseArr} paginationConfig={paginationConfig} />
           </div>
         </Card>
         <Typography.Text italic>More widgets coming soon.</Typography.Text>

@@ -1,10 +1,11 @@
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Button, Form, Input, message, Modal } from 'antd';
 import React, { useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import TopicsType from '../../../backend/types/Topics';
 
 type onCreateCallback = (topicName: string) => void; // eslint-disable-line no-unused-vars
-type addTopicCallbackType = (topic: TopicsType) => void; // eslint-disable-line no-unused-vars
+type addTopicCallbackType = (topic: TopicsType | null) => void; // eslint-disable-line no-unused-vars
 
 interface CollectionCreateFormProps {
     open: boolean;
@@ -12,6 +13,22 @@ interface CollectionCreateFormProps {
     onCreate: onCreateCallback;
     onCancel: () => void;
 }
+
+const addTopic = async (topicName: string, courseId: string) => {
+    const request = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ courseId, topicName })
+    };
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/topic/addTopic`, request);
+
+    if (!response.ok) {
+        message.error(response.statusText);
+        return Promise.reject();
+    }
+
+    return response.json();
+};
 
 const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
     open,
@@ -72,30 +89,76 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
 const AddTopic = ({ courseId, addTopicCallback }: { courseId: string, addTopicCallback: addTopicCallbackType }) => {
     const [open, setOpen] = useState(false);
 
-    const onCreate = (topicName: string) => {
-        const request = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ courseId, topicName })
-        };
+    const queryClient = useQueryClient();
+    const mutation = useMutation((topicName: string) => addTopic(topicName, courseId), {
 
-        const topic: TopicsType = {
-            _id: '',
-            topicName,
-            course: courseId,
-            numQuestions: 0
-        };
+        // onMutate: async topicName => {
+        //     await queryClient.cancelQueries({ queryKey: ["fetchTopics", courseId] });
 
-        fetch(`${process.env.REACT_APP_API_URI}/topic/addTopic`, request).then((result) => {
-            if (!result.ok) throw new Error("Could not add topic. Ensure the topic hasn't already been added and try again.");
-            return result.json();
-        }).then((response) => {
-            topic._id = response.insertedId;
-            addTopicCallback(topic);
+        //     const previousData: TopicsType[] = queryClient.getQueryData(["fetchTopics", courseId]) ?? [];
+
+        //     const newTopic: TopicsType = {
+        //         _id: Math.random().toString(),
+        //         topicName,
+        //         course: courseId,
+        //         numQuestions: 0
+        //     };
+
+        //     const newData = [...previousData, newTopic];
+
+        //     queryClient.setQueryData(["fetchTopics", courseId], newData);
+        //     addTopicCallback(newTopic);
+        //     setOpen(false);
+
+        //     return { previousData };
+        // },
+        // onError: (err, topicName, context) => {
+        //     queryClient.setQueryData(["fetchTopics", courseId], context?.previousData);
+        //     addTopicCallback(null);
+        //     message.error("An error occurred when processing the request. Rolled back to previous state.");
+        // },
+        onSuccess: (data, topicName) => {
+            const newTopic: TopicsType = {
+                _id: data.insertedId,
+                topicName,
+                course: courseId,
+                numQuestions: 0
+            };
+
+            const previousData: TopicsType[] = queryClient.getQueryData(["fetchTopics", courseId]) ?? [];
+            const newData = [...previousData, newTopic];
+            queryClient.setQueryData(["fetchTopics", courseId], newData);
+            addTopicCallback(newTopic);
             setOpen(false);
-        }).catch((error) => {
-            message.error(error.message);
-        });
+            // queryClient.invalidateQueries(["fetchTopics", courseId]);
+        },
+    });
+
+    const onCreate = (topicName: string) => {
+        mutation.mutate(topicName);
+        // const request = {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ courseId, topicName })
+        // };
+
+        // const topic: TopicsType = {
+        //     _id: '',
+        //     topicName,
+        //     course: courseId,
+        //     numQuestions: 0
+        // };
+
+        // fetch(`${process.env.REACT_APP_API_URI}/topic/addTopic`, request).then((result) => {
+        //     if (!result.ok) throw new Error("Could not add topic. Ensure the topic hasn't already been added and try again.");
+        //     return result.json();
+        // }).then((response) => {
+        //     topic._id = response.insertedId;
+        //     addTopicCallback(topic);
+        //     setOpen(false);
+        // }).catch((error) => {
+        //     message.error(error.message);
+        // });
     };
 
     return (

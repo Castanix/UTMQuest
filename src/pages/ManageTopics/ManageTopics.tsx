@@ -28,10 +28,9 @@ const ManageTopics = () => {
     const courseCode = params.id;
 
     const { topics, loading, error } = GetAllTopics(courseCode ?? '');
-
     if (loading) return <Loading />;
 
-    if (error !== '') return <ErrorMessage title={error} link={`/courses/${courseCode}`} message='Go back to course' />;
+    if (error instanceof Error) return <ErrorMessage title={error.message} link={`/courses/${courseCode}`} message='Go back to course' />;
 
     return (
         <Card title={<Header courseCode={courseCode ?? ''} title={`Topics for ${courseCode}`} />} bordered={false}>

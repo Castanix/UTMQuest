@@ -1,44 +1,29 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
+import { useQuery } from "react-query";
 import { UserContext } from "../../Topbar/Topbar";
+
+const fetchAccount = async (utorid: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorid}`);
+    if (!response.ok) throw Error("No such account found.");
+    return response.json();
+};
 
 const GetWidgets = () => {
 
-    const [loading, setLoading] = useState<boolean>(true);
-    const [courseData, setCourseData] = useState<[string, string][]>([]);
-    const [error, setError] = useState('');
-
     const { utorid } = useContext(UserContext);
 
-    useEffect(() => {
-        const courseArr: [string, string][] = [];
+    const result = useQuery("savedCourses", () => fetchAccount(utorid), { enabled: utorid.length > 0 });
 
-        const fetchData = async () => {
-            if (utorid === "") return;
+    const courseArr: [string, string][] = [];
 
-            await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorid}`)
-                .then((res: Response) => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                }).then((result) => {
-                    result.savedCourses.forEach((courseId: string) => {
-                        courseArr.push([`/courses/${courseId}`, courseId]);
-                    });
-
-                    setCourseData(courseArr);
-                    setLoading(false);
-                    setError("");
-                }).catch((err) => {
-                    setError(err.message);
-                    setLoading(false);
-                });
-        };
-        fetchData();
-    }, [utorid]);
+    result.data?.savedCourses.forEach((courseId: string) => {
+        courseArr.push([`/courses/${courseId}`, courseId]);
+    });
 
     return {
-        loading,
-        courseData,
-        error
+        loading: result.isLoading || result.isIdle,
+        error: result.error,
+        courseArr,
     };
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { Button, Input, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -9,22 +9,28 @@ import AddCourseModal from './AddCourseModal';
 const CourseBoardTable = (props: any) => {
     const { dataSource }: { dataSource: CoursesType[] } = props;
 
-    const added: CoursesType[] = [];
-    const unadded: CoursesType[] = [];
-
-    dataSource.forEach((item) => {
-        if (item.added) {
-            added.push(item);
-        } else {
-            unadded.push(item);
-        }
-    });
-
-    const [allAddedData, setAllAddedData] = useState<CoursesType[]>(added);
+    const [allAddedData, setAllAddedData] = useState<CoursesType[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
-    const [tableDisplayData, setTableDisplayData] = useState<CoursesType[]>(added);
+    const [tableDisplayData, setTableDisplayData] = useState<CoursesType[]>([]);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [modalData, setModalData] = useState<CoursesType[]>(unadded);
+    const [modalData, setModalData] = useState<CoursesType[]>([]);
+
+    useEffect(() => {
+        const added: CoursesType[] = [];
+        const unadded: CoursesType[] = [];
+
+        dataSource.forEach((item) => {
+            if (item.added) {
+                added.push(item);
+            } else {
+                unadded.push(item);
+            }
+        });
+
+        setAllAddedData(added);
+        setTableDisplayData(added);
+        setModalData(unadded);
+    }, [dataSource]);
 
     const columns: ColumnsType<CoursesType> = [{
         title: "Course Code",

@@ -1,24 +1,32 @@
 import { Form, message } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TopicsType from '../../../backend/types/Topics';
 
 
 const TopicState = (topics: TopicsType[]) => {
     const [form] = Form.useForm();
-    const [originalData, setOriginalData] = useState<TopicsType[]>(topics);
-    const [data, setData] = useState<TopicsType[]>(topics);
+    const [originalData, setOriginalData] = useState<TopicsType[]>([]);
+    const [data, setData] = useState<TopicsType[]>([]);
     const [editingKey, setEditingKey] = useState<string>('');
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [lastTopicAdded, setLastTopicAdded] = useState<TopicsType | null>(null);
+
+    useEffect(() => {
+        setOriginalData(topics);
+        setData(topics);
+    }, [topics]);
 
     const isEditing = (record: TopicsType) => record._id === editingKey;
 
     const isDisabled = (record: TopicsType) => record.numQuestions > 0;
 
-    const addTopicCallback = (topic: TopicsType) => {
-        setSearchTerm('');
-        setOriginalData([...originalData, topic]);
-        setData([...originalData, topic]);
+    const addTopicCallback = (topic: TopicsType | null) => {
+
+        if (topic) {
+            setSearchTerm('');
+            setOriginalData([...originalData, topic]);
+            setData([...originalData, topic]);
+        }
         setLastTopicAdded(topic);
     };
 

@@ -4,6 +4,8 @@ import './index.css';
 import { notification } from 'antd';
 import { FireTwoTone } from '@ant-design/icons';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import Topbar from './components/Topbar/Topbar';
 import reportWebVitals from './reportWebVitals';
 import CoursePage from './pages/CoursePage/CoursePage';
@@ -34,21 +36,26 @@ fetch(`${process.env.REACT_APP_API_URI}/incrementLoginStreak`, { method: "PUT" }
     console.log(error);
   });
 
+const client = new QueryClient();
+
 root.render(
   <BrowserRouter>
-    <Topbar>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/courses/:id" element={<CoursePage />} />
-        <Route path="/courses/:id/topics" element={<ManageTopics />} />
-        <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
-        <Route path="/courses/:id/editQuestion" element={<AddQuestionPage edit />} />
-        <Route path="/courses/:id/browse" element={<QuestionsPage />} />
-        <Route path="/courses/:courseId/question/:link" element={<ApprovedQuestion />} />
-        <Route path="/profile/:utorid" element={<ProfilePage />} />
-        <Route path="*" element={<div>Page not found</div>} />
-      </Routes>
-    </Topbar>
+    <QueryClientProvider client={client}>
+      <Topbar>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/courses/:id" element={<CoursePage />} />
+          <Route path="/courses/:id/topics" element={<ManageTopics />} />
+          <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
+          <Route path="/courses/:id/editQuestion" element={<AddQuestionPage edit />} />
+          <Route path="/courses/:id/browse" element={<QuestionsPage />} />
+          <Route path="/courses/:courseId/question/:link" element={<ApprovedQuestion />} />
+          <Route path="/profile/:utorid" element={<ProfilePage />} />
+          <Route path="*" element={<div>Page not found</div>} />
+        </Routes>
+      </Topbar>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   </BrowserRouter>
 );
 
