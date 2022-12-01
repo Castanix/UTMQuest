@@ -9,13 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
       
       - name: Installing Dependencies
-      - run: npm install
+        run: npm install
       
       - name: Running backend
-      - run: npm run startBack
+        run: npm run startBack
+        
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
