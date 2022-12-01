@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v2
       
       - name: Installing Dependencies
-        run: npm install
+        run: cd backend && npm install
       
       - name: Running backend
         run: npm run startBack
