@@ -33,7 +33,7 @@ const AddMultipleChoice = (
 
     const updateOptionValue = (index: number, value: string) => {
         const newOptions = [...options];
-        newOptions[index].value = value;
+        newOptions[index].value = value.trim();
         setOptions(newOptions);
     };
 
