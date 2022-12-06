@@ -53,7 +53,7 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
         <Skeleton avatar title={false} loading={loading} active>
             <List.Item
                 actions={[
-                    <Space className="edit-history-list-actions" direction={!onMobile() ? "horizontal" : "vertical"} split={<Divider className="edit-history-list-action-divider" type="vertical" />}>
+                    <Space className="edit-history-list-actions" direction="horizontal" split={<Divider className="edit-history-list-action-divider" type="vertical" />}>
                         {actions.map((item: any) => <span key={item?.key}>{item}</span>)}
                     </Space>
                 ]}
