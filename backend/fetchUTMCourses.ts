@@ -1,5 +1,5 @@
 import axios from "axios";
-import { utmQuestCollections } from "./db/db.service";
+import connectDB, { utmQuestCollections } from "./db/db.service";
 
 const dataBody = {
   courseCodeAndTitleProps: { "courseCode": "", "courseTitle": "", "courseSectionCode": "" },
@@ -18,8 +18,12 @@ const dataBody = {
   timePreferences: []
 };
 
+<<<<<<< HEAD
 
 const fetchCourses = () => {
+=======
+connectDB().then(async () => {
+>>>>>>> Integrate course landing page with browse questions
   axios({
     method: 'post',
     url: 'https://api.easi.utoronto.ca/ttb/getPageableCourses',
@@ -42,7 +46,12 @@ const fetchCourses = () => {
       });
     });
   });
+<<<<<<< HEAD
 };
 
 export default fetchCourses;
+=======
+});
+
+>>>>>>> Integrate course landing page with browse questions
 

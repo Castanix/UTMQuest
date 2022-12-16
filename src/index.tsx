@@ -6,7 +6,6 @@ import { FireTwoTone } from '@ant-design/icons';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Topbar from './components/Topbar/Topbar';
 import reportWebVitals from './reportWebVitals';
-import CoursePage from './pages/CoursePage/CoursePage';
 import ManageTopics from './pages/ManageTopics/ManageTopics';
 import QuestionsPage from './pages/QuestionsPage/QuestionsPage';
 import AddQuestionPage from './pages/AddQuestionPage/AddQuestionPage';
@@ -39,7 +38,6 @@ root.render(
     <Topbar>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/courses/:id" element={<CoursePage />} />
         <Route path="/courses/:id/topics" element={<ManageTopics />} />
         <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
         <Route path="/courses/:id/editQuestion" element={<AddQuestionPage edit />} />

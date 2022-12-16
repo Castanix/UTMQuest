@@ -18,7 +18,7 @@ const SavedCoursesList = (props: any) => {
         pagination={paginationConfig(courseData.length, 4)}
         renderItem={(item: any) => (
           <List.Item>
-            <Link to={item[0]}>
+            <Link to={`${item[0]}/browse`}>
               {item[1]}
             </Link>
           </List.Item>
