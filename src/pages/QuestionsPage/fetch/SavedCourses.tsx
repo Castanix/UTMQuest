@@ -42,9 +42,9 @@ export const SaveCourse = (courseId: string, favourite: boolean, setFavourite: F
             if (!res.ok) throw new Error("Could not add course. Please try again.");
             setFavourite(!favourite);
             if(!favourite) {
-                message.success("Course saved.");
+                message.success("Course bookmarked.");
             } else {
-                message.success("Course unsaved.");
+                message.success("Course removed from bookmarks.");
             }
         }).catch((error) => {
             message.error(error);

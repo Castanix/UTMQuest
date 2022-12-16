@@ -24,7 +24,7 @@ const LandingPage = () => {
             <main className="main-container">
                 <Title level={3}>Pick the course you want to practice</Title>
                 <Space className="landing-page-toolbar">
-                    <Button shape="round" type={viewAllCourses ? `default` : `primary`} onClick={() => setViewAllCourses(false)}>Select from your courses</Button>
+                    <Button shape="round" type={viewAllCourses ? `default` : `primary`} onClick={() => setViewAllCourses(false)}>Select from bookmarked courses</Button>
                     <Button shape="round" type={viewAllCourses ? `primary` : `default`} onClick={() => setViewAllCourses(true)}>Select from all courses</Button>
                 </Space>
                 <Divider />
