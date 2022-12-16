@@ -12,8 +12,8 @@ const Header = ({ courseCode, title }:
     { courseCode: string, title: string }) => (
     <div>
         <Breadcrumb>
-            <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to="/"><u>Dashboard</u></Link></Breadcrumb.Item>
+            <Breadcrumb.Item>{courseCode}</Breadcrumb.Item>
             <Breadcrumb.Item>Topics</Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">

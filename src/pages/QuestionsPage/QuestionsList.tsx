@@ -1,5 +1,5 @@
-import { MessageOutlined, SearchOutlined, QuestionOutlined } from '@ant-design/icons';
-import { Divider, Input, List, Select, Space, Tag, Typography } from 'antd';
+import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone } from '@ant-design/icons';
+import { Button, Divider, Input, List, Select, Space, Tag, Typography } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionsType } from '../../../backend/types/Questions';
@@ -64,22 +64,25 @@ const QuestionsList = ({ questions, topics, courseCode }:
 
     return (
         <div>
-            <Space className='questions-table-toolbar' split={<Divider className='questions-divider' type="vertical" />}>
-                <Select
-                    mode="multiple"
-                    size="middle"
-                    placeholder="Filter by topic"
-                    className='question-list-select'
-                    defaultValue={initFilter}
-                    onChange={(value: string[]) => {
-                        sessionStorage.setItem("questionFilter", JSON.stringify({ [courseCode]: value }));
-                        onSelectChange(value);
-                    }}
-                >
-                    {options}
-                </Select>
-                <Input placeholder="Search question" prefix={<SearchOutlined />} value={searchTerm} className='questions-search' onChange={(event) => onSearchChange(event.target.value)} />
-            </Space>
+            <div className="questions-table-header">
+                <Space className='questions-table-toolbar' split={<Divider className='questions-divider' type="vertical" />}>
+                    <Select
+                        mode="multiple"
+                        size="middle"
+                        placeholder="Filter by topic"
+                        className='question-list-select'
+                        defaultValue={initFilter}
+                        onChange={(value: string[]) => {
+                            sessionStorage.setItem("questionFilter", JSON.stringify({ [courseCode]: value }));
+                            onSelectChange(value);
+                        }}
+                    >
+                        {options}
+                    </Select>
+                    <Input placeholder="Search question" prefix={<SearchOutlined />} value={searchTerm} className='questions-search' onChange={(event) => onSearchChange(event.target.value)} />
+                </Space>
+                <Link to={`/courses/${courseCode}/addQuestion`}><Button type="primary" shape="round" icon={<PlusCircleTwoTone />}>Add a Question</Button></Link>
+            </div>
             <List
                 className='question-list'
                 itemLayout="vertical"

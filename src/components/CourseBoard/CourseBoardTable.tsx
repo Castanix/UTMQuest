@@ -30,7 +30,7 @@ const CourseBoardTable = (props: any) => {
         title: "Course Code",
         dataIndex: "courseId",
         key: "courseId",
-        render: text => <Link to={`/courses/${text}`}>{text}</Link>,
+        render: text => <Link to={`/courses/${text}/browse`}>{text}</Link>,
         sorter: (a: CoursesType, b: CoursesType) => a.courseId.localeCompare(b.courseId),
         defaultSortOrder: 'ascend'
     },

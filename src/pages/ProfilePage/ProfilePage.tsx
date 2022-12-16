@@ -38,7 +38,7 @@ export interface BadgesType {
 const Header = () => (
     <div>
         <Breadcrumb>
-            <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to="/"><u>Dashboard</u></Link></Breadcrumb.Item>
             <Breadcrumb.Item>Profile</Breadcrumb.Item>
         </Breadcrumb>
         <Title level={3} ellipsis>Profile</Title>
