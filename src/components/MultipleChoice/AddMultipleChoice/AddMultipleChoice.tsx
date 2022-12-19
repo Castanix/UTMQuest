@@ -1,7 +1,11 @@
-import { Button, Checkbox, Divider, Input, Space, Typography } from 'antd';
-import React, { useState } from 'react';
+import { Button, Checkbox, Divider, Input, List, Space, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
+import dragula from 'react-dragula';
 
 import "./AddMultipleChoice.css";
+import "react-dragula/dist/dragula.css";
+import { DragOutlined } from '@ant-design/icons';
+import { onMobile } from '../../EditHistory/EditHistory';
 
 const { TextArea } = Input;
 
@@ -51,6 +55,37 @@ const AddMultipleChoice = (
         setOptions(newOptions);
     };
 
+    const getIndexInParent = (el: any) => Array.from(el.parentNode.children).indexOf(el);
+
+    useEffect(() => {
+        const handleReorder = (dragIndex: number, draggedIndex: number) => {
+            setOptions((oldState) => {
+              const newState = [...oldState];
+              const item = newState.splice(dragIndex, 1)[0];
+              newState.splice(draggedIndex, 0, item);
+              return newState;
+            });
+        };
+
+        let start: number;
+        let end: number;
+        const container = document.querySelector<HTMLElement>('.ant-list-items');
+
+        if(container && !onMobile()) {
+            const drake = dragula([container], {
+                moves: (el: any) => {
+                    start = getIndexInParent(el);
+                    return true;
+                },
+            });
+
+            drake.on('drop', (el: any) => {
+                end = getIndexInParent(el);
+                handleReorder(start, end);
+            });
+        }
+    }, [setOptions]);
+
     return (
         <div>
             <div className="add-mc-actions">
@@ -64,7 +99,30 @@ const AddMultipleChoice = (
                 </Space>
             </div>
             <div className="add-mc">
-                {options.map((item, index) =>
+                <List 
+                    bordered={false}
+                    dataSource={options}
+                    itemLayout="vertical"
+                    renderItem={(item, index) =>
+                        <Checkbox key={`checkbox_${item._id}`} onChange={() => onCheckboxChange(index)} checked={options[index].isCorrect}>
+                            <Space>
+                                <TextArea
+                                    className="add-mc-textarea"
+                                    key={`input_${item._id}`}
+                                    maxLength={1000}
+                                    onChange={e => updateOptionValue(index, e.target.value)}
+                                    placeholder={`Option ${String.fromCharCode(65 + index)}`}
+                                    defaultValue={options[index].value ?? ''}
+                                    autoSize
+                                />
+                                <DragOutlined style={{display: onMobile() ? 'none' : 'static'}}/>
+                            </Space>
+                        </Checkbox>
+                    }
+                />
+                {// Cleanup once verified working
+                
+                /* {options.map((item, index) =>
                     <Checkbox key={`checkbox_${item._id}`} onChange={() => onCheckboxChange(index)} checked={options[index].isCorrect}>
                         <TextArea
                             className="add-mc-textarea"
@@ -76,7 +134,7 @@ const AddMultipleChoice = (
                             autoSize
                         />
                     </Checkbox>
-                )}
+                )} */}
             </div>
         </div>
     );
