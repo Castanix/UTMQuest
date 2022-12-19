@@ -13,11 +13,13 @@
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@uiw/react-md-editor": "^3.19.3",
+    "ant-motion": "github:ant-design/ant-motion",
     "antd": "^5.0.0",
     "dotenv": "^16.0.3",
     "msw": "^0.47.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dragula": "^1.1.17",
     "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",
     "rehype-sanitize": "^5.0.1",
@@ -60,6 +62,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-dragula": "^1.1.0",
     "concurrently": "^7.4.0",
     "cross-env": "^7.0.3",
     "eslint-config-airbnb": "^19.0.4",
