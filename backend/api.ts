@@ -116,7 +116,7 @@ apiRouter.get("/displayBadges/:utorid", async (req: Request, res: Response) => {
 
 // Test route
 apiRouter.get("/express_backend", (req: Request, res: Response) => {
-	res.send({ express: "YOUR EXPRESS BACKEND IS CONNECTED TO REACT" });
+	res.status(200).send({ express: "YOUR EXPRESS BACKEND IS CONNECTED TO REACT" });
 });
 
 export default apiRouter;
