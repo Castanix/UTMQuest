@@ -11,7 +11,7 @@ Designs: https://www.figma.com/file/jUDOm83KTHpmVrat3wligx/Mockup
 APIs: https://app.diagrams.net/#G16FW2zKCdXlpUVaR4Qi29FoK0Tgm6-PD5
 
 
-Webapp and Server are currently being hosted on Netlify and Heroku respectively.
+Webapp and Server are currently being hosted on Netlify and Render respectively.
 
 Webapp: https://utmquest.netlify.app/
 
