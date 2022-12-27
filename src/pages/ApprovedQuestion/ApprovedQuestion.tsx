@@ -40,7 +40,9 @@ const QuestionTab = ({ question, isLightMode }: { question: QuestionsType, isLig
             }}
             className='divider-title'
         >
-            {question.qnsName}
+            <div className='question-title'>
+                {question.qnsName}
+            </div>
         </Typography.Paragraph>
         <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.desc} />
         <br />
