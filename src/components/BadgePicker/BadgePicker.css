@@ -3,6 +3,7 @@
     width: 8rem;
     height: 8rem;
     margin: 0.25rem;
+    border: 4px transparent solid;
 }
 
 .modal-img:hover,
