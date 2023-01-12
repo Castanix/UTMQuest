@@ -19,8 +19,10 @@ app.use(express.static(path.join("/var/www/html", "quest")));
 // ensure all requests are authorized
 app.use((req, res, next) => {
 	if (env === "dev") {
-		req.headers.utorid = "dummy22";
-		req.headers.http_mail = "dummy.test@test.com";
+		const num = Math.floor(Math.random()*3);
+		const dummy = ["dummy22", "dummy23", "dummy24"];
+		req.headers.utorid = dummy[num];
+		req.headers.http_mail = `${dummy[num]}.test@test.com`;
 		next();
 		return;
 	}

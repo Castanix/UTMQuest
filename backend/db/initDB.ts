@@ -4,8 +4,10 @@ import configValues from "../config";
 // Use 'npm run init' on the terminal backend to setup the database and collections
 // with validation in mongoDB if collections do not exist yet.
 async function initDB() {
+	const env = process.env.NODE_ENV || "dev";
+
 	const client: mongoDB.MongoClient = new mongoDB.MongoClient(
-		configValues.MONGO_URI
+		env === "dev" ? configValues.MONGO_TEST_URI : configValues.MONGO_URI
 	);
 
 	await client.connect();
