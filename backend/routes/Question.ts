@@ -218,21 +218,6 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 				return;
 			};
 
-
-			/* TODO: Delete this once certain is it not required */
-			// utmQuestCollections.Topics?.findOneAndUpdate(
-			// 	{ _id: new ObjectID(req.body.topicId) },
-			// 	{ $inc: { numQuestions: 1 } }
-			// ).then((incrementResult) => {
-			// 	if (!incrementResult) {
-			// 		res.status(500).send(
-			// 			`Unable to increment numQuestions for ${req.body.topicName}`
-			// 		);
-			// 		utmQuestCollections.Questions?.deleteOne(question);
-			// 		return;
-			// 	}
-			// });
-
 			// Update badge progression
 			if (!question.anon) {
 				const now = new Date();

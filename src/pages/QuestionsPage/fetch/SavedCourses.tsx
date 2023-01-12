@@ -2,9 +2,12 @@ import { message } from "antd";
 import { useEffect, useState } from "react";
 
 
-export const CheckSaved = (courseId: string, setTest: Function) => {
+export const CheckSaved = (courseId: string, setIsSaved: Function) => {
     const [loadingSaved, setLoadingSaved] = useState<boolean>(true);
     const [errorSaved, setErrorSaved] = useState<string>("");
+    const [loadingCourse, setLoadingCourse] = useState<boolean>(true);
+    const [errorCourse, setErrorCourse] = useState<string>("");
+    const [courseName, setCourseName] = useState<string>("");
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_URI}/account/checkSaved/${courseId}`)
@@ -12,17 +15,32 @@ export const CheckSaved = (courseId: string, setTest: Function) => {
                 if (!res.ok) throw Error(res.statusText);
                 return res.json();
             }).then((result) => {
-                setTest(result);
+                setIsSaved(result);
                 setLoadingSaved(false);
             }).catch((err) => {
                 setErrorSaved(err.message);
                 setLoadingSaved(false);
             });
-    }, [courseId, setTest]);
+
+        fetch(`${process.env.REACT_APP_API_URI}/course/getCourse/${courseId}`)
+            .then((res: Response) => {
+                if (!res.ok) throw Error(res.statusText);
+                return res.json();
+            }).then((result) => {
+                setCourseName(result.courseName);
+                setLoadingCourse(false);
+            }).catch((err) => {
+                setErrorCourse(err.message);
+                setLoadingCourse(false);
+            });
+    }, [courseId, setIsSaved]);
 
     return {
         loadingSaved,
-        errorSaved
+        errorSaved,
+        loadingCourse,
+        errorCourse,
+        courseName
     };
 };
 

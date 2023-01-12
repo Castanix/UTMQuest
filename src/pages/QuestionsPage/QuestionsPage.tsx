@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Card, Space } from 'antd';
+import { Breadcrumb, Button, Card, Space, Typography } from 'antd';
 import Title from 'antd/es/typography/Title';
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -11,16 +11,17 @@ import QuestionsList from './QuestionsList';
 import { CheckSaved, SaveCourse } from './fetch/SavedCourses';
 
 
-const Header = ({ courseCode, favourite, setFavourite}:
-    { courseCode: string, favourite: boolean, setFavourite: Function}) => (
+const { Text } = Typography;
+
+const Header = ({ courseCode, courseName, favourite, setFavourite}:
+    { courseCode: string, courseName: string, favourite: boolean, setFavourite: Function}) => (
     <div>
         <Breadcrumb>
-            <Breadcrumb.Item><Link to="/"><u>Dashboard</u></Link></Breadcrumb.Item>
-            <Breadcrumb.Item>{courseCode}</Breadcrumb.Item>
-            <Breadcrumb.Item>Browse Questions</Breadcrumb.Item>
+            <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Text>{courseCode}</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="browse-question-title">
-            <Title level={3} ellipsis>{`Browse Questions for ${courseCode}`}</Title>
+            <Title level={3} ellipsis>{`${courseCode} - ${courseName}`}</Title>
             <div>
                 <Space>
                     <Link to={`/courses/${courseCode}/topics`}>
@@ -45,16 +46,16 @@ const QuestionsPage = () => {
     const courseCode = params.id;
     
     const [isSaved, setIsSaved] = useState<boolean>(false);
-    const { loadingSaved, errorSaved } = CheckSaved(courseCode ?? '', setIsSaved);
+    const { loadingSaved, errorSaved, loadingCourse, errorCourse, courseName } = CheckSaved(courseCode ?? '', setIsSaved);
 
     const { loading: loadingTopics, topics, error: errorTopics } = GetAllTopics(courseCode ?? '');
     const { loading, questions, error } = GetQuestions(courseCode ?? '');
 
-    if (loading || loadingTopics || loadingSaved) return <Loading />;
+    if (loading || loadingTopics || loadingSaved || loadingCourse) return <Loading />;
 
-    if (error !== '' || errorTopics !== '' || errorSaved !== '') return <ErrorMessage title={error !== '' ? error : errorTopics} link="#" message="Refresh" />;
+    if (error !== '' || errorTopics !== '' || errorSaved !== '' || errorCourse !== '') return <ErrorMessage title={error !== '' ? error : errorTopics} link="#" message="Refresh" />;
     return (
-        <Card title={<Header courseCode={courseCode ?? ''} favourite={isSaved} setFavourite={setIsSaved} />} bordered={false}>
+        <Card title={<Header courseCode={courseCode ?? ''} courseName={courseName ?? ''} favourite={isSaved} setFavourite={setIsSaved} />} bordered={false}>
             <main className='main-container'>
                 <QuestionsList questions={questions} topics={topics} courseCode={courseCode ?? ""} />
             </main>

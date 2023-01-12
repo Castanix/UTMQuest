@@ -5,12 +5,12 @@ import DashboardPage from "../../components/DashboardPage/DashboardPage";
 
 import "./LandingPage.css";
 
-const { Title } = Typography;
+const { Text, Title } = Typography;
 
 const Header = () => (
     <div>
         <Breadcrumb>
-            <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
+            <Breadcrumb.Item><Text>Dashboard</Text></Breadcrumb.Item>
         </Breadcrumb>
         <Title level={3}>Home</Title>
     </div>

@@ -6,15 +6,15 @@ import GetAllTopics from './fetch/GetTopics';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import TopicsTable from './TopicsTable';
 
-const { Title } = Typography;
+const { Text, Title } = Typography;
 
 const Header = ({ courseCode, title }:
     { courseCode: string, title: string }) => (
     <div>
         <Breadcrumb>
-            <Breadcrumb.Item><Link to="/"><u>Dashboard</u></Link></Breadcrumb.Item>
-            <Breadcrumb.Item>{courseCode}</Breadcrumb.Item>
-            <Breadcrumb.Item>Topics</Breadcrumb.Item>
+            <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Text>Topics</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">
             <Title level={3} ellipsis>{title}</Title>
