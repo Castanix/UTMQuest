@@ -18,25 +18,31 @@ const dataBody = {
   timePreferences: []
 };
 
-axios({
-  method: 'post',
-  url: 'https://api.easi.utoronto.ca/ttb/getPageableCourses',
-  data: dataBody,
-}).then((result) => {
-  Object.values(result.data.payload.pageableCourse.courses).forEach( (item: any) => { 
-    const course = {
-        courseId: item.code.substring(0, item.code.length - 2),
-        courseName: item.name,
-        numTopics: 0,
-        added: false
-    };
-    utmQuestCollections.Courses?.insertOne(course).then((res) => {
-        if (!res) { 
-            console.log(`INSERTION FOR COURSE ${course} HAS FAILED!`);
-        }
-        console.log("SUCCESSFULLY INSERTED COURSES"); 
-    }).catch((err) => { 
-        console.log(err);
+
+const fetchCourses = () => {
+  axios({
+    method: 'post',
+    url: 'https://api.easi.utoronto.ca/ttb/getPageableCourses',
+    data: dataBody,
+  }).then((result) => {
+    Object.values(result.data.payload.pageableCourse.courses).forEach( (item: any) => { 
+      const course = {
+          courseId: item.code.substring(0, item.code.length - 2),
+          courseName: item.name,
+          numTopics: 0,
+          added: false
+      };
+      utmQuestCollections.Courses?.insertOne(course).then((res) => {
+          if (!res) { 
+              console.log(`INSERTION FOR COURSE ${course} HAS FAILED!`);
+          }
+          console.log("SUCCESSFULLY INSERTED COURSES"); 
+      }).catch((err) => { 
+          console.log(err);
+      });
     });
   });
-});
+}
+
+export default fetchCourses
+
