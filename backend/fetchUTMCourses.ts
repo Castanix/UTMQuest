@@ -42,7 +42,7 @@ const fetchCourses = () => {
       });
     });
   });
-}
+};
 
-export default fetchCourses
+export default fetchCourses;
 
