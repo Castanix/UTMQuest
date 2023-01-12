@@ -9,15 +9,15 @@ import AQStepOne from './AQStepOne';
 import AQStepTwo from './AQStepTwo';
 
 
-const { Title } = Typography;
+const { Text, Title } = Typography;
 
 const Header = ({ courseCode }:
     { courseCode: string }) => (
     <div>
         <Breadcrumb>
-            <Breadcrumb.Item><Link to="/"><u>Dashboard</u></Link></Breadcrumb.Item>
-            <Breadcrumb.Item>{courseCode}</Breadcrumb.Item>
-            <Breadcrumb.Item>Add a Question</Breadcrumb.Item>
+            <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Text>Add a Question</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">
             <Title level={3} ellipsis>Add a Question <div className="subtitle">&#8226; {courseCode}</div></Title>

@@ -76,9 +76,8 @@ const Header = ({ question }: { question: QuestionsType }) => (
     <div>
         {!onMobile() ?
             <Breadcrumb>
-                <Breadcrumb.Item><Link to="/"><u>Dashboard</u></Link></Breadcrumb.Item>
-                <Breadcrumb.Item>{question.courseId}</Breadcrumb.Item>
-                <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}><u>Browse Questions</u></Link></Breadcrumb.Item>
+                <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
+                <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}>{question.courseId}</Link></Breadcrumb.Item>
                 <Breadcrumb.Item>
                     <Text
                         style={{ width: 100 }}
@@ -89,7 +88,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
             </Breadcrumb>
             :
             <Breadcrumb>
-                <Breadcrumb.Item><Link to={`/courses/${question.courseId}/browse`}><CaretLeftOutlined />Browse Questions</Link></Breadcrumb.Item>
+                <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}><CaretLeftOutlined />{question.courseId}</Link></Breadcrumb.Item>
             </Breadcrumb>
         }
         <div className="title">
