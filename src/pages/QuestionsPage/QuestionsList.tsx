@@ -1,14 +1,14 @@
 import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone } from '@ant-design/icons';
 import { Button, Divider, Input, List, Select, Space, Tag, Typography } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionsType } from '../../../backend/types/Questions';
 import TopicsType from '../../../backend/types/Topics';
 import DisplayBadges from '../../components/DisplayBadges/DisplayBadges';
 import GetRelativeTime from '../../RelativeTime';
-import QuestionState from './fetch/QuestionState';
 
 import "./QuestionsList.css";
+import QuestionState from './QuestionState';
 
 const { Option } = Select;
 
@@ -45,15 +45,10 @@ export const GetUserInitials = (username: string) => {
 const QuestionsList = ({ questions, topics, courseCode }:
     { questions: QuestionsType[], topics: TopicsType[], courseCode: string }) => {
 
-    let initFilter: string[] = [];
-
-    if (Object.keys(JSON.parse(sessionStorage.getItem("questionFilter") ?? '{}'))[0] === courseCode) {
-        initFilter = Object.values(JSON.parse(sessionStorage.getItem("questionFilter") ?? ""))[0] as string[];
-    };
-
     const {
         data,
         searchTerm,
+        topicFilters,
         onSearchChange,
         sessionState,
         onPaginationChange,
@@ -86,11 +81,8 @@ const QuestionsList = ({ questions, topics, courseCode }:
                         size="middle"
                         placeholder="Filter by topic"
                         className='question-list-select'
-                        defaultValue={initFilter}
-                        onChange={(value: string[]) => {
-                            sessionStorage.setItem("questionFilter", JSON.stringify({ [courseCode]: value }));
-                            onSelectChange(value);
-                        }}
+                        defaultValue={[...topicFilters]}
+                        onChange={onTopicFilterChange}
                     >
                         {options}
                     </Select>
