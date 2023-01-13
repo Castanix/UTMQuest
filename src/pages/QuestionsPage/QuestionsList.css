@@ -87,12 +87,8 @@
         margin: 0.5rem;
     }
 
-    .questions-search {
-        margin-top: 0.5rem;
-    }
-
     .questions-table-header button {
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
         width: 100%;
     }
 
