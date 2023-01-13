@@ -1,5 +1,5 @@
 import axios from "axios";
-import connectDB, { utmQuestCollections } from "./db/db.service";
+import { utmQuestCollections } from "./db/db.service";
 
 const dataBody = {
   courseCodeAndTitleProps: { "courseCode": "", "courseTitle": "", "courseSectionCode": "" },
