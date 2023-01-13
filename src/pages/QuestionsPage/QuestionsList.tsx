@@ -35,7 +35,7 @@ export const GetUserInitials = (username: string) => {
         const name = username.split(" ");
         const firstInitial = name[0][0].toUpperCase();
         const lastInitial = name[name.length - 1][0].toUpperCase();
-    
+
         return firstInitial.concat(lastInitial);
     }
 
@@ -55,8 +55,23 @@ const QuestionsList = ({ questions, topics, courseCode }:
         data,
         searchTerm,
         onSearchChange,
-        onSelectChange
-    } = QuestionState(questions, initFilter);
+        sessionState,
+        onPaginationChange,
+        onTopicFilterChange,
+        onScroll
+    } = QuestionState(questions, courseCode);
+
+    useEffect(() => {
+
+        window.scrollTo(0, sessionState.scrollY);
+
+        window.addEventListener("scroll", onScroll);
+
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const options: React.ReactNode[] = [];
 
@@ -90,6 +105,9 @@ const QuestionsList = ({ questions, topics, courseCode }:
                 size="small"
                 pagination={{
                     showSizeChanger: true,
+                    current: sessionState.currentPage,
+                    pageSize: sessionState.pageSize,
+                    onChange: onPaginationChange
                 }}
                 dataSource={data}
                 renderItem={item => {
