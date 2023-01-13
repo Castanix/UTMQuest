@@ -18,12 +18,8 @@ const dataBody = {
   timePreferences: []
 };
 
-<<<<<<< HEAD
 
 const fetchCourses = () => {
-=======
-connectDB().then(async () => {
->>>>>>> Integrate course landing page with browse questions
   axios({
     method: 'post',
     url: 'https://api.easi.utoronto.ca/ttb/getPageableCourses',
@@ -46,12 +42,7 @@ connectDB().then(async () => {
       });
     });
   });
-<<<<<<< HEAD
 };
 
 export default fetchCourses;
-=======
-});
-
->>>>>>> Integrate course landing page with browse questions
 
