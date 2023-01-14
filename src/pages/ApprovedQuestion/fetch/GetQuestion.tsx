@@ -16,7 +16,6 @@ const GetQuestion = (link: string) => {
                 return res.json();
             })
             .then((result) => {
-                console.log(result.hasRated);
                 setHasRated(result.hasRated);
                 setQuestion(result.question);
                 setLoading(false);

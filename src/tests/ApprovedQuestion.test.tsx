@@ -55,7 +55,7 @@ const server = setupServer(
     rest.get(`${process.env.REACT_APP_API_URI}/question/oneQuestion/:link`, (req, res, ctx) => {
         return res(
             ctx.status(200),
-            ctx.json(question)
+            ctx.json({question, hasRated: false})
         )
     }),
     rest.get(`${process.env.REACT_APP_API_URI}/displayBadges/:utorid`, (req, res, ctx) => {
