@@ -189,7 +189,7 @@ const ApprovedQuestion = () => {
         >
             <main className="main-container">
                 {contentList[activeTabKey]}
-                {hasAnswered || hasRated ? <QuestionRater hasRated={hasRated} link={question.link} /> : null}
+                {activeTabKey === "Question" && (hasAnswered || hasRated) ? <QuestionRater hasRated={hasRated} link={question.link} /> : null}
             </main>
         </Card>
     );
