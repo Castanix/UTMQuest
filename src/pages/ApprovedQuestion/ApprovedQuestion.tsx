@@ -16,6 +16,7 @@ import EditHistory, { GetUsername, onMobile } from "../../components/EditHistory
 import DisplayBadges from "../../components/DisplayBadges/DisplayBadges";
 import GetRelativeTime from "../../RelativeTime";
 import { ThemeContext } from "../../components/Topbar/Topbar";
+import QuestionRater from "../../components/QuestionRater/QuestionRater";
 
 const { Text, Title } = Typography;
 
@@ -31,7 +32,7 @@ const GetTabKey = (key: string) => {
     }
 };
 
-const MultipleChoiceTab = ({ question, isLightMode }: { question: QuestionsType, isLightMode: boolean }) => (
+const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered }: { question: QuestionsType, isLightMode: boolean, setHasAnswered: Function }) => (
     <div>
         <Typography.Paragraph
             ellipsis={{
@@ -48,11 +49,11 @@ const MultipleChoiceTab = ({ question, isLightMode }: { question: QuestionsType,
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
-        <MultipleChoice options={question.choices} answers={question.ans as string[]} explanation={question.xplan} />
+        <MultipleChoice options={question.choices} answers={question.ans as string[]} explanation={question.xplan} setHasAnswered={setHasAnswered} />
     </div>
 );
 
-const ShortAnswerTab = ({ question, isLightMode }: { question: QuestionsType, isLightMode: boolean }) => (
+const ShortAnswerTab = ({ question, isLightMode, setHasAnswered }: { question: QuestionsType, isLightMode: boolean, setHasAnswered: Function }) => (
     <div>
         <Typography.Paragraph
             ellipsis={{
@@ -67,7 +68,7 @@ const ShortAnswerTab = ({ question, isLightMode }: { question: QuestionsType, is
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
-        <ShortAnswer answer={question.ans as string} />
+        <ShortAnswer answer={question.ans as string} setHasAnswered={setHasAnswered} />
     </div>
 );
 
@@ -122,12 +123,12 @@ const Header = ({ question }: { question: QuestionsType }) => (
     </div>
 );
 
-const getQuestionType = (question: QuestionsType, isLightMode: boolean) => ({
-    mc: <MultipleChoiceTab question={question} isLightMode={isLightMode} />,
-    short: <ShortAnswerTab question={question} isLightMode={isLightMode} />
+const getQuestionType = (question: QuestionsType, isLightMode: boolean, setHasAnswered: Function) => ({
+    mc: <MultipleChoiceTab question={question} isLightMode={isLightMode} setHasAnswered={setHasAnswered} />,
+    short: <ShortAnswerTab question={question} isLightMode={isLightMode} setHasAnswered={setHasAnswered} />
 });
 
-const QuestionType = ({ question, qnsType, isLightMode }: { question: QuestionsType, qnsType: keyof TypeOfQuestion, isLightMode: boolean }) => <div>{getQuestionType(question, isLightMode)[qnsType]}</div>;
+const QuestionType = ({ question, qnsType, isLightMode, setHasAnswered }: { question: QuestionsType, qnsType: keyof TypeOfQuestion, isLightMode: boolean, setHasAnswered: Function }) => <div>{getQuestionType(question, isLightMode, setHasAnswered)[qnsType]}</div>;
 
 const tabList = [
     {
@@ -147,10 +148,12 @@ const tabList = [
 const ApprovedQuestion = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [activeTabKey, setActiveTabKey] = useState<string>(GetTabKey(searchParams.get("activeTab") ?? ""));
+    const [hasAnswered, setHasAnswered] = useState<boolean>(false);
     const params = useParams();
     const link = params.link ?? '';
     const courseCode = params.courseId ?? '';
-    const { loading, question, error } = GetQuestion(link);
+    const { loading, question, hasRated, error } = GetQuestion(link);
+    
     
 
     const isLightMode = useContext(ThemeContext);
@@ -168,7 +171,7 @@ const ApprovedQuestion = () => {
     };
 
     const contentList: Record<string, React.ReactNode> = {
-        Question: <QuestionType question={question} qnsType={question.qnsType as keyof TypeOfQuestion} isLightMode={isLightMode} />,
+        Question: <QuestionType question={question} qnsType={question.qnsType as keyof TypeOfQuestion} isLightMode={isLightMode} setHasAnswered={setHasAnswered} />,
         Discussion: <Discussion questionLink={question.link} questionDate={question.date} />,
         EditHistory: <EditHistory link={question.link} />
     };
@@ -186,6 +189,7 @@ const ApprovedQuestion = () => {
         >
             <main className="main-container">
                 {contentList[activeTabKey]}
+                {hasAnswered || hasRated ? <QuestionRater hasRated={hasRated} link={question.link} /> : null}
             </main>
         </Card>
     );

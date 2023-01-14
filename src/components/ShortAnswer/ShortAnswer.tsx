@@ -4,19 +4,16 @@ import './ShortAnswer.css';
 import MDEditor from '@uiw/react-md-editor';
 import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
-import { useParams } from "react-router-dom";
 import { onMobile } from "../EditHistory/EditHistory";
 import { ThemeContext } from "../Topbar/Topbar";
-import QuestionRater from "../QuestionRater/QuestionRater";
 
 
 const { TextArea } = Input;
 
-const ShortAnswer = ({ answer }: { answer: string }) => {
+const ShortAnswer = ({ answer, setHasAnswered }: { answer: string, setHasAnswered: Function }) => {
     const [text, setText] = useState<string>("");
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
     const isLightMode = useContext(ThemeContext);
-    const { link } = useParams();
 
     const handleTextChange = (event: any) => {
         setText(event.target.value);
@@ -24,7 +21,7 @@ const ShortAnswer = ({ answer }: { answer: string }) => {
 
     const submitAnswer = () => {
         setIsSubmit(true);
-        QuestionRater(link ?? '');
+        setHasAnswered(true);
     };
 
     return (

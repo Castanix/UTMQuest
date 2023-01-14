@@ -1,15 +1,18 @@
-.before {
+.before,
+.after,
+.unrated,
+.rated {
     display: none;
 }
 
-.before.active {
+.before.active,
+.after.active,
+.unrated.active,
+.rated.active {
     display: block;
 }
 
-.after {
-    display: none;
-}
-
-.after.active {
-    display: block;
+.rating-container {
+    margin-top: 4rem;
+    text-align: center;
 }

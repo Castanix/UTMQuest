@@ -84,7 +84,9 @@ questionRouter.get(
 				res.status(404).send("No question found.");
 				return;
 			}
-			res.status(200).send(question);
+			const hasRated = req.headers.utorid as string in question.rating;
+
+			res.status(200).send({question, hasRated});
 		} catch (error) {
 			res.status(500).send(error);
 		}

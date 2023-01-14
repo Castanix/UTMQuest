@@ -18,32 +18,37 @@ const addRating = (rate: number, link: string) => {
                 if (!res.ok) throw new Error("Could not rate question. Please try again.");
                 document.querySelector(".before")?.classList.toggle("active");
                 document.querySelector(".after")?.classList.toggle("active");
+                setTimeout(() => notification.destroy("unrated"), 1500);
             }).catch((error) => {
                 message.error(error.message);
             });
 };
 
-const QuestionRater = (link: string) => {
-    notification.info({
-        key: "rating",
-        placement: "bottom",
-        duration: 0,
-        message:
-            <div className="rating-container">
-                <div className="before active">
-                    <p>Was this a good question?</p>
-                    <section className="rating-icons">
-                        <Space size='large'>
-                            <Button shape="round" onClick={() => addRating(0, link ?? '')}>No</Button>
-                            <Button shape="round" onClick={() => addRating(1, link ?? '')}>Yes</Button>
-                        </Space> 
-                    </section>
-                </div>
-                <div className="after">
-                    <p>Thank you for your feedback</p>
-                </div>
-            </div>,
-    });
+const promptRater = () => {
+    document.querySelector(".rated")?.classList.toggle("active");
+    document.querySelector(".unrated")?.classList.toggle("active");
 };
+
+const QuestionRater = ({hasRated, link}: {hasRated: boolean, link: string}) =>
+    <div className="rating-container">
+        <div className={`rated ${hasRated ? "active" : ""}`}>
+            <p>This question has been rated.</p>
+            <Button onClick={promptRater}>Rate again?</Button>
+        </div>
+        <div className={`unrated ${hasRated ? "" : "active"}`}>
+            <div className="before active">
+                <p>Was this a good question?</p>
+                <section className="rating-icons">
+                    <Space size='large'>
+                        <Button shape="round" onClick={() => addRating(0, link ?? '')}>No</Button>
+                        <Button shape="round" onClick={() => addRating(1, link ?? '')}>Yes</Button>
+                    </Space> 
+                </section>
+            </div>
+            <div className="after">
+                <p>Thank you for your feedback</p>
+            </div>
+        </div>
+    </div>;
 
 export default QuestionRater;

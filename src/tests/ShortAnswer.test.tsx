@@ -15,7 +15,7 @@ Object.defineProperty(window, 'matchMedia', {
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<ShortAnswer answer="Test answer" />);
+    const { container } = render(<ShortAnswer answer="Test answer" setHasAnswered={()=>{}} />);
     document = container;
 });
 
