@@ -1,5 +1,5 @@
-import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone } from '@ant-design/icons';
-import { Button, Divider, Input, List, Select, Space, Tag, Typography } from 'antd';
+import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, CheckOutlined } from '@ant-design/icons';
+import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionsType } from '../../../backend/types/Questions';
@@ -28,7 +28,7 @@ const GetAuthorName = (question: QuestionsType) => {
     return <Link to={`/profile/${authId}`}>{authName}</Link>;
 };
 
-export const GetUserInitials = (username: string) => {
+const GetUserInitials = (username: string) => {
     if (username === "") return "";
 
     if (username) {
@@ -40,6 +40,18 @@ export const GetUserInitials = (username: string) => {
     }
 
     return "";
+};
+
+const GetRating = (rating: Object) => {
+    const total = Object.keys(rating).length;
+
+    if(total > 0) {
+        const likes = Object.values(rating).reduce((a, b) => (a as number) + (b as number)) as number;
+    
+        return (total > 20 && likes/(total*1.0) > 0.9);
+    }
+
+    return false;
 };
 
 const QuestionsList = ({ questions, topics, courseCode }:
@@ -132,6 +144,7 @@ const QuestionsList = ({ questions, topics, courseCode }:
                                             <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.link}`}>
                                                 <Typography.Text ellipsis className="question-name">{item.qnsName}</Typography.Text>
                                             </Link>
+                                            {GetRating(item.rating) ? <Popover content="Good Question"><CheckOutlined style={{marginInline: "0.25rem", fontSize: "0.75rem", verticalAlign: 6}} /></Popover> : null}
                                         </div>
                                         <div className="ant-page-header-heading-sub-title">
                                             <Typography.Paragraph>
@@ -151,4 +164,7 @@ const QuestionsList = ({ questions, topics, courseCode }:
     );
 };
 
-export default QuestionsList;
+export { 
+    QuestionsList,
+    GetUserInitials
+};

@@ -7,7 +7,7 @@ import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Loading from '../../components/Loading/Loading';
 import GetAllTopics from '../ManageTopics/fetch/GetTopics';
 import GetQuestions from './fetch/GetQuestions';
-import QuestionsList from './QuestionsList';
+import { QuestionsList } from './QuestionsList';
 import { CheckSaved, SaveCourse } from './fetch/SavedCourses';
 
 

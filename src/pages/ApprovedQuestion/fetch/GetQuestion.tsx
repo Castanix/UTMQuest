@@ -4,6 +4,7 @@ import { QuestionsType } from "../../../../backend/types/Questions";
 const GetQuestion = (link: string) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [question, setQuestion] = useState<QuestionsType>();
+    const [hasRated, setHasRated] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
@@ -15,7 +16,8 @@ const GetQuestion = (link: string) => {
                 return res.json();
             })
             .then((result) => {
-                setQuestion(result);
+                setHasRated(result.hasRated);
+                setQuestion(result.question);
                 setLoading(false);
             })
             .catch((err) => {
@@ -28,6 +30,7 @@ const GetQuestion = (link: string) => {
     return {
         loading,
         question,
+        hasRated,
         error,
     };
 };

@@ -7,9 +7,10 @@ import Paragraph from "antd/es/typography/Paragraph";
 import { onMobile } from "../EditHistory/EditHistory";
 import { ThemeContext } from "../Topbar/Topbar";
 
+
 const { TextArea } = Input;
 
-const ShortAnswer = ({ answer }: { answer: string }) => {
+const ShortAnswer = ({ answer, setHasAnswered }: { answer: string, setHasAnswered: Function }) => {
     const [text, setText] = useState<string>("");
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
     const isLightMode = useContext(ThemeContext);
@@ -20,6 +21,7 @@ const ShortAnswer = ({ answer }: { answer: string }) => {
 
     const submitAnswer = () => {
         setIsSubmit(true);
+        setHasAnswered(true);
     };
 
     return (

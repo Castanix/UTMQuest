@@ -102,7 +102,9 @@ questionRouter.get(
 				res.status(404).send("No question found.");
 				return;
 			}
-			res.status(200).send(question);
+			const hasRated = req.headers.utorid as string in question.rating;
+
+			res.status(200).send({question, hasRated});
 		} catch (error) {
 			res.status(500).send(error);
 		}
@@ -550,6 +552,40 @@ questionRouter.get(
 	}
 );
 
+questionRouter.put("/rating",
+	async (req: Request, res: Response) => {
+		try {
+			const question = await utmQuestCollections.Questions?.findOne({
+				link: req.body.link,
+				latest: true,
+			});
+			if (!question) {
+				res.status(404).send("No question found.");
+				return;
+			}
+			const user = req.headers.utorid;
+			if(!user) {
+				res.status(404).send("User unauthorized.");
+				return;
+			}
+			const { rate } = req.body;
+			const newRating = {...question.rating, [user as string]: rate};
+
+			utmQuestCollections.Questions?.updateOne(question, {
+				$set: { rating: newRating }
+			}).then(updateRes => {
+				if(!updateRes) {
+					res.status(500).send("Unable to update rating");
+					return;
+				};
+				res.status(200).send(updateRes);
+			});
+		} catch (error) {
+			res.status(500).send(error);
+		}
+	}
+);
+
 questionRouter.put(
 	"/incrementView/:link",
 	async (req: Request, res: Response) => {
@@ -573,6 +609,31 @@ questionRouter.put(
 );
 
 /** ****** Currently not being used ******* */
+// questionRouter.get("/getRating/:link",
+// 	async (req: Request, res: Response) => {
+// 		try {
+// 			const question = await utmQuestCollections.Questions?.findOne({
+// 				link: req.params.link,
+// 				latest: true,
+// 			});
+
+// 			if (!question) {
+// 				res.status(404).send("No question found.");
+// 				return;
+// 			};
+
+// 			const { rating } = question;
+// 			const likes = Object.values(rating).reduce((a, b) => (a as number) + (b as number)) as number;
+// 			const dislikes = Object.keys(rating).length - likes;
+
+// 			res.status(200).send({ likes, dislikes });
+// 		} catch (error) {
+// 			res.status(500).send(error);
+// 		}
+// 	}
+// );
+
+
 // questionRouter.delete("/:questionId", async (req: Request, res: Response) => {
 // 	try {
 // 		const question = await utmQuestCollections.Questions?.findOne({

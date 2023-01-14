@@ -7,7 +7,7 @@ import MultipleChoiceState from "./MultipleChoiceState";
 import { ThemeContext } from "../Topbar/Topbar";
 
 
-const MultipleChoice = ({ options, answers, explanation }: { options: string[], answers: string[], explanation: string }) => {
+const MultipleChoice = ({ options, answers, explanation, setHasAnswered }: { options: string[], answers: string[], explanation: string, setHasAnswered: Function }) => {
 
     const [revealExplanation, setRevealExplanation] = useState<boolean>(false);
     const [isActive, setIsActive] = useState(false);
@@ -25,7 +25,7 @@ const MultipleChoice = ({ options, answers, explanation }: { options: string[], 
         onChange,
         showAnswers,
         resetAnswers,
-    } = MultipleChoiceState(options, answers);
+    } = MultipleChoiceState(options, answers as string[]);
 
     return (
         <div>
@@ -50,7 +50,10 @@ const MultipleChoice = ({ options, answers, explanation }: { options: string[], 
             </div>
             <div className="mc-actions">
                 <Space direction={(window.innerWidth > 375) ? "horizontal" : "vertical"} split={(window.innerWidth > 375) ? <Divider type="horizontal" /> : null}>
-                    <Button shape="round" onClick={showAnswers}>Check Answers</Button>
+                    <Button shape="round" onClick={() => {
+                        showAnswers();
+                        setHasAnswered(true);
+                        }}>Check Answers</Button>
                     <Button shape="round" onClick={resetAnswers}>Reset</Button>
                     <Button style={{
                         backgroundColor: isActive ? '#1890ff' : '',
