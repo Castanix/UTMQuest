@@ -200,6 +200,7 @@ async function initDB() {
 						"numDiscussions",
 						"anon",
 						"latest",
+						"rating"
 					],
 					additionalProperties: false,
 					properties: {
@@ -303,6 +304,11 @@ async function initDB() {
 							description:
 								"'latest' must be a bool which represents the latest version of a question",
 						},
+						rating: {
+							bsonType: "object",
+							description:
+								"'rating' is a dict containing key value pair where key is the utorid and value is 0 or 1 based on question rating",
+						}
 					},
 				},
 			},

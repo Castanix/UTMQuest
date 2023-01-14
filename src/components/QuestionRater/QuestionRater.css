@@ -1,0 +1,15 @@
+.before {
+    display: none;
+}
+
+.before.active {
+    display: block;
+}
+
+.after {
+    display: none;
+}
+
+.after.active {
+    display: block;
+}

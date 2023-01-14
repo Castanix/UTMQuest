@@ -47,6 +47,7 @@ const question: QuestionsType = {
     numDiscussions: 1,
     anon: false,
     latest: true,
+    rating: {}
 }
 
 

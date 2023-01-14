@@ -34,7 +34,8 @@ const question: QuestionsType =
     date: new Date().toString(),
     numDiscussions: 0,
     anon: false,
-    latest: false
+    latest: false,
+    rating: {}
 };
 
 

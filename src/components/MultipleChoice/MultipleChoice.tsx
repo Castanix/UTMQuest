@@ -3,14 +3,18 @@ import { Button, Checkbox, Divider, Space } from "antd";
 import Title from "antd/es/typography/Title";
 import "./MultipleChoice.css";
 import MDEditor from "@uiw/react-md-editor";
+import { useParams } from "react-router-dom";
 import MultipleChoiceState from "./MultipleChoiceState";
 import { ThemeContext } from "../Topbar/Topbar";
+import QuestionRater from "../QuestionRater/QuestionRater";
 
 
 const MultipleChoice = ({ options, answers, explanation }: { options: string[], answers: string[], explanation: string }) => {
 
     const [revealExplanation, setRevealExplanation] = useState<boolean>(false);
     const [isActive, setIsActive] = useState(false);
+    const [hasAnswered, setHasAnswered] = useState(false);
+    const { link } = useParams();
 
     const showExplanation = () => {
         setRevealExplanation(!revealExplanation);
@@ -50,7 +54,16 @@ const MultipleChoice = ({ options, answers, explanation }: { options: string[], 
             </div>
             <div className="mc-actions">
                 <Space direction={(window.innerWidth > 375) ? "horizontal" : "vertical"} split={(window.innerWidth > 375) ? <Divider type="horizontal" /> : null}>
-                    <Button shape="round" onClick={showAnswers}>Check Answers</Button>
+                    <Button 
+                        shape="round" 
+                        onClick={() => {
+                            showAnswers();
+                            if(!hasAnswered) {
+                                QuestionRater(link ?? '');
+                                setHasAnswered(true);
+                            }
+                        }}
+                    >Check Answers</Button>
                     <Button shape="round" onClick={resetAnswers}>Reset</Button>
                     <Button style={{
                         backgroundColor: isActive ? '#1890ff' : '',

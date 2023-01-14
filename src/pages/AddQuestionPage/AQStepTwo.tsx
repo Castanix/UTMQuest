@@ -222,7 +222,8 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 date: latest ? question.date : new Date().toISOString(),
                                 numDiscussions: question ? question.numDiscussions : 0,
                                 anon: isAnon,
-                                latest: true
+                                latest: true,
+                                rating: {}
                             };
                             AddQuestion(addableQuestion, setRedirect, edit, (latest || question), setIsSubmit);
                         }}

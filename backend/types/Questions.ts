@@ -23,5 +23,6 @@ export interface QuestionsType {
 	numDiscussions: number;
 	anon: boolean;
 	latest: boolean;
+	rating: Object;
 };
 

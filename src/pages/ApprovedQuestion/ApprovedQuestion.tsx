@@ -31,7 +31,7 @@ const GetTabKey = (key: string) => {
     }
 };
 
-const QuestionTab = ({ question, isLightMode }: { question: QuestionsType, isLightMode: boolean }) => (
+const MultipleChoiceTab = ({ question, isLightMode }: { question: QuestionsType, isLightMode: boolean }) => (
     <div>
         <Typography.Paragraph
             ellipsis={{
@@ -123,7 +123,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
 );
 
 const getQuestionType = (question: QuestionsType, isLightMode: boolean) => ({
-    mc: <QuestionTab question={question} isLightMode={isLightMode} />,
+    mc: <MultipleChoiceTab question={question} isLightMode={isLightMode} />,
     short: <ShortAnswerTab question={question} isLightMode={isLightMode} />
 });
 
@@ -151,6 +151,7 @@ const ApprovedQuestion = () => {
     const link = params.link ?? '';
     const courseCode = params.courseId ?? '';
     const { loading, question, error } = GetQuestion(link);
+    
 
     const isLightMode = useContext(ThemeContext);
 
@@ -168,7 +169,6 @@ const ApprovedQuestion = () => {
 
     const contentList: Record<string, React.ReactNode> = {
         Question: <QuestionType question={question} qnsType={question.qnsType as keyof TypeOfQuestion} isLightMode={isLightMode} />,
-        Solution: <p>Solution</p>,
         Discussion: <Discussion questionLink={question.link} questionDate={question.date} />,
         EditHistory: <EditHistory link={question.link} />
     };
