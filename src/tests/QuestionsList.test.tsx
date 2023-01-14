@@ -49,6 +49,8 @@ const questions: QuestionsType[] = [
         numDiscussions: 1,
         anon: false,
         latest: true,
+        rating: {},
+        views: 1,
     },
     {
         _id: 'abcde',
@@ -67,7 +69,9 @@ const questions: QuestionsType[] = [
         date: 'Mon Oct 24 2022',
         numDiscussions: 0,
         anon: false,
-        latest: true
+        latest: true,
+        rating: {},
+        views: 1
     },
 ]
 
