@@ -49,7 +49,8 @@ const questions: QuestionsType[] = [
         numDiscussions: 1,
         anon: false,
         latest: true,
-        rating: {}
+        rating: {},
+        views: 1,
     },
     {
         _id: 'abcde',
@@ -69,7 +70,8 @@ const questions: QuestionsType[] = [
         numDiscussions: 0,
         anon: false,
         latest: true,
-        rating: {}
+        rating: {},
+        views: 1
     },
 ]
 

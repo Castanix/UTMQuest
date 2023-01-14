@@ -200,7 +200,8 @@ async function initDB() {
 						"numDiscussions",
 						"anon",
 						"latest",
-						"rating"
+						"rating",
+						"views",
 					],
 					additionalProperties: false,
 					properties: {
@@ -308,7 +309,12 @@ async function initDB() {
 							bsonType: "object",
 							description:
 								"'rating' is a dict containing key value pair where key is the utorid and value is 0 or 1 based on question rating",
-						}
+						},
+						views: {
+							bsonType: "int",
+							description:
+								"'views' is an int that tracks how many views this question has",
+						},
 					},
 				},
 			},
@@ -339,7 +345,7 @@ async function initDB() {
 						"date",
 						"deleted",
 						"anon",
-						"edited"
+						"edited",
 					],
 					additionalProperties: false,
 					properties: {
@@ -401,8 +407,8 @@ async function initDB() {
 						edited: {
 							bsonType: "bool",
 							description:
-								"'edited' must be a bool, and is required"
-						}
+								"'edited' must be a bool, and is required",
+						},
 					},
 				},
 			},

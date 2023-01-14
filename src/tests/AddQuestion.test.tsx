@@ -47,23 +47,24 @@ const question: QuestionsType = {
     numDiscussions: 1,
     anon: false,
     latest: true,
-    rating: {}
+    rating: {},
+    views: 1
 }
 
 
 const customRender = (
     <MemoryRouter
-      initialEntries={["/courses/ABC123/addQuestion"]}
+        initialEntries={["/courses/ABC123/addQuestion"]}
     >
-      <Routes>
-        <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
-      </Routes>
+        <Routes>
+            <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
+        </Routes>
     </MemoryRouter>
 );
 
 const customRenderEdit = (
     <MemoryRouter
-    initialEntries={[{ pathname: "/courses/ABC123/editQuestion", state: { question } }]}
+        initialEntries={[{ pathname: "/courses/ABC123/editQuestion", state: { question } }]}
     >
         <Routes>
             <Route path="/courses/:id/editQuestion" element={<AddQuestionPage edit={true} />} />
@@ -98,17 +99,17 @@ const server = setupServer(
         return res(
             ctx.status(201),
             ctx.json({
-                link:"abcde",
-                questionStatus:1,
-                consecutivePosting:1,
+                link: "abcde",
+                questionStatus: 1,
+                consecutivePosting: 1,
                 unlockedBadges: {
-                    addQuestions:null,
-                    consecutivePosting:null,
-                    dailyLogin:"dailybadge",
-                    editQuestions:null,
-                    threadReplies:null
+                    addQuestions: null,
+                    consecutivePosting: null,
+                    dailyLogin: "dailybadge",
+                    editQuestions: null,
+                    threadReplies: null
                 },
-                edit:false
+                edit: false
             })
         )
     })
@@ -130,7 +131,7 @@ describe('AddQuestionPage -> Header', () => {
         const { container } = render(customRender);
         document = container;
     });
-    
+
     test('header', async () => {
         await waitFor(() => {
             expect(screen.getAllByText(/Add a Question/i).length).toBe(2);
@@ -234,7 +235,7 @@ describe('AQStepTwo', () => {
     test('check if MDEditor preview works', () => {
         const problemInput = screen.getByPlaceholderText(/Add Problem/i);
         fireEvent.change(problemInput, { target: { value: "There is problem" } });
-        
+
         const previewButton = screen.getByTitle("Preview code (ctrl + 9)");
         fireEvent.click(previewButton);
 
@@ -265,7 +266,7 @@ describe('Load editable question from useLocation', () => {
             // Select value goes by title
             const next = screen.getByText(/Next/i).parentElement;
 
-            if(next) {
+            if (next) {
                 fireEvent.click(next);
             }
 

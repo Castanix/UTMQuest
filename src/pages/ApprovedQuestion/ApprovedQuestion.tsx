@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import './ApprovedQuestion.css';
 import MDEditor from '@uiw/react-md-editor';
 import { Breadcrumb, Button, Card, Typography } from 'antd';
@@ -157,6 +157,21 @@ const ApprovedQuestion = () => {
     
 
     const isLightMode = useContext(ThemeContext);
+
+    useEffect(() => {
+
+        // count view after 30 seconds
+        const viewTimer = setTimeout(() => {
+            fetch(
+                `${process.env.REACT_APP_API_URI}/question/incrementView/${link}`, { method: "PUT" }
+            );
+        }, 30000);
+
+        return (() => {
+            clearTimeout(viewTimer);
+        });
+
+    }, [link]);
 
     if (loading) return <Loading />;
 
