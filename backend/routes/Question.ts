@@ -211,6 +211,8 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		numDiscussions: req.body.numDiscussions,
 		anon: req.body.anon,
 		latest: true,
+		rating: req.body.rating,
+		views: req.body.views,
 	};
 
 	const badge = await utmQuestCollections.Badges?.findOne({ utorid });
@@ -403,6 +405,8 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			numDiscussions: req.body.numDiscussions,
 			anon: req.body.anon,
 			latest: true,
+			rating: req.body.rating,
+			views: req.body.views,
 		};
 
 		// Add edited questions doc into db

@@ -34,17 +34,19 @@ const question: QuestionsType =
     date: new Date().toString(),
     numDiscussions: 0,
     anon: false,
-    latest: false
+    latest: false,
+    rating: {},
+    views: 1
 };
 
 
 const customRender = (
     <MemoryRouter
-      initialEntries={["/courses/test/question/abcde"]}
+        initialEntries={["/courses/test/question/abcde"]}
     >
-      <Routes>
-        <Route path="/courses/:courseId/question/:link" element={<ApprovedQuestion />} />
-      </Routes>
+        <Routes>
+            <Route path="/courses/:courseId/question/:link" element={<ApprovedQuestion />} />
+        </Routes>
     </MemoryRouter>
 );
 

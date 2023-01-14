@@ -34,7 +34,9 @@ const editHistory: QuestionsType[] = [
         date: new Date().toString(),
         numDiscussions: 0,
         anon: false,
-        latest: true
+        latest: true,
+        rating: {},
+        views: 1,
     },
     {
         _id: 'abc123',
@@ -53,7 +55,9 @@ const editHistory: QuestionsType[] = [
         date: new Date().toString(),
         numDiscussions: 0,
         anon: false,
-        latest: false
+        latest: false,
+        rating: {},
+        views: 1
     },
     {
         _id: 'abc',
@@ -72,7 +76,9 @@ const editHistory: QuestionsType[] = [
         date: new Date().toString(),
         numDiscussions: 0,
         anon: false,
-        latest: false
+        latest: false,
+        rating: {},
+        views: 1
     },
 ]
 
