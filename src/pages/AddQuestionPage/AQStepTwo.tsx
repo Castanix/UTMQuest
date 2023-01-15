@@ -36,6 +36,13 @@ const GetEditor = (value: string | undefined, placeholder: string, onChange: any
     );
 };
 
+const checkRestore = (restorable: QuestionsType, newQuestion: QuestionsType) => {
+    const { topicId, qnsName, desc, xplan, choices, ans } = restorable;
+    const { topicId: topicId2, qnsName: qnsName2, desc: desc2, xplan: xplan2, choices: choices2, ans: ans2 } = newQuestion;
+    
+    return topicId === topicId2 && qnsName === qnsName2 && desc === desc2 && xplan === xplan2 && JSON.stringify(choices) === JSON.stringify(choices2) && ans === ans2;
+};
+
 const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     { courseCode: string, topicSelected: [string, string], setCurrStep: Function, edit: boolean }) => {
 
@@ -54,6 +61,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     const isLightMode = useContext(ThemeContext);
 
     const { question, latest } = useLocation().state ?? "";
+
     useEffect(() => {
         const setForm = () => {
             if (question) {
@@ -226,7 +234,10 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 rating: question ? question.rating : {},
                                 views: question ? question.views : 0
                             };
-                            AddQuestion(addableQuestion, setRedirect, edit, (latest || question), setIsSubmit);
+
+                            const restore = question ? checkRestore(question, addableQuestion) : false;
+
+                            AddQuestion(addableQuestion, setRedirect, edit, (latest || question), setIsSubmit, restore);
                         }}
                     >Submit</Button>
                 </div>

@@ -143,10 +143,11 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
 
 
 const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function,
-    edit: boolean, latestQuestion: QuestionsType, setIsSubmit: Function) => {
+    edit: boolean, latestQuestion: QuestionsType, setIsSubmit: Function, restore: boolean) => {
 
     if (edit) {
         const recovery = Date.parse(addableQuestion.date) < Date.parse(latestQuestion.date);
+
         if (!compareQnsObj(addableQuestion, latestQuestion)) {
             fetch(`${process.env.REACT_APP_API_URI}/question/editQuestion`,
                 {
@@ -158,7 +159,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ ...addableQuestion, oldVersion: latestQuestion._id })
+                    body: JSON.stringify({ ...addableQuestion, oldVersion: latestQuestion._id, restore })
                 }).then((res: Response) => {
                     if (!res.ok) {
                         throw new Error(res.statusText);

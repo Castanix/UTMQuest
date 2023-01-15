@@ -13,6 +13,7 @@ const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
 
     const { defaultTopicId, defaultTopicName } = useLocation().state ?? "";
     const { question } = useLocation().state ?? "";
+
     useEffect(() => {
         if (question) {
             const topicId = topics.filter(item => item.topicName === question.topicName)[0]._id;
