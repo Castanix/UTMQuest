@@ -370,8 +370,8 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			return;
 		}
 
-		const { link } = req.body;
-		const isAnon = req.body.anon;
+		const { link, restore, anon } = req.body;
+		// const isAnon = req.body.anon;
 		const utorid = req.headers.utorid as string;
 
 		const badge = await utmQuestCollections.Badges?.findOne({
@@ -389,7 +389,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		const lastName =
 			name[name.length - 1].charAt(0).toUpperCase() +
 			name[name.length - 1].slice(1);
-
+		
 		const question = {
 			link,
 			topicId: new ObjectID(req.body.topicId),
@@ -402,13 +402,13 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			choices: req.body.choices,
 			ans: req.body.ans,
 			authId: utorid,
-			authName: isAnon ? "Anonymous" : `${firstName} ${lastName}`,
+			authName: anon ? "Anonymous" : `${firstName} ${lastName}`,
 			date: new Date().toISOString(),
 			numDiscussions: req.body.numDiscussions,
 			anon: req.body.anon,
 			latest: true,
-			rating: req.body.rating,
-			views: req.body.views,
+			rating: restore ? req.body.rating : {},
+			views: restore ? req.body.views : 0,
 		};
 
 		// Add edited questions doc into db
