@@ -371,7 +371,6 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		}
 
 		const { link, restore, anon } = req.body;
-		// const isAnon = req.body.anon;
 		const utorid = req.headers.utorid as string;
 
 		const badge = await utmQuestCollections.Badges?.findOne({

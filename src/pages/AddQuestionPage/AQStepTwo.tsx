@@ -36,7 +36,7 @@ const GetEditor = (value: string | undefined, placeholder: string, onChange: any
     );
 };
 
-const checkRestore = (restorable: QuestionsType, newQuestion: QuestionsType) => {
+const isRestore = (restorable: QuestionsType, newQuestion: QuestionsType) => {
     const { topicId, qnsName, desc, xplan, choices, ans } = restorable;
     const { topicId: topicId2, qnsName: qnsName2, desc: desc2, xplan: xplan2, choices: choices2, ans: ans2 } = newQuestion;
     
@@ -235,9 +235,14 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 views: question ? question.views : 0
                             };
 
-                            const restore = question ? checkRestore(question, addableQuestion) : false;
-
-                            AddQuestion(addableQuestion, setRedirect, edit, (latest || question), setIsSubmit, restore);
+                            AddQuestion(
+                                addableQuestion, 
+                                setRedirect, 
+                                edit, 
+                                (latest || question), 
+                                setIsSubmit, 
+                                question ? isRestore(question, addableQuestion) : false
+                            );
                         }}
                     >Submit</Button>
                 </div>
