@@ -1,7 +1,7 @@
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 
-interface OptionType {
+export interface OptionType {
     className: string;
     checked: boolean;
     isCorrect: boolean;
@@ -9,7 +9,7 @@ interface OptionType {
     icon: any;
 }
 
-const init = (options: string[], correctAnswers: Set<string>) => {
+const initMC = (options: string[], correctAnswers: Set<string>) => {
     const newOptionState = options.map(item => {
         const newOption: OptionType = {
             className: "",
@@ -24,10 +24,10 @@ const init = (options: string[], correctAnswers: Set<string>) => {
     return newOptionState;
 };
 
-const MultipleChoiceState = (options: string[], answers: string[]) => {
+const MultipleChoiceState = (options: string[], answers: string[], nextOptionState?: OptionType[]) => {
     const correctAnswers = new Set<string>(answers);
     const [showingAnswer, setShowingAnswer] = useState<boolean>(false);
-    const [optionState, setOptionState] = useState<OptionType[]>(init(options, correctAnswers));
+    const [optionState, setOptionState] = useState<OptionType[]>(nextOptionState ?? initMC(options, correctAnswers));
 
     const onChange = (index: number) => {
         const newOptionState = [...optionState];
@@ -39,13 +39,16 @@ const MultipleChoiceState = (options: string[], answers: string[]) => {
 
     const showAnswers = () => {
         const newOptionState = [...optionState];
+        let result = true;
 
         newOptionState.forEach(item => {
             if (item.isCorrect) {
+                if(!item.checked && result) result=false;
                 item.className = "green";                   /* eslint-disable-line no-param-reassign */
                 item.icon = <CheckCircleOutlined />;        /* eslint-disable-line no-param-reassign */
             }
             else if (item.checked) {
+                if(result) result=false;
                 item.className = "red";                     /* eslint-disable-line no-param-reassign */
                 item.icon = <CloseCircleOutlined />;        /* eslint-disable-line no-param-reassign */
             }
@@ -57,11 +60,13 @@ const MultipleChoiceState = (options: string[], answers: string[]) => {
 
         setOptionState(newOptionState);
         setShowingAnswer(true);
+        
+        return result;
     };
 
     const resetAnswers = () => {
         setShowingAnswer(false);
-        setOptionState(init(options, correctAnswers));
+        setOptionState(initMC(options, correctAnswers));
     };
 
     return {
@@ -73,4 +78,7 @@ const MultipleChoiceState = (options: string[], answers: string[]) => {
     };
 };
 
-export default MultipleChoiceState;
+export {
+    MultipleChoiceState,
+    initMC
+};

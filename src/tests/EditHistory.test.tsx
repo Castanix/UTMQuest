@@ -37,6 +37,8 @@ const editHistory: QuestionsType[] = [
         latest: true,
         rating: {},
         views: 1,
+        likes: 0,
+        dislikes: 0
     },
     {
         _id: 'abc123',
@@ -57,7 +59,9 @@ const editHistory: QuestionsType[] = [
         anon: false,
         latest: false,
         rating: {},
-        views: 1
+        views: 1,
+        likes: 0,
+        dislikes: 0
     },
     {
         _id: 'abc',
@@ -78,7 +82,9 @@ const editHistory: QuestionsType[] = [
         anon: false,
         latest: false,
         rating: {},
-        views: 1
+        views: 1,
+        likes: 0,
+        dislikes: 0
     },
 ]
 

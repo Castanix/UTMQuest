@@ -3,14 +3,16 @@ import { Button, Checkbox, Divider, Space } from "antd";
 import Title from "antd/es/typography/Title";
 import "./MultipleChoice.css";
 import MDEditor from "@uiw/react-md-editor";
-import MultipleChoiceState from "./MultipleChoiceState";
+import { MultipleChoiceState } from "./MultipleChoiceState";
 import { ThemeContext } from "../Topbar/Topbar";
+import { QuizDependencyTypes } from "../../pages/QuizPage/QuizPage";
 
 
-const MultipleChoice = ({ options, answers, explanation, setHasAnswered }: { options: string[], answers: string[], explanation: string, setHasAnswered: Function }) => {
+const MultipleChoice = ({ options, answers, explanation, setHasAnswered, quizDependancies = {} }: { options: string[], answers: string[], explanation: string, setHasAnswered: Function, quizDependancies?: QuizDependencyTypes }) => {
 
     const [revealExplanation, setRevealExplanation] = useState<boolean>(false);
     const [isActive, setIsActive] = useState(false);
+    const { setMCResult, newOptionState } = quizDependancies;
 
     const showExplanation = () => {
         setRevealExplanation(!revealExplanation);
@@ -25,7 +27,7 @@ const MultipleChoice = ({ options, answers, explanation, setHasAnswered }: { opt
         onChange,
         showAnswers,
         resetAnswers,
-    } = MultipleChoiceState(options, answers as string[]);
+    } = MultipleChoiceState(options, answers as string[], newOptionState);
 
     return (
         <div>
@@ -50,14 +52,18 @@ const MultipleChoice = ({ options, answers, explanation, setHasAnswered }: { opt
             </div>
             <div className="mc-actions">
                 <Space direction={(window.innerWidth > 375) ? "horizontal" : "vertical"} split={(window.innerWidth > 375) ? <Divider type="horizontal" /> : null}>
-                    <Button shape="round" onClick={() => {
-                        showAnswers();
+                    <Button className="answer-btn" shape="round" onClick={() => {
+                        const result = showAnswers();
                         setHasAnswered(true);
+                        if(setMCResult) {
+                            setMCResult(result);
+                        };
                         }}>Check Answers</Button>
-                    <Button shape="round" onClick={resetAnswers}>Reset</Button>
-                    <Button style={{
+                    <Button className="reset-btn" style={setMCResult ? {display: "none"} : {}} shape="round" onClick={resetAnswers}>Reset</Button>
+                    <Button className="explanation-btn" style={{
                         backgroundColor: isActive ? '#1890ff' : '',
-                        color: isActive ? 'white' : ''
+                        color: isActive ? 'white' : '',
+                        display: setMCResult ? "none" : "block"
                     }} shape="round" onClick={showExplanation}>Explanation</Button>
                 </Space>
             </div>

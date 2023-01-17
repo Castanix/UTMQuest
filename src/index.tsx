@@ -12,6 +12,7 @@ import AddQuestionPage from './pages/AddQuestionPage/AddQuestionPage';
 import ApprovedQuestion from './pages/ApprovedQuestion/ApprovedQuestion';
 import LandingPage from './pages/LandingPage/LandingPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
+import QuizPage from './pages/QuizPage/QuizPage';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -36,16 +37,19 @@ fetch(`${process.env.REACT_APP_API_URI}/incrementLoginStreak`, { method: "PUT" }
 root.render(
   <BrowserRouter>
     <Topbar>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/courses/:id/topics" element={<ManageTopics />} />
-        <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
-        <Route path="/courses/:id/editQuestion" element={<AddQuestionPage edit />} />
-        <Route path="/courses/:id" element={<QuestionsPage />} />
-        <Route path="/courses/:courseId/question/:link" element={<ApprovedQuestion />} />
-        <Route path="/profile/:utorid" element={<ProfilePage />} />
-        <Route path="*" element={<div>Page not found</div>} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/courses/:id/topics" element={<ManageTopics />} />
+          <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
+          <Route path="/courses/:id/editQuestion" element={<AddQuestionPage edit />} />
+          
+            <Route path="/courses/:id/quiz" element={<QuizPage />} />
+            <Route path="/courses/:id" element={<QuestionsPage />} />
+          
+          <Route path="/courses/:courseId/question/:link" element={<ApprovedQuestion />} />
+          <Route path="/profile/:utorid" element={<ProfilePage />} />
+          <Route path="*" element={<div>Page not found</div>} />
+        </Routes>
     </Topbar>
   </BrowserRouter>
 );

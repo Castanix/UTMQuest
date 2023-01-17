@@ -29,4 +29,6 @@ export interface QuestionsType {
 	latest: boolean;
 	rating: rating;
 	views: number;
+	likes: number;
+	dislikes: number;
 }
