@@ -24,6 +24,7 @@ module.exports = {
     	"react-hooks/exhaustive-deps": "warn", // Checks effect dependencies
 		'import/extensions': "off",
 		'import/no-unresolved': "off",
+		"react/require-default-props": "off",
 		'import/no-extraneous-dependencies': "off",
 		'jsx-a11y/no-noninteractive-element-interactions': "off",
 		'jsx-a11y/click-events-have-key-events': "off",

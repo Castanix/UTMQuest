@@ -1,4 +1,4 @@
-import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, CheckOutlined } from '@ant-design/icons';
+import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, CheckOutlined, FormOutlined } from '@ant-design/icons';
 import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -100,7 +100,11 @@ const QuestionsList = ({ questions, topics, courseCode }:
                     </Select>
                     <Input placeholder="Search question" prefix={<SearchOutlined />} value={searchTerm} className='questions-search' onChange={(event) => onSearchChange(event.target.value)} />
                 </Space>
-                <Link to={`/courses/${courseCode}/addQuestion`}><Button type="primary" shape="round" icon={<PlusCircleTwoTone />}>Add a Question</Button></Link>
+                <Space>
+                    <Link to={`/courses/${courseCode}/quiz`}><Button type="primary" shape="round" icon={<FormOutlined />}>Generate Quiz</Button></Link>
+                    <Link to={`/courses/${courseCode}/addQuestion`}><Button type="primary" shape="round" icon={<PlusCircleTwoTone />}>Add a Question</Button></Link>
+                </Space>
+                
             </div>
             <List
                 className='question-list'

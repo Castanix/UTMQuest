@@ -36,7 +36,9 @@ const question: QuestionsType =
     anon: false,
     latest: false,
     rating: {},
-    views: 1
+    views: 1,
+    likes: 0,
+    dislikes: 0
 };
 
 

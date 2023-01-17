@@ -17,6 +17,7 @@ import DisplayBadges from "../../components/DisplayBadges/DisplayBadges";
 import GetRelativeTime from "../../RelativeTime";
 import { ThemeContext } from "../../components/Topbar/Topbar";
 import QuestionRater from "../../components/QuestionRater/QuestionRater";
+import { QuizDependencyTypes } from "../QuizPage/QuizPage";
 
 const { Text, Title } = Typography;
 
@@ -32,7 +33,7 @@ const GetTabKey = (key: string) => {
     }
 };
 
-const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered }: { question: QuestionsType, isLightMode: boolean, setHasAnswered: Function }) => (
+export const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered, quizDependancies }: { question: QuestionsType, isLightMode: boolean, setHasAnswered: Function, quizDependancies?: QuizDependencyTypes }) => (
     <div>
         <Typography.Paragraph
             ellipsis={{
@@ -49,7 +50,7 @@ const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered }: { question
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
-        <MultipleChoice options={question.choices} answers={question.ans as string[]} explanation={question.xplan} setHasAnswered={setHasAnswered} />
+        <MultipleChoice options={question.choices} answers={question.ans as string[]} explanation={question.xplan} setHasAnswered={setHasAnswered} quizDependancies={quizDependancies} />
     </div>
 );
 

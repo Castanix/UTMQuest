@@ -3,6 +3,7 @@ import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
 import seedrandom from "seedrandom";
 import { utmQuestCollections } from "../db/db.service";
+import { qnsTypeEnum } from "../types/Questions";
 
 const questionRouter = Router();
 
@@ -124,6 +125,27 @@ questionRouter.get(
 			}
 
 			res.status(200).send(discussions);
+		} catch (error) {
+			res.status(500).send(error);
+		}
+	}
+);
+
+questionRouter.get(
+	"/generateQuiz/:courseId",
+	async (req: Request, res: Response) => {
+		try {
+			const generated = await utmQuestCollections.Questions?.aggregate([
+				{ $match: { 
+					courseId: req.params.courseId,
+					latest: true,
+					qnsType: qnsTypeEnum.mc
+				}},
+				{ $sample: { size: 10 } }
+			]).toArray();
+
+			res.status(200).send(generated);
+			return;
 		} catch (error) {
 			res.status(500).send(error);
 		}
