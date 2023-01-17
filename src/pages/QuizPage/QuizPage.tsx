@@ -9,6 +9,7 @@ import "./QuizPage.css";
 import Loading from '../../components/Loading/Loading';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import { OptionType, initMC } from '../../components/MultipleChoice/MultipleChoiceState';
+import { onMobile } from '../../components/EditHistory/EditHistory';
 
 const { Text, Title } = Typography;
 
@@ -92,7 +93,7 @@ const QuizPage = () => {
                 <Card title={<Header courseCode="CSC108" />}>
                     <main className='main-container'>
                         <Space direction='vertical' size="large">
-                            <Progress percent={step/length*100} steps={length} strokeColor={strokeColor}/>
+                            <Progress percent={Math.round(step/length*100)} steps={length} strokeColor={strokeColor}/>
                             <MultipleChoiceTab key={step} question={questions[step]} isLightMode={false} setHasAnswered={setHasAnswered} quizDependancies={{newOptionState, setMCResult}} />
                             <Button disabled={!hasAnswered} onClick={() => {
                                 setStep(step+1);
@@ -107,7 +108,7 @@ const QuizPage = () => {
             );
         };
 
-        const grade = numCorrect/length*100;
+        const grade = Math.round(numCorrect/length*100);
         const numIncorrect = length - numCorrect;
 
         return (
@@ -120,7 +121,7 @@ const QuizPage = () => {
                                 <Text>Number of questions correct: {numCorrect}</Text>
                                 <Text>Number of questions incorrect: {numIncorrect}</Text>
                                 <div className='quiz-options'>
-                                    <Space direction='horizontal' size="middle">
+                                    <Space direction={onMobile() ? "vertical" : "horizontal"} size="middle">
                                         <Link to={`/courses/${id}`}><Button>Back to questions</Button></Link>
                                         <Button onClick={() => window.location.reload()}>Generate another quiz</Button>
                                     </Space>
@@ -137,7 +138,7 @@ const QuizPage = () => {
         <Card title={<Header courseCode="CSC108" />}>
             <main className='main-container'>
                 <Result
-                    title="No Multiple Choice Questions available"
+                    title="No Multiple Choice questions available."
                     extra={
                         <Link to={`/courses/${id}`}>
                             <Button type="primary">
