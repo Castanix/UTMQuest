@@ -90,7 +90,7 @@ const QuizPage = () => {
             };
     
             return (
-                <Card title={<Header courseCode="CSC108" />}>
+                <Card title={<Header courseCode={id ?? ''} />}>
                     <main className='main-container'>
                         <Space direction='vertical' size="large">
                             <Progress percent={Math.round(step/length*100)} steps={length} strokeColor={strokeColor}/>
@@ -112,7 +112,7 @@ const QuizPage = () => {
         const numIncorrect = length - numCorrect;
 
         return (
-            <Card title={<Header courseCode="CSC108" />}>
+            <Card title={<Header courseCode={id ?? ''} />}>
                 <main className='main-container'>
                     <div className='quiz-results'>
                         <Card title="Quiz Results">
@@ -135,7 +135,7 @@ const QuizPage = () => {
     };
     
     return (
-        <Card title={<Header courseCode="CSC108" />}>
+        <Card title={<Header courseCode={id ?? ''} />}>
             <main className='main-container'>
                 <Result
                     title="No Multiple Choice questions available."
@@ -145,7 +145,6 @@ const QuizPage = () => {
                                 Back to courses
                             </Button>
                         </Link>
-                        
                     }
                 />
             </main>
