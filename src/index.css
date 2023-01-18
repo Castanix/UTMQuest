@@ -81,6 +81,7 @@ input,
 /* remove box-shadow on immediate card */
 .content > .ant-card {
   box-shadow: none !important;
+  border: none !important;
 }
 
 .ant-typography {
