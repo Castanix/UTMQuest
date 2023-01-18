@@ -233,8 +233,8 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 latest: true,
                                 rating: question ? question.rating : {},
                                 views: question ? question.views : 0,
-                                likes: 0,
-                                dislikes: 0
+                                likes: question ? question.likes : 0,
+                                dislikes: question ? question.dislikes : 0,
                             };
 
                             AddQuestion(
