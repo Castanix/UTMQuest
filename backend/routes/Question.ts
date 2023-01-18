@@ -754,7 +754,7 @@ questionRouter.put("/rating", async (req: Request, res: Response) => {
 			user,
 			rate
 		);
-		console.log(newUpdate);
+
 		utmQuestCollections.Questions?.updateOne(question, {
 			$set: { rating: newRating },
 			$inc: newUpdate,
