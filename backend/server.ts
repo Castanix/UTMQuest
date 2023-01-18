@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join("/var/www/html", "quest")));
-const num = Math.floor(Math.random() * 0);
+const num = Math.floor(Math.random() * 3);
 
 // ensure all requests are authorized
 app.use((req, res, next) => {

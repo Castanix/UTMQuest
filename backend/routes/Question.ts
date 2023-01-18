@@ -223,6 +223,7 @@ questionRouter.get(
 			const diffInDays = Math.ceil(diff / (1000 * 3600 * 24)).toString();
 
 			// these questions are sorted by score
+			const newQuestions: ScoredQuestion[] = [];
 			const scoredQuestions: ScoredQuestion[] = [];
 
 			allQuestions?.forEach((question: any) => {
@@ -230,7 +231,7 @@ questionRouter.get(
 					diffInDays + utorid + question._id
 				);
 				const randomNum = randomGen();
-				const showNewQuestions = randomNum <= 0.25; // chance of people seeing new questions
+				const showNewQuestions = randomNum <= 1; // chance of people seeing new questions
 
 				const now = new Date();
 				diff =
@@ -238,17 +239,17 @@ questionRouter.get(
 					(60 * 60 * 1000);
 
 				const score = ComputeQuestionScore(question);
-				if (
-					diff > 24 ||
-					utorid === question.authId ||
-					showNewQuestions
-				) {
+				if (diff > 24 || utorid === question.authId) {
 					scoredQuestions.push({ score, question });
+				} else if (showNewQuestions) {
+					newQuestions.push({ score, question });
 				}
 			});
 
+			newQuestions.sort(SortArrayByScore);
 			scoredQuestions.sort(SortArrayByScore);
 			res.status(200).send([
+				...newQuestions.map((elem) => elem.question),
 				...scoredQuestions.map((elem) => elem.question),
 			]);
 			return;
