@@ -13,8 +13,8 @@ import { CheckSaved, SaveCourse } from './fetch/SavedCourses';
 
 const { Text } = Typography;
 
-const Header = ({ courseCode, courseName, favourite, setFavourite}:
-    { courseCode: string, courseName: string, favourite: boolean, setFavourite: Function}) => (
+const Header = ({ courseCode, courseName, favourite, setFavourite }:
+    { courseCode: string, courseName: string, favourite: boolean, setFavourite: Function }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
@@ -37,14 +37,14 @@ const Header = ({ courseCode, courseName, favourite, setFavourite}:
                     />
                 </Space>
             </div>
-        </div>  
+        </div>
     </div>
 );
 
 const QuestionsPage = () => {
     const params = useParams();
     const courseCode = params.id;
-    
+
     const [isSaved, setIsSaved] = useState<boolean>(false);
     const { loadingSaved, errorSaved, loadingCourse, errorCourse, courseName } = CheckSaved(courseCode ?? '', setIsSaved);
 
@@ -53,7 +53,7 @@ const QuestionsPage = () => {
 
     if (loading || loadingTopics || loadingSaved || loadingCourse) return <Loading />;
 
-    if (error !== '' || errorTopics !== '' || errorSaved !== '' || errorCourse !== '') return <ErrorMessage title={error !== '' ? error : errorTopics} link="#" message="Refresh" />;
+    if (error !== '' || errorTopics !== '' || errorSaved !== '' || errorCourse !== '') return <ErrorMessage title={error !== '' ? error : errorTopics} link="." message="Refresh" />;
     return (
         <Card title={<Header courseCode={courseCode ?? ''} courseName={courseName ?? ''} favourite={isSaved} setFavourite={setIsSaved} />} bordered={false}>
             <main className='main-container'>

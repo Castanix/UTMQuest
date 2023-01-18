@@ -5,10 +5,6 @@ export enum qnsTypeEnum {
 	short = "short",
 }
 
-interface rating {
-	utorid?: number;
-}
-
 export interface QuestionsType {
 	_id: string;
 	link: string;
@@ -27,8 +23,9 @@ export interface QuestionsType {
 	numDiscussions: number;
 	anon: boolean;
 	latest: boolean;
-	rating: rating;
-	views: number;
+	rating: { [utorid: string]: number };
 	likes: number;
 	dislikes: number;
+	views: number;
+	viewers: { [utorid: string]: number };
 }

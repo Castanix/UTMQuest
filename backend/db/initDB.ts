@@ -201,7 +201,10 @@ async function initDB() {
 						"anon",
 						"latest",
 						"rating",
+						"likes",
+						"dislikes",
 						"views",
+						"viewers",
 					],
 					additionalProperties: false,
 					properties: {
@@ -310,10 +313,25 @@ async function initDB() {
 							description:
 								"'rating' is a dict containing key value pair where key is the utorid and value is 0 or 1 based on question rating",
 						},
+						likes: {
+							bsonType: "int",
+							description:
+								"'likes' is an int representing number of likes",
+						},
+						dislikes: {
+							bsonType: "int",
+							description:
+								"'dislikes is an int representing number of dislikes",
+						},
 						views: {
 							bsonType: "int",
 							description:
 								"'views' is an int that tracks how many views this question has",
+						},
+						viewers: {
+							bsonType: "object",
+							description:
+								"'viwers' is a set of users who unique users who have viewed this question",
 						},
 					},
 				},

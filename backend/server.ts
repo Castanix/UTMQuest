@@ -15,11 +15,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join("/var/www/html", "quest")));
+const num = Math.floor(Math.random() * 0);
 
 // ensure all requests are authorized
 app.use((req, res, next) => {
 	if (env === "dev") {
-		const num = Math.floor(Math.random()*3);
 		const dummy = ["dummy22", "dummy23", "dummy24"];
 		req.headers.utorid = dummy[num];
 		req.headers.http_mail = `${dummy[num]}.test@test.com`;
