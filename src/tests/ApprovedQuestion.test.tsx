@@ -36,9 +36,10 @@ const question: QuestionsType =
     anon: false,
     latest: false,
     rating: {},
-    views: 1,
     likes: 0,
-    dislikes: 0
+    dislikes: 0,
+    views: 1,
+    viewers: {}
 };
 
 
@@ -58,7 +59,7 @@ const server = setupServer(
     rest.get(`${process.env.REACT_APP_API_URI}/question/oneQuestion/:link`, (req, res, ctx) => {
         return res(
             ctx.status(200),
-            ctx.json({question, hasRated: false})
+            ctx.json({ question, hasRated: false })
         )
     }),
     rest.get(`${process.env.REACT_APP_API_URI}/displayBadges/:utorid`, (req, res, ctx) => {

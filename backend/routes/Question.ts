@@ -3,7 +3,7 @@ import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
 import seedrandom from "seedrandom";
 import { utmQuestCollections } from "../db/db.service";
-import { qnsTypeEnum } from "../types/Questions";
+import { qnsTypeEnum, QuestionsType } from "../types/Questions";
 
 const questionRouter = Router();
 
@@ -103,9 +103,9 @@ questionRouter.get(
 				res.status(404).send("No question found.");
 				return;
 			}
-			const hasRated = req.headers.utorid as string in question.rating;
+			const hasRated = (req.headers.utorid as string) in question.rating;
 
-			res.status(200).send({question, hasRated});
+			res.status(200).send({ question, hasRated });
 		} catch (error) {
 			res.status(500).send(error);
 		}
@@ -131,17 +131,64 @@ questionRouter.get(
 	}
 );
 
+type ScoredQuestion = {
+	score: number;
+	question: QuestionsType;
+};
+
+/* Compute the "helpful" score for each question. 
+Score should be prioritized as follows:
+	1. Questions with high dislikes should have low (or negative) scores
+	2. Questions with high likes should have high scores
+	3. Questions should get some bonus based on view count so that questions with repeated views gain higher scores
+*/
+const ComputeQuestionScore = (question: QuestionsType) => {
+	// score metrics
+	const { likes, dislikes } = question;
+	const totalViews = question.views;
+	const uniqueViews = Object.keys(question.viewers).length;
+
+	/* A basic way to compute score */
+	// const repeatedViews = totalViews - uniqueViews;
+	// return (
+	// 	likes * 0.35 +
+	// 	uniqueViews * 0.25 +
+	// 	repeatedViews * 0.05 -
+	// 	dislikes * 0.5
+	// );
+
+	let isNan = false;
+	if (uniqueViews === 0) isNan = true;
+
+	const engagementScore = !isNan ? (likes - dislikes) / uniqueViews : 0;
+
+	const uniqueViewBonus = uniqueViews * 0.25;
+	const repeatedViewBonus = (totalViews - uniqueViews) * 0.15;
+
+	return engagementScore + uniqueViewBonus + repeatedViewBonus;
+};
+
+const SortArrayByScore = (q1: ScoredQuestion, q2: ScoredQuestion) => {
+	if (q1.score < q2.score) return 1;
+
+	if (q1.score > q2.score) return -1;
+
+	return 0;
+};
+
 questionRouter.get(
 	"/generateQuiz/:courseId",
 	async (req: Request, res: Response) => {
 		try {
 			const generated = await utmQuestCollections.Questions?.aggregate([
-				{ $match: { 
-					courseId: req.params.courseId,
-					latest: true,
-					qnsType: qnsTypeEnum.mc
-				}},
-				{ $sample: { size: 10 } }
+				{
+					$match: {
+						courseId: req.params.courseId,
+						latest: true,
+						qnsType: qnsTypeEnum.mc,
+					},
+				},
+				{ $sample: { size: 10 } },
 			]).toArray();
 
 			res.status(200).send(generated);
@@ -175,26 +222,35 @@ questionRouter.get(
 			let diff = currentDate.getTime() - startingDate.getTime();
 			const diffInDays = Math.ceil(diff / (1000 * 3600 * 24)).toString();
 
-			const randomGen = seedrandom(diffInDays + utorid);
-			const randomNum = randomGen();
-			const showNewQuestions = randomNum <= 1;
+			// these questions are sorted by score
+			const scoredQuestions: ScoredQuestion[] = [];
 
-			const newArr = allQuestions?.filter((question) => {
+			allQuestions?.forEach((question: any) => {
+				const randomGen = seedrandom(
+					diffInDays + utorid + question._id
+				);
+				const randomNum = randomGen();
+				const showNewQuestions = randomNum <= 0.25; // chance of people seeing new questions
+
 				const now = new Date();
 				diff =
 					(now.getTime() - new Date(question.date).getTime()) /
 					(60 * 60 * 1000);
 
-				if (diff > 24 || utorid === question.authId) {
-					return true;
+				const score = ComputeQuestionScore(question);
+				if (
+					diff > 24 ||
+					utorid === question.authId ||
+					showNewQuestions
+				) {
+					scoredQuestions.push({ score, question });
 				}
-				if (showNewQuestions) {
-					return true;
-				}
-				return false;
 			});
 
-			res.status(200).send(newArr);
+			scoredQuestions.sort(SortArrayByScore);
+			res.status(200).send([
+				...scoredQuestions.map((elem) => elem.question),
+			]);
 			return;
 		} catch (error) {
 			res.status(500).send(error);
@@ -236,7 +292,10 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		anon: req.body.anon,
 		latest: true,
 		rating: req.body.rating,
+		likes: req.body.likes,
+		dislikes: req.body.dislikes,
 		views: req.body.views,
+		viewers: req.body.viewers,
 	};
 
 	const badge = await utmQuestCollections.Badges?.findOne({ utorid });
@@ -410,7 +469,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		const lastName =
 			name[name.length - 1].charAt(0).toUpperCase() +
 			name[name.length - 1].slice(1);
-		
+
 		const question = {
 			link,
 			topicId: new ObjectID(req.body.topicId),
@@ -429,8 +488,74 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			anon: req.body.anon,
 			latest: true,
 			rating: restore ? req.body.rating : {},
+			likes: restore ? req.body.likes : 0,
+			dislikes: restore ? req.body.dislikes : 0,
 			views: restore ? req.body.views : 0,
+			viewers: restore ? req.body.viewers : 0,
 		};
+
+		if (restore) {
+			const restoreVersion = utmQuestCollections.Questions?.findOne({
+				_id: req.body._id,
+			});
+			if (!restoreVersion) {
+				res.status(404).send("No restorable version found.");
+				return;
+			}
+
+			utmQuestCollections.Questions?.updateOne(restoreVersion, {
+				$set: { latest: true },
+			})
+				.then((result) => {
+					if (!result) {
+						res.status(500).send("Unable update restored version.");
+						return;
+					}
+
+					// Attempts to update latest from old questions doc, reverts any changes if failed
+					const latestStatus = updateLatest(oldVersion, false);
+					if (!latestStatus) {
+						utmQuestCollections.Questions?.deleteOne(question);
+						res.status(500).send(
+							`Update 'latest' flag for previous question failed. Reverting any changes.`
+						);
+						return;
+					}
+
+					// Attempts to update badge progression for specified utorid, reverts all changes if failed
+					if (!req.body.anon) {
+						updateBadge(utorid).then((updateRes) => {
+							if (!updateRes) {
+								updateLatest(oldVersion, true);
+								utmQuestCollections.Questions?.deleteOne(
+									question
+								);
+								res.status(500).send(
+									"Unable to update badges. Reverting all changes."
+								);
+								return;
+							}
+							const { code, message, questionStatus } = updateRes;
+
+							if (code === 200) {
+								res.status(201).send({
+									link,
+									questionStatus,
+									unlockedBadges: badge.unlockedBadges,
+									edit: true,
+								});
+							} else {
+								res.status(code).send(message);
+							}
+						});
+					} else {
+						res.status(201).send({ link });
+					}
+				})
+				.catch((error) => {
+					res.status(500).send(error);
+				});
+		}
 
 		// Add edited questions doc into db
 		utmQuestCollections.Questions?.insertOne(question)
@@ -573,46 +698,97 @@ questionRouter.get(
 	}
 );
 
-questionRouter.put("/rating",
-	async (req: Request, res: Response) => {
-		try {
-			const question = await utmQuestCollections.Questions?.findOne({
-				link: req.body.link,
-				latest: true,
-			});
-			if (!question) {
-				res.status(404).send("No question found.");
-				return;
-			}
-			const user = req.headers.utorid;
-			if(!user) {
-				res.status(404).send("User unauthorized.");
-				return;
-			}
-			const { rate } = req.body;
-			const newRating = {...question.rating, [user as string]: rate};
+const UpdateRatingsCounter = (
+	question: QuestionsType,
+	utorid: string,
+	updatedRating: number // 1 means liked, 0 means disliked
+) => {
+	if (utorid in question.rating) {
+		const currentRating = question.rating[utorid];
 
-			utmQuestCollections.Questions?.updateOne(question, {
-				$set: { rating: newRating }
-			}).then(updateRes => {
-				if(!updateRes) {
-					res.status(500).send("Unable to update rating");
-					return;
-				};
-				res.status(200).send(updateRes);
-			});
-		} catch (error) {
-			res.status(500).send(error);
-		}
+		if (currentRating === 1 && updatedRating === 0)
+			return {
+				likes: -1,
+				dislikes: 1,
+			};
+
+		if (currentRating === 0 && updatedRating === 1)
+			return {
+				likes: 1,
+				dislikes: -1,
+			};
+
+		// don't update anything as rating didn't change
+		return { likes: 0, dislikes: 0 };
 	}
-);
+
+	// first time rating
+	const field = updatedRating === 1 ? "likes" : "dislikes";
+
+	return {
+		[field]: 1,
+	};
+};
+
+questionRouter.put("/rating", async (req: Request, res: Response) => {
+	try {
+		const question: any = await utmQuestCollections.Questions?.findOne({
+			link: req.body.link,
+			latest: true,
+		});
+		if (!question) {
+			res.status(404).send("No question found.");
+			return;
+		}
+		const user = req.headers.utorid as string;
+		if (!user) {
+			res.status(401).send("User unauthorized.");
+			return;
+		}
+		const { rate } = req.body;
+		const newRating = { ...question.rating, [user]: rate };
+
+		const newUpdate = UpdateRatingsCounter(
+			question as QuestionsType,
+			user,
+			rate
+		);
+		console.log(newUpdate);
+		utmQuestCollections.Questions?.updateOne(question, {
+			$set: { rating: newRating },
+			$inc: newUpdate,
+		}).then((updateRes) => {
+			if (!updateRes) {
+				res.status(500).send("Unable to update rating");
+				return;
+			}
+			res.status(200).send(updateRes);
+		});
+	} catch (error) {
+		res.status(500).send(error);
+	}
+});
 
 questionRouter.put(
 	"/incrementView/:link",
 	async (req: Request, res: Response) => {
+		const question = await utmQuestCollections.Questions?.findOne({
+			link: req.params.link,
+			latest: true,
+		});
+
+		if (!question) {
+			res.status(404).send({ error: "Could not find question." });
+			return;
+		}
+
+		const utorid = req.headers.utorid as string;
+		const uniqueViewers = question.viewers;
+		if (!(utorid in uniqueViewers)) uniqueViewers[utorid] = 1;
+
 		utmQuestCollections.Questions?.findOneAndUpdate(
 			{ link: req.params.link, latest: true },
-			{ $inc: { views: 1 } }
+			{ $inc: { views: 1 }, $set: { viewers: uniqueViewers } }
 		)
 			.then((result) => {
 				if (result.value == null)
@@ -653,7 +829,6 @@ questionRouter.put(
 // 		}
 // 	}
 // );
-
 
 // questionRouter.delete("/:questionId", async (req: Request, res: Response) => {
 // 	try {

@@ -50,9 +50,10 @@ const questions: QuestionsType[] = [
         anon: false,
         latest: true,
         rating: {},
-        views: 1,
         likes: 0,
-        dislikes: 0
+        dislikes: 0,
+        views: 1,
+        viewers: {}
     },
     {
         _id: 'abcde',
@@ -73,9 +74,10 @@ const questions: QuestionsType[] = [
         anon: false,
         latest: true,
         rating: {},
-        views: 1,
         likes: 0,
-        dislikes: 0
+        dislikes: 0,
+        views: 1,
+        viewers: {}
     },
 ]
 

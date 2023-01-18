@@ -39,7 +39,7 @@ const GetEditor = (value: string | undefined, placeholder: string, onChange: any
 const isRestore = (restorable: QuestionsType, newQuestion: QuestionsType) => {
     const { topicId, qnsName, desc, xplan, choices, ans } = restorable;
     const { topicId: topicId2, qnsName: qnsName2, desc: desc2, xplan: xplan2, choices: choices2, ans: ans2 } = newQuestion;
-    
+
     return topicId === topicId2 && qnsName === qnsName2 && desc === desc2 && xplan === xplan2 && JSON.stringify(choices) === JSON.stringify(choices2) && ans === ans2;
 };
 
@@ -214,7 +214,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                             }
 
                             const addableQuestion: QuestionsType = {
-                                _id: "To be filled in by the backend",
+                                _id: question ? question._id : "",
                                 link,
                                 topicId: topicSelected[0],
                                 topicName: topicSelected[1],
@@ -232,17 +232,18 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                 anon: isAnon,
                                 latest: true,
                                 rating: question ? question.rating : {},
-                                views: question ? question.views : 0,
                                 likes: question ? question.likes : 0,
                                 dislikes: question ? question.dislikes : 0,
+                                views: question ? question.views : 0,
+                                viewers: question ? question.viewers : {}
                             };
 
                             AddQuestion(
-                                addableQuestion, 
-                                setRedirect, 
-                                edit, 
-                                (latest || question), 
-                                setIsSubmit, 
+                                addableQuestion,
+                                setRedirect,
+                                edit,
+                                (latest || question),
+                                setIsSubmit,
                                 question ? isRestore(question, addableQuestion) : false
                             );
                         }}
