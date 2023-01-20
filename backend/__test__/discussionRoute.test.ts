@@ -30,12 +30,12 @@ describe('Test for Discussion route api', () => {
             expect(response.statusCode).toBe(404);
         });
 
-        it('get all original discussion posts base off questionId', async () => { 
+        it('get all original discussion posts base off qnsLink', async () => { 
             // do I need to populate the data with my own values and then test it?
             // create question then check to see - or do I need to have a mongodb memory
-            const questionId = "63704ec78f29f20175f93924"; 
+            const qnsLink = "63704ec78f29f20175f93924"; 
 
-            const response = await request(app).get(`/discussion/thread/${questionId}`);
+            const response = await request(app).get(`/discussion/thread/${qnsLink}`);
             expect(response.statusCode).toBe(200);
             expect(response.body.length).toEqual(3);
         });
@@ -65,7 +65,7 @@ describe('Test for Discussion route api', () => {
             // maybe do a check and see if the question numDiscussion got incremented 
             // also check to see if the discussion with that id got inserted 
             const discussion = {
-                question: '63703e9d8f29f20175f9390d',
+                qnsLink: '63703e9d8f29f20175f9390d',
                 op: false, 
                 authId: "dummy1",
                 authName: "JohnDoe",
@@ -74,7 +74,7 @@ describe('Test for Discussion route api', () => {
                 anon: false
             };
 
-            const response = await request(app).post(`/discussion/${discussion.question}`).send(discussion);
+            const response = await request(app).post(`/discussion/${discussion.qnsLink}`).send(discussion);
             expect(response.statusCode).toBe(201);
             expect(response.body.insertedId).not.toBeNull();
         });
@@ -83,7 +83,7 @@ describe('Test for Discussion route api', () => {
             // maybe do a check and see if the question numDiscussion got incremented 
             // also check to see if the discussion with that id got inserted 
             const discussion = {
-                question: '63687856a6311ba71ec75911',
+                qnsLink: '63687856a6311ba71ec75911',
                 op: false, 
                 authId: "dummy1",
                 authName: "JohnDoe",
@@ -92,7 +92,7 @@ describe('Test for Discussion route api', () => {
                 anon: false
             };
 
-            const response = await request(app).post(`/discussion/${discussion.question}`).send(discussion);
+            const response = await request(app).post(`/discussion/${discussion.qnsLink}`).send(discussion);
             expect(response.statusCode).toBe(404);
         });
     });

@@ -18,7 +18,7 @@ topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 	}
 
 	utmQuestCollections.Topics?.find({
-		course: req.params.courseId,
+		courseId: req.params.courseId,
 	})
 		.toArray()
 		.then((topics) => {
@@ -62,7 +62,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
-	if (topic.numQuestions !== 0) {
+	if (topic.numQns !== 0) {
 		res.status(400).send(
 			"Topics must contain no questions before they can be deleted."
 		);
@@ -187,8 +187,8 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 	const newTopic = {
 		_id: topicId,
 		topicName: newTopicName,
-		course: req.body.courseId,
-		numQuestions: 0
+		courseId: req.body.courseId,
+		numQns: 0
 	};
 
 	utmQuestCollections.Topics?.insertOne(newTopic)

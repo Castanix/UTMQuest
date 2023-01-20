@@ -23,7 +23,7 @@ const GetUsername = (comment: DiscussionFrontEndType) => {
     return <Link to={`/profile/${authId}`}>{authName}</Link>;
 };
 
-const DisplayComment = ({ comment, questionDate, utorid }: { comment: DiscussionFrontEndType, questionDate: string, utorid: string }) => {
+const DisplayComment = ({ comment, qnsDate, utorId }: { comment: DiscussionFrontEndType, qnsDate: string, utorId: string }) => {
     const [displayComment, setDisplayComment] = useState<DiscussionFrontEndType>(comment);
     const [childComments, setChildComments] = useState<DiscussionFrontEndType[]>([]);
     const [isDisplayed, setDisplay] = useState(!(displayComment.thread.length > 0));
@@ -90,7 +90,7 @@ const DisplayComment = ({ comment, questionDate, utorid }: { comment: Discussion
 
     actions.push([
         // Need to check if 'user' is author when we get user auth
-        displayComment.authId === utorid ?
+        displayComment.authId === utorId ?
             <span
                 onClick={() => {
                     setShowReply(false);
@@ -144,7 +144,7 @@ const DisplayComment = ({ comment, questionDate, utorid }: { comment: Discussion
                 <div className="date-tags">
                     {GetRelativeTime(new Date(displayComment.date).getTime())}
                     {isEdited ? <Tag>Edited</Tag> : ""}
-                    {Date.parse(displayComment.date) < Date.parse(questionDate)
+                    {Date.parse(displayComment.date) < Date.parse(qnsDate)
                         ? <Tag>Possibly Outdated</Tag>
                         : ""}
                 </div>
@@ -166,19 +166,19 @@ const DisplayComment = ({ comment, questionDate, utorid }: { comment: Discussion
         >
             {
                 childComments.map((item) => (
-                    <DisplayComment key={item._id} comment={item} questionDate={questionDate} utorid={utorid} />
+                    <DisplayComment key={item._id} comment={item} qnsDate={qnsDate} utorId={utorId} />
                 ))
             }
 
             {
                 showReply ?
-                    <Editor discussionId={displayComment._id} questionLink={displayComment.questionLink} op={false} oldContent="" updateComments={updateComments} thread={[]} /> :
+                    <Editor discussionId={displayComment._id} qnsLink={displayComment.qnsLink} op={false} oldContent="" updateComments={updateComments} thread={[]} /> :
                     null
             }
 
             {
                 showEdit ?
-                    <Editor discussionId={displayComment._id} questionLink={displayComment.questionLink} op={displayComment.op} oldContent={displayComment.content} updateComments={updateComments} thread={displayComment.thread} /> :
+                    <Editor discussionId={displayComment._id} qnsLink={displayComment.qnsLink} op={displayComment.op} oldContent={displayComment.content} updateComments={updateComments} thread={displayComment.thread} /> :
                     null
             }
         </Comment >

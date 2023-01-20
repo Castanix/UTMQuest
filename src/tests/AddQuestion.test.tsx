@@ -25,22 +25,22 @@ Object.defineProperty(window, 'matchMedia', {
 const req: TopicsType = {
     _id: "abcd1234",
     topicName: "ABCD",
-    course: "ABC123",
-    numQuestions: 0
+    courseId: "ABC123",
+    numQns: 0
 }
 
 const question: QuestionsType = {
     _id: 'abcd',
-    link: 'abcd',
+    qnsLink: 'abcd',
     topicId: '12345',
     topicName: 'ABCD',
     courseId: 'ABC123',
     qnsName: 'Hello World Strings',
     qnsType: qnsTypeEnum.mc,
-    desc: 'description',
-    xplan: 'none',
+    description: 'description',
+    explanation: 'none',
     choices: [],
-    ans: '',
+    answers: '',
     authId: 'Bob',
     authName: 'Bob Bob',
     date: 'Mon Oct 24 2022',
@@ -60,7 +60,7 @@ const customRender = (
         initialEntries={["/courses/ABC123/addQuestion"]}
     >
         <Routes>
-            <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
+            <Route path="/courses/:courseId/addQuestion" element={<AddQuestionPage edit={false} />} />
         </Routes>
     </MemoryRouter>
 );
@@ -70,7 +70,7 @@ const customRenderEdit = (
         initialEntries={[{ pathname: "/courses/ABC123/editQuestion", state: { question } }]}
     >
         <Routes>
-            <Route path="/courses/:id/editQuestion" element={<AddQuestionPage edit={true} />} />
+            <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage edit={true} />} />
         </Routes>
     </MemoryRouter>
 )
@@ -79,19 +79,19 @@ const customRenderEdit = (
 
 // mock server calls
 const server = setupServer(
-    rest.get(`${process.env.REACT_APP_API_URI}/topic/getTopics/:courseCode`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/topic/getTopics/:courseId`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json([{
                 _id: "abcd1234",
                 topicName: "ABCD",
-                course: "ABC123",
-                numQuestions: 0
+                courseId: "ABC123",
+                numQns: 0
             }])
         )
     }),
 
-    rest.get(`${process.env.REACT_APP_API_URI}/question/similar/abcd1234/:originalQuestionId/:term`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/question/similar/abcd1234/:originalQnsId/:term`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json({})
@@ -102,14 +102,14 @@ const server = setupServer(
         return res(
             ctx.status(201),
             ctx.json({
-                link: "abcde",
-                questionStatus: 1,
+                qnsLink: "abcde",
+                qnsStatus: 1,
                 consecutivePosting: 1,
                 unlockedBadges: {
-                    addQuestions: null,
+                    addQns: null,
                     consecutivePosting: null,
                     dailyLogin: "dailybadge",
-                    editQuestions: null,
+                    editQns: null,
                     threadReplies: null
                 },
                 edit: false
@@ -150,7 +150,7 @@ describe('AQStepOne', () => {
         const Wrapper = () => {
             const [currStep, setCurrStep] = React.useState<number>(0);
             const [topicSelected, setTopicSelect] = React.useState<[string, string]>(["", ""]);
-            return <AQStepOne courseCode={"ABC123"} topics={[req]} setCurrStep={setCurrStep} setTopicSelected={setTopicSelect} />
+            return <AQStepOne courseId={"ABC123"} topics={[req]} setCurrStep={setCurrStep} setTopicSelected={setTopicSelect} />
         }
 
         const { container } = render(<Wrapper />, { wrapper: BrowserRouter });
@@ -187,7 +187,7 @@ describe('AQStepTwo', () => {
             const [topicSelected, setTopicSelect] = React.useState<[string, string]>(["abcd1234", "ABCD"])
             return (
                 <ThemeContext.Provider value={true}>
-                    <AQStepTwo courseCode={"ABC123"} topicSelected={topicSelected} setCurrStep={setCurrStep} edit={false} />
+                    <AQStepTwo courseId={"ABC123"} topicSelected={topicSelected} setCurrStep={setCurrStep} edit={false} />
                 </ThemeContext.Provider>
             )
         }

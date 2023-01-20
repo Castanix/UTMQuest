@@ -19,30 +19,30 @@ const topics: TopicsType[] = [
     {
         _id: '1234',
         topicName: 'Strings',
-        numQuestions: 0,
-        course: 'test'
+        numQns: 0,
+        courseId: 'test'
     },
     {
         _id: '12345',
         topicName: 'Arrays',
-        numQuestions: 1,
-        course: 'test'
+        numQns: 1,
+        courseId: 'test'
     }
 ]
 
 const questions: QuestionsType[] = [
     {
         _id: 'abcd',
-        link: 'abcd',
+        qnsLink: 'abcd',
         topicId: '12345',
         topicName: 'Strings',
         courseId: 'test',
         qnsName: 'Hello World Strings',
         qnsType: qnsTypeEnum.mc,
-        desc: 'description',
-        xplan: 'none',
+        description: 'description',
+        explanation: 'none',
         choices: [],
-        ans: '',
+        answers: '',
         authId: 'Bob',
         authName: 'Bob Bob',
         date: 'Mon Oct 24 2022',
@@ -57,16 +57,16 @@ const questions: QuestionsType[] = [
     },
     {
         _id: 'abcde',
-        link: 'abcde',
+        qnsLink: 'abcde',
         topicId: '123456',
         topicName: 'Arrays',
         courseId: 'test',
         qnsName: 'Arrays question',
         qnsType: qnsTypeEnum.mc,
-        desc: 'description',
-        xplan: 'none',
+        description: 'description',
+        explanation: 'none',
         choices: [],
-        ans: '',
+        answers: '',
         authId: 'Bob',
         authName: 'Bob Bob',
         date: 'Mon Oct 24 2022',
@@ -84,7 +84,7 @@ const questions: QuestionsType[] = [
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<QuestionsList questions={questions} topics={topics} courseCode="test" />, { wrapper: BrowserRouter })
+    const { container } = render(<QuestionsList questions={questions} topics={topics} courseId="test" />, { wrapper: BrowserRouter })
     document = container;
 });
 

@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { DiscussionFrontEndType } from "../../../../backend/types/Discussion";
 
-const GetOPComments = (questionLink: string) => {
+const GetOPComments = (qnsLink: string) => {
     const [loading, setLoading] = useState<boolean>(true);
     const comments: DiscussionFrontEndType[] = useMemo(() => [], []);
-    const [utorid, setUtorid] = useState<string>("");
+    const [utorId, setUtorId] = useState<string>("");
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
         fetch(
-            `${process.env.REACT_APP_API_URI}/discussion/thread/${questionLink}`
+            `${process.env.REACT_APP_API_URI}/discussion/thread/${qnsLink}`
         )
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
@@ -17,19 +17,19 @@ const GetOPComments = (questionLink: string) => {
             })
             .then((result) => {
                 comments.push(...result.discussion);
-                setUtorid(result.utorid);
+                setUtorId(result.utorId);
                 setLoading(false);
             })
             .catch((err) => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [comments, questionLink]);
+    }, [comments, qnsLink]);
 
     return {
         loading,
         comments,
-        utorid,
+        utorId,
         error,
     };
 };

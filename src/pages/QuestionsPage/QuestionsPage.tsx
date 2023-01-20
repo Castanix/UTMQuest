@@ -8,31 +8,31 @@ import Loading from '../../components/Loading/Loading';
 import GetAllTopics from '../ManageTopics/fetch/GetTopics';
 import GetQuestions from './fetch/GetQuestions';
 import { QuestionsList } from './QuestionsList';
-import { CheckSaved, SaveCourse } from './fetch/SavedCourses';
+import { CheckBookmark, BookmarkCourse } from './fetch/BookmarkCourse';
 
 
 const { Text } = Typography;
 
-const Header = ({ courseCode, courseName, favourite, setFavourite }:
-    { courseCode: string, courseName: string, favourite: boolean, setFavourite: Function }) => (
+const Header = ({ courseId, courseName, bookmarked, setBookmarked }:
+    { courseId: string, courseName: string, bookmarked: boolean, setBookmarked: Function }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Text>{courseCode}</Text></Breadcrumb.Item>
+            <Breadcrumb.Item><Text>{courseId}</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="browse-question-title">
-            <Title level={3} ellipsis>{`${courseCode} - ${courseName}`}</Title>
+            <Title level={3} ellipsis>{`${courseId} - ${courseName}`}</Title>
             <div>
                 <Space>
-                    <Link to={`/courses/${courseCode}/topics`}>
+                    <Link to={`/courses/${courseId}/topics`}>
                         <Button type="primary" shape="round" icon={<SettingTwoTone />}>Manage Topics</Button>
                     </Link>
                     <Button
-                        type={favourite ? "primary" : "default"}
-                        icon={favourite ? <StarFilled /> : <StarOutlined style={{ color: "#1677FF" }} />}
+                        type={bookmarked ? "primary" : "default"}
+                        icon={bookmarked ? <StarFilled /> : <StarOutlined style={{ color: "#1677FF" }} />}
                         shape="round"
                         onClick={() => {
-                            SaveCourse(courseCode, favourite, setFavourite);
+                            BookmarkCourse(courseId, bookmarked, setBookmarked);
                         }}
                     />
                 </Space>
@@ -43,21 +43,21 @@ const Header = ({ courseCode, courseName, favourite, setFavourite }:
 
 const QuestionsPage = () => {
     const params = useParams();
-    const courseCode = params.id;
+    const { courseId } = params;
 
-    const [isSaved, setIsSaved] = useState<boolean>(false);
-    const { loadingSaved, errorSaved, loadingCourse, errorCourse, courseName } = CheckSaved(courseCode ?? '', setIsSaved);
+    const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+    const { loadingBookmarked, errorBookmarked, loadingCourse, errorCourse, courseName } = CheckBookmark(courseId ?? '', setIsBookmarked);
 
-    const { loading: loadingTopics, topics, error: errorTopics } = GetAllTopics(courseCode ?? '');
-    const { loading, questions, error } = GetQuestions(courseCode ?? '');
+    const { loading: loadingTopics, topics, error: errorTopics } = GetAllTopics(courseId ?? '');
+    const { loading, questions, error } = GetQuestions(courseId ?? '');
 
-    if (loading || loadingTopics || loadingSaved || loadingCourse) return <Loading />;
+    if (loading || loadingTopics || loadingBookmarked || loadingCourse) return <Loading />;
 
-    if (error !== '' || errorTopics !== '' || errorSaved !== '' || errorCourse !== '') return <ErrorMessage title={error !== '' ? error : errorTopics} link="." message="Refresh" />;
+    if (error !== '' || errorTopics !== '' || errorBookmarked !== '' || errorCourse !== '') return <ErrorMessage title={error !== '' ? error : errorTopics} link="." message="Refresh" />;
     return (
-        <Card title={<Header courseCode={courseCode ?? ''} courseName={courseName ?? ''} favourite={isSaved} setFavourite={setIsSaved} />} bordered={false}>
+        <Card title={<Header courseId={courseId ?? ''} courseName={courseName ?? ''} bookmarked={isBookmarked} setBookmarked={setIsBookmarked} />} bordered={false}>
             <main className='main-container'>
-                <QuestionsList questions={questions} topics={topics} courseCode={courseCode ?? ""} />
+                <QuestionsList questions={questions} topics={topics} courseId={courseId ?? ""} />
             </main>
         </Card>
     );

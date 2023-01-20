@@ -39,15 +39,15 @@ root.render(
     <Topbar>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/courses/:id/topics" element={<ManageTopics />} />
-          <Route path="/courses/:id/addQuestion" element={<AddQuestionPage edit={false} />} />
-          <Route path="/courses/:id/editQuestion" element={<AddQuestionPage edit />} />
+          <Route path="/courses/:courseId/topics" element={<ManageTopics />} />
+          <Route path="/courses/:courseId/addQuestion" element={<AddQuestionPage edit={false} />} />
+          <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage edit />} />
           
-            <Route path="/courses/:id/quiz" element={<QuizPage />} />
-            <Route path="/courses/:id" element={<QuestionsPage />} />
+          <Route path="/courses/:courseId/quiz" element={<QuizPage />} />
+          <Route path="/courses/:courseId" element={<QuestionsPage />} />
           
-          <Route path="/courses/:courseId/question/:link" element={<ApprovedQuestion />} />
-          <Route path="/profile/:utorid" element={<ProfilePage />} />
+          <Route path="/courses/:courseId/question/:qnsLink" element={<ApprovedQuestion />} />
+          <Route path="/profile/:utorId" element={<ProfilePage />} />
           <Route path="*" element={<div>Page not found</div>} />
         </Routes>
     </Topbar>

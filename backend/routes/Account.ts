@@ -4,7 +4,7 @@ import { utmQuestCollections } from "../db/db.service";
 const accountRouter = Router();
 
 accountRouter.put("/setup", async (req: Request, res: Response) => {
-	const { utorid } = req.headers;
+	const { utorid: utorId } = req.headers;
 	const email: string = req.headers.http_mail as string;
 	const name = email.split("@")[0].split(".");
 	const firstName = name[0].charAt(0).toUpperCase() + name[0].slice(1);
@@ -12,13 +12,13 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 		name[name.length - 1].charAt(0).toUpperCase() +
 		name[name.length - 1].slice(1);
 
-	const user = await utmQuestCollections.Accounts?.findOne({ utorid });
+	const user = await utmQuestCollections.Accounts?.findOne({ utorId });
 
 	if (!user) {
 		utmQuestCollections.Accounts?.insertOne({
-			utorid,
+			utorId,
 			utorName: `${firstName} ${lastName}`,
-			savedCourses: [],
+			bookmarkCourses: [],
 		}).then((result) => {
 			if (!result) {
 				res.status(500).send("Unable to perform first time sign in.");
@@ -26,9 +26,9 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 			}
 
 			utmQuestCollections.Badges?.insertOne({
-				utorid,
-				questionsAdded: 0,
-				questionsEdited: 0,
+				utorId,
+				qnsAdded: 0,
+				qnsEdited: 0,
 				threadResponses: 0,
 				currLoginStreak: 1,
 				longestLoginStreak: 1,
@@ -37,15 +37,15 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 				consecutivePosting: 0,
 				displayBadges: [],
 				unlockedBadges: {
-					addQuestions: null,
-					editQuestions: null,
+					addQns: null,
+					editQns: null,
 					consecutivePosting: null,
 					dailyLogin: "dailybadge",
 					threadReplies: null,
 				},
 			}).then((badgeResult) => {
 				if (!badgeResult) {
-					utmQuestCollections.Accounts?.deleteOne({ utorid });
+					utmQuestCollections.Accounts?.deleteOne({ utorId });
 					res.status(500).send(
 						"Unable to perform first time sign in."
 					);
@@ -54,20 +54,20 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 
 				res.status(201).send({
 					username: firstName.concat(" ").concat(lastName),
-					utorid,
+					utorId,
 				});
 			});
 		});
 	} else {
 		res.status(418).send({
 			username: firstName.concat(" ").concat(lastName),
-			utorid,
+			utorId,
 		});
 	}
 });
 
-accountRouter.get("/getAccount/:utorid", (req: Request, res: Response) => {
-	utmQuestCollections.Accounts?.findOne({ utorid: req.params.utorid })
+accountRouter.get("/getAccount/:utorId", (req: Request, res: Response) => {
+	utmQuestCollections.Accounts?.findOne({ utorId: req.params.utorId })
 		.then((doc) => {
 			if (doc == null) {
 				res.statusMessage = "No such account found.";
@@ -81,16 +81,16 @@ accountRouter.get("/getAccount/:utorid", (req: Request, res: Response) => {
 		});
 });
 
-accountRouter.get("/checkSaved/:courseId", (req: Request, res: Response) => {
-	utmQuestCollections.Accounts?.findOne({ utorid: req.headers.utorid })
+accountRouter.get("/checkBookmark/:courseId", (req: Request, res: Response) => {
+	utmQuestCollections.Accounts?.findOne({ utorId: req.headers.utorid })
 		.then((doc) => {
 			if (doc == null) {
 				// set custom statusText to be displayed to user
 				res.statusMessage = "No such account found.";
 				res.status(404).end();
 			} else {
-				const isSaved = doc.savedCourses.includes(req.params.courseId);
-				res.status(200).send(isSaved);
+				const isBookmark = doc.bookmarkCourses.includes(req.params.courseId);
+				res.status(200).send(isBookmark);
 			}
 		})
 		.catch((error) => {
@@ -98,20 +98,20 @@ accountRouter.get("/checkSaved/:courseId", (req: Request, res: Response) => {
 		});
 });
 
-accountRouter.put("/updateSavedCourse", async (req: Request, res: Response) => {
-	const { utorid } = req.headers;
+accountRouter.put("/updateBookmarkCourses", async (req: Request, res: Response) => {
+	const { utorid: utorId } = req.headers;
 
-	if (req.body.favourite) {
+	if (req.body.bookmark) {
 		utmQuestCollections.Accounts?.findOneAndUpdate(
-			{ utorid },
+			{ utorId },
 			{
-				$pull: { savedCourses: req.body.courseId },
+				$pull: { bookmarkCourses: req.body.courseId },
 			},
 			{ returnDocument: "after" }
 		)
 			.then((result) => {
 				if (!result) {
-					res.status(400).send(`Unable to favourite course`);
+					res.status(400).send(`Unable to bookmark course`);
 				}
 				res.status(200).send(result);
 			})
@@ -120,15 +120,15 @@ accountRouter.put("/updateSavedCourse", async (req: Request, res: Response) => {
 			});
 	} else {
 		utmQuestCollections.Accounts?.findOneAndUpdate(
-			{ utorid },
+			{ utorId },
 			{
-				$push: { savedCourses: req.body.courseId },
+				$push: { bookmarkCourses: req.body.courseId },
 			},
 			{ returnDocument: "after" }
 		)
 			.then((result) => {
 				if (!result) {
-					res.status(400).send(`Unable to favourite course`);
+					res.status(400).send(`Unable to bookmark course`);
 				}
 				res.status(200).send(result);
 			})

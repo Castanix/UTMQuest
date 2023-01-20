@@ -4,8 +4,8 @@ import { Link, useLocation } from "react-router-dom";
 import TopicsType from "../../../backend/types/Topics";
 import { onMobile } from "../../components/EditHistory/EditHistory";
 
-const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
-    { courseCode: string, topics: TopicsType[], setCurrStep: Function, setTopicSelected: Function }) => {
+const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
+    { courseId: string, topics: TopicsType[], setCurrStep: Function, setTopicSelected: Function }) => {
 
     const fullTopicList = topics;
     const [selected, setSelected] = useState<string>();
@@ -51,7 +51,7 @@ const AQStepOne = ({ courseCode, topics, setCurrStep, setTopicSelected }:
             <Alert message="If the topic you are trying to select does not exist, please add it here:"
                 type="info"
                 action={
-                    <Link to={`/courses/${courseCode}/topics`}>
+                    <Link to={`/courses/${courseId}/topics`}>
                         <Button type="link">
                             Manage Topics
                         </Button>

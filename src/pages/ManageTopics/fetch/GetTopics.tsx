@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import TopicsType from "../../../../backend/types/Topics";
 
-const GetAllTopics = (courseCode: string) => {
+const GetAllTopics = (courseId: string) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [topics, setTopics] = useState<TopicsType[]>([]);
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
         fetch(
-            `${process.env.REACT_APP_API_URI}/topic/getTopics/${courseCode}`
+            `${process.env.REACT_APP_API_URI}/topic/getTopics/${courseId}`
         )
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
@@ -22,7 +22,7 @@ const GetAllTopics = (courseCode: string) => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [courseCode]);
+    }, [courseId]);
 
     return {
         topics,

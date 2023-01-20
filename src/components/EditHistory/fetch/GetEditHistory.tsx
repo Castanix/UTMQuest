@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { QuestionsType } from "../../../../backend/types/Questions";
 
-const GetEditHistory = (link: string) => {
+const GetEditHistory = (qnsLink: string) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [editHistory, setEditHistory] = useState<QuestionsType[]>([]);
     const [error, setError] = useState<string>("");
     useEffect(() => {
         fetch(
-            `${process.env.REACT_APP_API_URI}/question/editHistory/${link}`
+            `${process.env.REACT_APP_API_URI}/question/editHistory/${qnsLink}`
         )
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
@@ -21,7 +21,7 @@ const GetEditHistory = (link: string) => {
                 setLoading(false);
             });
 
-    }, [link]);
+    }, [qnsLink]);
 
     return {
         loading,

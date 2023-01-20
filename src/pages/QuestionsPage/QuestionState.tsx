@@ -8,21 +8,21 @@ interface QuestionListState {
     topicFilters: string[]
 };
 
-const GetStateFromSessionStorage = (courseCode: string) => {
+const GetStateFromSessionStorage = (courseId: string) => {
 
     const state: { [course: string]: QuestionListState } = JSON.parse(sessionStorage.getItem("questionList") ?? JSON.stringify({}));
 
-    if (courseCode in state) {
-        const item = state[courseCode];
+    if (courseId in state) {
+        const item = state[courseId];
 
         return { currentPage: item.currentPage, pageSize: item.pageSize, scrollY: item.scrollY, topicFilters: item.topicFilters };
     }
     return { currentPage: 1, pageSize: 10, scrollY: 0, topicFilters: [] };
 };
 
-const QuestionState = (questions: QuestionsType[], courseCode: string) => {
+const QuestionState = (questions: QuestionsType[], courseId: string) => {
 
-    const state = GetStateFromSessionStorage(courseCode);
+    const state = GetStateFromSessionStorage(courseId);
     const initFilter: string[] = state.topicFilters;
 
     const [originalData] = useState<QuestionsType[]>(questions);
@@ -61,7 +61,7 @@ const QuestionState = (questions: QuestionsType[], courseCode: string) => {
         newState.currentPage = page;
         newState.pageSize = pageSize;
 
-        sessionStorage.setItem("questionList", JSON.stringify({ [courseCode]: newState }));
+        sessionStorage.setItem("questionList", JSON.stringify({ [courseId]: newState }));
 
         setSessionState(newState);
     };
@@ -71,7 +71,7 @@ const QuestionState = (questions: QuestionsType[], courseCode: string) => {
         const newState = { ...sessionState };
         newState.topicFilters = value;
 
-        sessionStorage.setItem("questionList", JSON.stringify({ [courseCode]: newState }));
+        sessionStorage.setItem("questionList", JSON.stringify({ [courseId]: newState }));
         filterQuestions(value);
     };
 
@@ -79,7 +79,7 @@ const QuestionState = (questions: QuestionsType[], courseCode: string) => {
         const newState = { ...sessionState };
         newState.scrollY = window.scrollY;
 
-        sessionStorage.setItem("questionList", JSON.stringify({ [courseCode]: newState }));
+        sessionStorage.setItem("questionList", JSON.stringify({ [courseId]: newState }));
         setSessionState(newState);
     };
 

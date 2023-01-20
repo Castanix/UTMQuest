@@ -37,18 +37,20 @@ const GetEditor = (value: string | undefined, placeholder: string, onChange: any
 };
 
 const isRestore = (restorable: QuestionsType, newQuestion: QuestionsType) => {
-    const { topicId, qnsName, desc, xplan, choices, ans } = restorable;
-    const { topicId: topicId2, qnsName: qnsName2, desc: desc2, xplan: xplan2, choices: choices2, ans: ans2 } = newQuestion;
+    const { topicId, qnsName, description, explanation, choices, answers } = restorable;
+    const { topicId: topicId2, qnsName: qnsName2, description: description2, explanation: explanation2, choices: choices2, answers: answers2 } = newQuestion;
 
-    return topicId === topicId2 && qnsName === qnsName2 && desc === desc2 && xplan === xplan2 && JSON.stringify(choices) === JSON.stringify(choices2) && ans === ans2;
+    return topicId === topicId2 && qnsName === qnsName2 && 
+        description === description2 && explanation === explanation2 && 
+        JSON.stringify(choices) === JSON.stringify(choices2) && answers === answers2;
 };
 
-const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
-    { courseCode: string, topicSelected: [string, string], setCurrStep: Function, edit: boolean }) => {
+const AQStepTwo = ({ courseId, topicSelected, setCurrStep, edit }:
+    { courseId: string, topicSelected: [string, string], setCurrStep: Function, edit: boolean }) => {
 
     const [type, setType] = useState<qnsTypeEnum>();
     const [title, setTitle] = useState<string>();
-    const [link, setLink] = useState<string>('');
+    const [qnsLink, setQnsLink] = useState<string>('');
     const [problemValue, setProblemValue] = useState<string>();
     const [explanationValue, setExplanationValue] = useState<string>();
     const [mcOption, setMcOption] = useState<AddOptionType[]>([{ _id: 1, value: "", isCorrect: false }, { _id: 2, value: "", isCorrect: false }]);
@@ -57,7 +59,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     const [isAnon, setAnon] = useState<boolean>(false);
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
 
-    const { utorid, username } = useContext(UserContext);
+    const { utorId, username } = useContext(UserContext);
     const isLightMode = useContext(ThemeContext);
 
     const { question, latest } = useLocation().state ?? "";
@@ -65,22 +67,22 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
     useEffect(() => {
         const setForm = () => {
             if (question) {
-                const { qnsName, qnsType, desc, xplan, choices, ans } = question;
+                const { qnsName, qnsType, description, explanation, choices, answers } = question;
 
-                setLink(question.link);
+                setQnsLink(question.qnsLink);
                 setTitle(qnsName);
                 setType(qnsType);
-                setProblemValue(desc);
-                setExplanationValue(xplan);
-                if (typeof (ans) === "object") {
+                setProblemValue(description);
+                setExplanationValue(explanation);
+                if (typeof (answers) === "object") {
                     const mcArr: AddOptionType[] = [];
                     choices.forEach((choice: string, index: number) => {
-                        mcArr.push({ _id: index + 1, value: choice, isCorrect: ans.includes(choice) });
+                        mcArr.push({ _id: index + 1, value: choice, isCorrect: answers.includes(choice) });
                     });
                     setMcOption(mcArr);
                 };
-                if (typeof (ans) === "string") {
-                    setSolValue(ans);
+                if (typeof (answers) === "string") {
+                    setSolValue(answers);
                 };
             };
         };
@@ -164,7 +166,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                         </Form.Item>
                     </div>
                     <Form.Item>
-                        {DuplicateQuestions(courseCode, topicSelected[0], title ?? '', question?.link)}
+                        {DuplicateQuestions(courseId, topicSelected[0], title ?? '', question?.link)}
                     </Form.Item>
                     <div className="answer-form">
                         <Form.Item label="Problem Description" required>
@@ -200,7 +202,7 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                             setIsSubmit(true);
 
                             const choices: string[] = [];
-                            let ans: string[] | string = solValue ?? '';
+                            let answers: string[] | string = solValue ?? '';
 
                             if (type === qnsTypeEnum.mc) {
                                 const ansArr: string[] = [];
@@ -210,22 +212,22 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                                     if (item.isCorrect) ansArr.push(item.value);
                                 });
 
-                                ans = ansArr;
+                                answers = ansArr;
                             }
 
-                            const addableQuestion: QuestionsType = {
+                            const addableQns: QuestionsType = {
                                 _id: question ? question._id : "",
-                                link,
+                                qnsLink,
                                 topicId: topicSelected[0],
                                 topicName: topicSelected[1],
-                                courseId: courseCode,
+                                courseId,
                                 qnsName: (title?.trim() ?? ''),
                                 qnsType: type,
-                                desc: problemValue?.trim() ?? "",
-                                xplan: explanationValue?.trim() ?? "",
+                                description: problemValue?.trim() ?? "",
+                                explanation: explanationValue?.trim() ?? "",
                                 choices,
-                                ans,
-                                authId: utorid,
+                                answers,
+                                authId: utorId,
                                 authName: username,
                                 date: latest ? question.date : new Date().toISOString(),
                                 numDiscussions: question ? question.numDiscussions : 0,
@@ -239,17 +241,17 @@ const AQStepTwo = ({ courseCode, topicSelected, setCurrStep, edit }:
                             };
 
                             AddQuestion(
-                                addableQuestion,
+                                addableQns,
                                 setRedirect,
                                 edit,
                                 (latest || question),
                                 setIsSubmit,
-                                question ? isRestore(question, addableQuestion) : false
+                                question ? isRestore(question, addableQns) : false
                             );
                         }}
                     >Submit</Button>
                 </div>
-                {redirect ? <Navigate to={`/courses/${courseCode}/question/${redirect}`} /> : ""}
+                {redirect ? <Navigate to={`/courses/${courseId}/question/${redirect}`} /> : ""}
             </div>
         </>
     );

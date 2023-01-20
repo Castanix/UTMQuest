@@ -7,25 +7,25 @@ import { qnsTypeEnum, QuestionsType } from "../types/Questions";
 
 const questionRouter = Router();
 
-const updateBadge = async (utorid: string) => {
+const updateBadge = async (utorId: string) => {
 	const failed = {
 		code: 500,
-		message: `Update 'questionsEdited' field for badges collection failed. Reverting all changes.`,
-		questionStatus: null,
+		message: `Update 'qnsEdited' field for badges collection failed. Reverting all changes.`,
+		qnsStatus: null,
 	};
 
-	return utmQuestCollections.Badges?.findOne({ utorid })
+	return utmQuestCollections.Badges?.findOne({ utorId })
 		.then((findRes) => {
 			if (!findRes) {
 				return {
 					code: 404,
-					message: `Could not find badge progression for ${utorid}`,
-					questionStatus: null,
+					message: `Could not find badge progression for ${utorId}`,
+					qnsStatus: null,
 				};
 			}
 
 			return utmQuestCollections.Badges?.updateOne(findRes, {
-				$inc: { questionsEdited: 1 },
+				$inc: { qnsEdited: 1 },
 			})
 				.then((updateRes) => {
 					if (!updateRes) {
@@ -34,7 +34,7 @@ const updateBadge = async (utorid: string) => {
 					return {
 						code: 200,
 						message: `success`,
-						questionStatus: findRes.questionsEdited + 1,
+						qnsStatus: findRes.qnsEdited + 1,
 					};
 				})
 				.catch(() => failed);
@@ -53,7 +53,7 @@ const updateLatest = (question: any, set: boolean) => {
 const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
 	const result = utmQuestCollections.Topics?.findOneAndUpdate(
 		{ _id: topicId },
-		{ $inc: { numQuestions: increment ? 1 : -1 } }
+		{ $inc: { numQns: increment ? 1 : -1 } }
 	);
 
 	return !!result;
@@ -61,20 +61,20 @@ const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
 
 // /courses/:courseId/question/:id
 questionRouter.get(
-	"/allUserPostedQuestions/:utorid",
+	"/allUserPostedQuestions/:utorId",
 	async (req: Request, res: Response) => {
 		try {
 			let questions;
 
 			// visiting your own profile = fetch all contributions
 			// visting somebody else's profile = fetch only public contributions
-			if (req.params.utorid === req.headers.utorid) {
+			if (req.params.utorId === req.headers.utorid) {
 				questions = await utmQuestCollections.Questions?.find({
-					authId: req.params.utorid,
+					authId: req.params.utorId,
 				}).toArray();
 			} else {
 				questions = await utmQuestCollections.Questions?.find({
-					authId: req.params.utorid,
+					authId: req.params.utorId,
 					anon: false,
 				}).toArray();
 			}
@@ -92,11 +92,11 @@ questionRouter.get(
 
 // "/:questionId"
 questionRouter.get(
-	"/oneQuestion/:link",
+	"/oneQuestion/:qnsLink",
 	async (req: Request, res: Response) => {
 		try {
 			const question = await utmQuestCollections.Questions?.findOne({
-				link: req.params.link,
+				qnsLink: req.params.qnsLink,
 				latest: true,
 			});
 			if (!question) {
@@ -113,11 +113,11 @@ questionRouter.get(
 );
 
 questionRouter.get(
-	"/allDiscussions/:questionId",
+	"/allDiscussions/:qnsLink",
 	async (req: Request, res: Response) => {
 		try {
 			const discussions = await utmQuestCollections.Discussions?.findOne({
-				question: req.params.questionId,
+				qnsLink: req.params.qnsLink,
 			});
 			if (!discussions) {
 				res.status(404).send("Cannot find discussion");
@@ -214,7 +214,7 @@ questionRouter.get(
 			/* and the startingDate. This will allow different people   */
 			/* to view new questions daily.					  			*/
 
-			const { utorid } = req.headers;
+			const { utorid: utorId } = req.headers;
 
 			const startingDate = new Date(2000, 1, 1); // starting date for seed
 			const currentDate = new Date();
@@ -228,7 +228,7 @@ questionRouter.get(
 
 			allQuestions?.forEach((question: any) => {
 				const randomGen = seedrandom(
-					diffInDays + utorid + question._id
+					diffInDays + utorId + question._id
 				);
 				const randomNum = randomGen();
 				const showNewQuestions = randomNum <= 1; // chance of people seeing new questions
@@ -239,7 +239,7 @@ questionRouter.get(
 					(60 * 60 * 1000);
 
 				const score = ComputeQuestionScore(question);
-				if (diff > 24 || utorid === question.authId) {
+				if (diff > 24 || utorId === question.authId) {
 					scoredQuestions.push({ score, question });
 				} else if (showNewQuestions) {
 					newQuestions.push({ score, question });
@@ -262,10 +262,10 @@ questionRouter.get(
 questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 	// post a new question
 	const mongoId = new ObjectID();
-	const link = mongoId.toHexString();
+	const qnsLink = mongoId.toHexString();
 	const topicId = new ObjectID(req.body.topicId);
 	const isAnon = req.body.anon;
-	const utorid = req.headers.utorid as string;
+	const utorId = req.headers.utorid as string;
 
 	const email: string = req.headers.http_mail as string;
 	const name = email.split("@")[0].split(".");
@@ -276,17 +276,17 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 
 	const question = {
 		_id: mongoId,
-		link,
+		qnsLink,
 		topicId,
 		topicName: req.body.topicName,
 		courseId: req.body.courseId,
 		qnsName: req.body.qnsName,
 		qnsType: req.body.qnsType,
-		desc: req.body.desc,
-		xplan: req.body.xplan,
+		description: req.body.description,
+		explanation: req.body.explanation,
 		choices: req.body.choices,
-		ans: req.body.ans,
-		authId: utorid,
+		answers: req.body.answers,
+		authId: utorId,
 		authName: isAnon ? "Anonymous" : `${firstName} ${lastName}`,
 		date: new Date().toISOString(),
 		numDiscussions: req.body.numDiscussions,
@@ -299,7 +299,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		viewers: req.body.viewers,
 	};
 
-	const badge = await utmQuestCollections.Badges?.findOne({ utorid });
+	const badge = await utmQuestCollections.Badges?.findOne({ utorId });
 
 	if (!badge) {
 		res.status(404).send("Could not find badge progression for user.");
@@ -333,7 +333,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 							firstPostToday: now.toISOString(),
 							consecutivePosting: 1,
 						},
-						$inc: { questionsAdded: 1 },
+						$inc: { qnsAdded: 1 },
 					}).then((updateResult) => {
 						if (!updateResult) {
 							res.status(500).send(
@@ -343,8 +343,8 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 							utmQuestCollections.Questions?.deleteOne(question);
 						} else {
 							res.status(201).send({
-								link,
-								questionStatus: badge.questionsAdded + 1,
+								qnsLink,
+								qnsStatus: badge.qnsAdded + 1,
 								consecutivePosting: 1,
 								unlockedBadges: badge.unlockedBadges,
 								edit: false,
@@ -364,7 +364,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 					) {
 						utmQuestCollections.Badges?.updateOne(badge, {
 							$set: { firstPostToday: now.toISOString() },
-							$inc: { consecutivePosting: 1, questionsAdded: 1 },
+							$inc: { consecutivePosting: 1, qnsAdded: 1 },
 						}).then((updateResult) => {
 							if (!updateResult) {
 								res.status(500).send(
@@ -376,8 +376,8 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 								);
 							} else {
 								res.status(201).send({
-									link,
-									questionStatus: badge.questionsAdded + 1,
+									qnsLink,
+									qnsStatus: badge.qnsAdded + 1,
 									consecutivePosting:
 										badge.consecutivePosting + 1,
 									unlockedBadges: badge.unlockedBadges,
@@ -391,7 +391,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 								firstPostToday: now.toISOString(),
 								consecutivePosting: 1,
 							},
-							$inc: { questionsAdded: 1 },
+							$inc: { qnsAdded: 1 },
 						}).then((updateResult) => {
 							if (!updateResult) {
 								res.status(500).send(
@@ -399,8 +399,8 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 								);
 							} else {
 								res.status(201).send({
-									link,
-									questionStatus: badge.questionsAdded + 1,
+									qnsLink,
+									qnsStatus: badge.qnsAdded + 1,
 									consecutivePosting: 1,
 									unlockedBadges: badge.unlockedBadges,
 									edit: false,
@@ -409,7 +409,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 						});
 					} else {
 						utmQuestCollections.Badges?.updateOne(badge, {
-							$inc: { questionsAdded: 1 },
+							$inc: { qnsAdded: 1 },
 						}).then((incrementResult) => {
 							if (!incrementResult) {
 								res.status(500).send(
@@ -421,8 +421,8 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 								);
 							} else {
 								res.status(201).send({
-									link,
-									questionStatus: badge.questionsAdded + 1,
+									qnsLink,
+									qnsStatus: badge.qnsAdded + 1,
 									consecutivePosting:
 										badge.consecutivePosting,
 									unlockedBadges: badge.unlockedBadges,
@@ -433,7 +433,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 					}
 				}
 			} else {
-				res.status(201).send({ link });
+				res.status(201).send({ qnsLink });
 			}
 		})
 		.catch((error) => {
@@ -452,11 +452,11 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			return;
 		}
 
-		const { link, restore, anon } = req.body;
-		const utorid = req.headers.utorid as string;
+		const { qnsLink, restore, anon } = req.body;
+		const utorId = req.headers.utorid as string;
 
 		const badge = await utmQuestCollections.Badges?.findOne({
-			utorid,
+			utorId,
 		});
 
 		if (!badge) {
@@ -472,17 +472,17 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			name[name.length - 1].slice(1);
 
 		const question = {
-			link,
+			qnsLink,
 			topicId: new ObjectID(req.body.topicId),
 			topicName: req.body.topicName,
 			courseId: req.body.courseId,
 			qnsName: req.body.qnsName,
 			qnsType: req.body.qnsType,
-			desc: req.body.desc,
-			xplan: req.body.xplan,
+			description: req.body.description,
+			explanation: req.body.explanation,
 			choices: req.body.choices,
-			ans: req.body.ans,
-			authId: utorid,
+			answers: req.body.answers,
+			authId: utorId,
 			authName: anon ? "Anonymous" : `${firstName} ${lastName}`,
 			date: new Date().toISOString(),
 			numDiscussions: req.body.numDiscussions,
@@ -525,7 +525,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 
 					// Attempts to update badge progression for specified utorid, reverts all changes if failed
 					if (!req.body.anon) {
-						updateBadge(utorid).then((updateRes) => {
+						updateBadge(utorId).then((updateRes) => {
 							if (!updateRes) {
 								updateLatest(oldVersion, true);
 								utmQuestCollections.Questions?.deleteOne(
@@ -536,12 +536,12 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 								);
 								return;
 							}
-							const { code, message, questionStatus } = updateRes;
+							const { code, message, qnsStatus } = updateRes;
 
 							if (code === 200) {
 								res.status(201).send({
-									link,
-									questionStatus,
+									qnsLink,
+									qnsStatus,
 									unlockedBadges: badge.unlockedBadges,
 									edit: true,
 								});
@@ -550,7 +550,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 							}
 						});
 					} else {
-						res.status(201).send({ link });
+						res.status(201).send({ qnsLink });
 					}
 				})
 				.catch((error) => {
@@ -578,7 +578,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 
 				// Attempts to update badge progression for specified utorid, reverts all changes if failed
 				if (!req.body.anon) {
-					updateBadge(utorid).then((updateRes) => {
+					updateBadge(utorId).then((updateRes) => {
 						if (!updateRes) {
 							updateLatest(oldVersion, true);
 							utmQuestCollections.Questions?.deleteOne(question);
@@ -587,12 +587,12 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 							);
 							return;
 						}
-						const { code, message, questionStatus } = updateRes;
+						const { code, message, qnsStatus } = updateRes;
 
 						if (code === 200) {
 							res.status(201).send({
-								link,
-								questionStatus,
+								qnsLink,
+								qnsStatus,
 								unlockedBadges: badge.unlockedBadges,
 								edit: true,
 							});
@@ -601,7 +601,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 						}
 					});
 				} else {
-					res.status(201).send({ link });
+					res.status(201).send({ qnsLink });
 				}
 			})
 			.catch((error) => {
@@ -613,10 +613,10 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 });
 
 questionRouter.get(
-	"/similar/:topicId/:originalQuestionId/:term",
+	"/similar/:topicId/:originalQnsId/:term",
 	async (req: Request, res: Response) => {
 		const { topicId } = req.params;
-		const { originalQuestionId } = req.params;
+		const { originalQnsId } = req.params;
 		const { term } = req.params;
 
 		const result = await utmQuestCollections.Questions?.aggregate([
@@ -642,7 +642,7 @@ questionRouter.get(
 							{
 								text: {
 									path: "link",
-									query: originalQuestionId,
+									query: originalQnsId,
 								},
 							},
 						],
@@ -689,9 +689,9 @@ questionRouter.get(
 );
 
 questionRouter.get(
-	"/editHistory/:link",
+	"/editHistory/:qnsLink",
 	async (req: Request, res: Response) => {
-		utmQuestCollections.Questions?.find({ link: req.params.link })
+		utmQuestCollections.Questions?.find({ link: req.params.qnsLink })
 			.sort({ date: -1 })
 			.toArray()
 			.then((response) => res.status(200).send(response))
@@ -701,11 +701,11 @@ questionRouter.get(
 
 const UpdateRatingsCounter = (
 	question: QuestionsType,
-	utorid: string,
+	utorId: string,
 	updatedRating: number // 1 means liked, 0 means disliked
 ) => {
-	if (utorid in question.rating) {
-		const currentRating = question.rating[utorid];
+	if (utorId in question.rating) {
+		const currentRating = question.rating[utorId];
 
 		if (currentRating === 1 && updatedRating === 0)
 			return {
@@ -734,7 +734,7 @@ const UpdateRatingsCounter = (
 questionRouter.put("/rating", async (req: Request, res: Response) => {
 	try {
 		const question: any = await utmQuestCollections.Questions?.findOne({
-			link: req.body.link,
+			qnsLink: req.body.qnsLink,
 			latest: true,
 		});
 		if (!question) {
@@ -746,6 +746,7 @@ questionRouter.put("/rating", async (req: Request, res: Response) => {
 			res.status(401).send("User unauthorized.");
 			return;
 		}
+
 		const { rate } = req.body;
 		const newRating = { ...question.rating, [user]: rate };
 
@@ -771,10 +772,10 @@ questionRouter.put("/rating", async (req: Request, res: Response) => {
 });
 
 questionRouter.put(
-	"/incrementView/:link",
+	"/incrementView/:qnsLink",
 	async (req: Request, res: Response) => {
 		const question = await utmQuestCollections.Questions?.findOne({
-			link: req.params.link,
+			qnsLink: req.params.qnsLink,
 			latest: true,
 		});
 
@@ -783,12 +784,12 @@ questionRouter.put(
 			return;
 		}
 
-		const utorid = req.headers.utorid as string;
+		const utorId = req.headers.utorid as string;
 		const uniqueViewers = question.viewers;
-		if (!(utorid in uniqueViewers)) uniqueViewers[utorid] = 1;
+		if (!(utorId in uniqueViewers)) uniqueViewers[utorId] = 1;
 
 		utmQuestCollections.Questions?.findOneAndUpdate(
-			{ link: req.params.link, latest: true },
+			{ qnsLink: req.params.qnsLink, latest: true },
 			{ $inc: { views: 1 }, $set: { viewers: uniqueViewers } }
 		)
 			.then((result) => {

@@ -32,7 +32,7 @@ apiRouter.get ('/user', (req) => {
     let username;
 
     if (req.headers.utorid !== undefined) {
-        console.log (`shib user ${  req.headers.utorid  } ${  req.headers.http_mail}`);
+        console.log (`shib user ${  req.headers.utorid  } ${  req.headers.http_mail }`);
         console.log (`origin ${  req.headers.origin}`);
         username = req.headers.utorid;
 		console.log(username);
@@ -43,8 +43,8 @@ apiRouter.get ('/user', (req) => {
 });
 
 apiRouter.put("/incrementLoginStreak", async (req: Request, res: Response) => {
-	const { utorid } = req.headers;
-	const badge = await utmQuestCollections.Badges?.findOne({ utorid });
+	const { utorid: utorId } = req.headers;
+	const badge = await utmQuestCollections.Badges?.findOne({ utorId });
 
 	if (!badge) {
 		res.status(404).send("Could not find badge progression for user.");
@@ -98,10 +98,10 @@ apiRouter.put("/incrementLoginStreak", async (req: Request, res: Response) => {
 	}
 });
 
-apiRouter.get("/displayBadges/:utorid", async (req: Request, res: Response) => {
-	const { utorid } = req.params;
+apiRouter.get("/displayBadges/:utorId", async (req: Request, res: Response) => {
+	const { utorId } = req.params;
 
-	const badge = await utmQuestCollections.Badges?.findOne({ utorid });
+	const badge = await utmQuestCollections.Badges?.findOne({ utorId });
 
 	if (!badge) {
 		res.status(404).send("Could not find badge for given user.");

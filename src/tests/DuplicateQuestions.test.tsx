@@ -17,17 +17,17 @@ Object.defineProperty(window, 'matchMedia', {
 
 const duplicateQuestions: DuplicateQuestionType[] = [
     {
-        desc: "123",
+        description: "123",
         highlights: [{ score: 2, path: "qnsName", texts: [{ value: "Strings ", type: "text" }, { value: "question", type: "hit" }] }],
-        link: "abc123",
+        qnsLink: "abc123",
         qnsName: "Strings question",
         score: 2.5,
         _id: "1234"
     },
     {
-        desc: "bad question",
+        description: "bad question",
         highlights: [],
-        link: "abc1234",
+        qnsLink: "abc1234",
         qnsName: "empty question",
         score: 1,
         _id: "12345"

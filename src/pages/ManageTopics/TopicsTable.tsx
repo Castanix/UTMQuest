@@ -69,8 +69,8 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
         },
         {
             title: 'Questions',
-            dataIndex: 'numQuestions',
-            sorter: (a: TopicsType, b: TopicsType) => a.numQuestions - b.numQuestions,
+            dataIndex: 'numQns',
+            sorter: (a: TopicsType, b: TopicsType) => a.numQns - b.numQns,
         },
         {
             title: 'Manage',

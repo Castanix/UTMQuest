@@ -19,16 +19,16 @@ Object.defineProperty(window, 'matchMedia', {
 const editHistory: QuestionsType[] = [
     {
         _id: 'abcde',
-        link: 'abcde',
+        qnsLink: 'abcde',
         topicId: '123456',
         topicName: 'Arrays',
         courseId: 'test',
         qnsName: 'Arrays question',
         qnsType: qnsTypeEnum.short,
-        desc: 'description',
-        xplan: 'none',
+        description: 'description',
+        explanation: 'none',
         choices: [],
-        ans: 'answer goes here',
+        answers: 'answer goes here',
         authId: 'Bob',
         authName: 'Bob Bob',
         date: new Date().toString(),
@@ -43,16 +43,16 @@ const editHistory: QuestionsType[] = [
     },
     {
         _id: 'abc123',
-        link: 'abcde',
+        qnsLink: 'abcde',
         topicId: '123456',
         topicName: 'Arrays',
         courseId: 'test',
         qnsName: 'Arrays question',
         qnsType: qnsTypeEnum.mc,
-        desc: 'description',
-        xplan: 'new explanation',
+        description: 'description',
+        explanation: 'new explanation',
         choices: [],
-        ans: '',
+        answers: '',
         authId: 'Bob',
         authName: 'Bob Bob',
         date: new Date().toString(),
@@ -67,16 +67,16 @@ const editHistory: QuestionsType[] = [
     },
     {
         _id: 'abc',
-        link: 'abcde',
+        qnsLink: 'abcde',
         topicId: '123456',
         topicName: 'Arrays',
         courseId: 'test',
         qnsName: 'Arrays question',
         qnsType: qnsTypeEnum.mc,
-        desc: 'description',
-        xplan: 'none',
+        description: 'description',
+        explanation: 'none',
         choices: [],
-        ans: '',
+        answers: '',
         authId: 'Bob',
         authName: 'Bob Bob',
         date: new Date().toString(),
@@ -93,13 +93,13 @@ const editHistory: QuestionsType[] = [
 
 // mock add topic fetch call
 const server = setupServer(
-    rest.get(`${process.env.REACT_APP_API_URI}/question/editHistory/:link`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/question/editHistory/:qnsLink`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json(editHistory)
         )
     }),
-    rest.get(`${process.env.REACT_APP_API_URI}/displayBadges/:utorid`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/displayBadges/:utorId`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json({ displayBadges: [], longestLoginStreak: 1 })
@@ -110,7 +110,7 @@ const server = setupServer(
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<EditHistory link="abc123" />, { wrapper: BrowserRouter });
+    const { container } = render(<EditHistory qnsLink="abc123" />, { wrapper: BrowserRouter });
     document = container;
 });
 

@@ -12,11 +12,11 @@ import { onMobile } from "../EditHistory/EditHistory";
 import { ThemeContext, UserContext } from "../Topbar/Topbar";
 import { GetUserInitials } from "../../pages/QuestionsPage/QuestionsList";
 
-const AddComment = async (discussionId: string, questionLink: string, op: boolean, content: string, isAnon: boolean) => {
+const AddComment = async (discussionId: string, qnsLink: string, op: boolean, content: string, isAnon: boolean) => {
     // MAKE POST CALL HERE
     const newComment: DiscussionFrontEndType = {
         _id: `id${(new Date()).getTime()}`,
-        questionLink,
+        qnsLink,
         op,
         authId: 'To be filled in the backend',
         authName: 'To be filled in the backend',
@@ -75,10 +75,10 @@ const AddComment = async (discussionId: string, questionLink: string, op: boolea
     return postedComment;
 };
 
-const EditComment = async (discussionId: string, questionLink: string, op: boolean, content: string, isAnon: boolean, thread: string[]) => {
+const EditComment = async (discussionId: string, qnsLink: string, op: boolean, content: string, isAnon: boolean, thread: string[]) => {
     const editComment: DiscussionFrontEndType = {
         _id: discussionId,
-        questionLink,
+        qnsLink,
         op,
         authId: 'To be filled in the backend',
         authName: 'To be filled in the backend',
@@ -105,7 +105,7 @@ const EditComment = async (discussionId: string, questionLink: string, op: boole
     return editedComment;
 };
 
-const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, thread }: { discussionId: string | null, questionLink: string, op: boolean, oldContent: string, updateComments: Function, thread: string[] }) => {
+const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread }: { discussionId: string | null, qnsLink: string, op: boolean, oldContent: string, updateComments: Function, thread: string[] }) => {
     const [content, setContent] = useState<string>(oldContent);
     const [isAnon, setAnon] = useState<boolean>(false);
     // const [commented, setCommented] = useState<DiscussionFrontEndType>();
@@ -123,7 +123,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
         setSubmitDisabled(true);
 
         if (oldContent === "") {
-            const newComment = await AddComment(discussionId as string, questionLink, op, content, isAnon);
+            const newComment = await AddComment(discussionId as string, qnsLink, op, content, isAnon);
             updateComments(newComment, false);
             // setCommented(newComment);
             setContent("");
@@ -134,7 +134,7 @@ const Editor = ({ discussionId, questionLink, op, oldContent, updateComments, th
                 setSubmitDisabled(false);
                 return;
             }
-            const editedComment = await EditComment(discussionId as string, questionLink, op, content, isAnon, thread);
+            const editedComment = await EditComment(discussionId as string, qnsLink, op, content, isAnon, thread);
             updateComments(editedComment, true);
         };
 

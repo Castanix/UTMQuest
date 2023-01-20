@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Space, message, notification } from "antd";
 import "./QuestionRater.css";
 
-const addRating = (rate: number, link: string) => {
+const addRating = (rate: number, qnsLink: string) => {
     fetch(`${process.env.REACT_APP_API_URI}/question/rating`,
             {
                 method: 'PUT',
@@ -13,7 +13,7 @@ const addRating = (rate: number, link: string) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ rate, link })
+                body: JSON.stringify({ rate, qnsLink })
             }).then((res: Response) => {
                 if (!res.ok) throw new Error("Could not rate question. Please try again.");
                 document.querySelector(".before")?.classList.toggle("active");
@@ -29,7 +29,7 @@ const promptRater = () => {
     document.querySelector(".unrated")?.classList.toggle("active");
 };
 
-const QuestionRater = ({hasRated, link}: {hasRated: boolean, link: string}) =>
+const QuestionRater = ({hasRated, qnsLink}: {hasRated: boolean, qnsLink: string}) =>
     <div className="rating-container">
         <div className={`rated ${hasRated ? "active" : ""}`}>
             <p>This question has been rated.</p>
@@ -40,8 +40,8 @@ const QuestionRater = ({hasRated, link}: {hasRated: boolean, link: string}) =>
                 <p>Was this a good question?</p>
                 <section className="rating-icons">
                     <Space size='large'>
-                        <Button shape="round" onClick={() => addRating(0, link ?? '')}>No</Button>
-                        <Button shape="round" onClick={() => addRating(1, link ?? '')}>Yes</Button>
+                        <Button shape="round" onClick={() => addRating(0, qnsLink ?? '')}>No</Button>
+                        <Button shape="round" onClick={() => addRating(1, qnsLink ?? '')}>Yes</Button>
                     </Space> 
                 </section>
             </div>

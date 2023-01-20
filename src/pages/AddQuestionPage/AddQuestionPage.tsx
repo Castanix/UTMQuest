@@ -11,16 +11,16 @@ import AQStepTwo from './AQStepTwo';
 
 const { Text, Title } = Typography;
 
-const Header = ({ courseCode }:
-    { courseCode: string }) => (
+const Header = ({ courseId }:
+    { courseId: string }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${courseId}`}>{courseId}</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Text>Add a Question</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">
-            <Title level={3} ellipsis>Add a Question <div className="subtitle">&#8226; {courseCode}</div></Title>
+            <Title level={3} ellipsis>Add a Question <div className="subtitle">&#8226; {courseId}</div></Title>
         </div>
     </div>
 );
@@ -30,16 +30,16 @@ const AddQuestionPage = ({ edit }: { edit: boolean }) => {
     const [topicSelected, setTopicSelected] = useState<[string, string]>(["", ""]);
 
     const params = useParams();
-    const courseCode = params.id;
+    const { courseId } = params;
 
-    const { topics, loading, error } = GetAllTopics(courseCode ?? '');
+    const { topics, loading, error } = GetAllTopics(courseId ?? '');
 
     if (loading) return <Loading />;
 
-    if (error !== '') return <ErrorMessage title={error} link={`/courses/${courseCode}`} message='Go back' />;
+    if (error !== '') return <ErrorMessage title={error} link={`/courses/${courseId}`} message='Go back' />;
 
     return (
-        <Card title={<Header courseCode={courseCode ?? ''} />} bordered={false}>
+        <Card title={<Header courseId={courseId ?? ''} />} bordered={false}>
             <main className='main-container'>
                 <Steps current={currStep}
                     items={[
@@ -50,14 +50,14 @@ const AddQuestionPage = ({ edit }: { edit: boolean }) => {
                 <br />
                 <div style={(currStep) ? { display: "none" } : { display: "block" }}>
                     <AQStepOne
-                        courseCode={courseCode ?? ''}
+                        courseId={courseId ?? ''}
                         topics={topics}
                         setCurrStep={setCurrStep}
                         setTopicSelected={setTopicSelected}
                     />
                 </div>
                 <div style={(currStep) ? { display: "block" } : { display: "none" }}>
-                    <AQStepTwo courseCode={courseCode ?? ''} topicSelected={topicSelected} setCurrStep={setCurrStep} edit={edit} />
+                    <AQStepTwo courseId={courseId ?? ''} topicSelected={topicSelected} setCurrStep={setCurrStep} edit={edit} />
                 </div>
             </main>
         </Card>

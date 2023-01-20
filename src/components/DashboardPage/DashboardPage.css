@@ -10,7 +10,7 @@
     overflow-y: hidden;
 }
 
-.saved-courses {
+.bookmarked-courses {
     margin-right: 1rem;
 }
 
@@ -31,7 +31,7 @@
         min-width: 100%;
     }
 
-    .saved-courses {
+    .bookmarked-courses {
         margin-right: 0;
         margin-bottom: 1rem;
     }

@@ -3,13 +3,13 @@ import { utmQuestCollections } from "../db/db.service";
 
 const badgeRouter = Router();
 
-badgeRouter.get('/userBadges/:utorid', (req: Request, res: Response) => {
-    const { utorid } = req.params;
+badgeRouter.get('/userBadges/:utorId', (req: Request, res: Response) => {
+    const { utorId } = req.params;
 
-    utmQuestCollections.Badges?.findOne({utorid})
+    utmQuestCollections.Badges?.findOne({utorId})
         .then(badges => {
             if(!badges) {
-                res.status(404).send(`Cannot find badges document for ${utorid}`);
+                res.status(404).send(`Cannot find badges document for ${utorId}`);
                 return;
             };
         
@@ -24,11 +24,11 @@ badgeRouter.get('/userBadges/:utorid', (req: Request, res: Response) => {
 });
 
 badgeRouter.put('/updateBadges', async (req: Request, res: Response) => {
-    const { utorid } = req.headers;
-    const badges = await utmQuestCollections.Badges?.findOne({ utorid });
+    const { utorid: utorId } = req.headers;
+    const badges = await utmQuestCollections.Badges?.findOne({ utorId });
 
     if(!badges) {
-        res.status(404).send(`Cannot find badges document for ${ utorid }`);
+        res.status(404).send(`Cannot find badges document for ${ utorId }`);
         return;
     };
 
@@ -40,14 +40,14 @@ badgeRouter.put('/updateBadges', async (req: Request, res: Response) => {
             return;
         }
         
-        res.status(200).send({ utorid });
+        res.status(200).send({ utorId });
     }).catch(err => {
         res.status(500).send(err);
     });
 });
 
 badgeRouter.put("/unlockTier", async (req: Request, res: Response) => {
-	const { utorid } = req.headers;
+	const { utorid: utorId } = req.headers;
 	const { baseBadge } = req.body;
 	const { newBadgeTier } = req.body;
 	const { oldBadgeTier } = req.body;
@@ -64,8 +64,8 @@ badgeRouter.put("/unlockTier", async (req: Request, res: Response) => {
 	}
 
 	enum BaseBadges {
-		addQuestions,
-		editQuestions,
+		addQns,
+		editQns,
 		consecutivePosting,
 	}
 
@@ -82,10 +82,10 @@ badgeRouter.put("/unlockTier", async (req: Request, res: Response) => {
 		return;
 	}
 
-	const badges = await utmQuestCollections.Badges?.findOne({ utorid });
+	const badges = await utmQuestCollections.Badges?.findOne({ utorId });
 
 	if (!badges) {
-		res.status(404).send(`Cannot find badges document for ${utorid}`);
+		res.status(404).send(`Cannot find badges document for ${utorId}`);
 		return;
 	}
 

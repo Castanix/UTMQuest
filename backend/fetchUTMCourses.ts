@@ -19,8 +19,8 @@ const dataBody = {
 };
 
 
-const fetchCourses = () => {
-  axios({
+const fetchCourses = async () => {
+  await axios({
     method: 'post',
     url: 'https://api.easi.utoronto.ca/ttb/getPageableCourses',
     data: dataBody,

@@ -54,8 +54,8 @@ const GetRating = (rating: Object) => {
     return false;
 };
 
-const QuestionsList = ({ questions, topics, courseCode }:
-    { questions: QuestionsType[], topics: TopicsType[], courseCode: string }) => {
+const QuestionsList = ({ questions, topics, courseId }:
+    { questions: QuestionsType[], topics: TopicsType[], courseId: string }) => {
 
     const {
         data,
@@ -66,7 +66,7 @@ const QuestionsList = ({ questions, topics, courseCode }:
         onPaginationChange,
         onTopicFilterChange,
         onScroll
-    } = QuestionState(questions, courseCode);
+    } = QuestionState(questions, courseId);
 
     useEffect(() => {
 
@@ -101,8 +101,8 @@ const QuestionsList = ({ questions, topics, courseCode }:
                     <Input placeholder="Search question" prefix={<SearchOutlined />} value={searchTerm} className='questions-search' onChange={(event) => onSearchChange(event.target.value)} />
                 </Space>
                 <Space>
-                    <Link to={`/courses/${courseCode}/quiz`}><Button type="primary" shape="round" icon={<FormOutlined />}>Generate Quiz</Button></Link>
-                    <Link to={`/courses/${courseCode}/addQuestion`}><Button type="primary" shape="round" icon={<PlusCircleTwoTone />}>Add a Question</Button></Link>
+                    <Link to={`/courses/${courseId}/quiz`}><Button type="primary" shape="round" icon={<FormOutlined />}>Generate Quiz</Button></Link>
+                    <Link to={`/courses/${courseId}/addQuestion`}><Button type="primary" shape="round" icon={<PlusCircleTwoTone />}>Add a Question</Button></Link>
                 </Space>
                 
             </div>
@@ -145,7 +145,7 @@ const QuestionsList = ({ questions, topics, courseCode }:
                                     <div>
                                         <div className="question-list-page-header">
                                             {diff < 24 ? <Tag color="#428efa">New</Tag> : null}
-                                            <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.link}`}>
+                                            <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.qnsLink}`}>
                                                 <Typography.Text ellipsis className="question-name">{item.qnsName}</Typography.Text>
                                             </Link>
                                             {GetRating(item.rating) ? <Popover content="Good Question"><CheckOutlined style={{marginInline: "0.25rem", fontSize: "0.75rem", verticalAlign: 6}} /></Popover> : null}
@@ -153,7 +153,7 @@ const QuestionsList = ({ questions, topics, courseCode }:
                                         <div className="ant-page-header-heading-sub-title">
                                             <Typography.Paragraph>
                                                 {GetAuthorName(item)}
-                                                {!item.anon ? <DisplayBadges utorid={item.authId} /> : null}
+                                                {!item.anon ? <DisplayBadges utorId={item.authId} /> : null}
                                             </Typography.Paragraph>
                                             <Typography.Text type="secondary">{GetRelativeTime(new Date(item.date).getTime())}</Typography.Text>
                                         </div>

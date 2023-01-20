@@ -16,7 +16,7 @@ const AddCourseModal = (props: any) => {
     const setupOptions = () => {
         let courseArr: React.ReactNode[] = [];
         const groupArr: React.ReactNode[] = [];
-        let oldCode: string = "";
+        let oldCourseId: string = "";
 
         const courseSort = (data: CoursesType[]) => {
             const newData = data.sort((a, b) => {
@@ -36,17 +36,17 @@ const AddCourseModal = (props: any) => {
         };
 
         courseSort(modalData).forEach((item: CoursesType) => {
-            const code = item.courseId.slice(0, 3);
+            const courseId = item.courseId.slice(0, 3);
 
-            if (oldCode === code) {
+            if (oldCourseId === courseId) {
                 courseArr.push(<Option key={item._id} value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>);
             } else {
-                groupArr.push(<OptGroup key={oldCode} label={oldCode}>{courseArr}</OptGroup>);
-                oldCode = item.courseId.slice(0, 3);
+                groupArr.push(<OptGroup key={oldCourseId} label={oldCourseId}>{courseArr}</OptGroup>);
+                oldCourseId = item.courseId.slice(0, 3);
                 courseArr = [<Option key={item._id} value={item.courseId + item.courseName}>{`${item.courseId}: ${item.courseName}`}</Option>];
             }
         });
-        groupArr.push(<OptGroup key={oldCode} label={oldCode}>{courseArr}</OptGroup>);
+        groupArr.push(<OptGroup key={oldCourseId} label={oldCourseId}>{courseArr}</OptGroup>);
 
         // skip empty group in groupArr
         return groupArr.slice(1);
@@ -54,12 +54,12 @@ const AddCourseModal = (props: any) => {
 
     const handleOk = () => {
         if (selected) {
-            // Slices the selected string to get the course code
-            const code = selected.slice(0, 6);
+            // Slices the selected string to get the course id
+            const courseId = selected.slice(0, 6);
             // Slices the selected string to get the course name
             const name = selected.slice(6);
 
-            AddCourse(code || '', name, modalData, rerender, setModalData);
+            AddCourse(courseId || '', name, modalData, rerender, setModalData);
         }
         setModalState(false);
     };

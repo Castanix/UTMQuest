@@ -7,25 +7,25 @@ export enum qnsTypeEnum {
 
 export interface QuestionsType {
 	_id: string;
-	link: string;
+	qnsLink: string;
 	topicId: string;
 	topicName: string;
 	courseId: string;
 	qnsName: string;
 	qnsType?: qnsTypeEnum;
-	desc: string;
-	xplan: string;
+	description: string;
+	explanation: string;
 	choices: string[];
-	ans: string[] | string;
+	answers: string[] | string;
 	authId: string;
 	authName: string;
 	date: string;
 	numDiscussions: number;
 	anon: boolean;
 	latest: boolean;
-	rating: { [utorid: string]: number };
+	rating: { [utorId: string]: number };
 	likes: number;
 	dislikes: number;
 	views: number;
-	viewers: { [utorid: string]: number };
+	viewers: { [utorId: string]: number };
 }

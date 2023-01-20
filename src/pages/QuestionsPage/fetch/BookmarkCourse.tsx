@@ -2,24 +2,24 @@ import { message } from "antd";
 import { useEffect, useState } from "react";
 
 
-export const CheckSaved = (courseId: string, setIsSaved: Function) => {
-    const [loadingSaved, setLoadingSaved] = useState<boolean>(true);
-    const [errorSaved, setErrorSaved] = useState<string>("");
+export const CheckBookmark = (courseId: string, setIsBookmarked: Function) => {
+    const [loadingBookmarked, setLoadingBookmarked] = useState<boolean>(true);
+    const [errorBookmarked, setErrorBookmarked] = useState<string>("");
     const [loadingCourse, setLoadingCourse] = useState<boolean>(true);
     const [errorCourse, setErrorCourse] = useState<string>("");
     const [courseName, setCourseName] = useState<string>("");
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URI}/account/checkSaved/${courseId}`)
+        fetch(`${process.env.REACT_APP_API_URI}/account/checkBookmark/${courseId}`)
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
                 return res.json();
             }).then((result) => {
-                setIsSaved(result);
-                setLoadingSaved(false);
+                setIsBookmarked(result);
+                setLoadingBookmarked(false);
             }).catch((err) => {
-                setErrorSaved(err.message);
-                setLoadingSaved(false);
+                setErrorBookmarked(err.message);
+                setLoadingBookmarked(false);
             });
 
         fetch(`${process.env.REACT_APP_API_URI}/course/getCourse/${courseId}`)
@@ -33,19 +33,19 @@ export const CheckSaved = (courseId: string, setIsSaved: Function) => {
                 setErrorCourse(err.message);
                 setLoadingCourse(false);
             });
-    }, [courseId, setIsSaved]);
+    }, [courseId, setIsBookmarked]);
 
     return {
-        loadingSaved,
-        errorSaved,
+        loadingBookmarked,
+        errorBookmarked,
         loadingCourse,
         errorCourse,
         courseName
     };
 };
 
-export const SaveCourse = (courseId: string, favourite: boolean, setFavourite: Function) => {
-    fetch(`${process.env.REACT_APP_API_URI}/account/updateSavedCourse`,
+export const BookmarkCourse = (courseId: string, bookmarked: boolean, setBookmarked: Function) => {
+    fetch(`${process.env.REACT_APP_API_URI}/account/updateBookmarkCourses`,
         {
             method: 'PUT',
             redirect: "follow",
@@ -55,11 +55,11 @@ export const SaveCourse = (courseId: string, favourite: boolean, setFavourite: F
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({courseId, favourite})
+            body: JSON.stringify({courseId, bookmarked})
         }).then((res: Response) => {
             if (!res.ok) throw new Error("Could not add course. Please try again.");
-            setFavourite(!favourite);
-            if(!favourite) {
+            setBookmarked(!bookmarked);
+            if(!bookmarked) {
                 message.success("Course bookmarked.");
             } else {
                 message.success("Course removed from bookmarks.");

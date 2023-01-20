@@ -20,7 +20,7 @@ Object.defineProperty(window, 'matchMedia', {
 const topLevelComments: DiscussionFrontEndType[] = [
     {
         _id: "123",
-        questionLink: "abc",
+        qnsLink: "abc",
         op: true,
         authId: 'test',
         authName: 'Dummy Test',
@@ -33,7 +33,7 @@ const topLevelComments: DiscussionFrontEndType[] = [
     },
     {
         _id: "1234",
-        questionLink: "abc",
+        qnsLink: "abc",
         op: true,
         authId: 'test',
         authName: 'Dummy Test',
@@ -46,7 +46,7 @@ const topLevelComments: DiscussionFrontEndType[] = [
     },
     {
         _id: "12345",
-        questionLink: "abc",
+        qnsLink: "abc",
         op: true,
         authId: 'test',
         authName: 'Dummy Test',
@@ -61,7 +61,7 @@ const topLevelComments: DiscussionFrontEndType[] = [
 
 const childComment: DiscussionFrontEndType = {
     _id: "childComment",
-    questionLink: "abc",
+    qnsLink: "abc",
     op: false,
     authId: 'test',
     authName: 'Dummy Test',
@@ -75,7 +75,7 @@ const childComment: DiscussionFrontEndType = {
 
 const deletedComment: DiscussionFrontEndType = {
     _id: "123",
-    questionLink: "abc",
+    qnsLink: "abc",
     op: true,
     authId: 'test',
     authName: 'Dummy Test',
@@ -89,13 +89,13 @@ const deletedComment: DiscussionFrontEndType = {
 
 // mock add topic fetch call
 const server = setupServer(
-    rest.get(`${process.env.REACT_APP_API_URI}/discussion/thread/:questionLink`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/discussion/thread/:qnsLink`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json({ discussion: topLevelComments, utorid: 'dummy22' })
         )
     }),
-    rest.get(`${process.env.REACT_APP_API_URI}/discussion/allThreads/:id`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/discussion/allThreads/:qnsLink`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json([childComment])
@@ -118,7 +118,7 @@ const server = setupServer(
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<Discussion questionLink="abc" questionDate="some date" />, { wrapper: BrowserRouter })
+    const { container } = render(<Discussion qnsLink="abc" qnsDate="some date" />, { wrapper: BrowserRouter })
     document = container;
 });
 

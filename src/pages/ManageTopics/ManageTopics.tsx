@@ -8,12 +8,12 @@ import TopicsTable from './TopicsTable';
 
 const { Text, Title } = Typography;
 
-const Header = ({ courseCode, title }:
-    { courseCode: string, title: string }) => (
+const Header = ({ courseId, title }:
+    { courseId: string, title: string }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${courseId}`}>{courseId}</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Text>Topics</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">
@@ -23,20 +23,19 @@ const Header = ({ courseCode, title }:
 );
 
 const ManageTopics = () => {
-
     const params = useParams();
-    const courseCode = params.id;
+    const { courseId } = params;
 
-    const { topics, loading, error } = GetAllTopics(courseCode ?? '');
+    const { topics, loading, error } = GetAllTopics(courseId ?? '');
 
     if (loading) return <Loading />;
 
-    if (error !== '') return <ErrorMessage title={error} link={`/courses/${courseCode}`} message='Go back to course' />;
+    if (error !== '') return <ErrorMessage title={error} link={`/courses/${courseId}`} message='Go back to course' />;
 
     return (
-        <Card title={<Header courseCode={courseCode ?? ''} title={`Topics for ${courseCode}`} />} bordered={false}>
+        <Card title={<Header courseId={courseId ?? ''} title={`Topics for ${courseId}`} />} bordered={false}>
             <main className="main-container">
-                <TopicsTable topics={topics} courseId={courseCode ?? ''} />
+                <TopicsTable topics={topics} courseId={courseId ?? ''} />
             </main>
         </Card>
     );

@@ -23,10 +23,10 @@ discussionRouter.get('/:discussionId', async (req: Request, res: Response) => {
 
 
 // GET .../thread/:questionId - return all discussion where comments are from op and for a specific question
-discussionRouter.get('/thread/:questionLink', async (req: Request, res: Response) => { 
+discussionRouter.get('/thread/:qnsLink', async (req: Request, res: Response) => { 
     try { 
         const question = await utmQuestCollections.Questions?.findOne({
-            link: req.params.questionLink,
+            qnsLink: req.params.qnsLink,
             latest: true
         });
 
@@ -36,11 +36,11 @@ discussionRouter.get('/thread/:questionLink', async (req: Request, res: Response
         }
 
         const discussion = await utmQuestCollections.Discussions?.find({
-            questionLink: req.params.questionLink, 
+            qnsLink: req.params.qnsLink, 
             op: true
         }).toArray();
 
-        res.status(200).send({ discussion, utorid: req.headers.utorid });
+        res.status(200).send({ discussion, utorId: req.headers.utorid });
     } catch (error) { 
         res.status(500).send(error);
     }
@@ -48,7 +48,7 @@ discussionRouter.get('/thread/:questionLink', async (req: Request, res: Response
 
 
 // GET .../allThreads/:discussionId - get discussion documents from a given list of ids from a thread 
-discussionRouter.get('/allThreads/:id', async (req: Request, res: Response) => { 
+discussionRouter.get('/allThreads/:discussionId', async (req: Request, res: Response) => { 
     try {
         const ids = Object.values(req.query);
         const discussionLst: DiscussionType[] = []; 
@@ -70,29 +70,29 @@ discussionRouter.get('/allThreads/:id', async (req: Request, res: Response) => {
 // POST .../discussion/:qnsId
 discussionRouter.post('/', async (req: Request, res: Response) => { 
     
-    const link = req.body.questionLink;
+    const {qnsLink} = req.body;
     const isAnon = req.body.anon;
-    const utorid = req.headers.utorid as string;
+    const utorId = req.headers.utorid as string;
 
     const email: string = req.headers.http_mail as string;
     const name = (email.split("@"))[0].split(".");
     const firstName = name[0].charAt(0).toUpperCase() + name[0].slice(1);
     const lastName = name[name.length - 1].charAt(0).toUpperCase() + name[name.length - 1].slice(1);
 
-    const quesiton = await utmQuestCollections.Questions?.findOne({
-        link,
+    const question = await utmQuestCollections.Questions?.findOne({
+        qnsLink,
         latest: true
     });
 
-    if (!quesiton) {
+    if (!question) {
         res.status(404).send(`Error: Unable to find question`);
         return;
     };
 
     const discussion = {
-        questionLink: link,
+        qnsLink,
         op: req.body.op, 
-        authId: utorid,
+        authId: utorId,
         authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
         content: req.body.content,
         thread: req.body.thread, 
@@ -110,18 +110,18 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
 
         // INCREMENT COUNTER
         utmQuestCollections.Questions?.findOneAndUpdate(
-            { link, 
+            { qnsLink, 
               latest: true },
             { $inc: { numDiscussions: 1 } }
         ).then((incrementResult) => {
             if (!incrementResult) {
                 res.status(500).send(
-                    `Unable to increment numDiscussions for ${req.params.questionId}`
+                    `Unable to increment numDiscussions for ${req.params.qnsLink}`
                 );
                 utmQuestCollections.Discussions?.deleteOne(discussion);
                 return;
             };
-            res.status(201).send({ insertedId: result.insertedId, authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`, authId: utorid });
+            res.status(201).send({ insertedId: result.insertedId, authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`, authId: utorId });
         });
 
     }).catch((error) => {
@@ -135,7 +135,7 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
 discussionRouter.put('/:discussionId', async (req: Request, res: Response) => {
 
     const isAnon = req.body.anon;
-    const utorid = req.headers.utorid as string;
+    const utorId = req.headers.utorid as string;
 
     const email: string = req.headers.http_mail as string;
     const name = (email.split("@"))[0].split(".");
@@ -144,7 +144,7 @@ discussionRouter.put('/:discussionId', async (req: Request, res: Response) => {
 
     const discussion = {
         op: req.body.op, 
-        authId: utorid,
+        authId: utorId,
         authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
         content: req.body.content,
         thread: req.body.thread, 
@@ -172,7 +172,7 @@ discussionRouter.put('/updatePost/:discussionId', async (req: Request, res: Resp
     const date = new Date().toISOString();
 
     const isAnon = req.body.anon;
-    const utorid = req.headers.utorid as string;
+    const utorId = req.headers.utorid as string;
 
     const email: string = req.headers.http_mail as string;
     const name = (email.split("@"))[0].split(".");
@@ -180,9 +180,9 @@ discussionRouter.put('/updatePost/:discussionId', async (req: Request, res: Resp
     const lastName = name[name.length - 1].charAt(0).toUpperCase() + name[name.length - 1].slice(1);
 
     const discussion = {
-        questionLink: req.body.questionLink,
+        qnsLink: req.body.qnsLink,
         op: req.body.op, 
-        authId: utorid,
+        authId: utorId,
         authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
         content,
         thread: req.body.thread, 
