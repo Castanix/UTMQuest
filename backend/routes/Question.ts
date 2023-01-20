@@ -492,7 +492,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			likes: restore ? req.body.likes : 0,
 			dislikes: restore ? req.body.dislikes : 0,
 			views: restore ? req.body.views : 0,
-			viewers: restore ? req.body.viewers : 0,
+			viewers: restore ? req.body.viewers : {},
 		};
 
 		if (restore) {
@@ -556,6 +556,8 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 				.catch((error) => {
 					res.status(500).send(error);
 				});
+
+			return;
 		}
 
 		// Add edited questions doc into db
