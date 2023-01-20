@@ -46,11 +46,11 @@ export const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered, quizD
                 {question.qnsName}
             </div>
         </Typography.Paragraph>
-        <MDEditor.Markdown className='question-description' warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.desc} />
+        <MDEditor.Markdown className='question-description' warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.description} />
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
-        <MultipleChoice options={question.choices} answers={question.ans as string[]} explanation={question.xplan} setHasAnswered={setHasAnswered} quizDependancies={quizDependancies} />
+        <MultipleChoice options={question.choices} answers={question.answers as string[]} explanation={question.explanation} setHasAnswered={setHasAnswered} quizDependancies={quizDependancies} />
     </div>
 );
 
@@ -65,11 +65,11 @@ const ShortAnswerTab = ({ question, isLightMode, setHasAnswered }: { question: Q
         >
             {question.qnsName}
         </Typography.Paragraph>
-        <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.desc} />
+        <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.description} />
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
-        <ShortAnswer answer={question.ans as string} setHasAnswered={setHasAnswered} />
+        <ShortAnswer answer={question.answers as string} setHasAnswered={setHasAnswered} />
     </div>
 );
 
@@ -104,7 +104,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
                 }
                 <br />
                 <Text type="secondary">
-                    {GetUsername(question)} {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}
+                    {GetUsername(question)} {!question.anon ? <DisplayBadges utorId={question.authId} /> : null}
                 </Text>
                 <br />
                 <Text type="secondary">
@@ -151,9 +151,9 @@ const ApprovedQuestion = () => {
     const [activeTabKey, setActiveTabKey] = useState<string>(GetTabKey(searchParams.get("activeTab") ?? ""));
     const [hasAnswered, setHasAnswered] = useState<boolean>(false);
     const params = useParams();
-    const link = params.link ?? '';
+    const qnsLink = params.qnsLink ?? '';
     const courseCode = params.courseId ?? '';
-    const { loading, question, hasRated, error } = GetQuestion(link);
+    const { loading, question, hasRated, error } = GetQuestion(qnsLink);
     
     
 
@@ -164,7 +164,7 @@ const ApprovedQuestion = () => {
         // count view after 30 seconds
         const viewTimer = setTimeout(() => {
             fetch(
-                `${process.env.REACT_APP_API_URI}/question/incrementView/${link}`, { method: "PUT" }
+                `${process.env.REACT_APP_API_URI}/question/incrementView/${qnsLink}`, { method: "PUT" }
             );
         }, 30000);
 
@@ -172,7 +172,7 @@ const ApprovedQuestion = () => {
             clearTimeout(viewTimer);
         });
 
-    }, [link]);
+    }, [qnsLink]);
 
     if (loading) return <Loading />;
 
@@ -188,8 +188,8 @@ const ApprovedQuestion = () => {
 
     const contentList: Record<string, React.ReactNode> = {
         Question: <QuestionType question={question} qnsType={question.qnsType as keyof TypeOfQuestion} isLightMode={isLightMode} setHasAnswered={setHasAnswered} />,
-        Discussion: <Discussion questionLink={question.link} questionDate={question.date} />,
-        EditHistory: <EditHistory link={question.link} />
+        Discussion: <Discussion qnsLink={question.qnsLink} qnsDate={question.date} />,
+        EditHistory: <EditHistory qnsLink={question.qnsLink} />
     };
 
     return (
@@ -205,7 +205,7 @@ const ApprovedQuestion = () => {
         >
             <main className="main-container">
                 {contentList[activeTabKey]}
-                {activeTabKey === "Question" && (hasAnswered || hasRated) ? <QuestionRater hasRated={hasRated} link={question.link} /> : null}
+                {activeTabKey === "Question" && (hasAnswered || hasRated) ? <QuestionRater hasRated={hasRated} qnsLink={question.qnsLink} /> : null}
             </main>
         </Card>
     );

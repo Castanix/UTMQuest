@@ -17,17 +17,17 @@ const { Text, Title } = Typography;
 
 export interface TimelineType {
     courseId: string,
-    questionId: string,
-    link: string,
-    questionName: string,
+    qnsId: string,
+    qnsLink: string,
+    qnsName: string,
     date: string
 }
 
 export interface BadgesType {
     unlockedBadges: {
-        addQuestions?: string | null,
+        addQns?: string | null,
         dailyLogin?: string | null,
-        editQuestions?: string | null,
+        editQns?: string | null,
         threadReplies?: string | null,
         consecutivePosting?: string | null,
     },
@@ -51,12 +51,12 @@ const ProfilePage = () => {
     const [timeline, setTimeline] = useState<TimelineType[]>();
 
     const params = useParams();
-    const utorid = params.utorid ?? "";
-    const { utorid: loggedInUser } = useContext(UserContext);
+    const utorId = params.utorId ?? "";
+    const { utorId: loggedInUser } = useContext(UserContext);
 
-    const { loadingProfile, errorProfile } = GetProfile(utorid, setName);
-    const { loadingBadges, errorBadges } = GetBadges(utorid, setBadges);
-    const { loadingQuestions, errorQuestions } = GetAllQuestions(utorid, setTimeline);
+    const { loadingProfile, errorProfile } = GetProfile(utorId, setName);
+    const { loadingBadges, errorBadges } = GetBadges(utorId, setBadges);
+    const { loadingQuestions, errorQuestions } = GetAllQuestions(utorId, setTimeline);
 
     if (loadingProfile || loadingBadges || loadingQuestions) return <Loading />;
 
@@ -65,10 +65,10 @@ const ProfilePage = () => {
     if (errorQuestions) return <ErrorMessage title={errorQuestions} link="." message="Refreshing" />;
 
     // TODO: need to include threadreplies when edit badge routes have been set
-    const { addQuestions, editQuestions, consecutivePosting } = badges.unlockedBadges;
+    const { addQns, editQns, consecutivePosting } = badges.unlockedBadges;
     const badgesSrc: string[] = [
-        ...addQuestions ? [addQuestions] : ["addbadgelocked"],
-        ...editQuestions ? [editQuestions] : ["editbadgelocked"],
+        ...addQns ? [addQns] : ["addbadgelocked"],
+        ...editQns ? [editQns] : ["editbadgelocked"],
         ...consecutivePosting ? [consecutivePosting] : ["consecutivebadgelocked"],
         "dailybadge"
     ];
@@ -79,9 +79,9 @@ const ProfilePage = () => {
         if (timeline) {
             timeline.forEach((item) => {
                 timelineArr.push(
-                    <Timeline.Item key={item.questionId} label={GetRelativeTime(new Date(item.date).getTime())}>
-                        <Link to={`/courses/${item.courseId}/question/${item.link}`}>
-                            <Typography.Text className="timeline-link" ellipsis>{item.questionName}</Typography.Text>
+                    <Timeline.Item key={item.qnsId} label={GetRelativeTime(new Date(item.date).getTime())}>
+                        <Link to={`/courses/${item.courseId}/question/${item.qnsLink}`}>
+                            <Typography.Text className="timeline-link" ellipsis>{item.qnsName}</Typography.Text>
                         </Link>
                     </Timeline.Item>
                 );
@@ -125,7 +125,7 @@ const ProfilePage = () => {
                         </div>
                     </div>
                     <div className="badge-container">
-                        {utorid === loggedInUser ?
+                        {utorId === loggedInUser ?
                             <BadgePicker badges={badges} />
                             :
                             null

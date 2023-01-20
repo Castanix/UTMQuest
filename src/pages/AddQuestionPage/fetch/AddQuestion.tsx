@@ -1,9 +1,9 @@
 import { message, notification } from "antd";
 import { QuestionsType } from "../../../../backend/types/Questions";
 
-type BaseBadge = "addQuestions" | "editQuestions" | "consecutivePosting";
+type BaseBadge = "addQns" | "editQns" | "consecutivePosting";
 
-const unlockBadge = (utorid: string, baseBadge: BaseBadge, newBadgeTier: string, oldBadgeTier: string) => {
+const unlockBadge = (utorId: string, baseBadge: BaseBadge, newBadgeTier: string, oldBadgeTier: string) => {
     const request = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -19,18 +19,18 @@ const unlockBadge = (utorid: string, baseBadge: BaseBadge, newBadgeTier: string,
             const userBadges = JSON.parse(sessionStorage.getItem("userBadges") ?? JSON.stringify({}));
 
             // update display badges if needed
-            if (utorid in userBadges) {
-                const index = userBadges[utorid].displayBadges.findIndex(
+            if (utorId in userBadges) {
+                const index = userBadges[utorId].displayBadges.findIndex(
                     (item: string) => oldBadgeTier === item
                 );
 
-                const displayBadges = [...userBadges[utorid].displayBadges];
+                const displayBadges = [...userBadges[utorId].displayBadges];
 
                 if (index !== -1) {
                     displayBadges.splice(index, 1, newBadgeTier);
                 }
 
-                userBadges[utorid].displayBadges = displayBadges;
+                userBadges[utorId].displayBadges = displayBadges;
                 sessionStorage.setItem("userBadges", JSON.stringify(userBadges));
             }
         }
@@ -55,7 +55,7 @@ const compareQnsObj = (obj1: QuestionsType, obj2: QuestionsType) => {
 };
 
 
-const checkBadge = (anon: boolean, result: any, goal: [number, number, number], baseBadge: BaseBadge, utorid: string) => {
+const checkBadge = (anon: boolean, result: any, goal: [number, number, number], baseBadge: BaseBadge, utorId: string) => {
     // result.questionStatus will contain questionsAdded or questionsEdited
 
     /* Tier 1 - a questions */
@@ -66,60 +66,60 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
 
     if (!anon) {
         let total = a;
-        if (result.questionStatus >= a && result.questionStatus < b) total = b;
-        if (result.questionStatus >= b && result.questionStatus < c) total = c;
+        if (result.qnsStatus >= a && result.qnsStatus < b) total = b;
+        if (result.qnsStatus >= b && result.qnsStatus < c) total = c;
 
-        if (result.questionStatus >= a && result.questionStatus < b) {
+        if (result.qnsStatus >= a && result.qnsStatus < b) {
 
-            if (baseBadge === "addQuestions" && result.unlockedBadges.addQuestions !== "addbadge1") {
-                unlockBadge(utorid, baseBadge, "addbadge1", "");
+            if (baseBadge === "addQns" && result.unlockedBadges.addQns !== "addbadge1") {
+                unlockBadge(utorId, baseBadge, "addbadge1", "");
                 isUnlocked = true;
             }
 
-            else if (baseBadge === "editQuestions" && result.unlockedBadges.editQuestions !== "editbadge1") {
-                unlockBadge(utorid, baseBadge, "editbadge1", "");
-                isUnlocked = true;
-            }
-
-            if (isUnlocked) {
-                notification.success({
-                    message: "Unlocked a new badge tier!",
-                    description: `${result.edit ? "Edit" : "Add"} ${total - result.questionStatus} more question(s) to unlock the next tier (${result.questionStatus}/${total}).`,
-                    placement: "bottom"
-                });
-            }
-        }
-
-        else if (result.questionStatus >= b && result.questionStatus < c) {
-
-            if (baseBadge === "addQuestions" && result.unlockedBadges.addQuestions !== "addbadge2") {
-                unlockBadge(utorid, baseBadge, "addbadge2", "addbadge1");
-                isUnlocked = true;
-            }
-
-            else if (baseBadge === "editQuestions" && result.unlockedBadges.editQuestions !== "editbadge2") {
-                unlockBadge(utorid, baseBadge, "editbadge2", "editbadge1");
+            else if (baseBadge === "editQns" && result.unlockedBadges.editQns !== "editbadge1") {
+                unlockBadge(utorId, baseBadge, "editbadge1", "");
                 isUnlocked = true;
             }
 
             if (isUnlocked) {
                 notification.success({
                     message: "Unlocked a new badge tier!",
-                    description: `${result.edit ? "Edit" : "Add"} ${total - result.questionStatus} more question(s) to unlock the next tier (${result.questionStatus}/${total}).`,
+                    description: `${result.edit ? "Edit" : "Add"} ${total - result.qnsStatus} more question(s) to unlock the next tier (${result.qnsStatus}/${total}).`,
                     placement: "bottom"
                 });
             }
         }
 
-        else if (result.questionStatus >= c) {
+        else if (result.qnsStatus >= b && result.qnsStatus < c) {
 
-            if (baseBadge === "addQuestions" && result.unlockedBadges.addQuestions !== "addbadge3") {
-                unlockBadge(utorid, baseBadge, "addbadge3", "addbadge2");
+            if (baseBadge === "addQns" && result.unlockedBadges.addQns !== "addbadge2") {
+                unlockBadge(utorId, baseBadge, "addbadge2", "addbadge1");
                 isUnlocked = true;
             }
 
-            else if (baseBadge === "editQuestions" && result.unlockedBadges.editQuestions !== "editbadge3") {
-                unlockBadge(utorid, baseBadge, "editbadge3", "editbadge2");
+            else if (baseBadge === "editQns" && result.unlockedBadges.editQns !== "editbadge2") {
+                unlockBadge(utorId, baseBadge, "editbadge2", "editbadge1");
+                isUnlocked = true;
+            }
+
+            if (isUnlocked) {
+                notification.success({
+                    message: "Unlocked a new badge tier!",
+                    description: `${result.edit ? "Edit" : "Add"} ${total - result.qnsStatus} more question(s) to unlock the next tier (${result.qnsStatus}/${total}).`,
+                    placement: "bottom"
+                });
+            }
+        }
+
+        else if (result.qnsStatus >= c) {
+
+            if (baseBadge === "addQns" && result.unlockedBadges.addQns !== "addbadge3") {
+                unlockBadge(utorId, baseBadge, "addbadge3", "addbadge2");
+                isUnlocked = true;
+            }
+
+            else if (baseBadge === "editQns" && result.unlockedBadges.editQns !== "editbadge3") {
+                unlockBadge(utorId, baseBadge, "editbadge3", "editbadge2");
                 isUnlocked = true;
             }
 
@@ -131,10 +131,10 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
             }
         }
 
-        if (result.questionStatus !== a && result.questionStatus !== b && result.questionStatus < c) {
+        if (result.qnsStatus !== a && result.qnsStatus !== b && result.qnsStatus < c) {
             notification.success({
                 message: `Getting closer to a new badge tier...`,
-                description: `${result.edit ? "Edit" : "Add"} ${total - result.questionStatus} more question(s) (${result.questionStatus}/${total}).`,
+                description: `${result.edit ? "Edit" : "Add"} ${total - result.qnsStatus} more question(s) (${result.qnsStatus}/${total}).`,
                 placement: "bottom"
             });
         };
@@ -142,13 +142,13 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
 };
 
 
-const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function,
-    edit: boolean, latestQuestion: QuestionsType, setIsSubmit: Function, restore: boolean) => {
+const AddQuestion = async (addableQns: QuestionsType, setRedirect: Function,
+    edit: boolean, latestQns: QuestionsType, setIsSubmit: Function, restore: boolean) => {
 
     if (edit) {
-        const recovery = Date.parse(addableQuestion.date) < Date.parse(latestQuestion.date);
+        const recovery = Date.parse(addableQns.date) < Date.parse(latestQns.date);
 
-        if (!compareQnsObj(addableQuestion, latestQuestion)) {
+        if (!compareQnsObj(addableQns, latestQns)) {
             fetch(`${process.env.REACT_APP_API_URI}/question/editQuestion`,
                 {
                     method: 'POST',
@@ -159,7 +159,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ ...addableQuestion, oldVersion: latestQuestion._id, restore })
+                    body: JSON.stringify({ ...addableQns, oldVersion: latestQns._id, restore })
                 }).then((res: Response) => {
                     if (!res.ok) {
                         throw new Error(res.statusText);
@@ -172,8 +172,8 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                         message.success("Question successfully edited.");
                     };
 
-                    checkBadge(addableQuestion.anon, result, [3, 7, 15], "editQuestions", addableQuestion.authId);
-                    setRedirect(result.link);
+                    checkBadge(addableQns.anon, result, [3, 7, 15], "editQns", addableQns.authId);
+                    setRedirect(result.qnsLink);
                 }).catch((error) => {
                     message.error(error.message);
                 });
@@ -195,13 +195,13 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(addableQuestion)
+                body: JSON.stringify(addableQns)
             }).then((res: Response) => {
                 if (!res.ok) throw new Error("Could not add question. Please try again.");
                 return res.json();
             }).then((result) => {
                 message.success("Question successfully added.");
-                checkBadge(addableQuestion.anon, result, [5, 15, 30], "addQuestions", addableQuestion.authId);
+                checkBadge(addableQns.anon, result, [5, 15, 30], "addQns", addableQns.authId);
 
                 if (result.consecutivePosting) {
                     if (result.consecutivePosting >= 7 && result.unlockedBadges.consecutivePosting !== "consecutivebadge") {
@@ -209,7 +209,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                             message: "Unlocked badge for 7 day consecutive posting!",
                             placement: "bottom"
                         });
-                        unlockBadge(addableQuestion.authId, "consecutivePosting", "consecutivebadge", "");
+                        unlockBadge(addableQns.authId, "consecutivePosting", "consecutivebadge", "");
 
                     } else if (result.consecutivePosting < 7) {
                         notification.success({
@@ -220,7 +220,7 @@ const AddQuestion = async (addableQuestion: QuestionsType, setRedirect: Function
                     }
                 }
 
-                setRedirect(result.link);
+                setRedirect(result.qnsLink);
                 setIsSubmit(false);
             })
             .catch((error) => {

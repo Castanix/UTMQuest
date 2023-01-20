@@ -8,9 +8,9 @@ import Editor from "./Editor";
 import DisplayComment from "./DisplayComment";
 
 
-const Discussion = ({ questionLink, questionDate }: { questionLink: string, questionDate: string }) => {
+const Discussion = ({ qnsLink, qnsDate }: { qnsLink: string, qnsDate: string }) => {
 
-    const { loading, comments: opComments, utorid, error } = GetOPComments(questionLink);
+    const { loading, comments: opComments, utorId, error } = GetOPComments(qnsLink);
     const [comments, setComments] = useState<DiscussionFrontEndType[]>(opComments);
 
     const updateComments = (newComment: DiscussionFrontEndType) => {
@@ -28,11 +28,11 @@ const Discussion = ({ questionLink, questionDate }: { questionLink: string, ques
                 itemLayout="horizontal"
                 dataSource={comments}
                 renderItem={item => (
-                    <DisplayComment key={item._id} comment={item} questionDate={questionDate} utorid={utorid} />
+                    <DisplayComment key={item._id} comment={item} qnsDate={qnsDate} utorId={utorId} />
                 )}
             />
             <Divider orientation="left">Post a Comment</Divider>
-            <Editor discussionId={null} questionLink={questionLink} op oldContent="" updateComments={updateComments} thread={[]} />
+            <Editor discussionId={null} qnsLink={qnsLink} op oldContent="" updateComments={updateComments} thread={[]} />
             <FloatButton.BackTop />
         </div>
     );

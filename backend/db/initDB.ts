@@ -21,27 +21,27 @@ async function initDB() {
 				$jsonSchema: {
 					bsonType: "object",
 					title: "Accounts Object Validation",
-					required: ["utorid", "utorName", "savedCourses"],
+					required: ["utorId", "utorName", "bookmarkCourses"],
 					additionalProperties: false,
 					properties: {
 						_id: {
 							bsonType: "objectId",
 							description: "auto-generated objectId",
 						},
-						utorid: {
+						utorId: {
 							bsonType: "string",
 							description:
-								"'utorid' must be a string, specifically the utorid, is unique, and is required",
+								"'utorId' must be a string, specifically the utorid, is unique, and is required",
 						},
 						utorName: {
 							bsonType: "string",
 							description:
 								"'utorName' must be a string and is required",
 						},
-						savedCourses: {
+						bookmarkCourses: {
 							bsonType: "array",
 							description:
-								"'savedCourses' must be an array with courseIds referencing the Courses collection, and is required",
+								"'bookmarkCourses' must be an array with courseIds referencing the Courses collection, and is required",
 							uniqueItems: true,
 							items: {
 								bsonType: "string",
@@ -127,7 +127,7 @@ async function initDB() {
 				$jsonSchema: {
 					bsonType: "object",
 					title: "Topics Object Validation",
-					required: ["topicName", "numQuestions", "course"],
+					required: ["topicName", "numQns", "courseId"],
 					additionalProperties: false,
 					properties: {
 						_id: {
@@ -139,15 +139,15 @@ async function initDB() {
 							description:
 								"'topicName' must be a string and is required",
 						},
-						numQuestions: {
+						numQns: {
 							bsonType: "int",
 							description:
-								"'numQuestions' must be an int and is required",
+								"'numQns' must be an int and is required",
 						},
-						course: {
+						courseId: {
 							bsonType: "string",
 							description:
-								"'course' must be a string that references a courseId from the courses collection and is required",
+								"'courseId' must be a string that references a courseId from the courses collection and is required",
 						},
 					},
 				},
@@ -166,7 +166,7 @@ async function initDB() {
 	await db
 		.collection("Topics")
 		.createIndex(
-			{ topicName: 1, course: 1 },
+			{ topicName: 1, courseId: 1 },
 			{ collation: { locale: "en", strength: 2 }, unique: true }
 		)
 		.then(() => {
@@ -184,16 +184,16 @@ async function initDB() {
 					bsonType: "object",
 					title: "Questions Object Validation",
 					required: [
-						"link",
+						"qnsLink",
 						"topicId",
 						"topicName",
 						"courseId",
 						"qnsName",
 						"qnsType",
-						"desc",
-						"xplan",
+						"description",
+						"explanation",
 						"choices",
-						"ans",
+						"answers",
 						"authId",
 						"authName",
 						"date",
@@ -212,10 +212,10 @@ async function initDB() {
 							bsonType: "objectId",
 							description: "auto-generated objectId",
 						},
-						link: {
+						qnsLink: {
 							bsonType: "string",
 							description:
-								"'link' must be a string, should be the original version's _id, and is shared by all the versions of a question",
+								"'qnsLink' must be a string, should be the original version's _id, and is shared by all the versions of a question",
 						},
 						topicId: {
 							bsonType: "objectId",
@@ -243,16 +243,16 @@ async function initDB() {
 							description:
 								"'qnsType' must be specifically 'mc' or 'short', and is required",
 						},
-						desc: {
+						description: {
 							bsonType: "string",
 							description:
-								"'desc' must be a string or empty, and is required",
+								"'description' must be a string or empty, and is required",
 							maxLength: 4000,
 						},
-						xplan: {
+						explanation: {
 							bsonType: "string",
 							description:
-								"'xplan' must be a string or empty, and is required",
+								"'explanation' must be a string or empty, and is required",
 							maxLength: 4000,
 						},
 						choices: {
@@ -266,10 +266,10 @@ async function initDB() {
 									"items in array must be a string or empty",
 							},
 						},
-						ans: {
+						answers: {
 							bsonType: ["array", "string"],
 							description:
-								"'ans' must be an array of strings or a string, and is required",
+								"'answers' must be an array of strings or a string, and is required",
 							uniqueItems: true,
 							items: {
 								bsonType: "string",
@@ -311,7 +311,7 @@ async function initDB() {
 						rating: {
 							bsonType: "object",
 							description:
-								"'rating' is a dict containing key value pair where key is the utorid and value is 0 or 1 based on question rating",
+								"'rating' is an object containing key value pair where key is the utorid and value is 0 or 1 based on question rating",
 						},
 						likes: {
 							bsonType: "int",
@@ -331,7 +331,7 @@ async function initDB() {
 						viewers: {
 							bsonType: "object",
 							description:
-								"'viwers' is a set of users who unique users who have viewed this question",
+								"'viwers' is an object with key representing unique users who have viewed this question",
 						},
 					},
 				},
@@ -354,7 +354,7 @@ async function initDB() {
 					bsonType: "object",
 					title: "Dicussions Object Validation",
 					required: [
-						"questionLink",
+						"qnsLink",
 						"op",
 						"authId",
 						"authName",
@@ -371,10 +371,10 @@ async function initDB() {
 							bsonType: "objectId",
 							description: "auto-generated objectId",
 						},
-						questionLink: {
+						qnsLink: {
 							bsonType: "string",
 							description:
-								"'question' must be a string, referencing the link of a question from the questions collection, and is required",
+								"'qnsLink' must be a string, referencing the link of a question from the questions collection, and is required",
 						},
 						op: {
 							bsonType: "bool",
@@ -448,9 +448,9 @@ async function initDB() {
 					bsonType: "object",
 					title: "Badges Object Validation",
 					required: [
-						"utorid",
-						"questionsAdded",
-						"questionsEdited",
+						"utorId",
+						"qnsAdded",
+						"qnsEdited",
 						"threadResponses",
 						"currLoginStreak",
 						"longestLoginStreak",
@@ -466,20 +466,20 @@ async function initDB() {
 							bsonType: "objectId",
 							description: "auto-generated objectId",
 						},
-						utorid: {
+						utorId: {
 							bsonType: "string",
 							description:
-								"'utorid' must be a string, referencing the account collection, and is required",
+								"'utorId' must be a string, referencing the account collection, and is required",
 						},
-						questionsAdded: {
+						qnsAdded: {
 							bsonType: "int",
 							description:
-								"'questionsAdded' must be an int and is required",
+								"'qnsAdded' must be an int and is required",
 						},
-						questionsEdited: {
+						qnsEdited: {
 							bsonType: "int",
 							description:
-								"'questionsEdited' must be an int and is required",
+								"'qnsEdited' must be an int and is required",
 						},
 						threadResponses: {
 							bsonType: "int",

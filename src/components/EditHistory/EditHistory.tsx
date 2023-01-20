@@ -15,22 +15,22 @@ import { GetUserInitials } from '../../pages/QuestionsPage/QuestionsList';
 export const onMobile = () => window.innerWidth < 420;
 
 /* Given two questions, find the difference in their fields */
-const GetDiff = (firstQuestion: QuestionsType, secondQuestion: QuestionsType) => {
+const GetDiff = (firstQns: QuestionsType, secondQns: QuestionsType) => {
     const changes = [];
 
-    if (firstQuestion.topicId !== secondQuestion.topicId) changes.push("Topic");
+    if (firstQns.topicId !== secondQns.topicId) changes.push("Topic");
 
-    if (firstQuestion.qnsName !== secondQuestion.qnsName) changes.push("Title");
+    if (firstQns.qnsName !== secondQns.qnsName) changes.push("Title");
 
-    if (firstQuestion.qnsType !== secondQuestion.qnsType) changes.push("Question type");
+    if (firstQns.qnsType !== secondQns.qnsType) changes.push("Question type");
 
-    if (firstQuestion.desc !== secondQuestion.desc) changes.push("Problem description");
+    if (firstQns.description !== secondQns.description) changes.push("Problem description");
 
-    if (JSON.stringify(firstQuestion.choices) !== JSON.stringify(secondQuestion.choices)) changes.push("Multiple choice options");
+    if (JSON.stringify(firstQns.choices) !== JSON.stringify(secondQns.choices)) changes.push("Multiple choice options");
 
-    if (JSON.stringify(firstQuestion.ans) !== JSON.stringify(secondQuestion.ans)) changes.push("Answer");
+    if (JSON.stringify(firstQns.answers) !== JSON.stringify(secondQns.answers)) changes.push("Answer");
 
-    if (firstQuestion.xplan !== secondQuestion.xplan) changes.push("Explanation");
+    if (firstQns.explanation !== secondQns.explanation) changes.push("Explanation");
 
     return changes;
 };
@@ -69,7 +69,7 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
                             <Space direction="vertical" size={0}>
                                 <span>
                                     {GetUsername(question)}
-                                    {!question.anon ? <DisplayBadges utorid={question.authId} /> : null}
+                                    {!question.anon ? <DisplayBadges utorId={question.authId} /> : null}
                                 </span>
                                 <Typography.Text type="secondary">{GetRelativeTime(new Date(question.date).getTime())}</Typography.Text>
                             </Space>
@@ -86,9 +86,9 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
     );
 };
 
-const EditHistory = ({ link }: { link: string }) => {
+const EditHistory = ({ qnsLink }: { qnsLink: string }) => {
 
-    const { loading, editHistory, error } = GetEditHistory(link);
+    const { loading, editHistory, error } = GetEditHistory(qnsLink);
 
     const [changeLog, setChangeLog] = useState<React.ReactNode>();
 
@@ -97,10 +97,10 @@ const EditHistory = ({ link }: { link: string }) => {
     const renderList: React.ReactNode[] = [];
 
     for (let index = 0; index < editHistory.length - 1; index++) {
-        const firstQuestion = editHistory[index];
-        const secondQuestion = editHistory[index + 1];
+        const firstQns = editHistory[index];
+        const secondQns = editHistory[index + 1];
 
-        const changes = GetDiff(firstQuestion, secondQuestion);
+        const changes = GetDiff(firstQns, secondQns);
 
         let display = "";
 
@@ -118,10 +118,10 @@ const EditHistory = ({ link }: { link: string }) => {
         if (changes.length > 0) {
             actions.push(
                 <Button
-                    key={`${firstQuestion._id} change-log`}
+                    key={`${firstQns._id} change-log`}
                     href="#change-log"
                     shape="round"
-                    onClick={() => setChangeLog(ViewChanges(firstQuestion, secondQuestion))}>
+                    onClick={() => setChangeLog(ViewChanges(firstQns, secondQns))}>
                     View Changes
                 </Button>
             );
@@ -130,7 +130,7 @@ const EditHistory = ({ link }: { link: string }) => {
         // can't restore to most recent post (should use edit instead)
         if (index !== 0) {
             actions.push(
-                <Link key={`${firstQuestion._id} restore`} to={`/courses/${firstQuestion.courseId}/editQuestion`} state={{ question: firstQuestion, latest: editHistory[0] }}>
+                <Link key={`${firstQns._id} restore`} to={`/courses/${firstQns.courseId}/editQuestion`} state={{ question: firstQns, latest: editHistory[0] }}>
                     <Button shape="round">
                         Restore
                     </Button>
@@ -138,7 +138,7 @@ const EditHistory = ({ link }: { link: string }) => {
             );
         };
 
-        renderList.push(GetListItem(loading, display, actions, firstQuestion));
+        renderList.push(GetListItem(loading, display, actions, firstQns));
     }
 
     // push original post

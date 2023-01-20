@@ -7,20 +7,20 @@ const GetWidgets = () => {
     const [courseData, setCourseData] = useState<[string, string][]>([]);
     const [error, setError] = useState('');
 
-    const { utorid } = useContext(UserContext);
+    const { utorId } = useContext(UserContext);
 
     useEffect(() => {
         const courseArr: [string, string][] = [];
 
         const fetchData = async () => {
-            if (utorid === "") return;
+            if (utorId === "") return;
 
-            await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorid}`)
+            await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorId}`)
                 .then((res: Response) => {
                     if (!res.ok) throw Error(res.statusText);
                     return res.json();
                 }).then((result) => {
-                    result.savedCourses.forEach((courseId: string) => {
+                    result.bookmarkCourses.forEach((courseId: string) => {
                         courseArr.push([`/courses/${courseId}`, courseId]);
                     });
 
@@ -33,7 +33,7 @@ const GetWidgets = () => {
                 });
         };
         fetchData();
-    }, [utorid]);
+    }, [utorId]);
 
     return {
         loading,

@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { QuestionsType } from "../../../../backend/types/Questions";
 import { TimelineType } from "../ProfilePage";
 
-const GetAllQuestions = (utorid: string, setTimeline: Function) => {
+const GetAllQuestions = (utorId: string, setTimeline: Function) => {
 
     const [loadingQuestions, setLoadingQuestions] = useState<boolean>(true);
     const [errorQuestions, setErrorQuestions] = useState('');
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URI}/question/allUserPostedQuestions/${utorid}`)
+        fetch(`${process.env.REACT_APP_API_URI}/question/allUserPostedQuestions/${utorId}`)
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
                 return res.json();
@@ -16,12 +16,14 @@ const GetAllQuestions = (utorid: string, setTimeline: Function) => {
                 const timelineArr: TimelineType[] = [];
 
                 result.forEach((question: QuestionsType) => {
+                    const { courseId, _id: qnsId, qnsLink, qnsName, date } = question;
+
                     timelineArr.push({
-                        courseId: question.courseId,
-                        questionId: question._id,
-                        link: question.link,
-                        questionName: question.qnsName,
-                        date: question.date
+                        courseId,
+                        qnsId,
+                        qnsLink,
+                        qnsName,
+                        date
                     });
                 });
 
@@ -34,7 +36,7 @@ const GetAllQuestions = (utorid: string, setTimeline: Function) => {
                 setLoadingQuestions(false);
             });
 
-    }, [setTimeline, utorid]);
+    }, [setTimeline, utorId]);
 
     return {
         loadingQuestions,

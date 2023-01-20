@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import path from "path";
 import connectDB from "./db/db.service";
 import apiRouter from "./api";
+// import fetchCourses from "./fetchUTMCourses";
 
 const app = express();
 app.use(cors());
@@ -46,6 +47,8 @@ app.get("/*", (req, res) => {
 connectDB()
 	.then(async () => {
 		app.listen(port, () => console.log(`Listening on port ${port}`));
+
+		// fetchCourses();
 	})
 	.catch((error: Error) => {
 		console.error(`Error could not connect to db: ${error}`);

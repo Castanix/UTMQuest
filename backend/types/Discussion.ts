@@ -2,7 +2,7 @@ import type { WithId, Document, ObjectId } from 'mongodb';
 
 export interface DiscussionType extends WithId<Document> {
 	_id: ObjectId;
-	questionLink: string;
+	qnsLink: string;
     op: boolean;
     authId: string; 
     authName: string; 
@@ -17,7 +17,7 @@ export interface DiscussionType extends WithId<Document> {
 
 export interface DiscussionFrontEndType {
 	_id: string;
-	questionLink: string;
+	qnsLink: string;
 	op: boolean;
 	authId: string;
 	authName: string;

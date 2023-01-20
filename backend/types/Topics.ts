@@ -1,8 +1,8 @@
 interface TopicsType {
 	_id: string;
 	topicName: string;
-	course: string;
-	numQuestions: number;
+	courseId: string;
+	numQns: number;
 }
 
 export default TopicsType;

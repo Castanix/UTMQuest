@@ -13,7 +13,7 @@ const TopicState = (topics: TopicsType[]) => {
 
     const isEditing = (record: TopicsType) => record._id === editingKey;
 
-    const isDisabled = (record: TopicsType) => record.numQuestions > 0;
+    const isDisabled = (record: TopicsType) => record.numQns > 0;
 
     const addTopicCallback = (topic: TopicsType) => {
         setSearchTerm('');

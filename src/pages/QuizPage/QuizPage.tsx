@@ -18,11 +18,11 @@ export type QuizDependencyTypes = {
     setMCResult?: Function, 
 };
 
-const Header = ({ courseCode }: { courseCode: string}) => (
+const Header = ({ courseId }: { courseId: string}) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseCode}`}>{courseCode}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${courseId}`}>{courseId}</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Text>Quiz</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="browse-question-title">
@@ -31,14 +31,14 @@ const Header = ({ courseCode }: { courseCode: string}) => (
     </div>
 );
 
-const GenerateQuestions = (courseCode: string) => {
+const GenerateQuestions = (courseId: string) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [questions, setQuestions] = useState<QuestionsType[]>([]);
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
         fetch(
-            `${process.env.REACT_APP_API_URI}/question/generateQuiz/${courseCode}`
+            `${process.env.REACT_APP_API_URI}/question/generateQuiz/${courseId}`
         )
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
@@ -52,7 +52,7 @@ const GenerateQuestions = (courseCode: string) => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [courseCode]);
+    }, [courseId]);
     
     return {
         loading,
@@ -70,9 +70,9 @@ const QuizPage = () => {
     const [numCorrect, setNumCorrect] = useState<number>(0);
 
     const params = useParams();
-    const { id } = params;
+    const { courseId } = params;
 
-    const { loading, questions, error } = GenerateQuestions(id ?? '');
+    const { loading, questions, error } = GenerateQuestions(courseId ?? '');
 
     if (loading) return <Loading />;
 
@@ -81,7 +81,7 @@ const QuizPage = () => {
     const { length } = questions;
     if(questions.length) {
         if(step !== length) {
-            const { choices: nextOptions, ans: nextAnswers } = questions[Math.min(step+1, length-1)];
+            const { choices: nextOptions, answers: nextAnswers } = questions[Math.min(step+1, length-1)];
 
             if(hasAnswered) {
                 document.querySelector(".explanation-btn")?.classList.toggle("active", true);
@@ -90,7 +90,7 @@ const QuizPage = () => {
             };
     
             return (
-                <Card title={<Header courseCode={id ?? ''} />}>
+                <Card title={<Header courseId={courseId ?? ''} />}>
                     <main className='main-container'>
                         <Space direction='vertical' size="large">
                             <Progress percent={Math.round(step/length*100)} steps={length} strokeColor={strokeColor}/>
@@ -112,7 +112,7 @@ const QuizPage = () => {
         const numIncorrect = length - numCorrect;
 
         return (
-            <Card title={<Header courseCode={id ?? ''} />}>
+            <Card title={<Header courseId={courseId ?? ''} />}>
                 <main className='main-container'>
                     <div className='quiz-results'>
                         <Card title="Quiz Results">
@@ -122,7 +122,7 @@ const QuizPage = () => {
                                 <Text>Number of questions incorrect: {numIncorrect}</Text>
                                 <div className='quiz-options'>
                                     <Space direction={onMobile() ? "vertical" : "horizontal"} size="middle">
-                                        <Link to={`/courses/${id}`}><Button>Back to questions</Button></Link>
+                                        <Link to={`/courses/${courseId}`}><Button>Back to questions</Button></Link>
                                         <Button onClick={() => window.location.reload()}>Generate another quiz</Button>
                                     </Space>
                                 </div>
@@ -135,12 +135,12 @@ const QuizPage = () => {
     };
     
     return (
-        <Card title={<Header courseCode={id ?? ''} />}>
+        <Card title={<Header courseId={courseId ?? ''} />}>
             <main className='main-container'>
                 <Result
                     title="No Multiple Choice questions available."
                     extra={
-                        <Link to={`/courses/${id}`}>
+                        <Link to={`/courses/${courseId}`}>
                             <Button type="primary">
                                 Back to courses
                             </Button>

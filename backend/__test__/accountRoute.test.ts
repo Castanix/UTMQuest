@@ -18,7 +18,7 @@ describe('Test for Account route api', () => {
             const utorId = "dummy22";
 
             const response = await request(app).get(`/account/getAccount/${utorId}`);
-            expect(((JSON.parse(response.text)).utorid).toString()).toEqual(utorId);
+            expect(((JSON.parse(response.text)).utorId).toString()).toEqual(utorId);
             expect(response.statusCode).toBe(200);
         });
 
@@ -61,25 +61,25 @@ describe('Test for Account route api', () => {
     describe('PUT /', () => { 
         it('update saved course - adding favourite course', async () => { 
             const body = {
-                utorid: "dummy22",
+                utorId: "dummy22",
                 courseId: "ANT201"
             };
 
-            const response = await request(app).put('/account/updateSavedCourse').send(body);
+            const response = await request(app).put('/account/updateBookmarkCourses').send(body);
             expect(response.statusCode).toBe(200);
             expect(response.body.value.savedCourses.pop()).toEqual(body.courseId);
         });
 
         it('update saved course - removing favourite course', async () => { 
             const body = {
-                utorid: "dummy22",
+                utorId: "dummy22",
                 courseId: "ANT201",
-                favourite: true
+                bookmarkCourses: true
             };
 
-            const response = await request(app).put('/account/updateSavedCourse').send(body);
+            const response = await request(app).put('/account/updateBookmarkCourses').send(body);
             expect(response.statusCode).toBe(200);
-            expect(response.body.value.savedCourses.pop()).not.toEqual(body.courseId);
+            expect(response.body.value.bookmarkCourses.pop()).not.toEqual(body.courseId);
         });
     });
 });

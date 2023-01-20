@@ -19,16 +19,16 @@ Object.defineProperty(window, 'matchMedia', {
 const question: QuestionsType =
 {
     _id: 'abc123',
-    link: 'abcde',
+    qnsLink: 'abcde',
     topicId: '123456',
     topicName: 'Arrays',
     courseId: 'test',
     qnsName: 'Arrays question',
     qnsType: qnsTypeEnum.mc,
-    desc: 'description',
-    xplan: 'new explanation',
+    description: 'description',
+    explanation: 'new explanation',
     choices: ["Option A", "Option B"],
-    ans: "Option A",
+    answers: "Option A",
     authId: 'Bob',
     authName: 'Bob Bob',
     date: new Date().toString(),
@@ -48,7 +48,7 @@ const customRender = (
         initialEntries={["/courses/test/question/abcde"]}
     >
         <Routes>
-            <Route path="/courses/:courseId/question/:link" element={<ApprovedQuestion />} />
+            <Route path="/courses/:courseId/question/:qnsLink" element={<ApprovedQuestion />} />
         </Routes>
     </MemoryRouter>
 );
@@ -56,13 +56,13 @@ const customRender = (
 
 // mock add topic fetch call
 const server = setupServer(
-    rest.get(`${process.env.REACT_APP_API_URI}/question/oneQuestion/:link`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/question/oneQuestion/:qnsLink`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json({ question, hasRated: false })
         )
     }),
-    rest.get(`${process.env.REACT_APP_API_URI}/displayBadges/:utorid`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_API_URI}/displayBadges/:utorId`, (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json({ displayBadges: [], longestLoginStreak: 1 })

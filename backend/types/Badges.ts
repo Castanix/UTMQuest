@@ -1,6 +1,6 @@
 interface BadgesType {
     _id: string;
-    utorid: string;
+    utorId: string;
     questionsAdded: number;
     questionsEdited: number;
     threadResponses: number;

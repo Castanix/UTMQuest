@@ -57,12 +57,12 @@ const CourseBoardTable = (props: any) => {
     };
 
     // Locally renders new course on the courseboard. Renders by fetching from db happens on initial page load.
-    const rerender = (_id: string, code: string, name: string) => {
+    const rerender = (_id: string, courseId: string, name: string) => {
         setSearchValue("");
 
         const courses = [...allAddedData, {
             _id,
-            courseId: code,
+            courseId,
             courseName: name,
             numTopics: 0,
             added: true

@@ -1,6 +1,6 @@
 interface WidgetType {
-    courseCode: string;
-    topic: string;
+    courseId: string;
+    topicId: string;
     qnsName: string;
     reviewStatus: string;
 }

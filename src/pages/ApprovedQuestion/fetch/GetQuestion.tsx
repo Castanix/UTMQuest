@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { QuestionsType } from "../../../../backend/types/Questions";
 
-const GetQuestion = (link: string) => {
+const GetQuestion = (qnsLink: string) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [question, setQuestion] = useState<QuestionsType>();
     const [hasRated, setHasRated] = useState<boolean>(false);
@@ -9,7 +9,7 @@ const GetQuestion = (link: string) => {
 
     useEffect(() => {
         fetch(
-            `${process.env.REACT_APP_API_URI}/question/oneQuestion/${link}`
+            `${process.env.REACT_APP_API_URI}/question/oneQuestion/${qnsLink}`
         )
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
@@ -25,7 +25,7 @@ const GetQuestion = (link: string) => {
                 setLoading(false);
             });
 
-    }, [link]);
+    }, [qnsLink]);
 
     return {
         loading,

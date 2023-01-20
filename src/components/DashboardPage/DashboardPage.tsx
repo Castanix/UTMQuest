@@ -23,7 +23,7 @@ const DashboardPage = () => {
   return (
     <div className="dashboard-content">
       <Space direction="vertical">
-        <Card title="Bookmarked Courses" className="saved-courses">
+        <Card title="Bookmarked Courses" className="bookmarked-courses">
           <div className="card-content">
             <SavedCoursesList courseData={courseData} paginationConfig={paginationConfig} />
           </div>
