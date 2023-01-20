@@ -4,8 +4,8 @@ export interface DiscussionType extends WithId<Document> {
 	_id: ObjectId;
 	qnsLink: string;
     op: boolean;
-    authId: string; 
-    authName: string; 
+    utorId: string; 
+    utorName: string; 
     content: string;
     date: string; 
     deleted: boolean;
@@ -19,8 +19,8 @@ export interface DiscussionFrontEndType {
 	_id: string;
 	qnsLink: string;
 	op: boolean;
-	authId: string;
-	authName: string;
+	utorId: string;
+	utorName: string;
 	content: string;
 	thread: string[];
 	date: string;

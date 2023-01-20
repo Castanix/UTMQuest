@@ -36,18 +36,18 @@ const GetDiff = (firstQns: QuestionsType, secondQns: QuestionsType) => {
 };
 
 export const GetUsername = (question: QuestionsType) => {
-    const { anon, authId, authName } = question;
+    const { anon, utorId, utorName } = question;
 
     if (anon) {
-        return <Typography.Text>{authName}</Typography.Text>;
+        return <Typography.Text>{utorName}</Typography.Text>;
     }
 
-    return <Link to={`/profile/${authId}`}>{authName}</Link>;
+    return <Link to={`/profile/${utorId}`}>{utorName}</Link>;
 };
 
 /* Render a list item for each edit in the history */
 const GetListItem = (loading: boolean, display: string, actions: React.ReactNode[], question: QuestionsType) => {
-    const photo = question.anon ? <QuestionOutlined /> : <p>{GetUserInitials(question.authName)}</p>;
+    const photo = question.anon ? <QuestionOutlined /> : <p>{GetUserInitials(question.utorName)}</p>;
 
     return (
         <Skeleton avatar title={false} loading={loading} active>
@@ -69,7 +69,7 @@ const GetListItem = (loading: boolean, display: string, actions: React.ReactNode
                             <Space direction="vertical" size={0}>
                                 <span>
                                     {GetUsername(question)}
-                                    {!question.anon ? <DisplayBadges utorId={question.authId} /> : null}
+                                    {!question.anon ? <DisplayBadges utorId={question.utorId} /> : null}
                                 </span>
                                 <Typography.Text type="secondary">{GetRelativeTime(new Date(question.date).getTime())}</Typography.Text>
                             </Space>

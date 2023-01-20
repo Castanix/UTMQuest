@@ -18,8 +18,8 @@ const AddComment = async (discussionId: string, qnsLink: string, op: boolean, co
         _id: `id${(new Date()).getTime()}`,
         qnsLink,
         op,
-        authId: 'To be filled in the backend',
-        authName: 'To be filled in the backend',
+        utorId: 'To be filled in the backend',
+        utorName: 'To be filled in the backend',
         content,
         thread: [],
         date: new Date().toISOString(),
@@ -43,8 +43,8 @@ const AddComment = async (discussionId: string, qnsLink: string, op: boolean, co
         return res.json();
     }).then((result) => {
         newComment._id = result.insertedId;
-        newComment.authName = result.authName;
-        newComment.authId = result.authId;
+        newComment.utorName = result.utorName;
+        newComment.utorId = result.utorId;
         return newComment;
     });
 
@@ -80,8 +80,8 @@ const EditComment = async (discussionId: string, qnsLink: string, op: boolean, c
         _id: discussionId,
         qnsLink,
         op,
-        authId: 'To be filled in the backend',
-        authName: 'To be filled in the backend',
+        utorId: 'To be filled in the backend',
+        utorName: 'To be filled in the backend',
         content,
         thread,
         date: new Date().toISOString(),
@@ -148,7 +148,7 @@ const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread 
                     <p>{GetUserInitials(username)}</p>
                 </div>
             }
-            // author={<Link to="/">{commented?.authName ?? 'Anonymous'}</Link>}
+            // author={<Link to="/">{commented?.utorName ?? 'Anonymous'}</Link>}
             content={
                 <span>
                     <Form.Item>

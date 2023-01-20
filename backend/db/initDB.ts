@@ -194,8 +194,8 @@ async function initDB() {
 						"explanation",
 						"choices",
 						"answers",
-						"authId",
-						"authName",
+						"utorId",
+						"utorName",
 						"date",
 						"numDiscussions",
 						"anon",
@@ -278,15 +278,15 @@ async function initDB() {
 							},
 							maxLength: 4000,
 						},
-						authId: {
+						utorId: {
 							bsonType: "string",
 							description:
-								"'authId' must be a string, specifically the utorid, is unique, and is required",
+								"'utorId' must be a string, specifically the utorid, is unique, and is required",
 						},
-						authName: {
+						utorName: {
 							bsonType: "string",
 							description:
-								"'authName' must be a string and is required",
+								"'utorName' must be a string and is required",
 						},
 						date: {
 							bsonType: "string",
@@ -356,8 +356,8 @@ async function initDB() {
 					required: [
 						"qnsLink",
 						"op",
-						"authId",
-						"authName",
+						"utorId",
+						"utorName",
 						"content",
 						"thread",
 						"date",
@@ -381,15 +381,15 @@ async function initDB() {
 							description:
 								"'op' must be a bool, signifying if it is an original post, and is required",
 						},
-						authId: {
+						utorId: {
 							bsonType: "string",
 							description:
-								"'authId' must be a string, specifically the utorid, is unique, and is required",
+								"'utorId' must be a string, specifically the utorid, is unique, and is required",
 						},
-						authName: {
+						utorName: {
 							bsonType: "string",
 							description:
-								"'authName' must be a string and is required",
+								"'utorName' must be a string and is required",
 						},
 						content: {
 							bsonType: "string",

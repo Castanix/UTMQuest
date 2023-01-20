@@ -104,7 +104,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
                 }
                 <br />
                 <Text type="secondary">
-                    {GetUsername(question)} {!question.anon ? <DisplayBadges utorId={question.authId} /> : null}
+                    {GetUsername(question)} {!question.anon ? <DisplayBadges utorId={question.utorId} /> : null}
                 </Text>
                 <br />
                 <Text type="secondary">

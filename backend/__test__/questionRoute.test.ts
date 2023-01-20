@@ -48,7 +48,7 @@ describe('Test for Question route api', () => {
             if (result.length > 0) { 
                 result.forEach((question: QuestionsType) => {
                     expect(question.courseId).toEqual(data.courseId);
-                    expect(question.authId).toEqual(data.utorId);
+                    expect(question.utorId).toEqual(data.utorId);
                 });
             }
         });
@@ -90,8 +90,8 @@ describe('Test for Question route api', () => {
                 explanation: "an example explanation",
                 choices: ["A", "B", "C"],
                 answers: "A",
-                authId: "dummy22",
-                authName: "John Doe",
+                utorId: "dummy22",
+                utorName: "John Doe",
                 numDiscussions: 0,
                 anon: false
             };
@@ -121,8 +121,8 @@ describe('Test for Question route api', () => {
                 explanation: "an example explanation",
                 choices: ["A", "B", "C"],
                 answers: "A",
-                authId: "dummy22",
-                authName: "New Name",
+                utorId: "dummy22",
+                utorName: "New Name",
                 numDiscussions: 0,
                 anon: false
             };
@@ -146,8 +146,8 @@ describe('Test for Question route api', () => {
                 explanation: "an example explanation",
                 choices: ["A", "B", "C"],
                 answers: "A",
-                authId: "dummy22",
-                authName: "New Name",
+                utorId: "dummy22",
+                utorName: "New Name",
                 numDiscussions: 0,
                 anon: false
             };

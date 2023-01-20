@@ -42,7 +42,7 @@ const unlockBadge = (utorId: string, baseBadge: BaseBadge, newBadgeTier: string,
 
 const compareQnsObj = (obj1: QuestionsType, obj2: QuestionsType) => {
     // NOTE: Clone object to avoid mutating original!
-    const keys = ['_id', 'anon', 'numDiscussions', 'authName', 'authId', 'date', 'latest'];
+    const keys = ['_id', 'anon', 'numDiscussions', 'utorName', 'utorId', 'date', 'latest'];
     const objClone1 = { ...obj1 };
     const objClone2 = { ...obj2 };
 
@@ -172,7 +172,7 @@ const AddQuestion = async (addableQns: QuestionsType, setRedirect: Function,
                         message.success("Question successfully edited.");
                     };
 
-                    checkBadge(addableQns.anon, result, [3, 7, 15], "editQns", addableQns.authId);
+                    checkBadge(addableQns.anon, result, [3, 7, 15], "editQns", addableQns.utorId);
                     setRedirect(result.qnsLink);
                 }).catch((error) => {
                     message.error(error.message);
@@ -201,7 +201,7 @@ const AddQuestion = async (addableQns: QuestionsType, setRedirect: Function,
                 return res.json();
             }).then((result) => {
                 message.success("Question successfully added.");
-                checkBadge(addableQns.anon, result, [5, 15, 30], "addQns", addableQns.authId);
+                checkBadge(addableQns.anon, result, [5, 15, 30], "addQns", addableQns.utorId);
 
                 if (result.consecutivePosting) {
                     if (result.consecutivePosting >= 7 && result.unlockedBadges.consecutivePosting !== "consecutivebadge") {
@@ -209,7 +209,7 @@ const AddQuestion = async (addableQns: QuestionsType, setRedirect: Function,
                             message: "Unlocked badge for 7 day consecutive posting!",
                             placement: "bottom"
                         });
-                        unlockBadge(addableQns.authId, "consecutivePosting", "consecutivebadge", "");
+                        unlockBadge(addableQns.utorId, "consecutivePosting", "consecutivebadge", "");
 
                     } else if (result.consecutivePosting < 7) {
                         notification.success({

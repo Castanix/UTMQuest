@@ -17,8 +17,8 @@ export interface QuestionsType {
 	explanation: string;
 	choices: string[];
 	answers: string[] | string;
-	authId: string;
-	authName: string;
+	utorId: string;
+	utorName: string;
 	date: string;
 	numDiscussions: number;
 	anon: boolean;
