@@ -92,8 +92,8 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
     const discussion = {
         qnsLink,
         op: req.body.op, 
-        authId: utorId,
-        authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
+        utorId,
+        utorName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
         content: req.body.content,
         thread: req.body.thread, 
         date: new Date().toISOString(),
@@ -121,7 +121,7 @@ discussionRouter.post('/', async (req: Request, res: Response) => {
                 utmQuestCollections.Discussions?.deleteOne(discussion);
                 return;
             };
-            res.status(201).send({ insertedId: result.insertedId, authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`, authId: utorId });
+            res.status(201).send({ insertedId: result.insertedId, utorName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`, utorId });
         });
 
     }).catch((error) => {
@@ -144,8 +144,8 @@ discussionRouter.put('/:discussionId', async (req: Request, res: Response) => {
 
     const discussion = {
         op: req.body.op, 
-        authId: utorId,
-        authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
+        utorId,
+        utorName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
         content: req.body.content,
         thread: req.body.thread, 
         deleted: false,
@@ -182,8 +182,8 @@ discussionRouter.put('/updatePost/:discussionId', async (req: Request, res: Resp
     const discussion = {
         qnsLink: req.body.qnsLink,
         op: req.body.op, 
-        authId: utorId,
-        authName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
+        utorId,
+        utorName: isAnon? "Anonymous" : `${firstName  } ${  lastName}`,
         content,
         thread: req.body.thread, 
         date,

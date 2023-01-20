@@ -3,9 +3,9 @@ import { DropboxOutlined } from "@ant-design/icons";
 import { List } from "antd";
 import { Link } from "react-router-dom";
 
-import "./SavedCoursesList.css";
+import "./BookmarkCoursesList.css";
 
-const SavedCoursesList = (props: any) => {
+const BookmarkCoursesList = (props: any) => {
   const { courseData, paginationConfig }: { courseData: string[], paginationConfig: Function } = props;
 
   return courseData.length
@@ -27,4 +27,4 @@ const SavedCoursesList = (props: any) => {
     ) : <div className="icon"><DropboxOutlined /></div>;
 };
 
-export default SavedCoursesList;
+export default BookmarkCoursesList;

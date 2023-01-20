@@ -67,8 +67,8 @@ describe('Test for Discussion route api', () => {
             const discussion = {
                 qnsLink: '63703e9d8f29f20175f9390d',
                 op: false, 
-                authId: "dummy1",
-                authName: "JohnDoe",
+                utorId: "dummy1",
+                utorName: "JohnDoe",
                 content: "Hello there", 
                 thread: [], 
                 anon: false
@@ -85,8 +85,8 @@ describe('Test for Discussion route api', () => {
             const discussion = {
                 qnsLink: '63687856a6311ba71ec75911',
                 op: false, 
-                authId: "dummy1",
-                authName: "JohnDoe",
+                utorId: "dummy1",
+                utorName: "JohnDoe",
                 content: "Hello there", 
                 thread: [], 
                 anon: false
@@ -102,8 +102,8 @@ describe('Test for Discussion route api', () => {
             const discussionId = "63657a22e1d9ab44685aa5aa";
             const discussion = {
                 op: false, 
-                authId: "dummy1",
-                authName: "JohnDoe",
+                utorId: "dummy1",
+                utorName: "JohnDoe",
                 content: "Hello there", 
                 thread: [], 
                 anon: true

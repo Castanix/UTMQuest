@@ -4,7 +4,7 @@ import React from 'react';
 import Loading from '../Loading/Loading';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import GetWidgets from './fetch/GetWidgets';
-import SavedCoursesList from './SavedCoursesList';
+import BookmarkCoursesList from './BookmarkCoursesList';
 
 const paginationConfig = (total: number, size: number) => ({
   defaultCurrent: 1,
@@ -25,7 +25,7 @@ const DashboardPage = () => {
       <Space direction="vertical">
         <Card title="Bookmarked Courses" className="bookmarked-courses">
           <div className="card-content">
-            <SavedCoursesList courseData={courseData} paginationConfig={paginationConfig} />
+            <BookmarkCoursesList courseData={courseData} paginationConfig={paginationConfig} />
           </div>
         </Card>
         <Typography.Text italic>More widgets coming soon.</Typography.Text>

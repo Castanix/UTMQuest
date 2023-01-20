@@ -14,13 +14,13 @@ import { ThemeContext } from "../Topbar/Topbar";
 import { GetUserInitials } from "../../pages/QuestionsPage/QuestionsList";
 
 const GetUsername = (comment: DiscussionFrontEndType) => {
-    const { anon, authId, authName } = comment;
+    const { anon, utorId, utorName } = comment;
 
     if (anon) {
-        return <Typography.Text>{authName}</Typography.Text>;
+        return <Typography.Text>{utorName}</Typography.Text>;
     }
 
-    return <Link to={`/profile/${authId}`}>{authName}</Link>;
+    return <Link to={`/profile/${utorId}`}>{utorName}</Link>;
 };
 
 const DisplayComment = ({ comment, qnsDate, utorId }: { comment: DiscussionFrontEndType, qnsDate: string, utorId: string }) => {
@@ -90,7 +90,7 @@ const DisplayComment = ({ comment, qnsDate, utorId }: { comment: DiscussionFront
 
     actions.push([
         // Need to check if 'user' is author when we get user auth
-        displayComment.authId === utorId ?
+        displayComment.utorId === utorId ?
             <span
                 onClick={() => {
                     setShowReply(false);
@@ -155,7 +155,7 @@ const DisplayComment = ({ comment, qnsDate, utorId }: { comment: DiscussionFront
                         displayComment.anon ?
                             <QuestionOutlined />
                             :
-                            <p>{GetUserInitials(displayComment.authName)}</p>
+                            <p>{GetUserInitials(displayComment.utorName)}</p>
                     }
                 </div >}
             content={

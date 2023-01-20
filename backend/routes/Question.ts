@@ -70,11 +70,11 @@ questionRouter.get(
 			// visting somebody else's profile = fetch only public contributions
 			if (req.params.utorId === req.headers.utorid) {
 				questions = await utmQuestCollections.Questions?.find({
-					authId: req.params.utorId,
+					utorId: req.params.utorId,
 				}).toArray();
 			} else {
 				questions = await utmQuestCollections.Questions?.find({
-					authId: req.params.utorId,
+					utorId: req.params.utorId,
 					anon: false,
 				}).toArray();
 			}
@@ -239,7 +239,7 @@ questionRouter.get(
 					(60 * 60 * 1000);
 
 				const score = ComputeQuestionScore(question);
-				if (diff > 24 || utorId === question.authId) {
+				if (diff > 24 || utorId === question.utorId) {
 					scoredQuestions.push({ score, question });
 				} else if (showNewQuestions) {
 					newQuestions.push({ score, question });
@@ -286,8 +286,8 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		explanation: req.body.explanation,
 		choices: req.body.choices,
 		answers: req.body.answers,
-		authId: utorId,
-		authName: isAnon ? "Anonymous" : `${firstName} ${lastName}`,
+		utorId,
+		utorName: isAnon ? "Anonymous" : `${firstName} ${lastName}`,
 		date: new Date().toISOString(),
 		numDiscussions: req.body.numDiscussions,
 		anon: req.body.anon,
@@ -482,8 +482,8 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			explanation: req.body.explanation,
 			choices: req.body.choices,
 			answers: req.body.answers,
-			authId: utorId,
-			authName: anon ? "Anonymous" : `${firstName} ${lastName}`,
+			utorId,
+			utorName: anon ? "Anonymous" : `${firstName} ${lastName}`,
 			date: new Date().toISOString(),
 			numDiscussions: req.body.numDiscussions,
 			anon: req.body.anon,
@@ -641,7 +641,7 @@ questionRouter.get(
 						mustNot: [
 							{
 								text: {
-									path: "link",
+									path: "qnsLink",
 									query: originalQnsId,
 								},
 							},
@@ -650,7 +650,7 @@ questionRouter.get(
 							{
 								text: {
 									query: term,
-									path: ["qnsName", "desc"],
+									path: ["qnsName", "description"],
 									fuzzy: {
 										maxEdits: 2,
 									},
@@ -659,7 +659,7 @@ questionRouter.get(
 						],
 					},
 					highlight: {
-						path: ["qnsName", "desc"],
+						path: ["qnsName", "description"],
 					},
 				},
 			},
@@ -669,9 +669,9 @@ questionRouter.get(
 			{
 				$project: {
 					_id: 1,
-					link: 1,
+					qnsLink: 1,
 					qnsName: 1,
-					desc: 1,
+					description: 1,
 					score: { $meta: "searchScore" },
 					highlights: { $meta: "searchHighlights" },
 				},
@@ -691,7 +691,7 @@ questionRouter.get(
 questionRouter.get(
 	"/editHistory/:qnsLink",
 	async (req: Request, res: Response) => {
-		utmQuestCollections.Questions?.find({ link: req.params.qnsLink })
+		utmQuestCollections.Questions?.find({ qnsLink: req.params.qnsLink })
 			.sort({ date: -1 })
 			.toArray()
 			.then((response) => res.status(200).send(response))

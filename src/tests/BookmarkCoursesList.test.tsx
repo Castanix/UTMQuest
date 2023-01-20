@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import SavedCoursesList from '../components/DashboardPage/SavedCoursesList';
+import BookmarkCoursesList from '../components/DashboardPage/BookmarkCoursesList';
 import { BrowserRouter } from 'react-router-dom';
 
 Object.defineProperty(window, 'matchMedia', {
@@ -27,7 +27,7 @@ const courseData: [string, string][] = [
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<SavedCoursesList courseData={courseData} paginationConfig={paginationConfig} />, { wrapper: BrowserRouter });
+    const { container } = render(<BookmarkCoursesList courseData={courseData} paginationConfig={paginationConfig} />, { wrapper: BrowserRouter });
     document = container;
 });
 

@@ -20,12 +20,12 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 );
 
 const GetAuthorName = (question: QuestionsType) => {
-    const { anon, authName, authId } = question;
+    const { anon, utorName, utorId } = question;
     if (anon) {
-        return <Typography.Text>{authName}</Typography.Text>;
+        return <Typography.Text>{utorName}</Typography.Text>;
     }
 
-    return <Link to={`/profile/${authId}`}>{authName}</Link>;
+    return <Link to={`/profile/${utorId}`}>{utorName}</Link>;
 };
 
 const GetUserInitials = (username: string) => {
@@ -137,7 +137,7 @@ const QuestionsList = ({ questions, topics, courseId }:
                                         {item.anon ?
                                             <QuestionOutlined />
                                             :
-                                            <p>{GetUserInitials(item.authName)}</p>
+                                            <p>{GetUserInitials(item.utorName)}</p>
                                         }
                                     </div>
                                 }
@@ -153,7 +153,7 @@ const QuestionsList = ({ questions, topics, courseId }:
                                         <div className="ant-page-header-heading-sub-title">
                                             <Typography.Paragraph>
                                                 {GetAuthorName(item)}
-                                                {!item.anon ? <DisplayBadges utorId={item.authId} /> : null}
+                                                {!item.anon ? <DisplayBadges utorId={item.utorId} /> : null}
                                             </Typography.Paragraph>
                                             <Typography.Text type="secondary">{GetRelativeTime(new Date(item.date).getTime())}</Typography.Text>
                                         </div>
