@@ -1,44 +1,22 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
+import { useQuery } from "react-query";
 import { UserContext } from "../../Topbar/Topbar";
 
+const fetchData = async (utorId: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorId}`);
+    if (!response.ok) throw Error(response.statusText);
+    return response.json();
+};
+
 const GetWidgets = () => {
-
-    const [loading, setLoading] = useState<boolean>(true);
-    const [courseData, setCourseData] = useState<[string, string][]>([]);
-    const [error, setError] = useState('');
-
     const { userId } = useContext(UserContext);
 
-    useEffect(() => {
-        const courseArr: [string, string][] = [];
-
-        const fetchData = async () => {
-            if (userId === "") return;
-
-            await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${userId}`)
-                .then((res: Response) => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                }).then((result) => {
-                    result.bookmarkCourses.forEach((courseId: string) => {
-                        courseArr.push([`/courses/${courseId}`, courseId]);
-                    });
-
-                    setCourseData(courseArr);
-                    setLoading(false);
-                    setError("");
-                }).catch((err) => {
-                    setError(err.message);
-                    setLoading(false);
-                });
-        };
-        fetchData();
-    }, [userId]);
+    const result = useQuery('getWidgets', () => fetchData(userId), { enabled: !!userId });
 
     return {
-        loading,
-        courseData,
-        error
+        loading: result.isLoading,
+        courseData: result.data,
+        error: result.error
     };
 };
 

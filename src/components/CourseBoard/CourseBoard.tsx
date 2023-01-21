@@ -10,7 +10,7 @@ const CourseBoard = () => {
 
     if (loading) return <Loading />;
 
-    if (error !== '') return <ErrorMessage title={error} link='.' message='Refresh' />;
+    if (error instanceof Error) return <ErrorMessage title={error.message} link='.' message='Refresh' />;
 
     return (
         <div className="card-content-courseboard">
