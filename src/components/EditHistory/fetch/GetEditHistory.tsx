@@ -1,32 +1,21 @@
-import { useEffect, useState } from "react";
-import { QuestionFrontEndType } from "../../../../backend/types/Questions";
+import { useQuery } from "react-query";
+
+const fetchEditHistory = async (qnsLink: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/question/editHistory/${qnsLink}`);
+    if (!response.ok) throw Error(response.statusText);
+    return response.json();
+};
 
 const GetEditHistory = (qnsLink: string) => {
-    const [loading, setLoading] = useState<boolean>(true);
-    const [editHistory, setEditHistory] = useState<QuestionFrontEndType[]>([]);
-    const [error, setError] = useState<string>("");
-    useEffect(() => {
-        fetch(
-            `${process.env.REACT_APP_API_URI}/question/editHistory/${qnsLink}`
-        )
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            }).then((result) => {
-                setEditHistory(result);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
 
-    }, [qnsLink]);
+    const result = useQuery({ queryKey: 'getEditHistory', queryFn: () => fetchEditHistory(qnsLink) });
+
+    console.log(result);
 
     return {
-        loading,
-        editHistory,
-        error,
+        loading: result.isLoading,
+        editHistory: result.data,
+        error: result.error,
     };
 };
 

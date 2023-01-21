@@ -8,7 +8,7 @@ const fetchCourses = async () => {
 
 const GetAllCourses = () => {
 
-    const result = useQuery("getAllCourses", () => fetchCourses());
+    const result = useQuery({ queryKey: "getAllCourses", queryFn: () => fetchCourses() });
 
     return {
         courses: result.data,
