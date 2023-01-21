@@ -1,37 +1,19 @@
-import { useEffect, useState } from "react";
-import { QuestionFrontEndType } from "../../../../backend/types/Questions";
+import { useQuery } from "react-query";
+
+const fetchData = async (qnsLink: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/question/oneQuestion/${qnsLink}`);
+    if (!response.ok) throw Error(response.statusText);
+    return response.json();
+};
 
 const GetQuestion = (qnsLink: string) => {
-    const [loading, setLoading] = useState<boolean>(true);
-    const [question, setQuestion] = useState<QuestionFrontEndType>();
-    const [hasRated, setHasRated] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
-
-    useEffect(() => {
-        fetch(
-            `${process.env.REACT_APP_API_URI}/question/oneQuestion/${qnsLink}`
-        )
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            })
-            .then((result) => {
-                setHasRated(result.hasRated);
-                setQuestion(result.question);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
-
-    }, [qnsLink]);
+    const result = useQuery(["question", qnsLink], () => fetchData(qnsLink));
 
     return {
-        loading,
-        question,
-        hasRated,
-        error,
+        loading: result.isLoading,
+        question: result.data?.question,
+        hasRated: result.data?.hasRated,
+        error: result.error
     };
 };
 
