@@ -13,9 +13,15 @@ const GetWidgets = () => {
 
     const result = useQuery('getWidgets', () => fetchData(userId), { enabled: !!userId });
 
+    const bookmarkedCourses: [string, string][] = [];
+
+    result.data?.bookmarkCourses.forEach((courseId: string) => {
+        bookmarkedCourses.push([`/courses/${courseId}`, courseId]);
+    });
+
     return {
         loading: result.isLoading,
-        courseData: result.data,
+        bookmarkedCourses,
         error: result.error
     };
 };

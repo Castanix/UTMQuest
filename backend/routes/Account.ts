@@ -118,7 +118,7 @@ accountRouter.put(
 	async (req: Request, res: Response) => {
 		const { utorid: utorId } = req.headers;
 
-		if (req.body.bookmark) {
+		if (req.body.bookmarked) {
 			utmQuestCollections.Accounts?.findOneAndUpdate(
 				{ utorId },
 				{
@@ -132,7 +132,7 @@ accountRouter.put(
 							error: "Unable to bookmark course",
 						});
 					}
-					res.status(200).end();
+					res.status(200).send(result);
 				})
 				.catch((error) => {
 					res.status(500).send(error);
@@ -151,7 +151,7 @@ accountRouter.put(
 							error: "Unable to bookmark course",
 						});
 					}
-					res.status(200).end();
+					res.status(200).send(result);
 				})
 				.catch((error) => {
 					res.status(500).send(error);
