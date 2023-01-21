@@ -14,7 +14,7 @@ const paginationConfig = (total: number, size: number) => ({
 });
 
 const DashboardPage = () => {
-  const { loading, courseData, error } = GetWidgets();
+  const { loading, bookmarkedCourses, error } = GetWidgets();
 
   if (loading) return <Loading />;
 
@@ -25,7 +25,7 @@ const DashboardPage = () => {
       <Space direction="vertical">
         <Card title="Bookmarked Courses" className="bookmarked-courses">
           <div className="card-content">
-            <BookmarkCoursesList courseData={courseData} paginationConfig={paginationConfig} />
+            <BookmarkCoursesList courseData={bookmarkedCourses} paginationConfig={paginationConfig} />
           </div>
         </Card>
         <Typography.Text italic>More widgets coming soon.</Typography.Text>
