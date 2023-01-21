@@ -1,38 +1,19 @@
-import { useState, useEffect } from 'react';
-import CoursesType from '../../../../backend/types/Courses';
+import { useQuery } from 'react-query';
 
+const fetchCourses = async () => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/course/getAllCourses`);
+    if (!response.ok) throw Error("Could not complete request.");
+    return response.json();
+};
 
 const GetAllCourses = () => {
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string>("");
-    const [courses, setCourses] = useState<CoursesType[]>([]);
 
-    useEffect(() => {
-        const fetchCourses = async () => {
-            await fetch(
-                `${process.env.REACT_APP_API_URI}/course/getAllCourses`
-            )
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            })
-            .then((result) => {
-                setCourses(result);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
-        };
-        fetchCourses();
-    }, [setCourses, setLoading, setError]);
+    const result = useQuery("getAllCourses", () => fetchCourses());
 
     return {
-        courses,
-        loading,
-        error,
-        setCourses
+        courses: result.data,
+        loading: result.isLoading,
+        error: result.error,
     };
 };
 

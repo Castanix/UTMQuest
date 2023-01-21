@@ -4,6 +4,8 @@ import './index.css';
 import { notification } from 'antd';
 import { FireTwoTone } from '@ant-design/icons';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import Topbar from './components/Topbar/Topbar';
 import reportWebVitals from './reportWebVitals';
 import ManageTopics from './pages/ManageTopics/ManageTopics';
@@ -18,6 +20,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
+const queryClient = new QueryClient();
 /* Once login is implemented, we can move the following within the login callback. */
 
 fetch(`${process.env.REACT_APP_API_URI}/incrementLoginStreak`, { method: "PUT" })
@@ -36,21 +39,24 @@ fetch(`${process.env.REACT_APP_API_URI}/incrementLoginStreak`, { method: "PUT" }
 
 root.render(
   <BrowserRouter>
-    <Topbar>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/courses/:courseId/topics" element={<ManageTopics />} />
-        <Route path="/courses/:courseId/addQuestion" element={<AddQuestionPage />} />
-        <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage />} />
+    <QueryClientProvider client={queryClient}>
+      <Topbar>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/courses/:courseId/topics" element={<ManageTopics />} />
+          <Route path="/courses/:courseId/addQuestion" element={<AddQuestionPage edit={false} />} />
+          <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage edit />} />
 
-        <Route path="/courses/:courseId/quiz" element={<QuizPage />} />
-        <Route path="/courses/:courseId" element={<QuestionsPage />} />
+          <Route path="/courses/:courseId/quiz" element={<QuizPage />} />
+          <Route path="/courses/:courseId" element={<QuestionsPage />} />
 
-        <Route path="/courses/:courseId/question/:qnsLink" element={<ApprovedQuestion />} />
-        <Route path="/profile/:userId" element={<ProfilePage />} />
-        <Route path="*" element={<div>Page not found</div>} />
-      </Routes>
-    </Topbar>
+          <Route path="/courses/:courseId/question/:qnsLink" element={<ApprovedQuestion />} />
+          <Route path="/profile/:userId" element={<ProfilePage />} />
+          <Route path="*" element={<div>Page not found</div>} />
+        </Routes>
+      </Topbar>
+      <ReactQueryDevtools />
+    </QueryClientProvider>
   </BrowserRouter>
 );
 
