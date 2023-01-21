@@ -10,7 +10,7 @@ import "./EditHistory.css";
 import DisplayBadges from '../DisplayBadges/DisplayBadges';
 import GetRelativeTime from '../../RelativeTime';
 import { GetUserInitials } from '../../pages/QuestionsPage/QuestionsList';
-
+import Loading from '../Loading/Loading';
 
 export const onMobile = () => window.innerWidth < 420;
 
@@ -92,7 +92,9 @@ const EditHistory = ({ qnsLink }: { qnsLink: string }) => {
 
     const [changeLog, setChangeLog] = useState<React.ReactNode>();
 
-    if (error !== '') return <ErrorMessage title={error} link='.' message='Refresh' />;
+    if (loading) return <Loading />;
+
+    if (error instanceof Error) return <ErrorMessage title={error.message} link='.' message='Refresh' />;
 
     const renderList: React.ReactNode[] = [];
 
