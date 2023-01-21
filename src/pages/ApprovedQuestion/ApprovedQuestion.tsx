@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
 import './ApprovedQuestion.css';
 import MDEditor from '@uiw/react-md-editor';
 import { Breadcrumb, Button, Card, Typography } from 'antd';
@@ -152,12 +153,12 @@ const ApprovedQuestion = () => {
     const [hasAnswered, setHasAnswered] = useState<boolean>(false);
     const params = useParams();
     const qnsLink = params.qnsLink ?? '';
-    const courseCode = params.courseId ?? '';
+    const courseId = params.courseId ?? '';
     const { loading, question, hasRated, error } = GetQuestion(qnsLink);
 
-
-
     const isLightMode = useContext(ThemeContext);
+    const queryClient = useQueryClient();
+
 
     useEffect(() => {
 
@@ -165,20 +166,26 @@ const ApprovedQuestion = () => {
         const viewTimer = setTimeout(() => {
             fetch(
                 `${process.env.REACT_APP_API_URI}/question/incrementView/${qnsLink}`, { method: "PUT" }
-            );
+
+            ).then((result) => {
+                if (result.ok) {
+                    queryClient.invalidateQueries(["question", qnsLink]);
+                }
+            });
         }, 30000);
 
         return (() => {
             clearTimeout(viewTimer);
         });
 
-    }, [qnsLink]);
+    }, [qnsLink, queryClient]);
 
     if (loading) return <Loading />;
 
-    if (error !== '' || question === undefined) return <ErrorMessage title={error !== '' ? error : 'Could not find question'} link={`/courses/${courseCode}/browse`} message="Go back to questions" />;
+    if (error instanceof Error) return <ErrorMessage title={error.message} link={`/courses/${courseId}`} message="Go back to questions" />;
+    if (question === undefined) return <ErrorMessage title="Could not find question" link={`/courses/${courseId}`} message="Go back to course" />;
 
-    if (courseCode !== question.courseId) return <ErrorMessage title="Could not find course" link="/" message="Home" />;
+    if (courseId !== question.courseId) return <ErrorMessage title="Could not find course" link="/" message="Home" />;
 
     const onTabChange = (key: string) => {
         setActiveTabKey(key);
