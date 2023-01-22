@@ -40,8 +40,8 @@ root.render(
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/courses/:courseId/topics" element={<ManageTopics />} />
-        <Route path="/courses/:courseId/addQuestion" element={<AddQuestionPage edit={false} />} />
-        <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage edit />} />
+        <Route path="/courses/:courseId/addQuestion" element={<AddQuestionPage />} />
+        <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage />} />
 
         <Route path="/courses/:courseId/quiz" element={<QuizPage />} />
         <Route path="/courses/:courseId" element={<QuestionsPage />} />

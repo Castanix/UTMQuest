@@ -223,6 +223,7 @@ async function initDB() {
 						"dislikes",
 						"views",
 						"viewers",
+						"userId"
 					],
 					additionalProperties: false,
 					properties: {
@@ -361,6 +362,9 @@ async function initDB() {
 							description:
 								"'viwers' is an object with key representing unique users who have viewed this question",
 						},
+						userId: {
+							bsonType: "string"
+						}
 					},
 				},
 			},

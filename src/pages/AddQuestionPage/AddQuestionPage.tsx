@@ -25,7 +25,7 @@ const Header = ({ courseId }:
     </div>
 );
 
-const AddQuestionPage = ({ edit }: { edit: boolean }) => {
+const AddQuestionPage = () => {
     const [currStep, setCurrStep] = useState<number>(0);
     const [topicSelected, setTopicSelected] = useState<[string, string]>(["", ""]);
 
@@ -57,7 +57,7 @@ const AddQuestionPage = ({ edit }: { edit: boolean }) => {
                     />
                 </div>
                 <div style={(currStep) ? { display: "block" } : { display: "none" }}>
-                    <AQStepTwo courseId={courseId ?? ''} topicSelected={topicSelected} setCurrStep={setCurrStep} edit={edit} />
+                    <AQStepTwo courseId={courseId ?? ''} topicSelected={topicSelected} setCurrStep={setCurrStep} />
                 </div>
             </main>
         </Card>

@@ -42,13 +42,17 @@ const updateBadge = async (utorId: string) => {
 		.catch(() => failed);
 };
 
-const updateLatest = (question: any, set: boolean) => {
-	const result = utmQuestCollections.Questions?.updateOne(question, {
+const updateLatest = (question: any, set: boolean) => utmQuestCollections.Questions?.updateOne(question, {
 		$set: { latest: set },
-	});
+	}).then(result => {
+		if(!result) return false;
 
-	return !!result;
-};
+		return true;
+	}).catch(err => {
+		throw new Error(err);
+		// return err;
+		// throw new Error("Error updating latest flag on document id: " + question._id);
+	});
 
 const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
 	const result = utmQuestCollections.Topics?.findOneAndUpdate(
@@ -497,16 +501,16 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 
 questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 	try {
-		const oldVersion = await utmQuestCollections.Questions?.findOne({
-			_id: new ObjectID(req.body.oldVersion),
+		const currVersion = await utmQuestCollections.Questions?.findOne({
+			qnsLink: req.body.qnsLink,
 			latest: true,
 		});
-		if (!oldVersion) {
+		if (!currVersion) {
 			res.status(404).send({ error: "No such latest question found." });
 			return;
 		}
 
-		const { qnsLink, restore, anon } = req.body;
+		const { qnsLink, anon } = req.body;
 		const utorId = req.headers.utorid as string;
 
 		const badge = await utmQuestCollections.Badges?.findOne({
@@ -546,92 +550,23 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			numDiscussions: req.body.numDiscussions,
 			anon: req.body.anon,
 			latest: true,
-			rating: restore ? req.body.rating : {},
-			likes: restore ? req.body.likes : 0,
-			dislikes: restore ? req.body.dislikes : 0,
-			views: restore ? req.body.views : 0,
-			viewers: restore ? req.body.viewers : {},
+			rating: {},
+			likes: 0,
+			dislikes: 0,
+			views: 0,
+			viewers: {},
 		};
-
-		if (restore) {
-			const restoreVersion = utmQuestCollections.Questions?.findOne({
-				_id: req.body._id,
-			});
-			if (!restoreVersion) {
-				res.status(404).send({ error: "No restorable version found." });
-				return;
-			}
-
-			utmQuestCollections.Questions?.updateOne(restoreVersion, {
-				$set: { latest: true },
-			})
-				.then((result) => {
-					if (!result) {
-						res.status(500).send({
-							error: "Unable update restored version.",
-						});
-						return;
-					}
-
-					// Attempts to update latest from old questions doc, reverts any changes if failed
-					const latestStatus = updateLatest(oldVersion, false);
-					if (!latestStatus) {
-						utmQuestCollections.Questions?.deleteOne(question);
-						res.status(500).send({
-							error: "Update 'latest' flag for previous question failed. Reverting any changes.",
-						});
-						return;
-					}
-
-					// Attempts to update badge progression for specified utorid, reverts all changes if failed
-					if (!req.body.anon) {
-						updateBadge(utorId).then((updateRes) => {
-							if (!updateRes) {
-								updateLatest(oldVersion, true);
-								utmQuestCollections.Questions?.deleteOne(
-									question
-								);
-								res.status(500).send({
-									error: "Unable to update badges. Reverting all changes.",
-								});
-								return;
-							}
-							const { code, message, qnsStatus } = updateRes;
-
-							if (code === 200) {
-								res.status(201).send({
-									qnsLink,
-									qnsStatus,
-									unlockedBadges: badge.unlockedBadges,
-									edit: true,
-								});
-							} else {
-								res.status(code).send(message);
-							}
-						});
-					} else {
-						res.status(201).send({ qnsLink });
-					}
-				})
-				.catch((error) => {
-					res.status(500).send(error);
-				});
-
-			return;
-		}
 
 		// Add edited questions doc into db
 		utmQuestCollections.Questions?.insertOne(question)
 			.then((result) => {
 				if (!result) {
-					res.status(500).send({
-						error: "Unable to add new question.",
-					});
+					res.status(500).send("Unable to add new question.");
 					return;
 				}
 
 				// Attempts to update latest from old questions doc, reverts any changes if failed
-				const latestStatus = updateLatest(oldVersion, false);
+				const latestStatus = updateLatest(currVersion, false);
 				if (!latestStatus) {
 					utmQuestCollections.Questions?.deleteOne(question);
 					res.status(500).send({
@@ -644,7 +579,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 				if (!req.body.anon) {
 					updateBadge(utorId).then((updateRes) => {
 						if (!updateRes) {
-							updateLatest(oldVersion, true);
+							updateLatest(currVersion, true);
 							utmQuestCollections.Questions?.deleteOne(question);
 							res.status(500).send({
 								error: "Unable to update badges. Reverting all changes.",
@@ -672,9 +607,55 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 				res.status(500).send(error);
 			});
 	} catch (error) {
-		res.status(500).send(error);
+		res.status(500).send(`ERROR: ${error}`);
 	}
 });
+
+
+questionRouter.put(
+	"/restoreQuestion", async (req: Request, res: Response) => {
+		utmQuestCollections.Questions?.findOne({
+			_id: new ObjectID(req.body._id)
+		}).then(restoredVersion => {
+			if(!restoredVersion) {
+				res.status(404).send("No restored version found");
+				return;
+			};
+
+			const { qnsLink } = restoredVersion;
+
+			const isUpdated = updateLatest(restoredVersion, true);
+
+			if(!isUpdated) {
+				res.status(400).send("Cannot restore version at this time");
+				return;
+			};
+
+			utmQuestCollections.Questions?.deleteMany({
+				$expr: { $gt: [{ $toDate: "$date" }, new Date(restoredVersion.date)] },
+				qnsLink
+			}).then(result => {
+				if(!result) {
+					const revert = updateLatest(restoredVersion, false);
+
+					if(!revert) {
+						res.status(400).send("Unable to delete all versions after restore point. Cannot revert changes, data may not be in sync");
+						return;
+					};
+
+					res.status(400).send("Unable to delete all versions after restore point.");
+					return;
+				};
+
+				res.status(200).send({qnsLink});
+			}).catch(err => {
+				throw new Error(err);
+			});
+		}).catch(err => {
+			res.status(500).send(err);
+		});
+	}
+);
 
 questionRouter.get(
 	"/similar/:topicId/:originalQnsId/:term",

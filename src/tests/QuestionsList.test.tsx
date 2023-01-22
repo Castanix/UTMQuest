@@ -54,7 +54,7 @@ const questions: QuestionFrontEndType[] = [
         likes: 0,
         dislikes: 0,
         views: 1,
-        viewers: {}
+        viewers: {},
     },
     {
         _id: 'abcde',
@@ -79,7 +79,7 @@ const questions: QuestionFrontEndType[] = [
         likes: 0,
         dislikes: 0,
         views: 1,
-        viewers: {}
+        viewers: {},
     },
 ]
 
