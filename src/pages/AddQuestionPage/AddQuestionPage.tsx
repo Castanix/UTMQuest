@@ -32,11 +32,11 @@ const AddQuestionPage = () => {
     const params = useParams();
     const { courseId } = params;
 
-    const { topics, loading, error } = GetAllTopics(courseId ?? '');
+    const { topics, loadingTopics, errorTopics } = GetAllTopics(courseId ?? '');
 
-    if (loading) return <Loading />;
+    if (loadingTopics) return <Loading />;
 
-    if (error !== '') return <ErrorMessage title={error} link={`/courses/${courseId}`} message='Go back' />;
+    if (errorTopics instanceof Error) return <ErrorMessage title={errorTopics.message} link={`/courses/${courseId}`} message='Go back' />;
 
     return (
         <Card title={<Header courseId={courseId ?? ''} />} bordered={false}>

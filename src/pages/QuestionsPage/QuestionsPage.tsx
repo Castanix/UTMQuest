@@ -48,12 +48,12 @@ const QuestionsPage = () => {
     const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
     const { loadingBookmarked, errorBookmarked, loadingCourse, errorCourse, courseName } = CheckBookmark(courseId ?? '', setIsBookmarked);
 
-    const { loading: loadingTopics, topics, error: errorTopics } = GetAllTopics(courseId ?? '');
+    const { loadingTopics, topics, errorTopics } = GetAllTopics(courseId ?? '');
     const { loading, questions, error } = GetQuestions(courseId ?? '');
 
     if (loading || loadingTopics || loadingBookmarked || loadingCourse) return <Loading />;
 
-    if (error !== '' || errorTopics !== '' || errorBookmarked !== '' || errorCourse !== '') return <ErrorMessage title={error !== '' ? error : errorTopics} link="." message="Refresh" />;
+    if (error !== '' || errorTopics instanceof Error || errorBookmarked !== '' || errorCourse !== '') return <ErrorMessage title={errorTopics instanceof Error ? errorTopics.message : error} link="." message="Refresh" />;
     return (
         <Card title={<Header courseId={courseId ?? ''} courseName={courseName ?? ''} bookmarked={isBookmarked} setBookmarked={setIsBookmarked} />} bordered={false}>
             <main className='main-container'>
