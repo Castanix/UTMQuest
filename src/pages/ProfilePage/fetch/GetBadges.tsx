@@ -1,32 +1,24 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 
-
-const GetBadges = (userId: string, setBadges: Function) => {
-
-    const [loadingBadges, setLoadingBadges] = useState<boolean>(true);
-    const [errorBadges, setErrorBadges] = useState('');
-
-
-    useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URI}/badge/userBadges/${userId}`)
-            .then(res => {
-                if (!res.ok) throw Error(res.statusText);
-
-                return res.json();
-            }).then(result => {
-                setBadges({ unlockedBadges: result.unlockedBadges, displayBadges: result.displayBadges, longestLoginStreak: result.longestLoginStreak });
-                setLoadingBadges(false);
-            }).catch((err) => {
-                setErrorBadges(err.message);
-                setLoadingBadges(false);
-            });
-    }, [setBadges, userId]);
-
-    return {
-        loadingBadges,
-        errorBadges
-    };
+const fetchUserBadges = async (utorId: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/badge/userBadges/${utorId}`);
+    if (!response.ok) throw Error(response.statusText);
+    return response.json();
 };
 
+const GetBadges = (userId: string) => {
+
+    const result = useQuery('userBadges', () => fetchUserBadges(userId));
+
+    return {
+        loadingBadges: result.isLoading,
+        errorBadges: result.error,
+        badges: {
+            unlockedBadges: result.data?.unlockedBadges,
+            displayBadges: result.data?.displayBadges,
+            longestLoginStreak: result.data?.longestLoginStreak
+        }
+    };
+};
 
 export default GetBadges;
