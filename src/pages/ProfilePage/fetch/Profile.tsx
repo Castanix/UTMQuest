@@ -1,29 +1,21 @@
 // import { message } from "antd";
-import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 
-const GetProfile = (userId: string, setName: Function) => {
+const fetchAccount = async (userId: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${userId}`);
+    if (!response.ok) throw Error(response.statusText);
+    return response.json();
+};
 
-    const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
-    const [errorProfile, setErrorProfile] = useState('');
 
-    useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${userId}`)
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            }).then((result) => {
-                setName(result.utorName);
-                setLoadingProfile(false);
-            }).catch((err) => {
-                setErrorProfile(err.message);
-                setLoadingProfile(false);
-            });
+const GetProfile = (userId: string) => {
 
-    }, [setName, userId]);
+    const result = useQuery("getAccount", () => fetchAccount(userId));
 
     return {
-        loadingProfile,
-        errorProfile
+        loadingProfile: result.isLoading,
+        errorProfile: result.error,
+        utorName: result.data?.utorName
     };
 };
 
