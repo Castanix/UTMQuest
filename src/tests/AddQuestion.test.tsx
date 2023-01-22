@@ -52,7 +52,7 @@ const question: QuestionFrontEndType = {
     likes: 0,
     dislikes: 0,
     views: 1,
-    viewers: {}
+    viewers: {},
 }
 
 
@@ -61,7 +61,7 @@ const customRender = (
         initialEntries={["/courses/ABC123/addQuestion"]}
     >
         <Routes>
-            <Route path="/courses/:courseId/addQuestion" element={<AddQuestionPage edit={false} />} />
+            <Route path="/courses/:courseId/addQuestion" element={<AddQuestionPage />} />
         </Routes>
     </MemoryRouter>
 );
@@ -71,7 +71,7 @@ const customRenderEdit = (
         initialEntries={[{ pathname: "/courses/ABC123/editQuestion", state: { question } }]}
     >
         <Routes>
-            <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage edit={true} />} />
+            <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage />} />
         </Routes>
     </MemoryRouter>
 )
@@ -188,7 +188,7 @@ describe('AQStepTwo', () => {
             const [topicSelected, setTopicSelect] = React.useState<[string, string]>(["abcd1234", "ABCD"])
             return (
                 <ThemeContext.Provider value={true}>
-                    <AQStepTwo courseId={"ABC123"} topicSelected={topicSelected} setCurrStep={setCurrStep} edit={false} />
+                    <AQStepTwo courseId={"ABC123"} topicSelected={topicSelected} setCurrStep={setCurrStep} />
                 </ThemeContext.Provider>
             )
         }

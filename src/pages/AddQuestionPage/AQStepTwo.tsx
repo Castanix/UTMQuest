@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Input, Select, Typography } from 'antd';
+import { Button, Checkbox, Form, Input, Modal, Select, Typography, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Navigate, useLocation } from 'react-router-dom';
 import React, { useContext, useEffect, useState } from 'react';
@@ -6,7 +6,7 @@ import MDEditor from '@uiw/react-md-editor';
 import rehypeSanitize from 'rehype-sanitize';
 import { QuestionFrontEndType } from '../../../backend/types/Questions';
 import qnsTypeEnum from './types/QnsTypeEnum';
-import AddQuestion from './fetch/AddQuestion';
+import { AddQuestion, EditQuestion, RestoreQuestion } from './fetch/AddQuestion';
 import AddMultipleChoice, { AddOptionType } from '../../components/MultipleChoice/AddMultipleChoice/AddMultipleChoice';
 import DuplicateQuestions from '../../components/DuplicateQuestions/DuplicateQuestions';
 import { onMobile } from '../../components/EditHistory/EditHistory';
@@ -36,18 +36,37 @@ const GetEditor = (value: string | undefined, placeholder: string, onChange: any
     );
 };
 
+// Checks if the question to be restored is not edited to be identical to current latest
+const isIdenticalEdit = (obj1: QuestionFrontEndType, obj2: QuestionFrontEndType) => {
+    // NOTE: Clone object to avoid mutating original!
+    const keys = ['_id', 'anon', 'numDiscussions', 'utorName', 'utorId', 'date', 'latest'];
+    const objClone1 = { ...obj1 };
+    const objClone2 = { ...obj2 };
+
+    keys.forEach(key => {
+        delete objClone1[key as keyof QuestionFrontEndType];
+        delete objClone2[key as keyof QuestionFrontEndType];
+    });
+
+    return JSON.stringify(objClone1) === JSON.stringify(objClone2);
+};
+
+
+// Checks if the question to be restored is not modified
 const isRestore = (restorable: QuestionFrontEndType, newQuestion: QuestionFrontEndType) => {
     const { topicId, qnsName, description, explanation, choices, answers } = restorable;
     const { topicId: topicId2, qnsName: qnsName2, description: description2, explanation: explanation2, choices: choices2, answers: answers2 } = newQuestion;
 
     return topicId === topicId2 && qnsName === qnsName2 &&
         description === description2 && explanation === explanation2 &&
-        JSON.stringify(choices) === JSON.stringify(choices2) && answers === answers2;
+        JSON.stringify(choices) === JSON.stringify(choices2) && JSON.stringify(answers) === JSON.stringify(answers2);
 };
 
-const AQStepTwo = ({ courseId, topicSelected, setCurrStep, edit }:
-    { courseId: string, topicSelected: [string, string], setCurrStep: Function, edit: boolean }) => {
+const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
+    { courseId: string, topicSelected: [string, string], setCurrStep: Function }) => {
 
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [restoreQns, setRestoreQns] = useState<QuestionFrontEndType>();
     const [type, setType] = useState<qnsTypeEnum>();
     const [title, setTitle] = useState<string>();
     const [qnsLink, setQnsLink] = useState<string>('');
@@ -66,6 +85,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep, edit }:
 
     useEffect(() => {
         const setForm = () => {
+            // if question exists, then it is an edit or restore
             if (question) {
                 const { qnsName, qnsType, description, explanation, choices, answers } = question;
 
@@ -238,22 +258,53 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep, edit }:
                                 likes: question ? question.likes : 0,
                                 dislikes: question ? question.dislikes : 0,
                                 views: question ? question.views : 0,
-                                viewers: question ? question.viewers : {}
+                                viewers: question ? question.viewers : {},
                             };
 
-                            AddQuestion(
-                                addableQns,
-                                setRedirect,
-                                edit,
-                                (latest || question),
-                                setIsSubmit,
-                                question ? isRestore(question, addableQns) : false
-                            );
+                            if(question) {
+                                if(latest && isRestore(question, addableQns)) {
+                                    setRestoreQns(addableQns);
+                                    setIsModalOpen(true);
+                                } else {
+                                    if(!isIdenticalEdit(addableQns, latest ?? question)) {
+                                        EditQuestion(addableQns, setIsSubmit, setRedirect);
+                                    } else {
+                                        if(latest) {
+                                            message.error("Changes are identical to the latest version");
+                                        } else {
+                                            message.error("No changes were made");
+                                        };
+                                        setIsSubmit(false);
+                                    };
+                                };
+                            } else {
+                                AddQuestion(addableQns, setRedirect, setIsSubmit);
+                            };  
                         }}
                     >Submit</Button>
                 </div>
                 {redirect ? <Navigate to={`/courses/${courseId}/question/${redirect}`} /> : ""}
             </div>
+            <Modal title="Restore Warning" 
+                open={isModalOpen} 
+                onOk={() => {
+                    setIsModalOpen(false);
+                    if(restoreQns) {
+                        RestoreQuestion(restoreQns, setIsSubmit, setRedirect);
+                    } else {
+                        message.error("Unable to restore question");
+                    };
+                }}
+                onCancel={() => {
+                    setIsModalOpen(false);
+                    setIsSubmit(false);
+                }}
+            >
+                Restoring a question to a previous version without any changes will delete all subsequent versions
+                and discussion posts associated with them.
+                <br/>
+                <b>Are you sure you would like to proceed?</b>
+            </Modal>
         </>
     );
 };

@@ -40,7 +40,7 @@ const editHistory: QuestionFrontEndType[] = [
         likes: 0,
         dislikes: 0,
         views: 1,
-        viewers: {}
+        viewers: {},
     },
     {
         _id: 'abc123',
@@ -65,7 +65,7 @@ const editHistory: QuestionFrontEndType[] = [
         likes: 0,
         dislikes: 0,
         views: 1,
-        viewers: {}
+        viewers: {},
     },
     {
         _id: 'abc',
@@ -90,7 +90,7 @@ const editHistory: QuestionFrontEndType[] = [
         likes: 0,
         dislikes: 0,
         views: 1,
-        viewers: {}
+        viewers: {},
     },
 ]
 

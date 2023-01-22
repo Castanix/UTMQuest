@@ -40,7 +40,7 @@ const question: QuestionFrontEndType =
     likes: 0,
     dislikes: 0,
     views: 1,
-    viewers: {}
+    viewers: {},
 };
 
 
