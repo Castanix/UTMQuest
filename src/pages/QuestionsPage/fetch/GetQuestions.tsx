@@ -13,7 +13,7 @@ const GetQuestions = (courseId: string) => {
     return {
         loading: result.isLoading,
         questions: result?.data,
-        error: result.error as Error,
+        error: result.error,
     };
 };
 

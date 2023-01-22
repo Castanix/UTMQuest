@@ -13,7 +13,7 @@ const GetAllTopics = (courseId: string) => {
     return {
         topics: result?.data,
         loadingTopics: result.isLoading,
-        errorTopics: result.error as Error,
+        errorTopics: result.error,
     };
 };
 

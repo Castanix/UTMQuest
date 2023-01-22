@@ -52,8 +52,11 @@ const QuestionsPage = () => {
     const { loading, questions, error } = GetQuestions(courseId ?? '');
 
     if (loading || loadingTopics || loadingBookmarked || loadingCourse) return <Loading />;
+    if (error instanceof Error) return <ErrorMessage title={error.message} link="." message="Refresh" />;
+    if (errorTopics instanceof Error) return <ErrorMessage title={errorTopics.message} link="." message="Refresh" />;
+    if (errorBookmarked instanceof Error) return <ErrorMessage title={errorBookmarked.message} link="." message="Refresh" />;
+    if (errorCourse instanceof Error) return <ErrorMessage title={errorCourse.message} link="." message="Refresh" />;
 
-    if (error instanceof Error || errorTopics instanceof Error || errorBookmarked !== '' || errorCourse !== '') return <ErrorMessage title={error instanceof Error ? error.message : errorTopics.message} link="." message="Refresh" />;
     return (
         <Card title={<Header courseId={courseId ?? ''} courseName={courseName ?? ''} bookmarked={isBookmarked} setBookmarked={setIsBookmarked} />} bordered={false}>
             <main className='main-container'>

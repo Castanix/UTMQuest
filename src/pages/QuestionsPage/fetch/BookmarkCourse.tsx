@@ -1,46 +1,32 @@
 import { message } from "antd";
-import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+
+const fetchCheckBookmark = async (courseId: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/account/checkBookmark/${courseId}`);
+    if (!response.ok) throw Error(response.statusText);
+    return response.json();
+};
+
+const fetchGetCourse = async (courseId: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/course/getCourse/${courseId}`);
+    if (!response.ok) throw Error(response.statusText);
+    return response.json();
+};
 
 
 export const CheckBookmark = (courseId: string, setIsBookmarked: Function) => {
-    const [loadingBookmarked, setLoadingBookmarked] = useState<boolean>(true);
-    const [errorBookmarked, setErrorBookmarked] = useState<string>("");
-    const [loadingCourse, setLoadingCourse] = useState<boolean>(true);
-    const [errorCourse, setErrorCourse] = useState<string>("");
-    const [courseName, setCourseName] = useState<string>("");
 
-    useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URI}/account/checkBookmark/${courseId}`)
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            }).then((result) => {
-                setIsBookmarked(result);
-                setLoadingBookmarked(false);
-            }).catch((err) => {
-                setErrorBookmarked(err.message);
-                setLoadingBookmarked(false);
-            });
-
-        fetch(`${process.env.REACT_APP_API_URI}/course/getCourse/${courseId}`)
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            }).then((result) => {
-                setCourseName(result.courseName);
-                setLoadingCourse(false);
-            }).catch((err) => {
-                setErrorCourse(err.message);
-                setLoadingCourse(false);
-            });
-    }, [courseId, setIsBookmarked]);
+    const bookmarkResult = useQuery("checkBookmark", () => fetchCheckBookmark(courseId), {
+        onSuccess: (data) => setIsBookmarked(data)
+    });
+    const courseResult = useQuery("getBookmarkCourses", () => fetchGetCourse(courseId));
 
     return {
-        loadingBookmarked,
-        errorBookmarked,
-        loadingCourse,
-        errorCourse,
-        courseName
+        loadingBookmarked: bookmarkResult.isLoading,
+        errorBookmarked: bookmarkResult.error,
+        loadingCourse: courseResult.isLoading,
+        errorCourse: courseResult.error,
+        courseName: courseResult.data?.courseName
     };
 };
 
@@ -55,11 +41,11 @@ export const BookmarkCourse = (courseId: string, bookmarked: boolean, setBookmar
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({courseId, bookmarked})
+            body: JSON.stringify({ courseId, bookmarked })
         }).then((res: Response) => {
             if (!res.ok) throw new Error("Could not add course. Please try again.");
             setBookmarked(!bookmarked);
-            if(!bookmarked) {
+            if (!bookmarked) {
                 message.success("Course bookmarked.");
             } else {
                 message.success("Course removed from bookmarks.");
