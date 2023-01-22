@@ -46,7 +46,6 @@ const Header = () => (
 );
 
 const ProfilePage = () => {
-    const [badges, setBadges] = useState<BadgesType>({ unlockedBadges: {}, displayBadges: [], longestLoginStreak: 0 });
     const [timeline, setTimeline] = useState<TimelineType[]>();
 
     const params = useParams();
@@ -54,13 +53,13 @@ const ProfilePage = () => {
     const { userId: loggedInUser } = useContext(UserContext);
 
     const { loadingProfile, errorProfile, utorName } = GetProfile(userId);
-    const { loadingBadges, errorBadges } = GetBadges(userId, setBadges);
-    const { loadingQuestions, errorQuestions } = GetAllQuestions(utorId, setTimeline);
+    const { loadingBadges, errorBadges, badges } = GetBadges(userId);
+    const { loadingQuestions, errorQuestions } = GetAllQuestions(userId, setTimeline);
 
     if (loadingProfile || loadingBadges || loadingQuestions) return <Loading />;
 
     if (errorProfile instanceof Error) return <ErrorMessage title={errorProfile.message} link="." message="Refresh" />;
-    if (errorBadges) return <ErrorMessage title={errorBadges} link="." message="Refreshing" />;
+    if (errorBadges instanceof Error) return <ErrorMessage title={errorBadges.message} link="." message="Refreshing" />;
     if (errorQuestions) return <ErrorMessage title={errorQuestions} link="." message="Refreshing" />;
 
     // TODO: need to include threadreplies when edit badge routes have been set
