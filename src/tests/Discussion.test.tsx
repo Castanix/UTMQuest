@@ -5,6 +5,7 @@ import { setupServer } from 'msw/node'
 import Discussion from '../components/Discussion/Discussion';
 import { DiscussionFrontEndType } from "../../backend/types/Discussion";
 import { BrowserRouter } from 'react-router-dom';
+import { UserContext } from '../components/Topbar/Topbar';
 
 
 Object.defineProperty(window, 'matchMedia', {
@@ -97,7 +98,7 @@ const server = setupServer(
     rest.get(`${process.env.REACT_APP_API_URI}/discussion/thread/:qnsLink`, (req, res, ctx) => {
         return res(
             ctx.status(200),
-            ctx.json({ discussion: topLevelComments, utorid: 'dummy22' })
+            ctx.json({ discussion: topLevelComments })
         )
     }),
     rest.get(`${process.env.REACT_APP_API_URI}/discussion/allThreads/:qnsLink`, (req, res, ctx) => {
@@ -109,7 +110,7 @@ const server = setupServer(
     rest.delete(`${process.env.REACT_APP_API_URI}/discussion/:discussionId`, (req, res, ctx) => {
         return res(
             ctx.status(202),
-            ctx.json({ value: { ...deletedComment } })
+            ctx.json({ ...deletedComment })
         )
     }),
     rest.post(`${process.env.REACT_APP_API_URI}/discussion`, (req, res, ctx) => {
@@ -123,7 +124,7 @@ const server = setupServer(
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<Discussion qnsLink="abc" qnsDate="some date" />, { wrapper: BrowserRouter })
+    const { container } = render(<UserContext.Provider value={{ username: "Bob", userId: "123", anonId: "1" }}><Discussion qnsLink="abc" qnsDate="some date" /></UserContext.Provider>, { wrapper: BrowserRouter })
     document = container;
 });
 

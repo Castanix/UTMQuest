@@ -3,6 +3,7 @@ import configValues from "../config";
 import { UTMQuestCollections } from "../types/utmQuestCollection";
 
 export const utmQuestCollections: UTMQuestCollections = {};
+// eslint-disable-next-line import/no-mutable-exports
 export let mongoDBConnection: mongoDB.MongoClient;
 
 // Connects to mongoDB with MONGO_URI from .env

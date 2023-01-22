@@ -126,15 +126,21 @@ questionRouter.get(
 	"/oneQuestion/:qnsLink",
 	async (req: Request, res: Response) => {
 		try {
+			const utorId = req.headers.utorid as string;
+			const user = await utmQuestCollections.Accounts?.findOne({
+				utorId,
+			});
+
 			const document = await utmQuestCollections.Questions?.findOne({
 				qnsLink: req.params.qnsLink,
 				latest: true,
 			});
-			if (!document) {
-				res.status(404).send({ error: "No question found." });
+			if (!document || !user) {
+				res.status(404).end();
 				return;
 			}
-			const hasRated = (req.headers.utorid as string) in document.rating;
+
+			const hasRated = user.userId in document.rating;
 			const question = RemoveFieldsFromQuestion(
 				document as QuestionBackEndType
 			);
@@ -225,7 +231,13 @@ questionRouter.get(
 				{ $sample: { size: 10 } },
 			]).toArray();
 
-			res.status(200).send(generated);
+			if (!generated) res.status(200).send([]);
+			else
+				res.status(200).send([
+					...generated.map((elem) =>
+						RemoveFieldsFromQuestion(elem as QuestionBackEndType)
+					),
+				]);
 			return;
 		} catch (error) {
 			res.status(500).send(error);
