@@ -46,7 +46,6 @@ const Header = () => (
 );
 
 const ProfilePage = () => {
-    const [name, setName] = useState<string>("");
     const [badges, setBadges] = useState<BadgesType>({ unlockedBadges: {}, displayBadges: [], longestLoginStreak: 0 });
     const [timeline, setTimeline] = useState<TimelineType[]>();
 
@@ -54,15 +53,15 @@ const ProfilePage = () => {
     const userId = params.userId ?? "";
     const { userId: loggedInUser } = useContext(UserContext);
 
-    const { loadingProfile, errorProfile } = GetProfile(userId, setName);
+    const { loadingProfile, errorProfile, utorName } = GetProfile(userId);
     const { loadingBadges, errorBadges } = GetBadges(userId, setBadges);
-    const { loadingQuestions, errorQuestions } = GetAllQuestions(userId, setTimeline);
+    const { loadingQuestions, errorQuestions } = GetAllQuestions(utorId, setTimeline);
 
     if (loadingProfile || loadingBadges || loadingQuestions) return <Loading />;
 
-    if (errorProfile) return <ErrorMessage title={errorProfile} link="." message="Refresh" />;
-    if (errorBadges) return <ErrorMessage title={errorBadges} link="." message="Refresh" />;
-    if (errorQuestions) return <ErrorMessage title={errorQuestions} link="." message="Refresh" />;
+    if (errorProfile instanceof Error) return <ErrorMessage title={errorProfile.message} link="." message="Refresh" />;
+    if (errorBadges) return <ErrorMessage title={errorBadges} link="." message="Refreshing" />;
+    if (errorQuestions) return <ErrorMessage title={errorQuestions} link="." message="Refreshing" />;
 
     // TODO: need to include threadreplies when edit badge routes have been set
     const { addQns, editQns, consecutivePosting } = badges.unlockedBadges;
@@ -112,10 +111,10 @@ const ProfilePage = () => {
                 <div className="profile-container">
                     <div className="user-container">
                         <div className="avatar">
-                            <p>{GetUserInitials(name)}</p>
+                            <p>{GetUserInitials(utorName)}</p>
                         </div>
                         <div className="user-details">
-                            <Text strong>{name}</Text>
+                            <Text strong>{utorName}</Text>
                             <div className="badge-under-name">
                                 <Popover content={BadgeDescriptions.dailybadge} trigger="hover">
                                     <img src="/images/dailybadge.png" alt="dailybadge" />
