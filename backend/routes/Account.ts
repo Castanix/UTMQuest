@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import { v4 as uuidv4 } from "uuid";
 import { utmQuestCollections } from "../db/db.service";
 
 const accountRouter = Router();
@@ -15,18 +16,26 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 	const user = await utmQuestCollections.Accounts?.findOne({ utorId });
 
 	if (!user) {
+		// generate unique userId
+		const userId = uuidv4();
+
 		utmQuestCollections.Accounts?.insertOne({
 			utorId,
+			userId,
 			utorName: `${firstName} ${lastName}`,
 			bookmarkCourses: [],
+			postedComments: [],
 		}).then((result) => {
 			if (!result) {
-				res.status(500).send("Unable to perform first time sign in.");
+				res.status(500).send({
+					error: "Unable to perform first time sign in.",
+				});
 				return;
 			}
 
 			utmQuestCollections.Badges?.insertOne({
 				utorId,
+				userId,
 				qnsAdded: 0,
 				qnsEdited: 0,
 				threadResponses: 0,
@@ -46,34 +55,37 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 			}).then((badgeResult) => {
 				if (!badgeResult) {
 					utmQuestCollections.Accounts?.deleteOne({ utorId });
-					res.status(500).send(
-						"Unable to perform first time sign in."
-					);
+					res.status(500).send({
+						error: "Unable to perform first time sign in.",
+					});
 					return;
 				}
 
 				res.status(201).send({
 					username: firstName.concat(" ").concat(lastName),
-					utorId,
+					userId,
+					postedComments: [],
 				});
 			});
 		});
 	} else {
 		res.status(418).send({
 			username: firstName.concat(" ").concat(lastName),
-			utorId,
+			userId: user.userId,
+			postedComments: user.postedComments,
 		});
 	}
 });
 
-accountRouter.get("/getAccount/:utorId", (req: Request, res: Response) => {
-	utmQuestCollections.Accounts?.findOne({ utorId: req.params.utorId })
+accountRouter.get("/getAccount/:userId", (req: Request, res: Response) => {
+	utmQuestCollections.Accounts?.findOne({ userId: req.params.userId })
 		.then((doc) => {
 			if (doc == null) {
 				res.statusMessage = "No such account found.";
 				res.status(404).end();
 			} else {
-				res.status(200).send(doc);
+				const { utorId: _, ...returnDoc } = doc; // exclude utorId from all responses
+				res.status(200).send(returnDoc);
 			}
 		})
 		.catch((error) => {
@@ -89,7 +101,9 @@ accountRouter.get("/checkBookmark/:courseId", (req: Request, res: Response) => {
 				res.statusMessage = "No such account found.";
 				res.status(404).end();
 			} else {
-				const isBookmark = doc.bookmarkCourses.includes(req.params.courseId);
+				const isBookmark = doc.bookmarkCourses.includes(
+					req.params.courseId
+				);
 				res.status(200).send(isBookmark);
 			}
 		})
@@ -98,45 +112,52 @@ accountRouter.get("/checkBookmark/:courseId", (req: Request, res: Response) => {
 		});
 });
 
-accountRouter.put("/updateBookmarkCourses", async (req: Request, res: Response) => {
-	const { utorid: utorId } = req.headers;
+accountRouter.put(
+	"/updateBookmarkCourses",
+	async (req: Request, res: Response) => {
+		const { utorid: utorId } = req.headers;
 
-	if (req.body.bookmark) {
-		utmQuestCollections.Accounts?.findOneAndUpdate(
-			{ utorId },
-			{
-				$pull: { bookmarkCourses: req.body.courseId },
-			},
-			{ returnDocument: "after" }
-		)
-			.then((result) => {
-				if (!result) {
-					res.status(400).send(`Unable to bookmark course`);
-				}
-				res.status(200).send(result);
-			})
-			.catch((error) => {
-				res.status(500).send(error);
-			});
-	} else {
-		utmQuestCollections.Accounts?.findOneAndUpdate(
-			{ utorId },
-			{
-				$push: { bookmarkCourses: req.body.courseId },
-			},
-			{ returnDocument: "after" }
-		)
-			.then((result) => {
-				if (!result) {
-					res.status(400).send(`Unable to bookmark course`);
-				}
-				res.status(200).send(result);
-			})
-			.catch((error) => {
-				res.status(500).send(error);
-			});
+		if (req.body.bookmark) {
+			utmQuestCollections.Accounts?.findOneAndUpdate(
+				{ utorId },
+				{
+					$pull: { bookmarkCourses: req.body.courseId },
+				},
+				{ returnDocument: "after" }
+			)
+				.then((result) => {
+					if (!result) {
+						res.status(400).send({
+							error: "Unable to bookmark course",
+						});
+					}
+					res.status(200).end();
+				})
+				.catch((error) => {
+					res.status(500).send(error);
+				});
+		} else {
+			utmQuestCollections.Accounts?.findOneAndUpdate(
+				{ utorId },
+				{
+					$push: { bookmarkCourses: req.body.courseId },
+				},
+				{ returnDocument: "after" }
+			)
+				.then((result) => {
+					if (!result) {
+						res.status(400).send({
+							error: "Unable to bookmark course",
+						});
+					}
+					res.status(200).end();
+				})
+				.catch((error) => {
+					res.status(500).send(error);
+				});
+		}
 	}
-});
+);
 
 /* Currently unused with the removal of the colour field */
 // accountRouter.put('/updateColour', async (req: Request, res: Response) => {

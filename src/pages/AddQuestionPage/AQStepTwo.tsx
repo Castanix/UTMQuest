@@ -40,8 +40,8 @@ const isRestore = (restorable: QuestionsType, newQuestion: QuestionsType) => {
     const { topicId, qnsName, description, explanation, choices, answers } = restorable;
     const { topicId: topicId2, qnsName: qnsName2, description: description2, explanation: explanation2, choices: choices2, answers: answers2 } = newQuestion;
 
-    return topicId === topicId2 && qnsName === qnsName2 && 
-        description === description2 && explanation === explanation2 && 
+    return topicId === topicId2 && qnsName === qnsName2 &&
+        description === description2 && explanation === explanation2 &&
         JSON.stringify(choices) === JSON.stringify(choices2) && answers === answers2;
 };
 
@@ -59,7 +59,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep, edit }:
     const [isAnon, setAnon] = useState<boolean>(false);
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
 
-    const { utorId, username } = useContext(UserContext);
+    const { userId, username } = useContext(UserContext);
     const isLightMode = useContext(ThemeContext);
 
     const { question, latest } = useLocation().state ?? "";
@@ -227,7 +227,8 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep, edit }:
                                 explanation: explanationValue?.trim() ?? "",
                                 choices,
                                 answers,
-                                utorId,
+                                utorId: "",
+                                userId,
                                 utorName: username,
                                 date: latest ? question.date : new Date().toISOString(),
                                 numDiscussions: question ? question.numDiscussions : 0,

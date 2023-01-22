@@ -10,20 +10,20 @@ import Editor from "./Editor";
 import GetRelativeTime from "../../RelativeTime";
 
 import "./Discussion.css";
-import { ThemeContext } from "../Topbar/Topbar";
+import { ThemeContext, UserContext } from "../Topbar/Topbar";
 import { GetUserInitials } from "../../pages/QuestionsPage/QuestionsList";
 
 const GetUsername = (comment: DiscussionFrontEndType) => {
-    const { anon, utorId, utorName } = comment;
+    const { anon, userId, utorName } = comment;
 
     if (anon) {
         return <Typography.Text>{utorName}</Typography.Text>;
     }
 
-    return <Link to={`/profile/${utorId}`}>{utorName}</Link>;
+    return <Link to={`/profile/${userId}`}>{utorName}</Link>;
 };
 
-const DisplayComment = ({ comment, qnsDate, utorId }: { comment: DiscussionFrontEndType, qnsDate: string, utorId: string }) => {
+const DisplayComment = ({ comment, qnsDate }: { comment: DiscussionFrontEndType, qnsDate: string }) => {
     const [displayComment, setDisplayComment] = useState<DiscussionFrontEndType>(comment);
     const [childComments, setChildComments] = useState<DiscussionFrontEndType[]>([]);
     const [isDisplayed, setDisplay] = useState(!(displayComment.thread.length > 0));
@@ -33,7 +33,10 @@ const DisplayComment = ({ comment, qnsDate, utorId }: { comment: DiscussionFront
     const actions = [];
 
     const isLightMode = useContext(ThemeContext);
+    const { postedComments } = useContext(UserContext);
 
+    const userComments = new Set(postedComments);
+    console.log(userComments);
     /* callback after a new comment is successfully added to update the parent comment */
     const updateComments = (newComment: DiscussionFrontEndType, edited: boolean) => {
         if (edited) {
@@ -67,8 +70,8 @@ const DisplayComment = ({ comment, qnsDate, utorId }: { comment: DiscussionFront
         }).then((result) => {
             setDisplayComment({
                 ...displayComment,
-                content: result.value.content,
-                deleted: result.value.deleted
+                content: result.content,
+                deleted: result.deleted
             });
         });
     };
@@ -90,7 +93,7 @@ const DisplayComment = ({ comment, qnsDate, utorId }: { comment: DiscussionFront
 
     actions.push([
         // Need to check if 'user' is author when we get user auth
-        displayComment.utorId === utorId ?
+        userComments.has(comment._id) ?
             <span
                 onClick={() => {
                     setShowReply(false);
@@ -124,16 +127,18 @@ const DisplayComment = ({ comment, qnsDate, utorId }: { comment: DiscussionFront
                     : ""
             }
         </span>,
-        <span
-            key="comment-nested-delete"
-        >
-            {!displayComment.deleted ?
-                <Popconfirm title="Sure to delete?" onConfirm={onDeleteClick}>
-                    Delete
-                </Popconfirm>
-                : ""
-            }
-        </span>
+        userComments.has(comment._id) ?
+            <span
+                key="comment-nested-delete"
+            >
+                {!displayComment.deleted ?
+                    <Popconfirm title="Sure to delete?" onConfirm={onDeleteClick}>
+                        Delete
+                    </Popconfirm>
+                    : ""
+                }
+            </span>
+            : null
     ]);
 
     return (
@@ -166,19 +171,19 @@ const DisplayComment = ({ comment, qnsDate, utorId }: { comment: DiscussionFront
         >
             {
                 childComments.map((item) => (
-                    <DisplayComment key={item._id} comment={item} qnsDate={qnsDate} utorId={utorId} />
+                    <DisplayComment key={item._id} comment={item} qnsDate={qnsDate} />
                 ))
             }
 
             {
                 showReply ?
-                    <Editor discussionId={displayComment._id} qnsLink={displayComment.qnsLink} op={false} oldContent="" updateComments={updateComments} thread={[]} /> :
+                    <Editor discussionId={displayComment._id} qnsLink={displayComment.qnsLink} op={false} oldContent="" updateComments={updateComments} thread={[]} anon={false} /> :
                     null
             }
 
             {
                 showEdit ?
-                    <Editor discussionId={displayComment._id} qnsLink={displayComment.qnsLink} op={displayComment.op} oldContent={displayComment.content} updateComments={updateComments} thread={displayComment.thread} /> :
+                    <Editor discussionId={displayComment._id} qnsLink={displayComment.qnsLink} op={displayComment.op} oldContent={displayComment.content} updateComments={updateComments} thread={displayComment.thread} anon={displayComment.anon} /> :
                     null
             }
         </Comment >

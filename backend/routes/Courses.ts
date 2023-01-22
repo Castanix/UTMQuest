@@ -50,11 +50,11 @@ courseRouter.post("/", async (req: Request, res: Response) => {
 	utmQuestCollections.Courses?.insertOne(course)
 		.then((result) => {
 			if (!result) {
-				res.status(400).send("Unable to post the course");
+				res.status(400).send({ error: "Unable to add the course" });
 			}
-			res.status(201).send(
-				`course ${course.courseId} has been added successfully`
-			);
+			res.status(201).send({
+				success: `course ${course.courseId} has been added successfully`,
+			});
 		})
 		.catch((error) => {
 			res.status(500).send(error);
@@ -71,7 +71,7 @@ courseRouter.put("/addCourse", async (req: Request, res: Response) => {
 	})
 		.then((result) => {
 			if (!result) {
-				res.status(400).send("Unable to update the course");
+				res.status(400).send({ error: "Unable to update the course" });
 			}
 			res.status(200).send({
 				message: `course ${course.courseId} has been updated successfully`,

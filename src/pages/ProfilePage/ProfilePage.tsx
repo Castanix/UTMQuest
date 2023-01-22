@@ -51,18 +51,18 @@ const ProfilePage = () => {
     const [timeline, setTimeline] = useState<TimelineType[]>();
 
     const params = useParams();
-    const utorId = params.utorId ?? "";
-    const { utorId: loggedInUser } = useContext(UserContext);
+    const userId = params.userId ?? "";
+    const { userId: loggedInUser } = useContext(UserContext);
 
-    const { loadingProfile, errorProfile } = GetProfile(utorId, setName);
-    const { loadingBadges, errorBadges } = GetBadges(utorId, setBadges);
-    const { loadingQuestions, errorQuestions } = GetAllQuestions(utorId, setTimeline);
+    const { loadingProfile, errorProfile } = GetProfile(userId, setName);
+    const { loadingBadges, errorBadges } = GetBadges(userId, setBadges);
+    const { loadingQuestions, errorQuestions } = GetAllQuestions(userId, setTimeline);
 
     if (loadingProfile || loadingBadges || loadingQuestions) return <Loading />;
 
     if (errorProfile) return <ErrorMessage title={errorProfile} link="." message="Refresh" />;
-    if (errorBadges) return <ErrorMessage title={errorBadges} link="." message="Refreshing" />;
-    if (errorQuestions) return <ErrorMessage title={errorQuestions} link="." message="Refreshing" />;
+    if (errorBadges) return <ErrorMessage title={errorBadges} link="." message="Refresh" />;
+    if (errorQuestions) return <ErrorMessage title={errorQuestions} link="." message="Refresh" />;
 
     // TODO: need to include threadreplies when edit badge routes have been set
     const { addQns, editQns, consecutivePosting } = badges.unlockedBadges;
@@ -125,7 +125,7 @@ const ProfilePage = () => {
                         </div>
                     </div>
                     <div className="badge-container">
-                        {utorId === loggedInUser ?
+                        {userId === loggedInUser ?
                             <BadgePicker badges={badges} />
                             :
                             null

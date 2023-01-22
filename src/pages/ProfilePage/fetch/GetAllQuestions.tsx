@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { QuestionsType } from "../../../../backend/types/Questions";
 import { TimelineType } from "../ProfilePage";
 
-const GetAllQuestions = (utorId: string, setTimeline: Function) => {
+const GetAllQuestions = (userId: string, setTimeline: Function) => {
 
     const [loadingQuestions, setLoadingQuestions] = useState<boolean>(true);
     const [errorQuestions, setErrorQuestions] = useState('');
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URI}/question/allUserPostedQuestions/${utorId}`)
+        fetch(`${process.env.REACT_APP_API_URI}/question/allUserPostedQuestions/${userId}`)
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
                 return res.json();
@@ -36,7 +36,7 @@ const GetAllQuestions = (utorId: string, setTimeline: Function) => {
                 setLoadingQuestions(false);
             });
 
-    }, [setTimeline, utorId]);
+    }, [setTimeline, userId]);
 
     return {
         loadingQuestions,

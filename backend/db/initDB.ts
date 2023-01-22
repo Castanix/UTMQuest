@@ -21,7 +21,13 @@ async function initDB() {
 				$jsonSchema: {
 					bsonType: "object",
 					title: "Accounts Object Validation",
-					required: ["utorId", "utorName", "bookmarkCourses"],
+					required: [
+						"utorId",
+						"utorName",
+						"userId",
+						"bookmarkCourses",
+						"postedComments",
+					],
 					additionalProperties: false,
 					properties: {
 						_id: {
@@ -38,6 +44,11 @@ async function initDB() {
 							description:
 								"'utorName' must be a string and is required",
 						},
+						userId: {
+							bsonType: "string",
+							description:
+								"'userId' must be a string and is unique to each user",
+						},
 						bookmarkCourses: {
 							bsonType: "array",
 							description:
@@ -47,6 +58,17 @@ async function initDB() {
 								bsonType: "string",
 								description:
 									"items in array must be a string referencing the Courses collection or empty",
+							},
+						},
+						postedComments: {
+							bsonType: "array",
+							description:
+								"'postedComments' is an array that tracks which comments this user posted. Used for verifying edit and delete perms",
+							uniqueItems: true,
+							items: {
+								bsonType: "string",
+								description:
+									"each item references a discussion id",
 							},
 						},
 					},
@@ -196,6 +218,7 @@ async function initDB() {
 						"answers",
 						"utorId",
 						"utorName",
+						"userId",
 						"date",
 						"numDiscussions",
 						"anon",
@@ -288,6 +311,11 @@ async function initDB() {
 							description:
 								"'utorName' must be a string and is required",
 						},
+						userId: {
+							bsonType: "string",
+							description:
+								"'userId' must be a string and is unique to each user",
+						},
 						date: {
 							bsonType: "string",
 							description:
@@ -358,6 +386,7 @@ async function initDB() {
 						"op",
 						"utorId",
 						"utorName",
+						"userId",
 						"content",
 						"thread",
 						"date",
@@ -385,6 +414,11 @@ async function initDB() {
 							bsonType: "string",
 							description:
 								"'utorId' must be a string, specifically the utorid, is unique, and is required",
+						},
+						userId: {
+							bsonType: "string",
+							description:
+								"'userId' must be a string and is unique to each user",
 						},
 						utorName: {
 							bsonType: "string",
@@ -449,6 +483,7 @@ async function initDB() {
 					title: "Badges Object Validation",
 					required: [
 						"utorId",
+						"userId",
 						"qnsAdded",
 						"qnsEdited",
 						"threadResponses",
@@ -470,6 +505,11 @@ async function initDB() {
 							bsonType: "string",
 							description:
 								"'utorId' must be a string, referencing the account collection, and is required",
+						},
+						userId: {
+							bsonType: "string",
+							description:
+								"'userId' must be a string and is unique to each user",
 						},
 						qnsAdded: {
 							bsonType: "int",

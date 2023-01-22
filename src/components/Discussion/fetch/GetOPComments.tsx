@@ -4,7 +4,6 @@ import { DiscussionFrontEndType } from "../../../../backend/types/Discussion";
 const GetOPComments = (qnsLink: string) => {
     const [loading, setLoading] = useState<boolean>(true);
     const comments: DiscussionFrontEndType[] = useMemo(() => [], []);
-    const [utorId, setUtorId] = useState<string>("");
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
@@ -17,7 +16,6 @@ const GetOPComments = (qnsLink: string) => {
             })
             .then((result) => {
                 comments.push(...result.discussion);
-                setUtorId(result.utorId);
                 setLoading(false);
             })
             .catch((err) => {
@@ -29,7 +27,6 @@ const GetOPComments = (qnsLink: string) => {
     return {
         loading,
         comments,
-        utorId,
         error,
     };
 };

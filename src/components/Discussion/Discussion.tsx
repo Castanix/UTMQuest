@@ -10,7 +10,7 @@ import DisplayComment from "./DisplayComment";
 
 const Discussion = ({ qnsLink, qnsDate }: { qnsLink: string, qnsDate: string }) => {
 
-    const { loading, comments: opComments, utorId, error } = GetOPComments(qnsLink);
+    const { loading, comments: opComments, error } = GetOPComments(qnsLink);
     const [comments, setComments] = useState<DiscussionFrontEndType[]>(opComments);
 
     const updateComments = (newComment: DiscussionFrontEndType) => {
@@ -28,11 +28,11 @@ const Discussion = ({ qnsLink, qnsDate }: { qnsLink: string, qnsDate: string }) 
                 itemLayout="horizontal"
                 dataSource={comments}
                 renderItem={item => (
-                    <DisplayComment key={item._id} comment={item} qnsDate={qnsDate} utorId={utorId} />
+                    <DisplayComment key={item._id} comment={item} qnsDate={qnsDate} />
                 )}
             />
             <Divider orientation="left">Post a Comment</Divider>
-            <Editor discussionId={null} qnsLink={qnsLink} op oldContent="" updateComments={updateComments} thread={[]} />
+            <Editor discussionId={null} qnsLink={qnsLink} op oldContent="" updateComments={updateComments} thread={[]} anon={false} />
             <FloatButton.BackTop />
         </div>
     );

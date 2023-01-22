@@ -42,6 +42,7 @@ const question: QuestionsType = {
     choices: [],
     answers: '',
     utorId: 'Bob',
+    userId: "123",
     utorName: 'Bob Bob',
     date: 'Mon Oct 24 2022',
     numDiscussions: 1,
