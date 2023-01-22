@@ -59,6 +59,20 @@ const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
 	return !!result;
 };
 
+/* Remove fields from question. Utorid is removed by default as the client side uses userId.
+   Additionally, if the question is anon, remove userId as well */
+const RemoveFieldsFromQuestion = (question: QuestionsType) => {
+	const { utorId: _, ...returnObj } = question; // remove utorId from return obj
+
+	if (question.anon) {
+		const { userId: _ignore, ...rest } = returnObj;
+
+		return rest;
+	}
+
+	return returnObj;
+};
+
 // /courses/:courseId/question/:id
 questionRouter.get(
 	"/allUserPostedQuestions/:userId",
@@ -94,26 +108,16 @@ questionRouter.get(
 				res.status(404).send({ error: "No question found." });
 				return;
 			}
-			res.status(200).send(questions);
+			res.status(200).send([
+				...questions.map((elem) =>
+					RemoveFieldsFromQuestion(elem as unknown as QuestionsType)
+				),
+			]);
 		} catch (error) {
 			res.status(500).send(error);
 		}
 	}
 );
-
-/* Remove fields from question. Utorid is removed by default as the client side uses userId.
-   Additionally, if the question is anon, remove userId as well */
-const RemoveFieldsFromQuestion = (question: QuestionsType) => {
-	const { utorId: _, ...returnObj } = question; // remove utorId from return obj
-
-	if (question.anon) {
-		const { userId: _ignore, ...rest } = returnObj;
-
-		return rest;
-	}
-
-	return returnObj;
-};
 
 // "/:questionId"
 questionRouter.get(
