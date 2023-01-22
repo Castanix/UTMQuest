@@ -11,7 +11,7 @@ const BadgePicker = ({ badges }: { badges: BadgesType }) => {
     const [currBadgeSelected, setCurrBadgeSelected] = useState<string[]>(badgeSelected);
     const [changes, setChanges] = useState<string[]>([]);
 
-    const { utorId } = useContext(UserContext);
+    const { userId } = useContext(UserContext);
 
     // Toggles the green border around an image depending on selection
     const toggleActive = (id: string) => {
@@ -80,7 +80,7 @@ const BadgePicker = ({ badges }: { badges: BadgesType }) => {
         setShowModal(false);
 
         if (changes.length > 0) {
-            UpdateBadge(currBadgeSelected, utorId, setBadgeSelected, resetChanges, badges.longestLoginStreak);
+            UpdateBadge(currBadgeSelected, userId, setBadgeSelected, resetChanges, badges.longestLoginStreak);
         } else {
             message.error("No changes were made");
         };

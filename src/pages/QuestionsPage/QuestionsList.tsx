@@ -20,12 +20,12 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 );
 
 const GetAuthorName = (question: QuestionsType) => {
-    const { anon, utorName, utorId } = question;
+    const { anon, utorName, userId } = question;
     if (anon) {
         return <Typography.Text>{utorName}</Typography.Text>;
     }
 
-    return <Link to={`/profile/${utorId}`}>{utorName}</Link>;
+    return <Link to={`/profile/${userId}`}>{utorName}</Link>;
 };
 
 const GetUserInitials = (username: string) => {
@@ -45,10 +45,10 @@ const GetUserInitials = (username: string) => {
 const GetRating = (rating: Object) => {
     const total = Object.keys(rating).length;
 
-    if(total > 0) {
+    if (total > 0) {
         const likes = Object.values(rating).reduce((a, b) => (a as number) + (b as number)) as number;
-    
-        return (total > 20 && likes/(total*1.0) > 0.9);
+
+        return (total > 20 && likes / (total * 1.0) > 0.9);
     }
 
     return false;
@@ -104,7 +104,7 @@ const QuestionsList = ({ questions, topics, courseId }:
                     <Link to={`/courses/${courseId}/quiz`}><Button type="primary" shape="round" icon={<FormOutlined />}>Generate Quiz</Button></Link>
                     <Link to={`/courses/${courseId}/addQuestion`}><Button type="primary" shape="round" icon={<PlusCircleTwoTone />}>Add a Question</Button></Link>
                 </Space>
-                
+
             </div>
             <List
                 className='question-list'
@@ -148,12 +148,12 @@ const QuestionsList = ({ questions, topics, courseId }:
                                             <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.qnsLink}`}>
                                                 <Typography.Text ellipsis className="question-name">{item.qnsName}</Typography.Text>
                                             </Link>
-                                            {GetRating(item.rating) ? <Popover content="Good Question"><CheckOutlined style={{marginInline: "0.25rem", fontSize: "0.75rem", verticalAlign: 6}} /></Popover> : null}
+                                            {GetRating(item.rating) ? <Popover content="Good Question"><CheckOutlined style={{ marginInline: "0.25rem", fontSize: "0.75rem", verticalAlign: 6 }} /></Popover> : null}
                                         </div>
                                         <div className="ant-page-header-heading-sub-title">
                                             <Typography.Paragraph>
                                                 {GetAuthorName(item)}
-                                                {!item.anon ? <DisplayBadges utorId={item.utorId} /> : null}
+                                                {!item.anon ? <DisplayBadges userId={item.userId} /> : null}
                                             </Typography.Paragraph>
                                             <Typography.Text type="secondary">{GetRelativeTime(new Date(item.date).getTime())}</Typography.Text>
                                         </div>
@@ -168,7 +168,7 @@ const QuestionsList = ({ questions, topics, courseId }:
     );
 };
 
-export { 
+export {
     QuestionsList,
     GetUserInitials
 };

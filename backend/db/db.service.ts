@@ -3,6 +3,7 @@ import configValues from "../config";
 import { UTMQuestCollections } from "../types/utmQuestCollection";
 
 export const utmQuestCollections: UTMQuestCollections = {};
+export let mongoDBConnection: mongoDB.MongoClient;
 
 // Connects to mongoDB with MONGO_URI from .env
 export default async function connectDB() {
@@ -13,6 +14,8 @@ export default async function connectDB() {
 	);
 
 	await client.connect();
+
+	mongoDBConnection = client;
 
 	const db: mongoDB.Db = client.db(configValues.DB_NAME);
 

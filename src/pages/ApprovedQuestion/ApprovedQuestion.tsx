@@ -104,7 +104,7 @@ const Header = ({ question }: { question: QuestionsType }) => (
                 }
                 <br />
                 <Text type="secondary">
-                    {GetUsername(question)} {!question.anon ? <DisplayBadges utorId={question.utorId} /> : null}
+                    {GetUsername(question)} {!question.anon ? <DisplayBadges userId={question.userId} /> : null}
                 </Text>
                 <br />
                 <Text type="secondary">
@@ -154,8 +154,8 @@ const ApprovedQuestion = () => {
     const qnsLink = params.qnsLink ?? '';
     const courseCode = params.courseId ?? '';
     const { loading, question, hasRated, error } = GetQuestion(qnsLink);
-    
-    
+
+
 
     const isLightMode = useContext(ThemeContext);
 

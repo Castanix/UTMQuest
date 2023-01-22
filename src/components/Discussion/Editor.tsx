@@ -12,14 +12,14 @@ import { onMobile } from "../EditHistory/EditHistory";
 import { ThemeContext, UserContext } from "../Topbar/Topbar";
 import { GetUserInitials } from "../../pages/QuestionsPage/QuestionsList";
 
-const AddComment = async (discussionId: string, qnsLink: string, op: boolean, content: string, isAnon: boolean) => {
+const AddComment = async (discussionId: string, qnsLink: string, op: boolean, content: string, isAnon: boolean, userId: string) => {
     // MAKE POST CALL HERE
     const newComment: DiscussionFrontEndType = {
         _id: `id${(new Date()).getTime()}`,
         qnsLink,
         op,
-        utorId: 'To be filled in the backend',
         utorName: 'To be filled in the backend',
+        userId,
         content,
         thread: [],
         date: new Date().toISOString(),
@@ -44,7 +44,6 @@ const AddComment = async (discussionId: string, qnsLink: string, op: boolean, co
     }).then((result) => {
         newComment._id = result.insertedId;
         newComment.utorName = result.utorName;
-        newComment.utorId = result.utorId;
         return newComment;
     });
 
@@ -75,13 +74,13 @@ const AddComment = async (discussionId: string, qnsLink: string, op: boolean, co
     return postedComment;
 };
 
-const EditComment = async (discussionId: string, qnsLink: string, op: boolean, content: string, isAnon: boolean, thread: string[]) => {
+const EditComment = async (discussionId: string, qnsLink: string, op: boolean, content: string, isAnon: boolean, thread: string[], userId: string) => {
     const editComment: DiscussionFrontEndType = {
         _id: discussionId,
         qnsLink,
         op,
-        utorId: 'To be filled in the backend',
         utorName: 'To be filled in the backend',
+        userId,
         content,
         thread,
         date: new Date().toISOString(),
@@ -105,14 +104,14 @@ const EditComment = async (discussionId: string, qnsLink: string, op: boolean, c
     return editedComment;
 };
 
-const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread }: { discussionId: string | null, qnsLink: string, op: boolean, oldContent: string, updateComments: Function, thread: string[] }) => {
+const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread, anon }: { discussionId: string | null, qnsLink: string, op: boolean, oldContent: string, updateComments: Function, thread: string[], anon: boolean }) => {
     const [content, setContent] = useState<string>(oldContent);
-    const [isAnon, setAnon] = useState<boolean>(false);
+    const [isAnon, setAnon] = useState<boolean>(anon);
     // const [commented, setCommented] = useState<DiscussionFrontEndType>();
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const isLightMode = useContext(ThemeContext);
-    const { username } = useContext(UserContext);
+    const { username, userId } = useContext(UserContext);
 
     const onSubmit = async () => {
         if (content.trim().length <= 0) {
@@ -123,7 +122,7 @@ const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread 
         setSubmitDisabled(true);
 
         if (oldContent === "") {
-            const newComment = await AddComment(discussionId as string, qnsLink, op, content, isAnon);
+            const newComment = await AddComment(discussionId as string, qnsLink, op, content, isAnon, userId);
             updateComments(newComment, false);
             // setCommented(newComment);
             setContent("");
@@ -134,7 +133,7 @@ const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread 
                 setSubmitDisabled(false);
                 return;
             }
-            const editedComment = await EditComment(discussionId as string, qnsLink, op, content, isAnon, thread);
+            const editedComment = await EditComment(discussionId as string, qnsLink, op, content, isAnon, thread, userId);
             updateComments(editedComment, true);
         };
 

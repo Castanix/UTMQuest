@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
 
-const GetBadges = (utorId: string, setBadges: Function) => {
+const GetBadges = (userId: string, setBadges: Function) => {
 
     const [loadingBadges, setLoadingBadges] = useState<boolean>(true);
     const [errorBadges, setErrorBadges] = useState('');
 
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URI}/badge/userBadges/${utorId}`)
+        fetch(`${process.env.REACT_APP_API_URI}/badge/userBadges/${userId}`)
             .then(res => {
                 if (!res.ok) throw Error(res.statusText);
 
@@ -20,7 +20,7 @@ const GetBadges = (utorId: string, setBadges: Function) => {
                 setErrorBadges(err.message);
                 setLoadingBadges(false);
             });
-    }, [setBadges, utorId]);
+    }, [setBadges, userId]);
 
     return {
         loadingBadges,

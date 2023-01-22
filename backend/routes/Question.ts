@@ -61,26 +61,37 @@ const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
 
 // /courses/:courseId/question/:id
 questionRouter.get(
-	"/allUserPostedQuestions/:utorId",
+	"/allUserPostedQuestions/:userId",
 	async (req: Request, res: Response) => {
 		try {
 			let questions;
 
+			const { userId } = req.params;
+
+			const user = await utmQuestCollections.Accounts?.findOne({
+				utorId: req.headers.utorid,
+			});
+
+			if (!user) {
+				res.status(404).send({ error: "Could not find user" });
+				return;
+			}
+
 			// visiting your own profile = fetch all contributions
 			// visting somebody else's profile = fetch only public contributions
-			if (req.params.utorId === req.headers.utorid) {
+			if (userId === user.userId) {
 				questions = await utmQuestCollections.Questions?.find({
-					utorId: req.params.utorId,
+					userId,
 				}).toArray();
 			} else {
 				questions = await utmQuestCollections.Questions?.find({
-					utorId: req.params.utorId,
+					userId,
 					anon: false,
 				}).toArray();
 			}
 
 			if (!questions) {
-				res.status(404).send("No question found.");
+				res.status(404).send({ error: "No question found." });
 				return;
 			}
 			res.status(200).send(questions);
@@ -90,20 +101,37 @@ questionRouter.get(
 	}
 );
 
+/* Remove fields from question. Utorid is removed by default as the client side uses userId.
+   Additionally, if the question is anon, remove userId as well */
+const RemoveFieldsFromQuestion = (question: QuestionsType) => {
+	const { utorId: _, ...returnObj } = question; // remove utorId from return obj
+
+	if (question.anon) {
+		const { userId: _ignore, ...rest } = returnObj;
+
+		return rest;
+	}
+
+	return returnObj;
+};
+
 // "/:questionId"
 questionRouter.get(
 	"/oneQuestion/:qnsLink",
 	async (req: Request, res: Response) => {
 		try {
-			const question = await utmQuestCollections.Questions?.findOne({
+			const document = await utmQuestCollections.Questions?.findOne({
 				qnsLink: req.params.qnsLink,
 				latest: true,
 			});
-			if (!question) {
-				res.status(404).send("No question found.");
+			if (!document) {
+				res.status(404).send({ error: "No question found." });
 				return;
 			}
-			const hasRated = (req.headers.utorid as string) in question.rating;
+			const hasRated = (req.headers.utorid as string) in document.rating;
+			const question = RemoveFieldsFromQuestion(
+				document as unknown as QuestionsType
+			);
 
 			res.status(200).send({ question, hasRated });
 		} catch (error) {
@@ -120,7 +148,7 @@ questionRouter.get(
 				qnsLink: req.params.qnsLink,
 			});
 			if (!discussions) {
-				res.status(404).send("Cannot find discussion");
+				res.status(404).send({ error: "Cannot find discussion" });
 				return;
 			}
 
@@ -249,8 +277,12 @@ questionRouter.get(
 			newQuestions.sort(SortArrayByScore);
 			scoredQuestions.sort(SortArrayByScore);
 			res.status(200).send([
-				...newQuestions.map((elem) => elem.question),
-				...scoredQuestions.map((elem) => elem.question),
+				...newQuestions.map((elem) =>
+					RemoveFieldsFromQuestion(elem.question)
+				),
+				...scoredQuestions.map((elem) =>
+					RemoveFieldsFromQuestion(elem.question)
+				),
 			]);
 			return;
 		} catch (error) {
@@ -287,6 +319,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		choices: req.body.choices,
 		answers: req.body.answers,
 		utorId,
+		userId: req.body.userId,
 		utorName: isAnon ? "Anonymous" : `${firstName} ${lastName}`,
 		date: new Date().toISOString(),
 		numDiscussions: req.body.numDiscussions,
@@ -302,23 +335,25 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 	const badge = await utmQuestCollections.Badges?.findOne({ utorId });
 
 	if (!badge) {
-		res.status(404).send("Could not find badge progression for user.");
+		res.status(404).send({
+			error: "Could not find badge progression for user.",
+		});
 		return;
 	}
 
 	utmQuestCollections.Questions?.insertOne(question)
 		.then((result) => {
 			if (!result) {
-				res.status(500).send("Unable to add new question.");
+				res.status(500).send({ error: "Unable to add new question." });
 				return;
 			}
 
 			// INCREMENT COUNTER
 			const isIncremented = topicIncrementor(topicId, true);
 			if (!isIncremented) {
-				res.status(500).send(
-					`Unable to increment numQuestions for ${req.body.topicName}`
-				);
+				res.status(500).send({
+					error: `Unable to increment numQuestions for ${req.body.topicName}`,
+				});
 				utmQuestCollections.Questions?.deleteOne(question);
 				return;
 			}
@@ -336,9 +371,9 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 						$inc: { qnsAdded: 1 },
 					}).then((updateResult) => {
 						if (!updateResult) {
-							res.status(500).send(
-								"Unable to update badge progression."
-							);
+							res.status(500).send({
+								error: "Unable to update badge progression.",
+							});
 							topicIncrementor(topicId, false);
 							utmQuestCollections.Questions?.deleteOne(question);
 						} else {
@@ -367,9 +402,9 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 							$inc: { consecutivePosting: 1, qnsAdded: 1 },
 						}).then((updateResult) => {
 							if (!updateResult) {
-								res.status(500).send(
-									"Unable to update badge progression."
-								);
+								res.status(500).send({
+									error: "Unable to update badge progression.",
+								});
 								topicIncrementor(topicId, false);
 								utmQuestCollections.Questions?.deleteOne(
 									question
@@ -394,9 +429,9 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 							$inc: { qnsAdded: 1 },
 						}).then((updateResult) => {
 							if (!updateResult) {
-								res.status(500).send(
-									"Unable to update badge progression."
-								);
+								res.status(500).send({
+									error: "Unable to update badge progression.",
+								});
 							} else {
 								res.status(201).send({
 									qnsLink,
@@ -412,9 +447,9 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 							$inc: { qnsAdded: 1 },
 						}).then((incrementResult) => {
 							if (!incrementResult) {
-								res.status(500).send(
-									"Unable to increment questionsAdded for badge progression."
-								);
+								res.status(500).send({
+									error: "Unable to increment questionsAdded for badge progression.",
+								});
 								topicIncrementor(topicId, false);
 								utmQuestCollections.Questions?.deleteOne(
 									question
@@ -448,7 +483,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			latest: true,
 		});
 		if (!oldVersion) {
-			res.status(404).send("No such latest question found.");
+			res.status(404).send({ error: "No such latest question found." });
 			return;
 		}
 
@@ -460,7 +495,9 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		});
 
 		if (!badge) {
-			res.status(404).send("Could not find badge progression for user.");
+			res.status(404).send({
+				error: "Could not find badge progression for user.",
+			});
 			return;
 		}
 
@@ -483,6 +520,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			choices: req.body.choices,
 			answers: req.body.answers,
 			utorId,
+			userId: req.body.userId,
 			utorName: anon ? "Anonymous" : `${firstName} ${lastName}`,
 			date: new Date().toISOString(),
 			numDiscussions: req.body.numDiscussions,
@@ -500,7 +538,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 				_id: req.body._id,
 			});
 			if (!restoreVersion) {
-				res.status(404).send("No restorable version found.");
+				res.status(404).send({ error: "No restorable version found." });
 				return;
 			}
 
@@ -509,7 +547,9 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			})
 				.then((result) => {
 					if (!result) {
-						res.status(500).send("Unable update restored version.");
+						res.status(500).send({
+							error: "Unable update restored version.",
+						});
 						return;
 					}
 
@@ -517,9 +557,9 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 					const latestStatus = updateLatest(oldVersion, false);
 					if (!latestStatus) {
 						utmQuestCollections.Questions?.deleteOne(question);
-						res.status(500).send(
-							`Update 'latest' flag for previous question failed. Reverting any changes.`
-						);
+						res.status(500).send({
+							error: "Update 'latest' flag for previous question failed. Reverting any changes.",
+						});
 						return;
 					}
 
@@ -531,9 +571,9 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 								utmQuestCollections.Questions?.deleteOne(
 									question
 								);
-								res.status(500).send(
-									"Unable to update badges. Reverting all changes."
-								);
+								res.status(500).send({
+									error: "Unable to update badges. Reverting all changes.",
+								});
 								return;
 							}
 							const { code, message, qnsStatus } = updateRes;
@@ -564,7 +604,9 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		utmQuestCollections.Questions?.insertOne(question)
 			.then((result) => {
 				if (!result) {
-					res.status(500).send("Unable to add new question.");
+					res.status(500).send({
+						error: "Unable to add new question.",
+					});
 					return;
 				}
 
@@ -572,9 +614,9 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 				const latestStatus = updateLatest(oldVersion, false);
 				if (!latestStatus) {
 					utmQuestCollections.Questions?.deleteOne(question);
-					res.status(500).send(
-						`Update 'latest' flag for previous question failed. Reverting any changes.`
-					);
+					res.status(500).send({
+						error: "Update 'latest' flag for previous question failed. Reverting any changes.",
+					});
 					return;
 				}
 
@@ -584,9 +626,9 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 						if (!updateRes) {
 							updateLatest(oldVersion, true);
 							utmQuestCollections.Questions?.deleteOne(question);
-							res.status(500).send(
-								"Unable to update badges. Reverting all changes."
-							);
+							res.status(500).send({
+								error: "Unable to update badges. Reverting all changes.",
+							});
 							return;
 						}
 						const { code, message, qnsStatus } = updateRes;
@@ -610,7 +652,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 				res.status(500).send(error);
 			});
 	} catch (error) {
-		res.status(500).send(`ERROR: ${error}`);
+		res.status(500).send(error);
 	}
 });
 
@@ -696,7 +738,17 @@ questionRouter.get(
 		utmQuestCollections.Questions?.find({ qnsLink: req.params.qnsLink })
 			.sort({ date: -1 })
 			.toArray()
-			.then((response) => res.status(200).send(response))
+			.then((response) =>
+				res
+					.status(200)
+					.send([
+						...response.map((elem) =>
+							RemoveFieldsFromQuestion(
+								elem as unknown as QuestionsType
+							)
+						),
+					])
+			)
 			.catch((error) => res.status(500).send(error));
 	}
 );
@@ -740,21 +792,23 @@ questionRouter.put("/rating", async (req: Request, res: Response) => {
 			latest: true,
 		});
 		if (!question) {
-			res.status(404).send("No question found.");
+			res.status(404).send({ error: "No question found." });
 			return;
 		}
-		const user = req.headers.utorid as string;
+		const user = await utmQuestCollections.Accounts?.findOne({
+			utorId: req.headers.utorid,
+		});
 		if (!user) {
-			res.status(401).send("User unauthorized.");
+			res.status(401).send({ error: "User unauthorized." });
 			return;
 		}
 
 		const { rate } = req.body;
-		const newRating = { ...question.rating, [user]: rate };
+		const newRating = { ...question.rating, [user.userId]: rate };
 
 		const newUpdate = UpdateRatingsCounter(
 			question as QuestionsType,
-			user,
+			user.userId,
 			rate
 		);
 
@@ -763,7 +817,7 @@ questionRouter.put("/rating", async (req: Request, res: Response) => {
 			$inc: newUpdate,
 		}).then((updateRes) => {
 			if (!updateRes) {
-				res.status(500).send("Unable to update rating");
+				res.status(500).send({ error: "Unable to update rating" });
 				return;
 			}
 			res.status(200).send(updateRes);
@@ -787,8 +841,16 @@ questionRouter.put(
 		}
 
 		const utorId = req.headers.utorid as string;
+
+		const user = await utmQuestCollections.Accounts?.findOne({ utorId });
+
+		if (!user) {
+			res.status(404).end();
+			return;
+		}
+
 		const uniqueViewers = question.viewers;
-		if (!(utorId in uniqueViewers)) uniqueViewers[utorId] = 1;
+		if (!(user.userId in uniqueViewers)) uniqueViewers[user.userId] = 1;
 
 		utmQuestCollections.Questions?.findOneAndUpdate(
 			{ qnsLink: req.params.qnsLink, latest: true },

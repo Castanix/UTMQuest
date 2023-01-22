@@ -7,15 +7,15 @@ const GetWidgets = () => {
     const [courseData, setCourseData] = useState<[string, string][]>([]);
     const [error, setError] = useState('');
 
-    const { utorId } = useContext(UserContext);
+    const { userId } = useContext(UserContext);
 
     useEffect(() => {
         const courseArr: [string, string][] = [];
 
         const fetchData = async () => {
-            if (utorId === "") return;
+            if (userId === "") return;
 
-            await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorId}`)
+            await fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${userId}`)
                 .then((res: Response) => {
                     if (!res.ok) throw Error(res.statusText);
                     return res.json();
@@ -33,7 +33,7 @@ const GetWidgets = () => {
                 });
         };
         fetchData();
-    }, [utorId]);
+    }, [userId]);
 
     return {
         loading,

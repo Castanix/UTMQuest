@@ -1,13 +1,13 @@
 // import { message } from "antd";
 import { useEffect, useState } from "react";
 
-const GetProfile = (utorId: string, setName: Function) => {
+const GetProfile = (userId: string, setName: Function) => {
 
     const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
     const [errorProfile, setErrorProfile] = useState('');
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${utorId}`)
+        fetch(`${process.env.REACT_APP_API_URI}/account/getAccount/${userId}`)
             .then((res: Response) => {
                 if (!res.ok) throw Error(res.statusText);
                 return res.json();
@@ -19,7 +19,7 @@ const GetProfile = (utorId: string, setName: Function) => {
                 setLoadingProfile(false);
             });
 
-    }, [setName, utorId]);
+    }, [setName, userId]);
 
     return {
         loadingProfile,

@@ -30,6 +30,7 @@ const question: QuestionsType =
     choices: ["Option A", "Option B"],
     answers: "Option A",
     utorId: 'Bob',
+    userId: "123",
     utorName: 'Bob Bob',
     date: new Date().toString(),
     numDiscussions: 0,

@@ -18,6 +18,7 @@ export interface QuestionsType {
 	choices: string[];
 	answers: string[] | string;
 	utorId: string;
+	userId: string;
 	utorName: string;
 	date: string;
 	numDiscussions: number;

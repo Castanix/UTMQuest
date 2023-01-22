@@ -4,7 +4,7 @@ import BadgeDescriptions from "../../BadgeDescriptions";
 
 import "./DisplayBadges.css";
 
-const DisplayBadges = ({ utorId }: { utorId: string }) => {
+const DisplayBadges = ({ userId }: { userId: string }) => {
     const [badges, setBadges] = useState<string[]>([]);
     const [longestLoginStreak, setLongestLoginStreak] = useState<number>(1);
 
@@ -12,15 +12,15 @@ const DisplayBadges = ({ utorId }: { utorId: string }) => {
 
         const userBadges = JSON.parse(sessionStorage.getItem("userBadges") ?? JSON.stringify({}));
 
-        if (utorId in userBadges) {
-            setBadges(userBadges[utorId].displayBadges);
-            setLongestLoginStreak(userBadges[utorId].longestLoginStreak);
+        if (userId in userBadges) {
+            setBadges(userBadges[userId].displayBadges);
+            setLongestLoginStreak(userBadges[userId].longestLoginStreak);
         } else {
-            fetch(`${process.env.REACT_APP_API_URI}/displayBadges/${utorId}`).then((response) => {
+            fetch(`${process.env.REACT_APP_API_URI}/displayBadges/${userId}`).then((response) => {
                 if (!response.ok) throw new Error("Could not find badges for given user");
                 return response.json();
             }).then((result) => {
-                userBadges[utorId] = { displayBadges: result.displayBadges, longestLoginStreak: result.longestLoginStreak };
+                userBadges[userId] = { displayBadges: result.displayBadges, longestLoginStreak: result.longestLoginStreak };
                 sessionStorage.setItem("userBadges", JSON.stringify(userBadges));
                 setBadges(result.displayBadges);
                 setLongestLoginStreak(result.longestLoginStreak);
@@ -28,7 +28,7 @@ const DisplayBadges = ({ utorId }: { utorId: string }) => {
                 console.log(error);
             });
         }
-    }, [utorId]);
+    }, [userId]);
 
     return (
         <span>
