@@ -2,7 +2,7 @@ import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, C
 import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { QuestionsType } from '../../../backend/types/Questions';
+import { QuestionFrontEndType } from '../../../backend/types/Questions';
 import TopicsType from '../../../backend/types/Topics';
 import DisplayBadges from '../../components/DisplayBadges/DisplayBadges';
 import GetRelativeTime from '../../RelativeTime';
@@ -19,7 +19,7 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
     </Space>
 );
 
-const GetAuthorName = (question: QuestionsType) => {
+const GetAuthorName = (question: QuestionFrontEndType) => {
     const { anon, utorName, userId } = question;
     if (anon) {
         return <Typography.Text>{utorName}</Typography.Text>;
@@ -55,7 +55,7 @@ const GetRating = (rating: Object) => {
 };
 
 const QuestionsList = ({ questions, topics, courseId }:
-    { questions: QuestionsType[], topics: TopicsType[], courseId: string }) => {
+    { questions: QuestionFrontEndType[], topics: TopicsType[], courseId: string }) => {
 
     const {
         data,

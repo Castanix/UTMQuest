@@ -23,6 +23,13 @@ const GetUsername = (comment: DiscussionFrontEndType) => {
     return <Link to={`/profile/${userId}`}>{utorName}</Link>;
 };
 
+const DoesUserHavePermission = (comment: DiscussionFrontEndType, userId: string, anonId: string) => {
+
+    if (comment.anon) return comment.anonId === anonId;
+
+    return comment.userId === userId;
+};
+
 const DisplayComment = ({ comment, qnsDate }: { comment: DiscussionFrontEndType, qnsDate: string }) => {
     const [displayComment, setDisplayComment] = useState<DiscussionFrontEndType>(comment);
     const [childComments, setChildComments] = useState<DiscussionFrontEndType[]>([]);
@@ -33,10 +40,8 @@ const DisplayComment = ({ comment, qnsDate }: { comment: DiscussionFrontEndType,
     const actions = [];
 
     const isLightMode = useContext(ThemeContext);
-    const { postedComments } = useContext(UserContext);
+    const { userId, anonId } = useContext(UserContext);
 
-    const userComments = new Set(postedComments);
-    console.log(userComments);
     /* callback after a new comment is successfully added to update the parent comment */
     const updateComments = (newComment: DiscussionFrontEndType, edited: boolean) => {
         if (edited) {
@@ -93,7 +98,7 @@ const DisplayComment = ({ comment, qnsDate }: { comment: DiscussionFrontEndType,
 
     actions.push([
         // Need to check if 'user' is author when we get user auth
-        userComments.has(comment._id) ?
+        DoesUserHavePermission(displayComment, userId, anonId) ?
             <span
                 onClick={() => {
                     setShowReply(false);
@@ -127,7 +132,7 @@ const DisplayComment = ({ comment, qnsDate }: { comment: DiscussionFrontEndType,
                     : ""
             }
         </span>,
-        userComments.has(comment._id) ?
+        DoesUserHavePermission(displayComment, userId, anonId) ?
             <span
                 key="comment-nested-delete"
             >

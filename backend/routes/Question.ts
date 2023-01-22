@@ -3,7 +3,7 @@ import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
 import seedrandom from "seedrandom";
 import { utmQuestCollections } from "../db/db.service";
-import { qnsTypeEnum, QuestionsType } from "../types/Questions";
+import { qnsTypeEnum, QuestionBackEndType } from "../types/Questions";
 
 const questionRouter = Router();
 
@@ -60,8 +60,8 @@ const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
 };
 
 /* Remove fields from question. Utorid is removed by default as the client side uses userId.
-   Additionally, if the question is anon, remove userId as well */
-const RemoveFieldsFromQuestion = (question: QuestionsType) => {
+   Additionally, if the question is anon, send back anonId instead of userId */
+const RemoveFieldsFromQuestion = (question: QuestionBackEndType) => {
 	const { utorId: _, ...returnObj } = question; // remove utorId from return obj
 
 	if (question.anon) {
@@ -70,7 +70,9 @@ const RemoveFieldsFromQuestion = (question: QuestionsType) => {
 		return rest;
 	}
 
-	return returnObj;
+	const { anonId: _ignore, ...rest } = returnObj;
+
+	return rest;
 };
 
 // /courses/:courseId/question/:id
@@ -110,7 +112,7 @@ questionRouter.get(
 			}
 			res.status(200).send([
 				...questions.map((elem) =>
-					RemoveFieldsFromQuestion(elem as unknown as QuestionsType)
+					RemoveFieldsFromQuestion(elem as QuestionBackEndType)
 				),
 			]);
 		} catch (error) {
@@ -134,7 +136,7 @@ questionRouter.get(
 			}
 			const hasRated = (req.headers.utorid as string) in document.rating;
 			const question = RemoveFieldsFromQuestion(
-				document as unknown as QuestionsType
+				document as QuestionBackEndType
 			);
 
 			res.status(200).send({ question, hasRated });
@@ -165,7 +167,7 @@ questionRouter.get(
 
 type ScoredQuestion = {
 	score: number;
-	question: QuestionsType;
+	question: QuestionBackEndType;
 };
 
 /* Compute the "helpful" score for each question. 
@@ -174,7 +176,7 @@ Score should be prioritized as follows:
 	2. Questions with high likes should have high scores
 	3. Questions should get some bonus based on view count so that questions with repeated views gain higher scores
 */
-const ComputeQuestionScore = (question: QuestionsType) => {
+const ComputeQuestionScore = (question: QuestionBackEndType) => {
 	// score metrics
 	const { likes, dislikes } = question;
 	const totalViews = question.views;
@@ -324,6 +326,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		answers: req.body.answers,
 		utorId,
 		userId: req.body.userId,
+		anonId: req.body.anonId,
 		utorName: isAnon ? "Anonymous" : `${firstName} ${lastName}`,
 		date: new Date().toISOString(),
 		numDiscussions: req.body.numDiscussions,
@@ -525,6 +528,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			answers: req.body.answers,
 			utorId,
 			userId: req.body.userId,
+			anonId: req.body.anonId,
 			utorName: anon ? "Anonymous" : `${firstName} ${lastName}`,
 			date: new Date().toISOString(),
 			numDiscussions: req.body.numDiscussions,
@@ -748,7 +752,7 @@ questionRouter.get(
 					.send([
 						...response.map((elem) =>
 							RemoveFieldsFromQuestion(
-								elem as unknown as QuestionsType
+								elem as QuestionBackEndType
 							)
 						),
 					])
@@ -758,7 +762,7 @@ questionRouter.get(
 );
 
 const UpdateRatingsCounter = (
-	question: QuestionsType,
+	question: QuestionBackEndType,
 	utorId: string,
 	updatedRating: number // 1 means liked, 0 means disliked
 ) => {
@@ -811,7 +815,7 @@ questionRouter.put("/rating", async (req: Request, res: Response) => {
 		const newRating = { ...question.rating, [user.userId]: rate };
 
 		const newUpdate = UpdateRatingsCounter(
-			question as QuestionsType,
+			question as QuestionBackEndType,
 			user.userId,
 			rate
 		);

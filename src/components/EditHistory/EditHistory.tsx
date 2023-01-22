@@ -2,7 +2,7 @@ import { Button, Card, Col, Divider, List, Row, Skeleton, Space, Typography } fr
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionOutlined } from '@ant-design/icons';
-import { QuestionsType } from '../../../backend/types/Questions';
+import { QuestionFrontEndType } from '../../../backend/types/Questions';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import GetEditHistory from './fetch/GetEditHistory';
 import ViewChanges from './ViewChanges';
@@ -15,7 +15,7 @@ import { GetUserInitials } from '../../pages/QuestionsPage/QuestionsList';
 export const onMobile = () => window.innerWidth < 420;
 
 /* Given two questions, find the difference in their fields */
-const GetDiff = (firstQns: QuestionsType, secondQns: QuestionsType) => {
+const GetDiff = (firstQns: QuestionFrontEndType, secondQns: QuestionFrontEndType) => {
     const changes = [];
 
     if (firstQns.topicId !== secondQns.topicId) changes.push("Topic");
@@ -35,7 +35,7 @@ const GetDiff = (firstQns: QuestionsType, secondQns: QuestionsType) => {
     return changes;
 };
 
-export const GetUsername = (question: QuestionsType) => {
+export const GetUsername = (question: QuestionFrontEndType) => {
     const { anon, userId, utorName } = question;
 
     if (anon) {
@@ -46,7 +46,7 @@ export const GetUsername = (question: QuestionsType) => {
 };
 
 /* Render a list item for each edit in the history */
-const GetListItem = (loading: boolean, display: string, actions: React.ReactNode[], question: QuestionsType) => {
+const GetListItem = (loading: boolean, display: string, actions: React.ReactNode[], question: QuestionFrontEndType) => {
     const photo = question.anon ? <QuestionOutlined /> : <p>{GetUserInitials(question.utorName)}</p>;
 
     return (

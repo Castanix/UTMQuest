@@ -5,7 +5,7 @@ import TopicsType from '../../backend/types/Topics';
 import AQStepOne from '../pages/AddQuestionPage/AQStepOne';
 import AQStepTwo from '../pages/AddQuestionPage/AQStepTwo';
 import { ThemeContext } from '../components/Topbar/Topbar';
-import { QuestionsType } from '../../backend/types/Questions';
+import { QuestionFrontEndType } from '../../backend/types/Questions';
 import qnsTypeEnum from '../pages/AddQuestionPage/types/QnsTypeEnum';
 import AddQuestionPage from '../pages/AddQuestionPage/AddQuestionPage';
 import { setupServer } from 'msw/lib/node';
@@ -29,7 +29,7 @@ const req: TopicsType = {
     numQns: 0
 }
 
-const question: QuestionsType = {
+const question: QuestionFrontEndType = {
     _id: 'abcd',
     qnsLink: 'abcd',
     topicId: '12345',
@@ -41,8 +41,8 @@ const question: QuestionsType = {
     explanation: 'none',
     choices: [],
     answers: '',
-    utorId: 'Bob',
     userId: "123",
+    anonId: "1",
     utorName: 'Bob Bob',
     date: 'Mon Oct 24 2022',
     numDiscussions: 1,

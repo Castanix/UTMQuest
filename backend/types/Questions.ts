@@ -1,14 +1,14 @@
 /* eslint-disable no-shadow, no-unused-vars */
 
+import { ObjectId, WithId } from "mongodb";
+
 export enum qnsTypeEnum {
 	mc = "mc",
 	short = "short",
 }
 
-export interface QuestionsType {
-	_id: string;
+interface BaseQuestionType {
 	qnsLink: string;
-	topicId: string;
 	topicName: string;
 	courseId: string;
 	qnsName: string;
@@ -17,16 +17,29 @@ export interface QuestionsType {
 	explanation: string;
 	choices: string[];
 	answers: string[] | string;
-	utorId: string;
 	userId: string;
+	anonId: string;
 	utorName: string;
 	date: string;
 	numDiscussions: number;
 	anon: boolean;
 	latest: boolean;
-	rating: { [utorId: string]: number };
+	rating: { [userId: string]: number };
 	likes: number;
 	dislikes: number;
 	views: number;
-	viewers: { [utorId: string]: number };
+	viewers: { [userId: string]: number };
+}
+
+export interface QuestionBackEndType
+	extends WithId<Document>,
+		BaseQuestionType {
+	_id: ObjectId;
+	topicId: ObjectId;
+	utorId: string;
+}
+
+export interface QuestionFrontEndType extends BaseQuestionType {
+	_id: string;
+	topicId: string;
 }

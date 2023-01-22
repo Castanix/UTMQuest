@@ -25,8 +25,8 @@ async function initDB() {
 						"utorId",
 						"utorName",
 						"userId",
+						"anonId",
 						"bookmarkCourses",
-						"postedComments",
 					],
 					additionalProperties: false,
 					properties: {
@@ -49,6 +49,11 @@ async function initDB() {
 							description:
 								"'userId' must be a string and is unique to each user",
 						},
+						anonId: {
+							bsonType: "string",
+							description:
+								"'anonId' is a unique id used when the user is anon",
+						},
 						bookmarkCourses: {
 							bsonType: "array",
 							description:
@@ -58,17 +63,6 @@ async function initDB() {
 								bsonType: "string",
 								description:
 									"items in array must be a string referencing the Courses collection or empty",
-							},
-						},
-						postedComments: {
-							bsonType: "array",
-							description:
-								"'postedComments' is an array that tracks which comments this user posted. Used for verifying edit and delete perms",
-							uniqueItems: true,
-							items: {
-								bsonType: "string",
-								description:
-									"each item references a discussion id",
 							},
 						},
 					},
@@ -217,6 +211,7 @@ async function initDB() {
 						"choices",
 						"answers",
 						"utorId",
+						"anonId",
 						"utorName",
 						"userId",
 						"date",
@@ -316,6 +311,11 @@ async function initDB() {
 							description:
 								"'userId' must be a string and is unique to each user",
 						},
+						anonId: {
+							bsonType: "string",
+							description:
+								"'anonId' is a unique id used when the user is anon",
+						},
 						date: {
 							bsonType: "string",
 							description:
@@ -387,6 +387,7 @@ async function initDB() {
 						"utorId",
 						"utorName",
 						"userId",
+						"anonId",
 						"content",
 						"thread",
 						"date",
@@ -424,6 +425,11 @@ async function initDB() {
 							bsonType: "string",
 							description:
 								"'utorName' must be a string and is required",
+						},
+						anonId: {
+							bsonType: "string",
+							description:
+								"'anonId' is a unique id used when the user is anon",
 						},
 						content: {
 							bsonType: "string",

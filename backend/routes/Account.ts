@@ -18,13 +18,14 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 	if (!user) {
 		// generate unique userId
 		const userId = uuidv4();
+		const anonId = uuidv4();
 
 		utmQuestCollections.Accounts?.insertOne({
 			utorId,
 			userId,
+			anonId,
 			utorName: `${firstName} ${lastName}`,
 			bookmarkCourses: [],
-			postedComments: [],
 		}).then((result) => {
 			if (!result) {
 				res.status(500).send({
@@ -64,7 +65,7 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 				res.status(201).send({
 					username: firstName.concat(" ").concat(lastName),
 					userId,
-					postedComments: [],
+					anonId: [],
 				});
 			});
 		});
@@ -72,7 +73,7 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 		res.status(418).send({
 			username: firstName.concat(" ").concat(lastName),
 			userId: user.userId,
-			postedComments: user.postedComments,
+			anonId: user.anonId,
 		});
 	}
 });
@@ -84,7 +85,7 @@ accountRouter.get("/getAccount/:userId", (req: Request, res: Response) => {
 				res.statusMessage = "No such account found.";
 				res.status(404).end();
 			} else {
-				const { utorId: _, ...returnDoc } = doc; // exclude utorId from all responses
+				const { utorId: _, anonId: _ignore, ...returnDoc } = doc; // exclude utorId from all responses
 				res.status(200).send(returnDoc);
 			}
 		})

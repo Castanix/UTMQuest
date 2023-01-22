@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { QuestionsType } from "../../../../backend/types/Questions";
+import { QuestionFrontEndType } from "../../../../backend/types/Questions";
 
 const GetEditHistory = (qnsLink: string) => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [editHistory, setEditHistory] = useState<QuestionsType[]>([]);
+    const [editHistory, setEditHistory] = useState<QuestionFrontEndType[]>([]);
     const [error, setError] = useState<string>("");
     useEffect(() => {
         fetch(

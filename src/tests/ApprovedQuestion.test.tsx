@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom';
-import { qnsTypeEnum, QuestionsType } from '../../backend/types/Questions';
+import { qnsTypeEnum, QuestionFrontEndType } from '../../backend/types/Questions';
 import ApprovedQuestion from '../pages/ApprovedQuestion/ApprovedQuestion';
 
 Object.defineProperty(window, 'matchMedia', {
@@ -16,7 +16,7 @@ Object.defineProperty(window, 'matchMedia', {
     }
 })
 
-const question: QuestionsType =
+const question: QuestionFrontEndType =
 {
     _id: 'abc123',
     qnsLink: 'abcde',
@@ -29,8 +29,8 @@ const question: QuestionsType =
     explanation: 'new explanation',
     choices: ["Option A", "Option B"],
     answers: "Option A",
-    utorId: 'Bob',
     userId: "123",
+    anonId: "1",
     utorName: 'Bob Bob',
     date: new Date().toString(),
     numDiscussions: 0,

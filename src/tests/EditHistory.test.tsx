@@ -4,7 +4,7 @@ import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 import { BrowserRouter } from 'react-router-dom';
 import EditHistory from '../components/EditHistory/EditHistory';
-import { qnsTypeEnum, QuestionsType } from '../../backend/types/Questions';
+import { qnsTypeEnum, QuestionFrontEndType } from '../../backend/types/Questions';
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -16,7 +16,7 @@ Object.defineProperty(window, 'matchMedia', {
     }
 })
 
-const editHistory: QuestionsType[] = [
+const editHistory: QuestionFrontEndType[] = [
     {
         _id: 'abcde',
         qnsLink: 'abcde',
@@ -29,9 +29,9 @@ const editHistory: QuestionsType[] = [
         explanation: 'none',
         choices: [],
         answers: 'answer goes here',
-        utorId: 'Bob',
         utorName: 'Bob Bob',
         userId: "123",
+        anonId: "1",
         date: new Date().toString(),
         numDiscussions: 0,
         anon: false,
@@ -54,9 +54,9 @@ const editHistory: QuestionsType[] = [
         explanation: 'new explanation',
         choices: [],
         answers: '',
-        utorId: 'Bob',
         utorName: 'Bob Bob',
         userId: "123",
+        anonId: "1",
         date: new Date().toString(),
         numDiscussions: 0,
         anon: false,
@@ -79,9 +79,9 @@ const editHistory: QuestionsType[] = [
         explanation: 'none',
         choices: [],
         answers: '',
-        utorId: 'Bob',
         utorName: 'Bob Bob',
         userId: "123",
+        anonId: "1",
         date: new Date().toString(),
         numDiscussions: 0,
         anon: false,

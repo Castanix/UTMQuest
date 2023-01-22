@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { QuestionsType } from "../../../../backend/types/Questions";
+import { QuestionFrontEndType } from "../../../../backend/types/Questions";
 import { TimelineType } from "../ProfilePage";
 
 const GetAllQuestions = (userId: string, setTimeline: Function) => {
@@ -15,7 +15,7 @@ const GetAllQuestions = (userId: string, setTimeline: Function) => {
             }).then((result) => {
                 const timelineArr: TimelineType[] = [];
 
-                result.forEach((question: QuestionsType) => {
+                result.forEach((question: QuestionFrontEndType) => {
                     const { courseId, _id: qnsId, qnsLink, qnsName, date } = question;
 
                     timelineArr.push({

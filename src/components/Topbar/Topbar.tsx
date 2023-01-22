@@ -12,7 +12,7 @@ import { onMobile } from '../EditHistory/EditHistory';
 type UserContextType = {
   username: string;
   userId: string;
-  postedComments: string[]
+  anonId: string;
 };
 
 const { Header, Content } = Layout;
@@ -26,7 +26,7 @@ const Logo = () => (
 );
 const { compactAlgorithm } = theme;
 export const ThemeContext = createContext(true);
-export const UserContext = createContext<UserContextType>({ username: "", userId: "", postedComments: [] });
+export const UserContext = createContext<UserContextType>({ username: "", userId: "", anonId: "" });
 
 const DarkModeIcon = () => <svg className="theme" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="24" height="22"><path fill="#002a5c" fillRule="evenodd" stroke="#abb4c5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17a5 5 0 0 0-10 0M12 8V1M4.22 9.22l1.42 1.42M1 17h2M21 17h2M18.36 10.64l1.42-1.42M23 21H1M16 4l-4 4-4-4" /></svg>;
 
@@ -40,7 +40,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
   const [isLightMode, setLightMode] = useState(true);
   const [username, setUsername] = useState("");
   const [userId, setUserId] = useState("");
-  const [postedComments, setPostedComments] = useState<string[]>([]);
+  const [anonId, setAnonId] = useState("");
   const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
       }).then(response => {
         setUsername(response.username);
         setUserId(response.userId);
-        setPostedComments(response.postedComments);
+        setAnonId(response.anonId);
       }).catch((error) => {
         console.log(error);
       });
@@ -64,7 +64,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
     window.location.href = "/Shibboleth.sso/Logout";
   };
 
-  const userContextValues = useMemo(() => ({ username, userId, postedComments }), [username, userId, postedComments]);
+  const userContextValues = useMemo(() => ({ username, userId, anonId }), [username, userId, anonId]);
 
   return (
     <Layout>

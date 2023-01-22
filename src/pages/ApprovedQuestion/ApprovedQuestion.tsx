@@ -8,7 +8,7 @@ import MultipleChoice from "../../components/MultipleChoice/MultipleChoice";
 import Loading from "../../components/Loading/Loading";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import { TypeOfQuestion } from './types/QuestionTypes';
-import { QuestionsType } from "../../../backend/types/Questions";
+import { QuestionFrontEndType } from "../../../backend/types/Questions";
 import ShortAnswer from "../../components/ShortAnswer/ShortAnswer";
 import GetQuestion from "./fetch/GetQuestion";
 import Discussion from "../../components/Discussion/Discussion";
@@ -33,7 +33,7 @@ const GetTabKey = (key: string) => {
     }
 };
 
-export const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered, quizDependancies }: { question: QuestionsType, isLightMode: boolean, setHasAnswered: Function, quizDependancies?: QuizDependencyTypes }) => (
+export const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered, quizDependancies }: { question: QuestionFrontEndType, isLightMode: boolean, setHasAnswered: Function, quizDependancies?: QuizDependencyTypes }) => (
     <div>
         <Typography.Paragraph
             ellipsis={{
@@ -54,7 +54,7 @@ export const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered, quizD
     </div>
 );
 
-const ShortAnswerTab = ({ question, isLightMode, setHasAnswered }: { question: QuestionsType, isLightMode: boolean, setHasAnswered: Function }) => (
+const ShortAnswerTab = ({ question, isLightMode, setHasAnswered }: { question: QuestionFrontEndType, isLightMode: boolean, setHasAnswered: Function }) => (
     <div>
         <Typography.Paragraph
             ellipsis={{
@@ -74,7 +74,7 @@ const ShortAnswerTab = ({ question, isLightMode, setHasAnswered }: { question: Q
 );
 
 
-const Header = ({ question }: { question: QuestionsType }) => (
+const Header = ({ question }: { question: QuestionFrontEndType }) => (
     <div>
         {!onMobile() ?
             <Breadcrumb>
@@ -124,12 +124,12 @@ const Header = ({ question }: { question: QuestionsType }) => (
     </div>
 );
 
-const getQuestionType = (question: QuestionsType, isLightMode: boolean, setHasAnswered: Function) => ({
+const getQuestionType = (question: QuestionFrontEndType, isLightMode: boolean, setHasAnswered: Function) => ({
     mc: <MultipleChoiceTab question={question} isLightMode={isLightMode} setHasAnswered={setHasAnswered} />,
     short: <ShortAnswerTab question={question} isLightMode={isLightMode} setHasAnswered={setHasAnswered} />
 });
 
-const QuestionType = ({ question, qnsType, isLightMode, setHasAnswered }: { question: QuestionsType, qnsType: keyof TypeOfQuestion, isLightMode: boolean, setHasAnswered: Function }) => <div>{getQuestionType(question, isLightMode, setHasAnswered)[qnsType]}</div>;
+const QuestionType = ({ question, qnsType, isLightMode, setHasAnswered }: { question: QuestionFrontEndType, qnsType: keyof TypeOfQuestion, isLightMode: boolean, setHasAnswered: Function }) => <div>{getQuestionType(question, isLightMode, setHasAnswered)[qnsType]}</div>;
 
 const tabList = [
     {

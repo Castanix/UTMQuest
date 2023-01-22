@@ -3,7 +3,7 @@ import { Breadcrumb, Button, Card, Progress, Result, Space, Typography } from "a
 import { Link, useParams } from 'react-router-dom';
 import { red, green } from '@ant-design/colors';
 import { MultipleChoiceTab } from '../ApprovedQuestion/ApprovedQuestion';
-import { QuestionsType } from '../../../backend/types/Questions';
+import { QuestionFrontEndType } from '../../../backend/types/Questions';
 
 import "./QuizPage.css";
 import Loading from '../../components/Loading/Loading';
@@ -15,10 +15,10 @@ const { Text, Title } = Typography;
 
 export type QuizDependencyTypes = {
     newOptionState?: OptionType[],
-    setMCResult?: Function, 
+    setMCResult?: Function,
 };
 
-const Header = ({ courseId }: { courseId: string}) => (
+const Header = ({ courseId }: { courseId: string }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
@@ -33,7 +33,7 @@ const Header = ({ courseId }: { courseId: string}) => (
 
 const GenerateQuestions = (courseId: string) => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [questions, setQuestions] = useState<QuestionsType[]>([]);
+    const [questions, setQuestions] = useState<QuestionFrontEndType[]>([]);
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
@@ -53,7 +53,7 @@ const GenerateQuestions = (courseId: string) => {
                 setLoading(false);
             });
     }, [courseId]);
-    
+
     return {
         loading,
         questions,
@@ -79,24 +79,24 @@ const QuizPage = () => {
     if (error !== '') return <ErrorMessage title={error} link="#" message="Refresh" />;
 
     const { length } = questions;
-    if(questions.length) {
-        if(step !== length) {
-            const { choices: nextOptions, answers: nextAnswers } = questions[Math.min(step+1, length-1)];
+    if (questions.length) {
+        if (step !== length) {
+            const { choices: nextOptions, answers: nextAnswers } = questions[Math.min(step + 1, length - 1)];
 
-            if(hasAnswered) {
+            if (hasAnswered) {
                 document.querySelector(".explanation-btn")?.classList.toggle("active", true);
             } else {
                 document.querySelector(".explanation-btn")?.classList.toggle("active", false);
             };
-    
+
             return (
                 <Card title={<Header courseId={courseId ?? ''} />}>
                     <main className='main-container'>
                         <Space direction='vertical' size="large">
-                            <Progress percent={Math.round(step/length*100)} steps={length} strokeColor={strokeColor}/>
-                            <MultipleChoiceTab key={step} question={questions[step]} isLightMode={false} setHasAnswered={setHasAnswered} quizDependancies={{newOptionState, setMCResult}} />
+                            <Progress percent={Math.round(step / length * 100)} steps={length} strokeColor={strokeColor} />
+                            <MultipleChoiceTab key={step} question={questions[step]} isLightMode={false} setHasAnswered={setHasAnswered} quizDependancies={{ newOptionState, setMCResult }} />
                             <Button disabled={!hasAnswered} onClick={() => {
-                                setStep(step+1);
+                                setStep(step + 1);
                                 setHasAnswered(false);
                                 setStrokeColor([...strokeColor, mcResult ? green[6] : red[6]]);
                                 setNumCorrect(mcResult ? numCorrect + 1 : numCorrect);
@@ -108,7 +108,7 @@ const QuizPage = () => {
             );
         };
 
-        const grade = Math.round(numCorrect/length*100);
+        const grade = Math.round(numCorrect / length * 100);
         const numIncorrect = length - numCorrect;
 
         return (
@@ -133,7 +133,7 @@ const QuizPage = () => {
             </Card>
         );
     };
-    
+
     return (
         <Card title={<Header courseId={courseId ?? ''} />}>
             <main className='main-container'>
