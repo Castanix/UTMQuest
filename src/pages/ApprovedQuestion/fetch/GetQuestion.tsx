@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { QuestionsType } from "../../../../backend/types/Questions";
+import { QuestionFrontEndType } from "../../../../backend/types/Questions";
 
 const GetQuestion = (qnsLink: string) => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [question, setQuestion] = useState<QuestionsType>();
+    const [question, setQuestion] = useState<QuestionFrontEndType>();
     const [hasRated, setHasRated] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 

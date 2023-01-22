@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { QuestionsType } from "../../../../backend/types/Questions";
+import { QuestionFrontEndType } from "../../../../backend/types/Questions";
 
 const GetQuestions = (courseId: string) => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [questions, setQuestions] = useState<QuestionsType[]>([]);
+    const [questions, setQuestions] = useState<QuestionFrontEndType[]>([]);
     const [error, setError] = useState<string>("");
 
     useEffect(() => {

@@ -1,12 +1,12 @@
 import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
 import { mongoDBConnection, utmQuestCollections } from "../db/db.service";
-import { DiscussionType } from "../types/Discussion";
+import { DiscussionBackEndType } from "../types/Discussion";
 
 const discussionRouter = Router();
 
 /* Remove fields from discussion. Remove utorid by default and userId if anon */
-const RemoveFieldsFromDiscussion = (discussion: DiscussionType) => {
+const RemoveFieldsFromDiscussion = (discussion: DiscussionBackEndType) => {
 	const { utorId: _, ...returnObj } = discussion;
 
 	if (discussion.anon) {
@@ -15,7 +15,9 @@ const RemoveFieldsFromDiscussion = (discussion: DiscussionType) => {
 		return rest;
 	}
 
-	return returnObj;
+	const { anonId: _ignore, ...rest } = returnObj;
+
+	return rest;
 };
 
 // GET .../discussion/:discussionId
@@ -62,7 +64,7 @@ discussionRouter.get(
 				discussion: [
 					...(discussion?.map((elem) =>
 						RemoveFieldsFromDiscussion(
-							elem as unknown as DiscussionType
+							elem as DiscussionBackEndType
 						)
 					) ?? []),
 				],
@@ -79,14 +81,14 @@ discussionRouter.get(
 	async (req: Request, res: Response) => {
 		try {
 			const ids = Object.values(req.query);
-			const discussionLst: DiscussionType[] = [];
+			const discussionLst: DiscussionBackEndType[] = [];
 
 			await Promise.all(
 				ids.map(async (item) => {
 					const discussion =
 						(await utmQuestCollections.Discussions?.findOne({
 							_id: new ObjectID(item as string),
-						})) as DiscussionType;
+						})) as DiscussionBackEndType;
 					discussionLst.push(discussion);
 				})
 			);
@@ -104,8 +106,7 @@ discussionRouter.get(
 
 // POST .../discussion/:qnsId
 discussionRouter.post("/", async (req: Request, res: Response) => {
-	const { qnsLink, userId } = req.body;
-	const isAnon = req.body.anon;
+	const { qnsLink, userId, anonId, anon, op, content, thread } = req.body;
 	const utorId = req.headers.utorid as string;
 
 	const email: string = req.headers.http_mail as string;
@@ -130,15 +131,16 @@ discussionRouter.post("/", async (req: Request, res: Response) => {
 	const discussion = {
 		_id: new ObjectID(),
 		qnsLink,
-		op: req.body.op,
+		op,
 		utorId,
 		userId,
-		utorName: isAnon ? "Anonymous" : `${firstName} ${lastName}`,
-		content: req.body.content,
-		thread: req.body.thread,
+		anonId,
+		utorName: anon ? "Anonymous" : `${firstName} ${lastName}`,
+		content,
+		thread,
 		date: new Date().toISOString(),
 		deleted: false,
-		anon: req.body.anon,
+		anon,
 		edited: false,
 	};
 
@@ -157,22 +159,11 @@ discussionRouter.post("/", async (req: Request, res: Response) => {
 			{ session }
 		);
 
-		const postedComments: string[] = [
-			...user.postedComments,
-			discussion._id.toString(),
-		];
-
-		await utmQuestCollections.Accounts?.findOneAndUpdate(
-			user,
-			{ $set: { postedComments } },
-			{ session }
-		);
-
 		await session.commitTransaction();
 
 		res.status(201).send({
 			insertedId: discussion._id,
-			utorName: isAnon ? "Anonymous" : `${firstName} ${lastName}`,
+			utorName: anon ? "Anonymous" : `${firstName} ${lastName}`,
 		});
 	} catch (error) {
 		await session.abortTransaction();
@@ -268,7 +259,7 @@ discussionRouter.put(
 
 				res.status(200).send({
 					...RemoveFieldsFromDiscussion(
-						result.value as DiscussionType
+						result.value as DiscussionBackEndType
 					),
 					content,
 					date,
@@ -326,7 +317,9 @@ discussionRouter.delete(
 			}
 
 			res.status(202).send({
-				...RemoveFieldsFromDiscussion(result.value as DiscussionType),
+				...RemoveFieldsFromDiscussion(
+					result.value as DiscussionBackEndType
+				),
 			});
 		} catch (error) {
 			res.status(500).send(error);

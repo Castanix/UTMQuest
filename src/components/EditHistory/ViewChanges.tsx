@@ -1,7 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 import { Col, Row, Space, Typography } from "antd";
 import React, { useContext } from "react";
-import { QuestionsType } from "../../../backend/types/Questions";
+import { QuestionFrontEndType } from "../../../backend/types/Questions";
 import { ThemeContext } from "../Topbar/Topbar";
 
 import "./ViewChanges.css";
@@ -55,7 +55,7 @@ const RenderDiff = ({ title, oldField, newField }: { title: string, newField: st
     );
 };
 
-const ViewChanges = (firstQns: QuestionsType, secondQns: QuestionsType) => (
+const ViewChanges = (firstQns: QuestionFrontEndType, secondQns: QuestionFrontEndType) => (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
         {firstQns.topicId !== secondQns.topicId ? <RenderDiff title="Topic" newField={firstQns.topicName} oldField={secondQns.topicName} /> : null}
         {firstQns.qnsName !== secondQns.qnsName ? <RenderDiff title="Title" newField={firstQns.qnsName} oldField={secondQns.qnsName} /> : null}

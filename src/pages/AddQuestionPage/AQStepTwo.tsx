@@ -4,7 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import React, { useContext, useEffect, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import rehypeSanitize from 'rehype-sanitize';
-import { QuestionsType } from '../../../backend/types/Questions';
+import { QuestionFrontEndType } from '../../../backend/types/Questions';
 import qnsTypeEnum from './types/QnsTypeEnum';
 import AddQuestion from './fetch/AddQuestion';
 import AddMultipleChoice, { AddOptionType } from '../../components/MultipleChoice/AddMultipleChoice/AddMultipleChoice';
@@ -36,7 +36,7 @@ const GetEditor = (value: string | undefined, placeholder: string, onChange: any
     );
 };
 
-const isRestore = (restorable: QuestionsType, newQuestion: QuestionsType) => {
+const isRestore = (restorable: QuestionFrontEndType, newQuestion: QuestionFrontEndType) => {
     const { topicId, qnsName, description, explanation, choices, answers } = restorable;
     const { topicId: topicId2, qnsName: qnsName2, description: description2, explanation: explanation2, choices: choices2, answers: answers2 } = newQuestion;
 
@@ -59,7 +59,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep, edit }:
     const [isAnon, setAnon] = useState<boolean>(false);
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
 
-    const { userId, username } = useContext(UserContext);
+    const { userId, username, anonId } = useContext(UserContext);
     const isLightMode = useContext(ThemeContext);
 
     const { question, latest } = useLocation().state ?? "";
@@ -215,7 +215,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep, edit }:
                                 answers = ansArr;
                             }
 
-                            const addableQns: QuestionsType = {
+                            const addableQns: QuestionFrontEndType = {
                                 _id: question ? question._id : "",
                                 qnsLink,
                                 topicId: topicSelected[0],
@@ -227,8 +227,8 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep, edit }:
                                 explanation: explanationValue?.trim() ?? "",
                                 choices,
                                 answers,
-                                utorId: "",
                                 userId,
+                                anonId,
                                 utorName: username,
                                 date: latest ? question.date : new Date().toISOString(),
                                 numDiscussions: question ? question.numDiscussions : 0,

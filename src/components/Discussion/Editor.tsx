@@ -12,7 +12,7 @@ import { onMobile } from "../EditHistory/EditHistory";
 import { ThemeContext, UserContext } from "../Topbar/Topbar";
 import { GetUserInitials } from "../../pages/QuestionsPage/QuestionsList";
 
-const AddComment = async (discussionId: string, qnsLink: string, op: boolean, content: string, isAnon: boolean, userId: string) => {
+const AddComment = async (discussionId: string, qnsLink: string, op: boolean, content: string, isAnon: boolean, userId: string, anonId: string) => {
     // MAKE POST CALL HERE
     const newComment: DiscussionFrontEndType = {
         _id: `id${(new Date()).getTime()}`,
@@ -20,6 +20,7 @@ const AddComment = async (discussionId: string, qnsLink: string, op: boolean, co
         op,
         utorName: 'To be filled in the backend',
         userId,
+        anonId,
         content,
         thread: [],
         date: new Date().toISOString(),
@@ -74,13 +75,14 @@ const AddComment = async (discussionId: string, qnsLink: string, op: boolean, co
     return postedComment;
 };
 
-const EditComment = async (discussionId: string, qnsLink: string, op: boolean, content: string, isAnon: boolean, thread: string[], userId: string) => {
+const EditComment = async (discussionId: string, qnsLink: string, op: boolean, content: string, isAnon: boolean, thread: string[], userId: string, anonId: string) => {
     const editComment: DiscussionFrontEndType = {
         _id: discussionId,
         qnsLink,
         op,
         utorName: 'To be filled in the backend',
         userId,
+        anonId,
         content,
         thread,
         date: new Date().toISOString(),
@@ -111,7 +113,7 @@ const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread,
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const isLightMode = useContext(ThemeContext);
-    const { username, userId } = useContext(UserContext);
+    const { username, userId, anonId } = useContext(UserContext);
 
     const onSubmit = async () => {
         if (content.trim().length <= 0) {
@@ -122,7 +124,7 @@ const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread,
         setSubmitDisabled(true);
 
         if (oldContent === "") {
-            const newComment = await AddComment(discussionId as string, qnsLink, op, content, isAnon, userId);
+            const newComment = await AddComment(discussionId as string, qnsLink, op, content, isAnon, userId, anonId);
             updateComments(newComment, false);
             // setCommented(newComment);
             setContent("");
@@ -133,7 +135,7 @@ const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread,
                 setSubmitDisabled(false);
                 return;
             }
-            const editedComment = await EditComment(discussionId as string, qnsLink, op, content, isAnon, thread, userId);
+            const editedComment = await EditComment(discussionId as string, qnsLink, op, content, isAnon, thread, userId, anonId);
             updateComments(editedComment, true);
         };
 

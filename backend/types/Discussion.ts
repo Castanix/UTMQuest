@@ -1,29 +1,26 @@
 import type { WithId, Document, ObjectId } from "mongodb";
 
-export interface DiscussionType extends WithId<Document> {
-	_id: ObjectId;
+interface BaseDiscussionType {
 	qnsLink: string;
 	op: boolean;
-	utorId: string;
+	userId: string;
+	anonId: string;
 	utorName: string;
 	content: string;
+	thread: string[];
 	date: string;
 	deleted: boolean;
-	thread: string[];
 	anon: boolean;
 	edited: boolean;
 }
 
-export interface DiscussionFrontEndType {
+export interface DiscussionBackEndType
+	extends WithId<Document>,
+		BaseDiscussionType {
+	_id: ObjectId;
+	utorId: string;
+}
+
+export interface DiscussionFrontEndType extends BaseDiscussionType {
 	_id: string;
-	qnsLink: string;
-	op: boolean;
-	userId: string;
-	utorName: string;
-	content: string;
-	thread: string[];
-	date: string;
-	deleted: boolean;
-	anon: boolean;
-	edited: boolean;
 }
