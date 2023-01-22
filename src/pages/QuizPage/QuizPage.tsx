@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Breadcrumb, Button, Card, Progress, Result, Space, Typography } from "antd";
 import { Link, useParams } from 'react-router-dom';
 import { red, green } from '@ant-design/colors';
+import { useQuery } from 'react-query';
 import { MultipleChoiceTab } from '../ApprovedQuestion/ApprovedQuestion';
-import { QuestionFrontEndType } from '../../../backend/types/Questions';
 
 import "./QuizPage.css";
 import Loading from '../../components/Loading/Loading';
@@ -31,33 +31,21 @@ const Header = ({ courseId }: { courseId: string }) => (
     </div>
 );
 
-const GenerateQuestions = (courseId: string) => {
-    const [loading, setLoading] = useState<boolean>(true);
-    const [questions, setQuestions] = useState<QuestionFrontEndType[]>([]);
-    const [error, setError] = useState<string>("");
+const fetchGenerateQuiz = async (courseId: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/question/generateQuiz/${courseId}`);
+    if (!response.ok) throw Error(response.statusText);
+    return response.json();
+};
 
-    useEffect(() => {
-        fetch(
-            `${process.env.REACT_APP_API_URI}/question/generateQuiz/${courseId}`
-        )
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            })
-            .then((result) => {
-                setQuestions(result);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
-    }, [courseId]);
+
+const GenerateQuestions = (courseId: string) => {
+
+    const result = useQuery("generateQuiz", () => fetchGenerateQuiz(courseId));
 
     return {
-        loading,
-        questions,
-        error
+        loading: result.isLoading,
+        questions: result?.data,
+        error: result.error
     };
 };
 
@@ -76,7 +64,7 @@ const QuizPage = () => {
 
     if (loading) return <Loading />;
 
-    if (error !== '') return <ErrorMessage title={error} link="#" message="Refresh" />;
+    if (error instanceof Error) return <ErrorMessage title={error.message} link="#" message="Refresh" />;
 
     const { length } = questions;
     if (questions.length) {
