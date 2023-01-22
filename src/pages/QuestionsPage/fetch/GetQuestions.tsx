@@ -1,34 +1,19 @@
-import { useEffect, useState } from "react";
-import { QuestionFrontEndType } from "../../../../backend/types/Questions";
+import { useQuery } from "react-query";
+
+const fetchLatestQuestions = async (courseId: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/question/latestQuestions/${courseId}`);
+    if (!response.ok) throw Error(response.statusText);
+    return response.json();
+};
 
 const GetQuestions = (courseId: string) => {
-    const [loading, setLoading] = useState<boolean>(true);
-    const [questions, setQuestions] = useState<QuestionFrontEndType[]>([]);
-    const [error, setError] = useState<string>("");
 
-    useEffect(() => {
-        fetch(
-            `${process.env.REACT_APP_API_URI}/question/latestQuestions/${courseId}`
-        )
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            })
-            .then((result) => {
-                setQuestions(result);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
-
-    }, [courseId]);
+    const result = useQuery('latestQuestions', () => fetchLatestQuestions(courseId));
 
     return {
-        loading,
-        questions,
-        error,
+        loading: result.isLoading,
+        questions: result?.data,
+        error: result.error as Error,
     };
 };
 
