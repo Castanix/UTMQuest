@@ -53,7 +53,7 @@ const QuestionsPage = () => {
 
     if (loading || loadingTopics || loadingBookmarked || loadingCourse) return <Loading />;
 
-    if (error !== '' || errorTopics instanceof Error || errorBookmarked !== '' || errorCourse !== '') return <ErrorMessage title={errorTopics instanceof Error ? errorTopics.message : error} link="." message="Refresh" />;
+    if (error instanceof Error || errorTopics instanceof Error || errorBookmarked !== '' || errorCourse !== '') return <ErrorMessage title={error instanceof Error ? error.message : errorTopics.message} link="." message="Refresh" />;
     return (
         <Card title={<Header courseId={courseId ?? ''} courseName={courseName ?? ''} bookmarked={isBookmarked} setBookmarked={setIsBookmarked} />} bordered={false}>
             <main className='main-container'>
