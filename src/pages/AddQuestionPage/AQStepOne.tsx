@@ -14,7 +14,6 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
     const { defaultTopicId, defaultTopicName } = useLocation().state ?? "";
     const { editableQns } = useLocation().state ?? "";
 
-    console.log(editableQns);
     useEffect(() => {
         if (editableQns) {
             const topicId = topics.filter(item => item.topicName === editableQns.topicName)[0]._id;
