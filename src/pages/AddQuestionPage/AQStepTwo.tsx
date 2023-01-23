@@ -39,7 +39,8 @@ const GetEditor = (value: string | undefined, placeholder: string, onChange: any
 // Checks if the question to be restored is not edited to be identical to current latest
 const isIdenticalEdit = (obj1: QuestionFrontEndType, obj2: QuestionFrontEndType) => {
     // NOTE: Clone object to avoid mutating original!
-    const keys = ['_id', 'anon', 'numDiscussions', 'utorName', 'utorId', 'date', 'latest'];
+    const keys = ['_id', 'anon', 'numDiscussions', 'utorName', 'utorId', 'userId', 'anonId',
+                    'date', 'latest', 'rating', 'likes', 'dislikes', 'views', 'viewers'];
     const objClone1 = { ...obj1 };
     const objClone2 = { ...obj2 };
 
