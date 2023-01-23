@@ -10,8 +10,6 @@ const GetEditHistory = (qnsLink: string) => {
 
     const result = useQuery({ queryKey: 'getEditHistory', queryFn: () => fetchEditHistory(qnsLink) });
 
-    console.log(result);
-
     return {
         loading: result.isLoading,
         editHistory: result.data,

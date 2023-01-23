@@ -1,5 +1,5 @@
 import { Card, Divider, Timeline, Typography, Popover, Breadcrumb } from "antd";
-import React, { ReactElement, useContext, useState } from "react";
+import React, { ReactElement, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import BadgeDescriptions from "../../BadgeDescriptions";
 import BadgePicker from "../../components/BadgePicker/BadgePicker";
@@ -12,6 +12,7 @@ import GetAllQuestions from "./fetch/GetAllQuestions";
 import GetBadges from "./fetch/GetBadges";
 import GetProfile from "./fetch/Profile";
 import "./ProfilePage.css";
+import { QuestionsType } from "../../../backend/types/Questions";
 
 const { Text, Title } = Typography;
 
@@ -46,7 +47,6 @@ const Header = () => (
 );
 
 const ProfilePage = () => {
-    const [timeline, setTimeline] = useState<TimelineType[]>();
 
     const params = useParams();
     const userId = params.userId ?? "";
@@ -54,13 +54,29 @@ const ProfilePage = () => {
 
     const { loadingProfile, errorProfile, utorName } = GetProfile(userId);
     const { loadingBadges, errorBadges, badges } = GetBadges(userId);
-    const { loadingQuestions, errorQuestions } = GetAllQuestions(userId, setTimeline);
+    const { loadingQuestions, errorQuestions, data } = GetAllQuestions(userId);
 
     if (loadingProfile || loadingBadges || loadingQuestions) return <Loading />;
 
     if (errorProfile instanceof Error) return <ErrorMessage title={errorProfile.message} link="." message="Refresh" />;
     if (errorBadges instanceof Error) return <ErrorMessage title={errorBadges.message} link="." message="Refreshing" />;
-    if (errorQuestions) return <ErrorMessage title={errorQuestions} link="." message="Refreshing" />;
+    if (errorQuestions instanceof Error) return <ErrorMessage title={errorQuestions.message} link="." message="Refreshing" />;
+
+    const sortedTimelineArr: TimelineType[] = [];
+
+    data.forEach((question: QuestionsType) => {
+        const { courseId, _id: qnsId, qnsLink, qnsName, date } = question;
+
+        sortedTimelineArr.push({
+            courseId,
+            qnsId,
+            qnsLink,
+            qnsName,
+            date
+        });
+    });
+
+    sortedTimelineArr.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
 
     // TODO: need to include threadreplies when edit badge routes have been set
     const { addQns, editQns, consecutivePosting } = badges.unlockedBadges;
@@ -74,8 +90,8 @@ const ProfilePage = () => {
     const loadTimeline = () => {
         const timelineArr: ReactElement[] = [];
 
-        if (timeline) {
-            timeline.forEach((item) => {
+        if (sortedTimelineArr) {
+            sortedTimelineArr.forEach((item) => {
                 timelineArr.push(
                     <Timeline.Item key={item.qnsId} label={GetRelativeTime(new Date(item.date).getTime())}>
                         <Link to={`/courses/${item.courseId}/question/${item.qnsLink}`}>
