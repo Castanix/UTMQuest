@@ -82,33 +82,40 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
     const { userId, username, anonId } = useContext(UserContext);
     const isLightMode = useContext(ThemeContext);
 
-    const { question, latest } = useLocation().state ?? "";
+    /* 
+        - If only editableQns exists -> edit action
+        - If restorableDate and latest exists -> restore action
+
+        editableQns: contains question object to prefill form
+        restorableDate: contains next question's date after selected restore point
+        latest: contains latest question version to be compared for identicality
+    */
+    const { editableQns, restorableDate, latest } = useLocation().state ?? "";
 
     useEffect(() => {
-        const setForm = () => {
-            // if question exists, then it is an edit or restore
-            if (question) {
-                const { qnsName, qnsType, description, explanation, choices, answers } = question;
+        // const setForm = () => {
+        if (editableQns) {
+            const { qnsName, qnsType, description, explanation, choices, answers } = editableQns;
 
-                setQnsLink(question.qnsLink);
-                setTitle(qnsName);
-                setType(qnsType);
-                setProblemValue(description);
-                setExplanationValue(explanation);
-                if (typeof (answers) === "object") {
-                    const mcArr: AddOptionType[] = [];
-                    choices.forEach((choice: string, index: number) => {
-                        mcArr.push({ _id: index + 1, value: choice, isCorrect: answers.includes(choice) });
-                    });
-                    setMcOption(mcArr);
-                };
-                if (typeof (answers) === "string") {
-                    setSolValue(answers);
-                };
+            setQnsLink(editableQns.qnsLink);
+            setTitle(qnsName);
+            setType(qnsType);
+            setProblemValue(description);
+            setExplanationValue(explanation);
+            if (typeof (answers) === "object") {
+                const mcArr: AddOptionType[] = [];
+                choices.forEach((choice: string, index: number) => {
+                    mcArr.push({ _id: index + 1, value: choice, isCorrect: answers.includes(choice) });
+                });
+                setMcOption(mcArr);
+            };
+            if (typeof (answers) === "string") {
+                setSolValue(answers);
             };
         };
-        setForm();
-    }, [question]);
+        // };
+        // setForm();
+    }, [editableQns]);
 
     const setAnswerType = () => {
         let el: React.ReactNode;
@@ -166,7 +173,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
             >
                 <div className="items-container">
                     <div className="answer-form">
-                        <Form.Item name="title" label="Question Title" initialValue={question ? question.qnsName : ""} required>
+                        <Form.Item name="title" label="Question Title" initialValue={editableQns ? editableQns.qnsName : ""} required>
                             <Input
                                 placeholder='Add Question Title'
                                 value={title}
@@ -175,7 +182,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                                 onChange={(e) => setTitle(e.target.value)}
                             />
                         </Form.Item>
-                        <Form.Item name='type' label="Answer Type" initialValue={question ? question.qnsType : null} required>
+                        <Form.Item name='type' label="Answer Type" initialValue={editableQns ? editableQns.qnsType : null} required>
                             <Select
                                 placeholder="Select Type"
                                 onChange={(value: qnsTypeEnum) => { setType((value === "mc") ? qnsTypeEnum.mc : qnsTypeEnum.short); }}
@@ -187,7 +194,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                         </Form.Item>
                     </div>
                     <Form.Item>
-                        {DuplicateQuestions(courseId, topicSelected[0], title ?? '', question?.link)}
+                        {DuplicateQuestions(courseId, topicSelected[0], title ?? '', editableQns?.link)}
                     </Form.Item>
                     <div className="answer-form">
                         <Form.Item label="Problem Description" required>
@@ -237,7 +244,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                             }
 
                             const addableQns: QuestionFrontEndType = {
-                                _id: question ? question._id : "",
+                                _id: editableQns ? editableQns._id : "",
                                 qnsLink,
                                 topicId: topicSelected[0],
                                 topicName: topicSelected[1],
@@ -251,30 +258,29 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                                 userId,
                                 anonId,
                                 utorName: username,
-                                date: latest ? question.date : new Date().toISOString(),
-                                numDiscussions: question ? question.numDiscussions : 0,
+                                date: latest ? editableQns.date : new Date().toISOString(),
+                                numDiscussions: editableQns ? editableQns.numDiscussions : 0,
                                 anon: isAnon,
                                 latest: true,
-                                rating: question ? question.rating : {},
-                                likes: question ? question.likes : 0,
-                                dislikes: question ? question.dislikes : 0,
-                                views: question ? question.views : 0,
-                                viewers: question ? question.viewers : {},
+                                rating: editableQns ? editableQns.rating : {},
+                                likes: editableQns ? editableQns.likes : 0,
+                                dislikes: editableQns ? editableQns.dislikes : 0,
+                                views: editableQns ? editableQns.views : 0,
+                                viewers: editableQns ? editableQns.viewers : {},
                             };
 
-                            if(question) {
-                                if(latest && isRestore(question, addableQns)) {
+                            if(editableQns) {
+                                if(latest && isRestore(editableQns, addableQns)) {
                                     setRestoreQns(addableQns);
                                     setIsModalOpen(true);
                                 } else {
-                                    if(!isIdenticalEdit(addableQns, latest ?? question)) {
+                                    if(!isIdenticalEdit(addableQns, latest ?? editableQns)) {
                                         EditQuestion(addableQns, setIsSubmit, setRedirect);
                                     } else {
                                         if(latest) {
                                             message.error("Changes are identical to the latest version");
-                                        } else {
-                                            message.error("No changes were made");
                                         };
+                                        message.error("No changes were made");
                                         setIsSubmit(false);
                                     };
                                 };
@@ -290,8 +296,8 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                 open={isModalOpen} 
                 onOk={() => {
                     setIsModalOpen(false);
-                    if(restoreQns) {
-                        RestoreQuestion(restoreQns, setIsSubmit, setRedirect);
+                    if(restoreQns && restorableDate) {
+                        RestoreQuestion(restoreQns._id, restorableDate, setIsSubmit, setRedirect);
                     } else {
                         message.error("Unable to restore question");
                     };

@@ -201,7 +201,7 @@ const EditQuestion = async (editedQns: QuestionFrontEndType, setIsSubmit: Functi
         });
 };
 
-const RestoreQuestion = async (restorableQns: QuestionFrontEndType, setIsSubmit: Function, setRedirect: Function) => {
+const RestoreQuestion = async (restorableQnsId: string, restorableDate: string, setIsSubmit: Function, setRedirect: Function) => {
     fetch(`${process.env.REACT_APP_API_URI}/question/restoreQuestion`,
         {
             method: 'PUT',
@@ -212,7 +212,7 @@ const RestoreQuestion = async (restorableQns: QuestionFrontEndType, setIsSubmit:
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(restorableQns)
+            body: JSON.stringify({restorableQnsId, restorableDate})
         }).then((res: Response) => {
             if (!res.ok) {
                 throw new Error(res.statusText);
