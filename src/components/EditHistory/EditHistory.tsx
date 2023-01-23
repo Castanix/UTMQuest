@@ -96,8 +96,6 @@ const EditHistory = ({ qnsLink }: { qnsLink: string }) => {
 
     const renderList: React.ReactNode[] = [];
 
-    console.table(editHistory);
-
     for (let index = 0; index < editHistory.length - 1; index++) {
         const firstQns = editHistory[index];
         const secondQns = editHistory[index + 1];
