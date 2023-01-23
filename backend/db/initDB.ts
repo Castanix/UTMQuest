@@ -222,8 +222,7 @@ async function initDB() {
 						"likes",
 						"dislikes",
 						"views",
-						"viewers",
-						"userId"
+						"viewers"
 					],
 					additionalProperties: false,
 					properties: {

@@ -96,6 +96,8 @@ const EditHistory = ({ qnsLink }: { qnsLink: string }) => {
 
     const renderList: React.ReactNode[] = [];
 
+    console.table(editHistory);
+
     for (let index = 0; index < editHistory.length - 1; index++) {
         const firstQns = editHistory[index];
         const secondQns = editHistory[index + 1];
@@ -130,7 +132,7 @@ const EditHistory = ({ qnsLink }: { qnsLink: string }) => {
         // can't restore to most recent post (should use edit instead)
         if (index !== 0) {
             actions.push(
-                <Link key={`${firstQns._id} restore`} to={`/courses/${firstQns.courseId}/editQuestion`} state={{ question: firstQns, latest: editHistory[0] }}>
+                <Link key={`${firstQns._id} restore`} to={`/courses/${firstQns.courseId}/editQuestion`} state={{ editableQns: firstQns, restorableDate: editHistory[index - 1].date, latest: editHistory[0] }}>
                     <Button shape="round">
                         Restore
                     </Button>
@@ -148,7 +150,7 @@ const EditHistory = ({ qnsLink }: { qnsLink: string }) => {
 
         if (editHistory.length > 1) {
             actions.push(
-                <Link key={originalQuestion._id} to={`/courses/${originalQuestion.courseId}/editQuestion`} state={{ question: originalQuestion, latest: editHistory[0] }}>
+                <Link key={originalQuestion._id} to={`/courses/${originalQuestion.courseId}/editQuestion`} state={{ editableQns: originalQuestion, restorableDate: editHistory[editHistory.length - 2].date, latest: editHistory[0] }}>
                     <Button shape="round">
                         Restore
                     </Button>

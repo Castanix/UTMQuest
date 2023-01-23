@@ -114,7 +114,7 @@ const Header = ({ question }: { question: QuestionFrontEndType }) => (
 
             <div className="icon-buttons">
                 <div className="flex-child">
-                    <Link to={`/courses/${question.courseId}/editQuestion`} state={{ question }}><Button type="primary" shape="round" icon={<EditOutlined />}>Edit</Button></Link>
+                    <Link to={`/courses/${question.courseId}/editQuestion`} state={{ editableQns: question }}><Button type="primary" shape="round" icon={<EditOutlined />}>Edit</Button></Link>
                 </div>
                 {/* <div className="flex-child">
                     <Button type="primary" shape="round" danger icon={<WarningFilled />}>Report</Button>

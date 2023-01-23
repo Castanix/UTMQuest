@@ -561,7 +561,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		utmQuestCollections.Questions?.insertOne(question)
 			.then((result) => {
 				if (!result) {
-					res.status(500).send("Unable to add new question.");
+					res.status(500).send({ error: "Unable to add new question." });
 					return;
 				}
 
@@ -614,11 +614,13 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 
 questionRouter.put(
 	"/restoreQuestion", async (req: Request, res: Response) => {
+		const { restorableQnsId, restorableDate } = req.body;
+
 		utmQuestCollections.Questions?.findOne({
-			_id: new ObjectID(req.body._id)
+			_id: new ObjectID(restorableQnsId)
 		}).then(restoredVersion => {
 			if(!restoredVersion) {
-				res.status(404).send("No restored version found");
+				res.status(404).send({ error: "No restored version found" });
 				return;
 			};
 
@@ -627,7 +629,7 @@ questionRouter.put(
 			const isUpdated = updateLatest(restoredVersion, true);
 
 			if(!isUpdated) {
-				res.status(400).send("Cannot restore version at this time");
+				res.status(400).send({ error: "Cannot restore version at this time" });
 				return;
 			};
 
@@ -639,15 +641,39 @@ questionRouter.put(
 					const revert = updateLatest(restoredVersion, false);
 
 					if(!revert) {
-						res.status(400).send("Unable to delete all versions after restore point. Cannot revert changes, data may not be in sync");
+						res.status(400).send({ 
+							error: "Unable to delete all versions after restore point. Cannot revert changes, data may not be in sync"
+						});
 						return;
 					};
 
-					res.status(400).send("Unable to delete all versions after restore point.");
+					res.status(400).send({ 
+						error: "Unable to delete all versions after restore point."
+					});
 					return;
 				};
 
-				res.status(200).send({qnsLink});
+				utmQuestCollections.Discussions?.find({
+					qnsLink,
+					op: true,
+					$expr: { $gt: [{ $toDate: "$date" }, new Date(restorableDate)] },
+				}).toArray().then(documents => {
+					documents.forEach(doc => {
+						utmQuestCollections.Discussions?.deleteMany({
+							_id: { $in: doc.thread.map((id: string) => new ObjectID(id)) }
+						}).then(() => {
+							utmQuestCollections.Discussions?.deleteOne(doc).catch(err => {
+								throw new Error(err);
+							});
+						}).catch(err => {
+							throw new Error(err);
+						});
+					});
+
+					res.status(200).send({qnsLink});
+				}).catch(err => {
+					throw new Error(err);
+				});
 			}).catch(err => {
 				throw new Error(err);
 			});

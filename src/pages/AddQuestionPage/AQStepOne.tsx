@@ -12,19 +12,20 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
     const [searchValue, setSearchValue] = useState<string>();
 
     const { defaultTopicId, defaultTopicName } = useLocation().state ?? "";
-    const { question } = useLocation().state ?? "";
+    const { editableQns } = useLocation().state ?? "";
 
+    console.log(editableQns);
     useEffect(() => {
-        if (question) {
-            const topicId = topics.filter(item => item.topicName === question.topicName)[0]._id;
+        if (editableQns) {
+            const topicId = topics.filter(item => item.topicName === editableQns.topicName)[0]._id;
 
-            setTopicSelected([topicId, question.topicName]);
+            setTopicSelected([topicId, editableQns.topicName]);
             setSelected(topicId);
         } else if (defaultTopicId && defaultTopicName) {
             setTopicSelected([defaultTopicId, defaultTopicName]);
             setSelected(defaultTopicId);
         };
-    }, [question, topics, setTopicSelected, defaultTopicId, defaultTopicName]);
+    }, [editableQns, topics, setTopicSelected, defaultTopicId, defaultTopicName]);
 
     const { Option } = Select;
 
@@ -39,7 +40,7 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
     };
 
     const GetSelectInitialValue = () => {
-        if (question) return question.topicName;
+        if (editableQns) return editableQns.topicName;
 
         if (defaultTopicId !== '' && defaultTopicName !== '') return defaultTopicName;
 
