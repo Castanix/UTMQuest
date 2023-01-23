@@ -68,7 +68,7 @@ const customRender = (
 
 const customRenderEdit = (
     <MemoryRouter
-        initialEntries={[{ pathname: "/courses/ABC123/editQuestion", state: { question } }]}
+        initialEntries={[{ pathname: "/courses/ABC123/editQuestion", state: { editableQns: question } }]}
     >
         <Routes>
             <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage />} />
