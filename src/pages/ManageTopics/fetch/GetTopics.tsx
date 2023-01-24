@@ -8,7 +8,7 @@ const fetchGetTopics = async (courseId: string) => {
 
 const GetAllTopics = (courseId: string) => {
 
-    const result = useQuery("getTopics", () => fetchGetTopics(courseId));
+    const result = useQuery(["getTopics", courseId], () => fetchGetTopics(courseId));
 
     return {
         topics: result?.data,

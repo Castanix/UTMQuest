@@ -8,7 +8,7 @@ const fetchEditHistory = async (qnsLink: string) => {
 
 const GetEditHistory = (qnsLink: string) => {
 
-    const result = useQuery({ queryKey: 'getEditHistory', queryFn: () => fetchEditHistory(qnsLink) });
+    const result = useQuery({ queryKey: ['getEditHistory', qnsLink], queryFn: () => fetchEditHistory(qnsLink) });
 
     return {
         loading: result.isLoading,
