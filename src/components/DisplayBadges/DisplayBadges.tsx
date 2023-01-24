@@ -1,5 +1,5 @@
 import { Divider, Popover, Space } from "antd";
-import React, { useState } from "react";
+import React from "react";
 import { useQuery } from "react-query";
 import BadgeDescriptions from "../../BadgeDescriptions";
 
@@ -12,15 +12,11 @@ const fetchData = async (userId: string) => {
 };
 
 const DisplayBadges = ({ userId }: { userId: string }) => {
-    const [badges, setBadges] = useState<string[]>([]);
-    const [longestLoginStreak, setLongestLoginStreak] = useState<number>(1);
 
-    useQuery(["userBadges", userId], () => fetchData(userId), {
-        onSuccess: (data) => {
-            setBadges(data.displayBadges);
-            setLongestLoginStreak(data.longestLoginStreak);
-        }
-    });
+    const { data } = useQuery(["userBadges", userId], () => fetchData(userId), { staleTime: Infinity });
+
+    const badges: string[] = data ? data.displayBadges : [];
+    const longestLoginStreak: number = data ? data.longestLoginStreak : 1;
 
     return (
         <span>
