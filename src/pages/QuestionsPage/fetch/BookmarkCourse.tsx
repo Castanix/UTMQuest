@@ -16,10 +16,10 @@ const fetchGetCourse = async (courseId: string) => {
 
 export const CheckBookmark = (courseId: string, setIsBookmarked: Function) => {
 
-    const bookmarkResult = useQuery("checkBookmark", () => fetchCheckBookmark(courseId), {
+    const bookmarkResult = useQuery(["checkBookmark", courseId], () => fetchCheckBookmark(courseId), {
         onSuccess: (data) => setIsBookmarked(data)
     });
-    const courseResult = useQuery("getBookmarkCourses", () => fetchGetCourse(courseId));
+    const courseResult = useQuery(["course", courseId], () => fetchGetCourse(courseId));
 
     return {
         loadingBookmarked: bookmarkResult.isLoading,

@@ -8,7 +8,7 @@ const fetchLatestQuestions = async (courseId: string) => {
 
 const GetQuestions = (courseId: string) => {
 
-    const result = useQuery('latestQuestions', () => fetchLatestQuestions(courseId));
+    const result = useQuery(['latestQuestions', courseId], () => fetchLatestQuestions(courseId), { staleTime: 30000 });
 
     return {
         loading: result.isLoading,
