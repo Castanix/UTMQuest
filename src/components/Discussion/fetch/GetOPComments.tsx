@@ -1,33 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "react-query";
 import { DiscussionFrontEndType } from "../../../../backend/types/Discussion";
 
-const GetOPComments = (qnsLink: string) => {
-    const [loading, setLoading] = useState<boolean>(true);
-    const comments: DiscussionFrontEndType[] = useMemo(() => [], []);
-    const [error, setError] = useState<string>("");
+const fetchData = async (qnsLink: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/discussion/thread/${qnsLink}`);
+    if (!response.ok) throw Error(response.statusText);
+    return response.json();
+};
 
-    useEffect(() => {
-        fetch(
-            `${process.env.REACT_APP_API_URI}/discussion/thread/${qnsLink}`
-        )
-            .then((res: Response) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            })
-            .then((result) => {
-                comments.push(...result.discussion);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
-    }, [comments, qnsLink]);
+const GetOPComments = (qnsLink: string) => {
+
+    const comments: DiscussionFrontEndType[] = [];
+
+    const result = useQuery(["opDiscussion", qnsLink], () => fetchData(qnsLink), {
+        onSuccess: (data) => comments.push(...data.discussion)
+    });
 
     return {
-        loading,
+        loading: result.isLoading,
         comments,
-        error,
+        error: result.error,
     };
 };
 

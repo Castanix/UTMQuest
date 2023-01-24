@@ -36,7 +36,7 @@ const AddQuestionPage = () => {
 
     if (loadingTopics) return <Loading />;
 
-    if (errorTopics instanceof Error) return <ErrorMessage title={errorTopics.message} link={`/courses/${courseId}`} message='Go back' />;
+    if (errorTopics) return <ErrorMessage title="Could not load topics" link={`/courses/${courseId}`} message='Go back' />;
 
     return (
         <Card title={<Header courseId={courseId ?? ''} />} bordered={false}>

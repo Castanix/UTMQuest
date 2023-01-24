@@ -40,7 +40,7 @@ const fetchGenerateQuiz = async (courseId: string) => {
 
 const GenerateQuestions = (courseId: string) => {
 
-    const result = useQuery("generateQuiz", () => fetchGenerateQuiz(courseId));
+    const result = useQuery(["generateQuiz", courseId], () => fetchGenerateQuiz(courseId));
 
     return {
         loading: result.isLoading,

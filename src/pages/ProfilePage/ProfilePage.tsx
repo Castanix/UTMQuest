@@ -12,7 +12,7 @@ import GetAllQuestions from "./fetch/GetAllQuestions";
 import GetBadges from "./fetch/GetBadges";
 import GetProfile from "./fetch/Profile";
 import "./ProfilePage.css";
-import { QuestionsType } from "../../../backend/types/Questions";
+import { QuestionFrontEndType } from "../../../backend/types/Questions";
 
 const { Text, Title } = Typography;
 
@@ -64,7 +64,7 @@ const ProfilePage = () => {
 
     const sortedTimelineArr: TimelineType[] = [];
 
-    data.forEach((question: QuestionsType) => {
+    data.forEach((question: QuestionFrontEndType) => {
         const { courseId, _id: qnsId, qnsLink, qnsName, date } = question;
 
         sortedTimelineArr.push({

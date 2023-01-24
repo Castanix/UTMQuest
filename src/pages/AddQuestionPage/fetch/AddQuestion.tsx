@@ -1,4 +1,5 @@
 import { message, notification } from "antd";
+import { QueryClient } from "react-query";
 import { QuestionFrontEndType } from "../../../../backend/types/Questions";
 
 type BaseBadge = "addQns" | "editQns" | "consecutivePosting";
@@ -128,7 +129,7 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
 };
 
 
-const AddQuestion = async (addableQns: QuestionFrontEndType, setRedirect: Function, setIsSubmit: Function) => {
+const AddQuestion = async (addableQns: QuestionFrontEndType, setRedirect: Function, setIsSubmit: Function, queryClient: QueryClient) => {
     fetch(`${process.env.REACT_APP_API_URI}/question/addQuestion`,
         {
             method: 'POST',
@@ -147,13 +148,13 @@ const AddQuestion = async (addableQns: QuestionFrontEndType, setRedirect: Functi
             message.success("Question successfully added.");
             checkBadge(addableQns.anon, result, [5, 15, 30], "addQns", addableQns.userId);
 
-                if (result.consecutivePosting) {
-                    if (result.consecutivePosting >= 7 && result.unlockedBadges.consecutivePosting !== "consecutivebadge") {
-                        notification.success({
-                            message: "Unlocked badge for 7 day consecutive posting!",
-                            placement: "bottom"
-                        });
-                        unlockBadge(addableQns.userId, "consecutivePosting", "consecutivebadge", "");
+            if (result.consecutivePosting) {
+                if (result.consecutivePosting >= 7 && result.unlockedBadges.consecutivePosting !== "consecutivebadge") {
+                    notification.success({
+                        message: "Unlocked badge for 7 day consecutive posting!",
+                        placement: "bottom"
+                    });
+                    unlockBadge(addableQns.userId, "consecutivePosting", "consecutivebadge", "");
 
                 } else if (result.consecutivePosting < 7) {
                     notification.success({
@@ -164,18 +165,19 @@ const AddQuestion = async (addableQns: QuestionFrontEndType, setRedirect: Functi
                 }
             }
 
+            queryClient.invalidateQueries(["latestQuestions", addableQns.courseId]);
             setRedirect(result.qnsLink);
             setIsSubmit(false);
         })
         .catch((error) => {
             message.error(error.message);
         });
-    
+
     setIsSubmit(false);
 
 };
 
-const EditQuestion = async (editedQns: QuestionFrontEndType, setIsSubmit: Function, setRedirect: Function) => {
+const EditQuestion = async (editedQns: QuestionFrontEndType, setIsSubmit: Function, setRedirect: Function, queryClient: QueryClient) => {
     fetch(`${process.env.REACT_APP_API_URI}/question/editQuestion`,
         {
             method: 'POST',
@@ -193,6 +195,7 @@ const EditQuestion = async (editedQns: QuestionFrontEndType, setIsSubmit: Functi
             };
             return res.json();
         }).then((result) => {
+            queryClient.invalidateQueries(["latestQuestions", editedQns.courseId]);
             checkBadge(editedQns.anon, result, [3, 7, 15], "editQns", editedQns.userId);
             setIsSubmit(false);
             setRedirect(result.qnsLink);
@@ -212,7 +215,7 @@ const RestoreQuestion = async (restorableQnsId: string, restorableDate: string, 
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({restorableQnsId, restorableDate})
+            body: JSON.stringify({ restorableQnsId, restorableDate })
         }).then((res: Response) => {
             if (!res.ok) {
                 throw new Error(res.statusText);
