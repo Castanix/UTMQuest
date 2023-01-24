@@ -4,6 +4,9 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { QuestionsList } from '../pages/QuestionsPage/QuestionsList';
 import { qnsTypeEnum, QuestionFrontEndType } from '../../backend/types/Questions';
 import { BrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -86,7 +89,12 @@ const questions: QuestionFrontEndType[] = [
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<QuestionsList questions={questions} topics={topics} courseId="test" />, { wrapper: BrowserRouter })
+    const { container } = render(
+        <QueryClientProvider client={queryClient}>
+            <QuestionsList questions={questions} topics={topics} courseId="test" />
+        </QueryClientProvider>,
+        { wrapper: BrowserRouter }
+    );
     document = container;
 });
 

@@ -10,12 +10,13 @@ import { UserContext } from "../Topbar/Topbar";
 const BadgePicker = ({ badges }: { badges: BadgesType }) => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [badgeSelected, setBadgeSelected] = useState<string[]>([]);
+    const [currBadgeSelected, setCurrBadgeSelected] = useState<string[]>([]);
 
     useEffect(() => {
         setBadgeSelected(badges.displayBadges);
-    }, [badges]);
+        setCurrBadgeSelected(badgeSelected);
+    }, [badgeSelected, badges.displayBadges]);
 
-    const [currBadgeSelected, setCurrBadgeSelected] = useState<string[]>(badgeSelected);
     const [changes, setChanges] = useState<string[]>([]);
 
     const { userId } = useContext(UserContext);

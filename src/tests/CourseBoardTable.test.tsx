@@ -7,6 +7,9 @@ import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 import CourseBoard from '../components/CourseBoard/CourseBoard';
 import { TIMEOUT } from 'dns';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -64,7 +67,12 @@ let document: HTMLElement;
 
 describe('CourseBoard', () => {
     beforeEach(() => {
-        const { container } = render(<CourseBoard />, { wrapper: BrowserRouter })
+        const { container } = render(
+            <QueryClientProvider client={queryClient}>
+                <CourseBoard />
+                </QueryClientProvider>, 
+            { wrapper: BrowserRouter }
+        );
         document = container;
     })
     

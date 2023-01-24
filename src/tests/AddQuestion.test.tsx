@@ -10,6 +10,9 @@ import qnsTypeEnum from '../pages/AddQuestionPage/types/QnsTypeEnum';
 import AddQuestionPage from '../pages/AddQuestionPage/AddQuestionPage';
 import { setupServer } from 'msw/lib/node';
 import { rest } from 'msw';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -60,9 +63,11 @@ const customRender = (
     <MemoryRouter
         initialEntries={["/courses/ABC123/addQuestion"]}
     >
-        <Routes>
-            <Route path="/courses/:courseId/addQuestion" element={<AddQuestionPage />} />
-        </Routes>
+        <QueryClientProvider client={queryClient}>
+            <Routes>
+                <Route path="/courses/:courseId/addQuestion" element={<AddQuestionPage />} />
+            </Routes>
+        </QueryClientProvider>
     </MemoryRouter>
 );
 
@@ -70,9 +75,11 @@ const customRenderEdit = (
     <MemoryRouter
         initialEntries={[{ pathname: "/courses/ABC123/editQuestion", state: { editableQns: question } }]}
     >
-        <Routes>
-            <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage />} />
-        </Routes>
+        <QueryClientProvider client={queryClient}>
+            <Routes>
+                <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage />} />
+            </Routes>
+        </QueryClientProvider>
     </MemoryRouter>
 )
 
@@ -151,7 +158,11 @@ describe('AQStepOne', () => {
         const Wrapper = () => {
             const [currStep, setCurrStep] = React.useState<number>(0);
             const [topicSelected, setTopicSelect] = React.useState<[string, string]>(["", ""]);
-            return <AQStepOne courseId={"ABC123"} topics={[req]} setCurrStep={setCurrStep} setTopicSelected={setTopicSelect} />
+            return (
+                <QueryClientProvider client={queryClient}>
+                    <AQStepOne courseId={"ABC123"} topics={[req]} setCurrStep={setCurrStep} setTopicSelected={setTopicSelect} />
+                </QueryClientProvider>
+            );
         }
 
         const { container } = render(<Wrapper />, { wrapper: BrowserRouter });
@@ -187,9 +198,11 @@ describe('AQStepTwo', () => {
             const [currStep, setCurrStep] = React.useState<number>(1)
             const [topicSelected, setTopicSelect] = React.useState<[string, string]>(["abcd1234", "ABCD"])
             return (
-                <ThemeContext.Provider value={true}>
-                    <AQStepTwo courseId={"ABC123"} topicSelected={topicSelected} setCurrStep={setCurrStep} />
-                </ThemeContext.Provider>
+                <QueryClientProvider client={queryClient}>
+                    <ThemeContext.Provider value={true}>
+                        <AQStepTwo courseId={"ABC123"} topicSelected={topicSelected} setCurrStep={setCurrStep} />
+                    </ThemeContext.Provider>
+                </QueryClientProvider>
             )
         }
 
