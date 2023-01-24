@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QuestionFrontEndType } from "../../../backend/types/Questions";
 
 interface QuestionListState {
@@ -20,16 +20,24 @@ const GetStateFromSessionStorage = (courseId: string) => {
     return { currentPage: 1, pageSize: 10, scrollY: 0, topicFilters: [] };
 };
 
+/* anti-pattern here should change at some point */
 const QuestionState = (questions: QuestionFrontEndType[], courseId: string) => {
 
     const state = GetStateFromSessionStorage(courseId);
     const initFilter: string[] = state.topicFilters;
-
-    const [originalData] = useState<QuestionFrontEndType[]>(questions);
     const [topicFilters, setTopicFilters] = useState<Set<string>>(new Set(initFilter));
-    const filteredData = topicFilters.size !== 0 ? originalData.filter(item => topicFilters.has(item.topicName.toLowerCase())) : questions;
 
-    const [data, setData] = useState<QuestionFrontEndType[]>(filteredData);
+    const [originalData, setOriginalData] = useState<QuestionFrontEndType[]>([]);
+
+    const [data, setData] = useState<QuestionFrontEndType[]>([]);
+
+    useEffect(() => {
+        setOriginalData(questions);
+        const filteredData = topicFilters.size !== 0 ? originalData.filter(item => topicFilters.has(item.topicName.toLowerCase())) : questions;
+        setData(filteredData);
+
+    }, [originalData, questions, topicFilters]);
+
     const [searchTerm, setSearchTerm] = useState<string>("");
 
     const [sessionState, setSessionState] = useState<QuestionListState>(state);
