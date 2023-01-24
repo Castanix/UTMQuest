@@ -1,6 +1,7 @@
 import { message } from "antd";
+import { QueryClient } from "react-query";
 
-const UpdateBadge = (badgeSelected: string[], utorId: string, setBadgeSelected: Function, resetChanges: Function, longestLoginStreak: number) => {
+const UpdateBadge = (badgeSelected: string[], userId: string, setBadgeSelected: Function, resetChanges: Function, queryClient: QueryClient) => {
     fetch(`${process.env.REACT_APP_API_URI}/badge/updateBadges`,
         {
             method: 'PUT',
@@ -19,10 +20,7 @@ const UpdateBadge = (badgeSelected: string[], utorId: string, setBadgeSelected: 
             message.success("Display Badges has been updated");
 
             // update session store for current user
-            const userBadges = JSON.parse(sessionStorage.getItem("userBadges") ?? JSON.stringify({}));
-            userBadges[utorId] = { displayBadges: badgeSelected, longestLoginStreak };
-
-            sessionStorage.setItem("userBadges", JSON.stringify(userBadges));
+            queryClient.invalidateQueries(["userBadges", userId]);
         }).catch(err => {
             resetChanges();
             message.error(err.message);
