@@ -1,34 +1,26 @@
 import { Divider, Popover, Space } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useQuery } from "react-query";
 import BadgeDescriptions from "../../BadgeDescriptions";
 
 import "./DisplayBadges.css";
+
+const fetchData = async (userId: string) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/displayBadges/${userId}`);
+    if (!response.ok) throw new Error("Could not find badges for given user");
+    return response.json();
+};
 
 const DisplayBadges = ({ userId }: { userId: string }) => {
     const [badges, setBadges] = useState<string[]>([]);
     const [longestLoginStreak, setLongestLoginStreak] = useState<number>(1);
 
-    useEffect(() => {
-
-        const userBadges = JSON.parse(sessionStorage.getItem("userBadges") ?? JSON.stringify({}));
-
-        if (userId in userBadges) {
-            setBadges(userBadges[userId].displayBadges);
-            setLongestLoginStreak(userBadges[userId].longestLoginStreak);
-        } else {
-            fetch(`${process.env.REACT_APP_API_URI}/displayBadges/${userId}`).then((response) => {
-                if (!response.ok) throw new Error("Could not find badges for given user");
-                return response.json();
-            }).then((result) => {
-                userBadges[userId] = { displayBadges: result.displayBadges, longestLoginStreak: result.longestLoginStreak };
-                sessionStorage.setItem("userBadges", JSON.stringify(userBadges));
-                setBadges(result.displayBadges);
-                setLongestLoginStreak(result.longestLoginStreak);
-            }).catch((error) => {
-                console.log(error);
-            });
+    useQuery(["userBadges", userId], () => fetchData(userId), {
+        onSuccess: (data) => {
+            setBadges(data.displayBadges);
+            setLongestLoginStreak(data.longestLoginStreak);
         }
-    }, [userId]);
+    });
 
     return (
         <span>

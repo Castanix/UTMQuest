@@ -1,17 +1,25 @@
-import React, { ReactElement, useContext, useState } from "react";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
 import "./BadgePicker.css";
 import { Modal, Button, message } from "antd";
 import { BadgesType } from "../../pages/ProfilePage/ProfilePage";
 import UpdateBadge from "./fetch/UpdateBadges";
 import { UserContext } from "../Topbar/Topbar";
 
+/* anti-pattern here should fix at some point */
 const BadgePicker = ({ badges }: { badges: BadgesType }) => {
     const [showModal, setShowModal] = useState<boolean>(false);
-    const [badgeSelected, setBadgeSelected] = useState<string[]>(badges.displayBadges);
+    const [badgeSelected, setBadgeSelected] = useState<string[]>([]);
+
+    useEffect(() => {
+        setBadgeSelected(badges.displayBadges);
+    }, [badges]);
+
     const [currBadgeSelected, setCurrBadgeSelected] = useState<string[]>(badgeSelected);
     const [changes, setChanges] = useState<string[]>([]);
 
     const { userId } = useContext(UserContext);
+    const queryClient = useQueryClient();
 
     // Toggles the green border around an image depending on selection
     const toggleActive = (id: string) => {
@@ -80,7 +88,7 @@ const BadgePicker = ({ badges }: { badges: BadgesType }) => {
         setShowModal(false);
 
         if (changes.length > 0) {
-            UpdateBadge(currBadgeSelected, userId, setBadgeSelected, resetChanges, badges.longestLoginStreak);
+            UpdateBadge(currBadgeSelected, userId, setBadgeSelected, resetChanges, queryClient);
         } else {
             message.error("No changes were made");
         };

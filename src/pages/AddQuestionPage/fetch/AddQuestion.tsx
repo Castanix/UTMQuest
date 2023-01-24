@@ -1,10 +1,11 @@
 import { message, notification } from "antd";
-import { QueryClient } from "react-query";
+import { QueryClient, useQueryClient } from "react-query";
 import { QuestionFrontEndType } from "../../../../backend/types/Questions";
 
 type BaseBadge = "addQns" | "editQns" | "consecutivePosting";
 
-const unlockBadge = (userId: string, baseBadge: BaseBadge, newBadgeTier: string, oldBadgeTier: string) => {
+const UnlockBadge = (userId: string, baseBadge: BaseBadge, newBadgeTier: string, oldBadgeTier: string) => {
+    const queryClient = useQueryClient();
     const request = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -15,26 +16,8 @@ const unlockBadge = (userId: string, baseBadge: BaseBadge, newBadgeTier: string,
     ).then((result) => {
         if (!result.ok) throw new Error(result.statusText);
 
-        // update session storage if needed
-        if (sessionStorage.getItem("userBadges") !== null) {
-            const userBadges = JSON.parse(sessionStorage.getItem("userBadges") ?? JSON.stringify({}));
-
-            // update display badges if needed
-            if (userId in userBadges) {
-                const index = userBadges[userId].displayBadges.findIndex(
-                    (item: string) => oldBadgeTier === item
-                );
-
-                const displayBadges = [...userBadges[userId].displayBadges];
-
-                if (index !== -1) {
-                    displayBadges.splice(index, 1, newBadgeTier);
-                }
-
-                userBadges[userId].displayBadges = displayBadges;
-                sessionStorage.setItem("userBadges", JSON.stringify(userBadges));
-            }
-        }
+        // update user badges 
+        queryClient.invalidateQueries(["userBadges", userId]);
 
     }).catch((error) => {
         console.log(error);
@@ -59,12 +42,12 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
         if (result.qnsStatus >= a && result.qnsStatus < b) {
 
             if (baseBadge === "addQns" && result.unlockedBadges.addQns !== "addbadge1") {
-                unlockBadge(userId, baseBadge, "addbadge1", "");
+                UnlockBadge(userId, baseBadge, "addbadge1", "");
                 isUnlocked = true;
             }
 
             else if (baseBadge === "editQns" && result.unlockedBadges.editQns !== "editbadge1") {
-                unlockBadge(userId, baseBadge, "editbadge1", "");
+                UnlockBadge(userId, baseBadge, "editbadge1", "");
                 isUnlocked = true;
             }
 
@@ -80,12 +63,12 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
         else if (result.qnsStatus >= b && result.qnsStatus < c) {
 
             if (baseBadge === "addQns" && result.unlockedBadges.addQns !== "addbadge2") {
-                unlockBadge(userId, baseBadge, "addbadge2", "addbadge1");
+                UnlockBadge(userId, baseBadge, "addbadge2", "addbadge1");
                 isUnlocked = true;
             }
 
             else if (baseBadge === "editQns" && result.unlockedBadges.editQns !== "editbadge2") {
-                unlockBadge(userId, baseBadge, "editbadge2", "editbadge1");
+                UnlockBadge(userId, baseBadge, "editbadge2", "editbadge1");
                 isUnlocked = true;
             }
 
@@ -101,12 +84,12 @@ const checkBadge = (anon: boolean, result: any, goal: [number, number, number], 
         else if (result.qnsStatus >= c) {
 
             if (baseBadge === "addQns" && result.unlockedBadges.addQns !== "addbadge3") {
-                unlockBadge(userId, baseBadge, "addbadge3", "addbadge2");
+                UnlockBadge(userId, baseBadge, "addbadge3", "addbadge2");
                 isUnlocked = true;
             }
 
             else if (baseBadge === "editQns" && result.unlockedBadges.editQns !== "editbadge3") {
-                unlockBadge(userId, baseBadge, "editbadge3", "editbadge2");
+                UnlockBadge(userId, baseBadge, "editbadge3", "editbadge2");
                 isUnlocked = true;
             }
 
@@ -154,7 +137,7 @@ const AddQuestion = async (addableQns: QuestionFrontEndType, setRedirect: Functi
                         message: "Unlocked badge for 7 day consecutive posting!",
                         placement: "bottom"
                     });
-                    unlockBadge(addableQns.userId, "consecutivePosting", "consecutivebadge", "");
+                    UnlockBadge(addableQns.userId, "consecutivePosting", "consecutivebadge", "");
 
                 } else if (result.consecutivePosting < 7) {
                     notification.success({
