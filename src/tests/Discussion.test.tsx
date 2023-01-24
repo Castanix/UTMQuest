@@ -6,7 +6,9 @@ import Discussion from '../components/Discussion/Discussion';
 import { DiscussionFrontEndType } from "../../backend/types/Discussion";
 import { BrowserRouter } from 'react-router-dom';
 import { UserContext } from '../components/Topbar/Topbar';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
+const queryClient = new QueryClient();
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -124,7 +126,14 @@ const server = setupServer(
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<UserContext.Provider value={{ username: "Bob", userId: "123", anonId: "1" }}><Discussion qnsLink="abc" qnsDate="some date" /></UserContext.Provider>, { wrapper: BrowserRouter })
+    const { container } = render(
+        <QueryClientProvider client={queryClient}>
+            <UserContext.Provider value={{ username: "Bob", userId: "123", anonId: "1" }}>
+                <Discussion qnsLink="abc" qnsDate="some date" />
+            </UserContext.Provider>
+        </QueryClientProvider>,
+        { wrapper: BrowserRouter }
+    );
     document = container;
 });
 

@@ -5,6 +5,9 @@ import { setupServer } from 'msw/node'
 import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom';
 import { qnsTypeEnum, QuestionFrontEndType } from '../../backend/types/Questions';
 import ApprovedQuestion from '../pages/ApprovedQuestion/ApprovedQuestion';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -48,9 +51,11 @@ const customRender = (
     <MemoryRouter
         initialEntries={["/courses/test/question/abcde"]}
     >
-        <Routes>
-            <Route path="/courses/:courseId/question/:qnsLink" element={<ApprovedQuestion />} />
-        </Routes>
+        <QueryClientProvider client={queryClient}>
+            <Routes>
+                <Route path="/courses/:courseId/question/:qnsLink" element={<ApprovedQuestion />} />
+            </Routes>
+        </QueryClientProvider>
     </MemoryRouter>
 );
 

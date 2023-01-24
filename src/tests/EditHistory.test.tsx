@@ -5,6 +5,9 @@ import { setupServer } from 'msw/node'
 import { BrowserRouter } from 'react-router-dom';
 import EditHistory from '../components/EditHistory/EditHistory';
 import { qnsTypeEnum, QuestionFrontEndType } from '../../backend/types/Questions';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -113,7 +116,12 @@ const server = setupServer(
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<EditHistory qnsLink="abc123" />, { wrapper: BrowserRouter });
+    const { container } = render(
+        <QueryClientProvider client={queryClient}>
+            <EditHistory qnsLink="abc123" />
+        </QueryClientProvider>,
+        { wrapper: BrowserRouter }
+    );
     document = container;
 });
 

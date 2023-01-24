@@ -4,6 +4,9 @@ import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import { setupServer } from 'msw/lib/node';
 import { rest } from 'msw';
 import { BrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -72,7 +75,12 @@ const server = setupServer(
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<ProfilePage />, { wrapper: BrowserRouter });
+    const { container } = render(
+        <QueryClientProvider client={queryClient}>
+            <ProfilePage />
+        </QueryClientProvider>,
+        { wrapper: BrowserRouter }
+    );
     document = container;
 });
 
