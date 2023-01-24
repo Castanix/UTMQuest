@@ -2,6 +2,7 @@ import { Button, Checkbox, Form, Input, Modal, Select, Typography, message } fro
 import TextArea from 'antd/es/input/TextArea';
 import { Navigate, useLocation } from 'react-router-dom';
 import React, { useContext, useEffect, useState } from 'react';
+import { useQueryClient } from 'react-query';
 import MDEditor from '@uiw/react-md-editor';
 import rehypeSanitize from 'rehype-sanitize';
 import { QuestionFrontEndType } from '../../../backend/types/Questions';
@@ -40,7 +41,7 @@ const GetEditor = (value: string | undefined, placeholder: string, onChange: any
 const isIdenticalEdit = (obj1: QuestionFrontEndType, obj2: QuestionFrontEndType) => {
     // NOTE: Clone object to avoid mutating original!
     const keys = ['_id', 'anon', 'numDiscussions', 'utorName', 'utorId', 'userId', 'anonId',
-                    'date', 'latest', 'rating', 'likes', 'dislikes', 'views', 'viewers'];
+        'date', 'latest', 'rating', 'likes', 'dislikes', 'views', 'viewers'];
     const objClone1 = { ...obj1 };
     const objClone2 = { ...obj2 };
 
@@ -81,6 +82,8 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
 
     const { userId, username, anonId } = useContext(UserContext);
     const isLightMode = useContext(ThemeContext);
+
+    const queryClient = useQueryClient();
 
     /* 
         - If only editableQns exists -> edit action
@@ -269,15 +272,15 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                                 viewers: editableQns ? editableQns.viewers : {},
                             };
 
-                            if(editableQns) {
-                                if(latest && isRestore(editableQns, addableQns)) {
+                            if (editableQns) {
+                                if (latest && isRestore(editableQns, addableQns)) {
                                     setRestoreQns(addableQns);
                                     setIsModalOpen(true);
                                 } else {
-                                    if(!isIdenticalEdit(addableQns, latest ?? editableQns)) {
-                                        EditQuestion(addableQns, setIsSubmit, setRedirect);
+                                    if (!isIdenticalEdit(addableQns, latest ?? editableQns)) {
+                                        EditQuestion(addableQns, setIsSubmit, setRedirect, queryClient);
                                     } else {
-                                        if(latest) {
+                                        if (latest) {
                                             message.error("Changes are identical to the latest version");
                                         };
                                         message.error("No changes were made");
@@ -285,18 +288,18 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                                     };
                                 };
                             } else {
-                                AddQuestion(addableQns, setRedirect, setIsSubmit);
-                            };  
+                                AddQuestion(addableQns, setRedirect, setIsSubmit, queryClient);
+                            };
                         }}
                     >Submit</Button>
                 </div>
                 {redirect ? <Navigate to={`/courses/${courseId}/question/${redirect}`} /> : ""}
             </div>
-            <Modal title="Restore Warning" 
-                open={isModalOpen} 
+            <Modal title="Restore Warning"
+                open={isModalOpen}
                 onOk={() => {
                     setIsModalOpen(false);
-                    if(restoreQns && restorableDate) {
+                    if (restoreQns && restorableDate) {
                         RestoreQuestion(restoreQns._id, restorableDate, setIsSubmit, setRedirect);
                     } else {
                         message.error("Unable to restore question");
@@ -309,7 +312,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
             >
                 Restoring a question to a previous version without any changes will delete all subsequent versions
                 and discussion posts associated with them.
-                <br/>
+                <br />
                 <b>Are you sure you would like to proceed?</b>
             </Modal>
         </>
