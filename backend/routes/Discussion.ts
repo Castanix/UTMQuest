@@ -138,7 +138,8 @@ discussionRouter.post("/", async (req: Request, res: Response) => {
 		utorName: anon ? "Anonymous" : `${firstName} ${lastName}`,
 		content,
 		thread,
-		date: new Date().toISOString(),
+		opDate: new Date().toISOString(),
+		editDate: null,
 		deleted: false,
 		anon,
 		edited: false,
@@ -218,7 +219,7 @@ discussionRouter.put(
 	"/updatePost/:discussionId",
 	async (req: Request, res: Response) => {
 		const { content } = req.body;
-		const date = new Date().toISOString();
+		const editDate = new Date().toISOString();
 
 		const originalComment = await utmQuestCollections.Discussions?.findOne({
 			_id: new ObjectID(req.params.discussionId),
@@ -243,7 +244,7 @@ discussionRouter.put(
 		const discussion = {
 			...originalComment,
 			content: req.body.content,
-			date,
+			editDate,
 			edited: req.body.edited,
 		};
 
@@ -262,7 +263,7 @@ discussionRouter.put(
 						result.value as DiscussionBackEndType
 					),
 					content,
-					date,
+					editDate,
 				});
 			})
 			.catch((error) => {
