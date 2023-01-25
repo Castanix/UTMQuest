@@ -96,7 +96,6 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
     const { editableQns, restorableDate, latest } = useLocation().state ?? "";
 
     useEffect(() => {
-        // const setForm = () => {
         if (editableQns) {
             const { qnsName, qnsType, description, explanation, choices, answers } = editableQns;
 
@@ -116,8 +115,6 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                 setSolValue(answers);
             };
         };
-        // };
-        // setForm();
     }, [editableQns]);
 
     const setAnswerType = () => {
@@ -278,7 +275,8 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                                     setIsModalOpen(true);
                                 } else {
                                     if (!isIdenticalEdit(addableQns, latest ?? editableQns)) {
-                                        EditQuestion(addableQns, setIsSubmit, setRedirect, queryClient);
+                                        const oldTopicId = editableQns.topicId;
+                                        EditQuestion(addableQns, setIsSubmit, setRedirect, oldTopicId, queryClient);
                                     } else {
                                         if (latest) {
                                             message.error("Changes are identical to the latest version");
