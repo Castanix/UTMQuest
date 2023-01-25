@@ -71,7 +71,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 
 			// DECREMENT TOPIC COUNTER IN COURSE
 			const course = {
-				courseId: topic.course,
+				courseId: topic.courseId,
 				numTopics: { $gt: 0 },
 			};
 
