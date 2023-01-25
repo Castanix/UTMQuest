@@ -1,5 +1,6 @@
 import { message } from "antd";
-import { useQuery, useQueryClient } from "react-query";
+import { useEffect } from "react";
+import { QueryClient, useQuery } from "react-query";
 
 const fetchCheckBookmark = async (courseId: string) => {
     const response = await fetch(`${process.env.REACT_APP_API_URI}/account/checkBookmark/${courseId}`);
@@ -18,8 +19,12 @@ export const CheckBookmark = (courseId: string, setIsBookmarked: Function) => {
 
     const bookmarkResult = useQuery(["checkBookmark", courseId], () => fetchCheckBookmark(courseId), {
         staleTime: Infinity,
-        onSuccess: (data) => setIsBookmarked(data)
     });
+
+    useEffect(() => {
+        setIsBookmarked(bookmarkResult.data);
+    }, [bookmarkResult.data, setIsBookmarked]);
+
     const courseResult = useQuery(["course", courseId], () => fetchGetCourse(courseId), { staleTime: Infinity });
 
     return {
@@ -31,8 +36,7 @@ export const CheckBookmark = (courseId: string, setIsBookmarked: Function) => {
     };
 };
 
-export const BookmarkCourse = (courseId: string, bookmarked: boolean, setBookmarked: Function) => {
-    const queryClient = useQueryClient();
+export const BookmarkCourse = (courseId: string, bookmarked: boolean, setBookmarked: Function, client: QueryClient) => {
     fetch(`${process.env.REACT_APP_API_URI}/account/updateBookmarkCourses`,
         {
             method: 'PUT',
@@ -47,7 +51,8 @@ export const BookmarkCourse = (courseId: string, bookmarked: boolean, setBookmar
         }).then((res: Response) => {
             if (!res.ok) throw new Error("Could not add course. Please try again.");
             setBookmarked(!bookmarked);
-            queryClient.invalidateQueries(["checkBookmark", courseId]);
+            client.invalidateQueries(["checkBookmark", courseId]);
+            client.invalidateQueries("getWidgets");
             if (!bookmarked) {
                 message.success("Course bookmarked.");
             } else {
