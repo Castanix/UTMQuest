@@ -70,7 +70,7 @@ const QuestionsList = ({ questions, topics, courseId }:
 
     useEffect(() => {
 
-        window.scrollTo(0, sessionState.scrollY);
+        setTimeout(() => window.scrollTo(0, sessionState.scrollY), 100);
 
         window.addEventListener("scroll", onScroll);
 
