@@ -8,7 +8,7 @@ const fetchGetTopics = async (courseId: string) => {
 
 const GetAllTopics = (courseId: string) => {
 
-    const result = useQuery(["getTopics", courseId], () => fetchGetTopics(courseId));
+    const result = useQuery(["getTopics", courseId], () => fetchGetTopics(courseId), { staleTime: 300000 });
 
     return {
         topics: result?.data,

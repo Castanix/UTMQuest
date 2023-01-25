@@ -20,7 +20,7 @@ const GetWidgets = () => {
     });
 
     return {
-        loading: result.isLoading,
+        loading: result.isLoading || result.isIdle,
         bookmarkedCourses,
         error: result.error
     };
