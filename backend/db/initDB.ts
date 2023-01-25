@@ -390,7 +390,8 @@ async function initDB() {
 						"anonId",
 						"content",
 						"thread",
-						"date",
+						"opDate",
+						"editDate",
 						"deleted",
 						"anon",
 						"edited",
@@ -447,10 +448,15 @@ async function initDB() {
 									"items in array must be string referencing own collection or empty",
 							},
 						},
-						date: {
+						opDate: {
 							bsonType: "string",
 							description:
-								"'date' must be a string, specifically the date it was created, and is required",
+								"'opDate' must be a string, specifically the date it was created, and is required",
+						},
+						editDate: {
+							bsonType: ["string", "null"],
+							description:
+								"'editDate' must be a string, specifically the date it was created, and is required",
 						},
 						deleted: {
 							bsonType: "bool",

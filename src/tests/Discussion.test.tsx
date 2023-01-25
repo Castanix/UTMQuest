@@ -30,7 +30,8 @@ const topLevelComments: DiscussionFrontEndType[] = [
         anonId: "1",
         content: 'First comment',
         thread: ["childComment"],
-        date: new Date().toString(),
+        opDate: new Date().toString(),
+        editDate: null,
         deleted: false,
         anon: false,
         edited: false
@@ -44,7 +45,8 @@ const topLevelComments: DiscussionFrontEndType[] = [
         anonId: "1",
         content: 'Second comment',
         thread: [],
-        date: new Date().toString(),
+        opDate: new Date().toString(),
+        editDate: null,
         deleted: false,
         anon: false,
         edited: false
@@ -58,7 +60,8 @@ const topLevelComments: DiscussionFrontEndType[] = [
         anonId: "1",
         content: 'Third comment',
         thread: [],
-        date: new Date().toString(),
+        opDate: new Date().toString(),
+        editDate: null,
         deleted: false,
         anon: false,
         edited: false
@@ -74,7 +77,8 @@ const childComment: DiscussionFrontEndType = {
     anonId: "1",
     content: 'Inner comment',
     thread: [],
-    date: new Date().toString(),
+    opDate: new Date().toString(),
+    editDate: null,
     deleted: false,
     anon: true,
     edited: false
@@ -89,7 +93,8 @@ const deletedComment: DiscussionFrontEndType = {
     anonId: "1",
     content: 'This message was deleted by the original author or a moderator',
     thread: ["childComment"],
-    date: new Date().toString(),
+    opDate: new Date().toString(),
+    editDate: null,
     deleted: true,
     anon: false,
     edited: false

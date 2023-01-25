@@ -42,6 +42,8 @@ const DisplayComment = ({ comment, qnsDate }: { comment: DiscussionFrontEndType,
     const isLightMode = useContext(ThemeContext);
     const { userId, anonId } = useContext(UserContext);
 
+    const date = displayComment.editDate ?? displayComment.opDate;
+
     /* callback after a new comment is successfully added to update the parent comment */
     const updateComments = (newComment: DiscussionFrontEndType, edited: boolean) => {
         if (edited) {
@@ -146,15 +148,16 @@ const DisplayComment = ({ comment, qnsDate }: { comment: DiscussionFrontEndType,
             : null
     ]);
 
+
     return (
         <Comment
             actions={actions}
             author={GetUsername(displayComment)}
             datetime={
                 <div className="date-tags">
-                    {GetRelativeTime(new Date(displayComment.date).getTime())}
+                    {GetRelativeTime(new Date(date).getTime())}
                     {isEdited ? <Tag>Edited</Tag> : ""}
-                    {Date.parse(displayComment.date) < Date.parse(qnsDate)
+                    {Date.parse(date) < Date.parse(qnsDate)
                         ? <Tag>Possibly Outdated</Tag>
                         : ""}
                 </div>

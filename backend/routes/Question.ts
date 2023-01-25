@@ -673,7 +673,7 @@ questionRouter.put(
 				utmQuestCollections.Discussions?.find({
 					qnsLink,
 					op: true,
-					$expr: { $gt: [{ $toDate: "$date" }, new Date(restorableDate)] },
+					$expr: { $gt: [{ $toDate: "$opDate" }, new Date(restorableDate)] },
 				}).toArray().then(documents => {
 					documents.forEach(doc => {
 						utmQuestCollections.Discussions?.deleteMany({

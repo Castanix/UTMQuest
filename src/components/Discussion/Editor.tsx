@@ -23,7 +23,8 @@ const AddComment = async (discussionId: string, qnsLink: string, op: boolean, co
         anonId,
         content,
         thread: [],
-        date: new Date().toISOString(),
+        opDate: new Date().toISOString(),
+        editDate: null,
         deleted: false,
         anon: isAnon,
         edited: false
@@ -85,7 +86,8 @@ const EditComment = async (discussionId: string, qnsLink: string, op: boolean, c
         anonId,
         content,
         thread,
-        date: new Date().toISOString(),
+        opDate: "N/A",
+        editDate: new Date().toISOString(),
         deleted: false,
         anon: isAnon,
         edited: true

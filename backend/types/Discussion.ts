@@ -8,7 +8,8 @@ interface BaseDiscussionType {
 	utorName: string;
 	content: string;
 	thread: string[];
-	date: string;
+	opDate: string;
+	editDate: string | null;
 	deleted: boolean;
 	anon: boolean;
 	edited: boolean;
