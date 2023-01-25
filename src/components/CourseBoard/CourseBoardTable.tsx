@@ -20,7 +20,6 @@ const CourseBoardTable = ({ coursesList }: { coursesList: CoursesType[] }) => {
         const _added: CoursesType[] = [];
         // eslint-disable-next-line no-underscore-dangle
         const _unadded: CoursesType[] = [];
-        console.log(coursesList);
         coursesList.forEach((item) => {
             if (item.added) {
                 _added.push(item);
