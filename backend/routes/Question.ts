@@ -501,8 +501,10 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 
 questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 	try {
+		const { qnsLink, anon, topicId: newTopicId, oldTopicId } = req.body;
+
 		const currVersion = await utmQuestCollections.Questions?.findOne({
-			qnsLink: req.body.qnsLink,
+			qnsLink,
 			latest: true,
 		});
 		if (!currVersion) {
@@ -510,7 +512,6 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			return;
 		}
 
-		const { qnsLink, anon } = req.body;
 		const utorId = req.headers.utorid as string;
 
 		const badge = await utmQuestCollections.Badges?.findOne({
@@ -574,6 +575,22 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 					});
 					return;
 				}
+
+				// Attempts to update numQns in topics collection for any topic changes
+				// TODO: Eventually replace all non-atomic operations with transactions
+				if (oldTopicId !== newTopicId) {
+					utmQuestCollections.Topics?.findOneAndUpdate({
+						_id: new ObjectID(oldTopicId)
+					}, {
+						$inc: { numQns: -1 }
+					});
+
+					utmQuestCollections.Topics?.findOneAndUpdate({
+						_id: new ObjectID(newTopicId)
+					}, {
+						$inc: { numQns: 1 }
+					});
+				};
 
 				// Attempts to update badge progression for specified utorid, reverts all changes if failed
 				if (!req.body.anon) {

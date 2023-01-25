@@ -160,7 +160,7 @@ const AddQuestion = async (addableQns: QuestionFrontEndType, setRedirect: Functi
 
 };
 
-const EditQuestion = async (editedQns: QuestionFrontEndType, setIsSubmit: Function, setRedirect: Function, queryClient: QueryClient) => {
+const EditQuestion = async (editedQns: QuestionFrontEndType, setIsSubmit: Function, setRedirect: Function, oldTopicId: string, queryClient: QueryClient) => {
     fetch(`${process.env.REACT_APP_API_URI}/question/editQuestion`,
         {
             method: 'POST',
@@ -171,7 +171,7 @@ const EditQuestion = async (editedQns: QuestionFrontEndType, setIsSubmit: Functi
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(editedQns)
+            body: JSON.stringify({...editedQns, oldTopicId})
         }).then((res: Response) => {
             if (!res.ok) {
                 throw new Error(res.statusText);
