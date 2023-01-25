@@ -1,9 +1,10 @@
 import { Form, message } from 'antd';
+import { useQueryClient } from "react-query";
 import React, { useState } from 'react';
 import TopicsType from '../../../backend/types/Topics';
 
 
-const TopicState = (topics: TopicsType[]) => {
+const TopicState = (topics: TopicsType[], courseId: string) => {
     const [form] = Form.useForm();
     const [originalData, setOriginalData] = useState<TopicsType[]>(topics);
     const [data, setData] = useState<TopicsType[]>(topics);
@@ -11,11 +12,14 @@ const TopicState = (topics: TopicsType[]) => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [lastTopicAdded, setLastTopicAdded] = useState<TopicsType | null>(null);
 
+    const queryClient = useQueryClient();
+
     const isEditing = (record: TopicsType) => record._id === editingKey;
 
     const isDisabled = (record: TopicsType) => record.numQns > 0;
 
     const addTopicCallback = (topic: TopicsType) => {
+        queryClient.invalidateQueries(["getTopics", courseId]);
         setSearchTerm('');
         setOriginalData([...originalData, topic]);
         setData([...originalData, topic]);
@@ -49,6 +53,7 @@ const TopicState = (topics: TopicsType[]) => {
                 return;
             }
             message.success("Topic successfully deleted.");
+            queryClient.invalidateQueries(["getTopics", courseId]);
             setData(newData);
             setOriginalData(newData);
             setSearchTerm('');
@@ -94,6 +99,7 @@ const TopicState = (topics: TopicsType[]) => {
                     message.success("Topic successfully saved.");
                     setData(newData);
                     setOriginalData(newData);
+                    queryClient.invalidateQueries(["getTopics", courseId]);
                     if (lastTopicAdded != null && key === lastTopicAdded._id) {
                         setLastTopicAdded({ ...item, ...row });
                     }

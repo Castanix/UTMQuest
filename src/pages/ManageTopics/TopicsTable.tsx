@@ -57,7 +57,7 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
         searchTerm,
         onChange,
         addTopicCallback,
-        lastTopicAdded } = TopicState(topics);
+        lastTopicAdded } = TopicState(topics, courseId);
 
     const columns = [
         {
