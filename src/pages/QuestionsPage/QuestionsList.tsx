@@ -1,4 +1,4 @@
-import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, CheckOutlined, FormOutlined } from '@ant-design/icons';
+import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, FormOutlined, CheckCircleFilled } from '@ant-design/icons';
 import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -144,11 +144,19 @@ const QuestionsList = ({ questions, topics, courseId }:
                                 title={
                                     <div>
                                         <div className="question-list-page-header">
-                                            {diff < 24 ? <Tag color="#428efa">New</Tag> : null}
-                                            <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.qnsLink}`}>
-                                                <Typography.Text ellipsis className="question-name">{item.qnsName}</Typography.Text>
-                                            </Link>
-                                            {GetRating(item.rating) ? <Popover content="Good Question"><CheckOutlined style={{ marginInline: "0.25rem", fontSize: "0.75rem", verticalAlign: 6 }} /></Popover> : null}
+                                            <Space dir="vertical" size={1}>
+                                                {diff < 24 ? <Tag color="#428efa">New</Tag> : null}
+                                                <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.qnsLink}`}>
+                                                    <Typography.Text ellipsis className="question-name">{item.qnsName}</Typography.Text>
+                                                </Link>
+                                                {GetRating(item.rating)
+                                                    ?
+                                                    <Popover content="Good Question">
+                                                        <CheckCircleFilled style={{ color: "#d7ba41", marginInline: "0.25rem", fontSize: "1rem", verticalAlign: -4 }} />
+                                                    </Popover>
+                                                    : null
+                                                }
+                                            </Space>
                                         </div>
                                         <div className="ant-page-header-heading-sub-title">
                                             <Typography.Paragraph>

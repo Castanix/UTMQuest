@@ -12,6 +12,10 @@
     margin-top: -0.3rem;
 }
 
+.question-list-page-header .ant-tag {
+    margin-top: 0.2rem !important;
+}
+
 .question-list {
     margin-top: 1rem;
 }

@@ -89,6 +89,10 @@ input,
   margin-bottom: 0; 
 }
 
+.ant-tag {
+  border-radius: 32px;
+}
+
 /* th:first-child {
   border-top-left-radius: var(--radius) !important;
 }
