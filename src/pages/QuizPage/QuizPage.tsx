@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Breadcrumb, Button, Card, Progress, Result, Space, Typography } from "antd";
 import { Link, useParams } from 'react-router-dom';
 import { red, green } from '@ant-design/colors';
@@ -10,6 +10,7 @@ import Loading from '../../components/Loading/Loading';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import { OptionType, initMC } from '../../components/MultipleChoice/MultipleChoiceState';
 import { onMobile } from '../../components/EditHistory/EditHistory';
+import { ThemeContext } from '../../components/Topbar/Topbar';
 
 const { Text, Title } = Typography;
 
@@ -60,6 +61,8 @@ const QuizPage = () => {
     const params = useParams();
     const { courseId } = params;
 
+    const isLightMode = useContext(ThemeContext);
+
     const { loading, questions, error } = GenerateQuestions(courseId ?? '');
 
     if (loading) return <Loading />;
@@ -82,7 +85,7 @@ const QuizPage = () => {
                     <main className='main-container'>
                         <Space direction='vertical' size="large">
                             <Progress percent={Math.round(step / length * 100)} steps={length} strokeColor={strokeColor} />
-                            <MultipleChoiceTab key={step} question={questions[step]} isLightMode={false} setHasAnswered={setHasAnswered} quizDependancies={{ newOptionState, setMCResult }} />
+                            <MultipleChoiceTab key={step} question={questions[step]} isLightMode={isLightMode} setHasAnswered={setHasAnswered} quizDependancies={{ newOptionState, setMCResult }} />
                             <Button disabled={!hasAnswered} onClick={() => {
                                 setStep(step + 1);
                                 setHasAnswered(false);

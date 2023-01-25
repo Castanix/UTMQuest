@@ -1,10 +1,11 @@
 import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, FormOutlined, CheckCircleFilled } from '@ant-design/icons';
 import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionFrontEndType } from '../../../backend/types/Questions';
 import TopicsType from '../../../backend/types/Topics';
 import DisplayBadges from '../../components/DisplayBadges/DisplayBadges';
+import { ThemeContext } from '../../components/Topbar/Topbar';
 import GetRelativeTime from '../../RelativeTime';
 
 import "./QuestionsList.css";
@@ -80,6 +81,8 @@ const QuestionsList = ({ questions, topics, courseId }:
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const isLightMode = useContext(ThemeContext);
+
     const options: React.ReactNode[] = [];
 
     topics.forEach(item => options.push(<Option key={item._id} value={item.topicName.toLowerCase()}>{item.topicName}</Option>));
@@ -133,7 +136,7 @@ const QuestionsList = ({ questions, topics, courseId }:
                             <List.Item.Meta
                                 className='question-list-meta'
                                 avatar={
-                                    <div className='question-list-img'>
+                                    <div className={`question-list-img ${isLightMode ? 'light' : 'dark'}`}>
                                         {item.anon ?
                                             <QuestionOutlined />
                                             :

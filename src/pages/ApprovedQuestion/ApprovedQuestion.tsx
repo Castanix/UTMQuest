@@ -47,7 +47,7 @@ export const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered, quizD
                 {question.qnsName}
             </div>
         </Typography.Paragraph>
-        <MDEditor.Markdown className='question-description' warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.description} />
+        <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.description} />
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
