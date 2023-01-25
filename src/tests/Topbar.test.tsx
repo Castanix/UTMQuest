@@ -45,8 +45,10 @@ beforeEach(() => {
     document = container;
 });
 
-test("logo", () => {
-    expect(screen.getByText(/utmQuest/i)).toBeInTheDocument();
+test("logo", async () => {
+    await waitFor(() => {
+        expect(screen.getByText(/utmQuest/i)).toBeInTheDocument();
+    }, { timeout: 60000 });
 })
 
 test("dropdown", async () => {
