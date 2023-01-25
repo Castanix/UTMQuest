@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { Button, Input, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -6,25 +6,35 @@ import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import CoursesType from "../../../backend/types/Courses";
 import AddCourseModal from './AddCourseModal';
 
-const CourseBoardTable = (props: any) => {
-    const { dataSource }: { dataSource: CoursesType[] } = props;
+/* anti-pattern should fix */
+const CourseBoardTable = ({ coursesList }: { coursesList: CoursesType[] }) => {
 
-    const added: CoursesType[] = [];
-    const unadded: CoursesType[] = [];
-
-    dataSource.forEach((item) => {
-        if (item.added) {
-            added.push(item);
-        } else {
-            unadded.push(item);
-        }
-    });
-
-    const [allAddedData, setAllAddedData] = useState<CoursesType[]>(added);
+    const [allAddedData, setAllAddedData] = useState<CoursesType[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
-    const [tableDisplayData, setTableDisplayData] = useState<CoursesType[]>(added);
+    const [tableDisplayData, setTableDisplayData] = useState<CoursesType[]>([]);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [modalData, setModalData] = useState<CoursesType[]>(unadded);
+    const [modalData, setModalData] = useState<CoursesType[]>([]);
+
+    useEffect(() => {
+        // eslint-disable-next-line no-underscore-dangle
+        const _added: CoursesType[] = [];
+        // eslint-disable-next-line no-underscore-dangle
+        const _unadded: CoursesType[] = [];
+        console.log(coursesList);
+        coursesList.forEach((item) => {
+            if (item.added) {
+                _added.push(item);
+            } else {
+                _unadded.push(item);
+            }
+        });
+
+        setAllAddedData(_added);
+        setTableDisplayData(_added);
+        setModalData(_unadded);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [coursesList]);
+
 
     const columns: ColumnsType<CoursesType> = [{
         title: "Course Code",
