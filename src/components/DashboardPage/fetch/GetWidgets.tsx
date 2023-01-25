@@ -11,7 +11,7 @@ const fetchData = async (utorId: string) => {
 const GetWidgets = () => {
     const { userId } = useContext(UserContext);
 
-    const result = useQuery('getWidgets', () => fetchData(userId), { enabled: !!userId });
+    const result = useQuery('getWidgets', () => fetchData(userId), { enabled: !!userId, staleTime: Infinity });
 
     const bookmarkedCourses: [string, string][] = [];
 

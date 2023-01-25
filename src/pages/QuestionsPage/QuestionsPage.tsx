@@ -1,4 +1,5 @@
 import { Breadcrumb, Button, Card, Space, Typography } from 'antd';
+import { QueryClient, useQueryClient } from 'react-query';
 import Title from 'antd/es/typography/Title';
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -13,8 +14,8 @@ import { CheckBookmark, BookmarkCourse } from './fetch/BookmarkCourse';
 
 const { Text } = Typography;
 
-const Header = ({ courseId, courseName, bookmarked, setBookmarked }:
-    { courseId: string, courseName: string, bookmarked: boolean, setBookmarked: Function }) => (
+const Header = ({ courseId, courseName, bookmarked, setBookmarked, client }:
+    { courseId: string, courseName: string, bookmarked: boolean, setBookmarked: Function, client: QueryClient }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
@@ -32,7 +33,7 @@ const Header = ({ courseId, courseName, bookmarked, setBookmarked }:
                         icon={bookmarked ? <StarFilled /> : <StarOutlined style={{ color: "#1677FF" }} />}
                         shape="round"
                         onClick={() => {
-                            BookmarkCourse(courseId, bookmarked, setBookmarked);
+                            BookmarkCourse(courseId, bookmarked, setBookmarked, client);
                         }}
                     />
                 </Space>
@@ -43,13 +44,14 @@ const Header = ({ courseId, courseName, bookmarked, setBookmarked }:
 
 const QuestionsPage = () => {
     const params = useParams();
-    const { courseId } = params;
+    const courseId = params.courseId ?? "";
+    const queryClient = useQueryClient();
 
     const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
-    const { loadingBookmarked, errorBookmarked, loadingCourse, errorCourse, courseName } = CheckBookmark(courseId ?? '', setIsBookmarked);
+    const { loadingBookmarked, errorBookmarked, loadingCourse, errorCourse, courseName } = CheckBookmark(courseId, setIsBookmarked);
 
-    const { loadingTopics, topics, errorTopics } = GetAllTopics(courseId ?? '');
-    const { loading, questions, error } = GetQuestions(courseId ?? '');
+    const { loadingTopics, topics, errorTopics } = GetAllTopics(courseId);
+    const { loading, questions, error } = GetQuestions(courseId);
 
     if (loading || loadingTopics || loadingBookmarked || loadingCourse) return <Loading />;
     if (error instanceof Error) return <ErrorMessage title={error.message} link="." message="Refresh" />;
@@ -58,9 +60,9 @@ const QuestionsPage = () => {
     if (errorCourse instanceof Error) return <ErrorMessage title={errorCourse.message} link="." message="Refresh" />;
 
     return (
-        <Card title={<Header courseId={courseId ?? ''} courseName={courseName ?? ''} bookmarked={isBookmarked} setBookmarked={setIsBookmarked} />} bordered={false}>
+        <Card title={<Header courseId={courseId} courseName={courseName} bookmarked={isBookmarked} setBookmarked={setIsBookmarked} client={queryClient} />} bordered={false}>
             <main className='main-container'>
-                <QuestionsList questions={questions} topics={topics} courseId={courseId ?? ""} />
+                <QuestionsList questions={questions} topics={topics} courseId={courseId} />
             </main>
         </Card>
     );
