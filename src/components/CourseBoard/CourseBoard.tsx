@@ -14,7 +14,7 @@ const CourseBoard = () => {
 
     return (
         <div className="card-content-courseboard">
-            <CourseBoardTable dataSource={courses} />
+            <CourseBoardTable coursesList={courses} />
         </div>
     );
 };
