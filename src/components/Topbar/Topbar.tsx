@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import Dark from '../../Dark';
 import Light from '../../Light';
 import { onMobile } from '../EditHistory/EditHistory';
+import Loading from '../Loading/Loading';
 
 type UserContextType = {
   username: string;
@@ -42,6 +43,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
   const [userId, setUserId] = useState("");
   const [anonId, setAnonId] = useState("");
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URI}/account/setup`, { method: "PUT" })
@@ -52,6 +54,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
         setUsername(response.username);
         setUserId(response.userId);
         setAnonId(response.anonId);
+        setIsLoading(false);
       }).catch((error) => {
         console.log(error);
       });
@@ -65,6 +68,8 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
   };
 
   const userContextValues = useMemo(() => ({ username, userId, anonId }), [username, userId, anonId]);
+
+  if (isLoading) return <Loading />;
 
   return (
     <Layout>
