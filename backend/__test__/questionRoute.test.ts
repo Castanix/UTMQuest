@@ -2,7 +2,7 @@ import * as mongoDB from 'mongodb';
 import request from 'supertest';
 import app from '../server';
 import configValues from '../config';
-import { QuestionsType } from '../types/Questions';
+import { QuestionBackEndType } from '../types/Questions';
 
 describe('Test for Question route api', () => { 
     const client: mongoDB.MongoClient = new mongoDB.MongoClient(configValues.MONGO_URI);
@@ -44,9 +44,9 @@ describe('Test for Question route api', () => {
 
             const response = await request(app).get(`/question/latestQuestions/${data.courseId}/${data.utorId}`);
             expect(response.statusCode).toBe(200);
-            const result: QuestionsType[] = response.body;
+            const result: QuestionBackEndType[] = response.body;
             if (result.length > 0) { 
-                result.forEach((question: QuestionsType) => {
+                result.forEach((question: QuestionBackEndType) => {
                     expect(question.courseId).toEqual(data.courseId);
                     expect(question.utorId).toEqual(data.utorId);
                 });
@@ -70,7 +70,7 @@ describe('Test for Question route api', () => {
             const response = await request(app).get(`/question/editHistory/${qnsLink}`);
             expect(response.statusCode).toBe(200);
             if (response.body.length > 0){ 
-                response.body.forEach((question: QuestionsType) => {
+                response.body.forEach((question: QuestionBackEndType) => {
                     expect(question.qnsLink).toEqual(qnsLink);
                 });
             }
