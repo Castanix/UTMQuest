@@ -8,8 +8,8 @@ import { qnsTypeEnum, QuestionBackEndType } from "../types/Questions";
 const questionRouter = Router();
 
 // badgeType: qnsEdited/qnsAdded
-const updateBadge = (utorId: string, update: Object, session: ClientSession) => {
-	return utmQuestCollections.Badges?.findOneAndUpdate(
+const updateBadge = (utorId: string, update: Object, session: ClientSession) => 
+	utmQuestCollections.Badges?.findOneAndUpdate(
 		{ utorId }, 
 		update,
 		{ session }
@@ -19,13 +19,10 @@ const updateBadge = (utorId: string, update: Object, session: ClientSession) => 
 		};
 
 		return result;
-	}).catch((err: Error) => {
-		return err;
-	});
-};
+	}).catch((err: Error) => err);
 
-const updateLatest = (question: QuestionBackEndType, latest: boolean, session: ClientSession) => {
-	return utmQuestCollections.Questions?.updateOne(
+const updateLatest = (question: QuestionBackEndType, latest: boolean, session: ClientSession) => 
+	utmQuestCollections.Questions?.updateOne(
 		question, 
 		{ $set: { latest } },
 		{ session },
@@ -35,13 +32,10 @@ const updateLatest = (question: QuestionBackEndType, latest: boolean, session: C
 		};
 
 		return result;
-	}).catch((err: Error) => {
-		return err;
-	});
-};
+	}).catch((err: Error) => err);
 
-const topicIncrementor = (topicId: ObjectID, increment: number, session: ClientSession) => {
-	return utmQuestCollections.Topics?.findOneAndUpdate(
+const topicIncrementor = (topicId: ObjectID, increment: number, session: ClientSession) => 
+	utmQuestCollections.Topics?.findOneAndUpdate(
 		{ _id: topicId },
 		{ $inc: { numQns: increment } },
 		{ session },
@@ -51,10 +45,7 @@ const topicIncrementor = (topicId: ObjectID, increment: number, session: ClientS
 		};
 
 		return result;
-	}).catch((err: Error) => {
-		return err;
-	});
-};
+	}).catch((err: Error) => err);
 
 /* Remove fields from question. Utorid is removed by default as the client side uses userId.
    Additionally, if the question is anon, send back anonId instead of userId */
