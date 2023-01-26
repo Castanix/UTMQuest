@@ -5,6 +5,9 @@ import TopicsTable from '../pages/ManageTopics/TopicsTable';
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 import { BrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 Object.defineProperty(window, 'matchMedia', {
     value: () => {
@@ -44,20 +47,27 @@ const topics: TopicsType[] = [
         _id: '1234',
         topicName: 'Strings',
         numQns: 0,
-        courseId: 'test'
+        courseId: 'test',
+        deleted: false,
     },
     {
         _id: '12345',
         topicName: 'Arrays',
         numQns: 1,
-        courseId: 'test'
+        courseId: 'test',
+        deleted: false,
     }
 ]
 
 let document: HTMLElement;
 
 beforeEach(() => {
-    const { container } = render(<TopicsTable courseId='test' topics={topics} />, { wrapper: BrowserRouter })
+    const { container } = render(
+            <QueryClientProvider client={queryClient}>
+                <TopicsTable courseId='test' topics={topics} />
+            </QueryClientProvider>,
+        { wrapper: BrowserRouter })
+            
     document = container;
 });
 

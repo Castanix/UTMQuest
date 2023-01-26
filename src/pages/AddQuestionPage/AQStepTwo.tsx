@@ -298,7 +298,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                 onOk={() => {
                     setIsModalOpen(false);
                     if (restoreQns && restorableDate) {
-                        RestoreQuestion(restoreQns._id, restorableDate, setIsSubmit, setRedirect);
+                        RestoreQuestion(restoreQns, restorableDate, latest.topicId, setIsSubmit, setRedirect, queryClient);
                     } else {
                         message.error("Unable to restore question");
                     };

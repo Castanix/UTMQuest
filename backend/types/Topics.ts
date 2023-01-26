@@ -3,6 +3,7 @@ interface TopicsType {
 	topicName: string;
 	courseId: string;
 	numQns: number;
+	deleted: boolean;
 }
 
 export default TopicsType;

@@ -607,7 +607,6 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 
 						if (code === 200) {
 							res.status(201).send({
-								qnsLink,
 								qnsStatus,
 								unlockedBadges: badge.unlockedBadges,
 								edit: true,
@@ -631,7 +630,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 
 questionRouter.put(
 	"/restoreQuestion", async (req: Request, res: Response) => {
-		const { restorableQnsId, restorableDate } = req.body;
+		const { restorableQnsId, restorableDate, latestTopicId } = req.body;
 
 		utmQuestCollections.Questions?.findOne({
 			_id: new ObjectID(restorableQnsId)
@@ -641,7 +640,30 @@ questionRouter.put(
 				return;
 			};
 
-			const { qnsLink } = restoredVersion;
+			const { qnsLink, topicId } = restoredVersion;
+
+			utmQuestCollections.Topics?.findOneAndUpdate({
+				_id: new ObjectID(topicId),
+				deleted: true,
+			}, {
+				$set: { deleted: false },
+			}).then((updateRes) => {
+				if(updateRes.value != null) {
+					utmQuestCollections.Topics?.findOneAndUpdate({
+						_id: new ObjectID(latestTopicId),
+					}, {
+						$inc: { numQns: -1 },
+					});
+
+					utmQuestCollections.Topics?.findOneAndUpdate({
+						_id: updateRes.value._id,
+					}, {
+						$inc: { numQns: 1 },
+					});
+				}
+			}).catch(err => {
+				throw new Error(err);
+			});
 
 			const isUpdated = updateLatest(restoredVersion, true);
 

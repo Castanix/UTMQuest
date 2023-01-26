@@ -83,7 +83,8 @@ const AddTopic = ({ courseId, addTopicCallback }: { courseId: string, addTopicCa
             _id: '',
             topicName,
             courseId,
-            numQns: 0
+            numQns: 0,
+            deleted: false,
         };
 
         fetch(`${process.env.REACT_APP_API_URI}/topic/addTopic`, request).then((result) => {

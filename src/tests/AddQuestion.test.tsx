@@ -29,7 +29,8 @@ const req: TopicsType = {
     _id: "abcd1234",
     topicName: "ABCD",
     courseId: "ABC123",
-    numQns: 0
+    numQns: 0,
+    deleted: false,
 }
 
 const question: QuestionFrontEndType = {

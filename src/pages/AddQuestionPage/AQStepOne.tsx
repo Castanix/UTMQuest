@@ -16,7 +16,7 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
 
     useEffect(() => {
         if (editableQns) {
-            const topicId = topics.filter(item => item.topicName === editableQns.topicName)[0]._id;
+            const { topicId } = editableQns;
 
             setTopicSelected([topicId, editableQns.topicName]);
             setSelected(topicId);
@@ -31,9 +31,19 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
     const initSelect = () => {
         const topicArr: React.ReactNode[] = [];
 
+        let doesTopicIdExist = false;
+
         fullTopicList.forEach(item => {
+            if(editableQns && !doesTopicIdExist) {
+                if(item._id === editableQns.topicId) doesTopicIdExist = true;
+            };
+
             topicArr.push(<Option key={item._id} value={item._id}>{item.topicName}</Option>);
         });
+
+        if(editableQns && !doesTopicIdExist) {
+            topicArr.push(<Option key={editableQns.topicId} value={editableQns._id}>{editableQns.topicName}</Option>);
+        };
 
         return topicArr;
     };

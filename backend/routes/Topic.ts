@@ -7,6 +7,7 @@ const topicRouter = Router();
 topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 	const course = await utmQuestCollections.Courses?.findOne({
 		courseId: req.params.courseId,
+		
 	});
 
 	if (!course) {
@@ -17,6 +18,7 @@ topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 
 	utmQuestCollections.Topics?.find({
 		courseId: req.params.courseId,
+		deleted: false,
 	})
 		.toArray()
 		.then((topics) => {
@@ -62,7 +64,9 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
-	utmQuestCollections.Topics?.deleteOne(topic)
+	utmQuestCollections.Topics?.updateOne(topic, {
+		$set: { deleted: true }
+	})
 		.then((result) => {
 			if (!result.acknowledged) {
 				res.status(400).send(result);
@@ -177,37 +181,54 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 		return;
 	}
 
-	const topicId = new ObjectID();
-	const newTopic = {
-		_id: topicId,
-		topicName: newTopicName,
+	utmQuestCollections.Topics?.findOneAndUpdate({
 		courseId: req.body.courseId,
-		numQns: 0,
-	};
-
-	utmQuestCollections.Topics?.insertOne(newTopic)
-		.then((result) => {
-			if (!result) {
-				res.status(500).send({ error: "Unable to add new topic." });
-				return;
-			}
-			// INCREMENT COUNTER
-			utmQuestCollections.Courses?.updateOne(course, {
-				$inc: { numTopics: 1 },
-			}).then((incrementResult) => {
-				if (!incrementResult) {
-					res.status(500).send({
-						error: `Unable to increment numTopics for ${course.courseId}`,
+		topicName: newTopicName,
+		deleted: true,
+	}, {
+		$set: { deleted: false }
+	}).then(updateRes => {
+		if(!updateRes.value) {
+			const topicId = new ObjectID();
+			const newTopic = {
+				_id: topicId,
+				topicName: newTopicName,
+				courseId: req.body.courseId,
+				numQns: 0,
+				deleted: false,
+			};
+		
+			utmQuestCollections.Topics?.insertOne(newTopic)
+				.then((insertRes) => {
+					if (!insertRes) {
+						res.status(500).send({ error: "Unable to add new topic." });
+						return;
+					}
+					// INCREMENT COUNTER
+					utmQuestCollections.Courses?.updateOne(course, {
+						$inc: { numTopics: 1 },
+					}).then((incrementResult) => {
+						if (!incrementResult) {
+							res.status(500).send({
+								error: `Unable to increment numTopics for ${course.courseId}`,
+							});
+							utmQuestCollections.Topics?.deleteOne(topicId);
+							return;
+						}
+						res.status(201).send(insertRes);
+						
 					});
-					utmQuestCollections.Topics?.deleteOne(topicId);
-					return;
-				}
-				res.status(201).send(result);
-			});
-		})
-		.catch((error) => {
-			res.status(500).send(error);
-		});
+				})
+				.catch((err) => {
+					throw new Error(err);
+				});
+		} else {
+			res.status(200).send({insertedId: updateRes.value._id.toString()});
+		}
+	})
+	.catch(err => {
+		res.status(500).send(err);
+	});
 });
 
 export default topicRouter;

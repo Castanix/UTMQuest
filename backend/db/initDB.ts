@@ -7,7 +7,7 @@ async function initDB() {
 	const env = process.env.NODE_ENV || "dev";
 
 	const client: mongoDB.MongoClient = new mongoDB.MongoClient(
-		env === "dev" ? configValues.MONGO_TEST_URI : configValues.MONGO_URI
+		env === "dev" ? configValues.MONGO_TEST2_URI : configValues.MONGO_URI
 	);
 
 	await client.connect();
@@ -143,7 +143,7 @@ async function initDB() {
 				$jsonSchema: {
 					bsonType: "object",
 					title: "Topics Object Validation",
-					required: ["topicName", "numQns", "courseId"],
+					required: ["topicName", "numQns", "courseId", "deleted"],
 					additionalProperties: false,
 					properties: {
 						_id: {
@@ -165,6 +165,11 @@ async function initDB() {
 							description:
 								"'courseId' must be a string that references a courseId from the courses collection and is required",
 						},
+						deleted: {
+							bsonType: "bool",
+							description:
+								"'deleted' must be a bool and is required",
+						}
 					},
 				},
 			},
