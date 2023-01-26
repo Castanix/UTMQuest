@@ -276,7 +276,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                                 } else {
                                     if (!isIdenticalEdit(addableQns, latest ?? editableQns)) {
                                         const oldTopicId = editableQns.topicId;
-                                        EditQuestion(addableQns, setIsSubmit, setRedirect, oldTopicId, queryClient);
+                                        EditQuestion(addableQns, setIsSubmit, setRedirect, latest ? latest.topicId : oldTopicId, queryClient);
                                     } else {
                                         if (latest) {
                                             message.error("Changes are identical to the latest version");

@@ -8,28 +8,52 @@ import { qnsTypeEnum, QuestionBackEndType } from "../types/Questions";
 const questionRouter = Router();
 
 // badgeType: qnsEdited/qnsAdded
-const updateBadge = async (utorId: string, update: Object, session: ClientSession) => {
-	await utmQuestCollections.Badges?.findOneAndUpdate(
+const updateBadge = (utorId: string, update: Object, session: ClientSession) => {
+	return utmQuestCollections.Badges?.findOneAndUpdate(
 		{ utorId }, 
 		update,
 		{ session }
-	);
+	).then((result) => {
+		if (!result) {
+			throw new Error("Error updating badge progression");
+		};
+
+		return result;
+	}).catch((err: Error) => {
+		return err;
+	});
 };
 
-const updateLatest = async (question: QuestionBackEndType, latest: boolean, session: ClientSession) => {
-	await utmQuestCollections.Questions?.updateOne(
+const updateLatest = (question: QuestionBackEndType, latest: boolean, session: ClientSession) => {
+	return utmQuestCollections.Questions?.updateOne(
 		question, 
 		{ $set: { latest } },
 		{ session },
-	);
+	).then((result) => {
+		if (!result) {
+			throw new Error("Error updating latest flag");
+		};
+
+		return result;
+	}).catch((err: Error) => {
+		return err;
+	});
 };
 
-const topicIncrementor = async (topicId: ObjectID, increment: number, session: ClientSession) => {
-	await utmQuestCollections.Topics?.findOneAndUpdate(
+const topicIncrementor = (topicId: ObjectID, increment: number, session: ClientSession) => {
+	return utmQuestCollections.Topics?.findOneAndUpdate(
 		{ _id: topicId },
 		{ $inc: { numQns: increment } },
 		{ session },
-	);
+	).then((result) => {
+		if (!result) {
+			throw new Error("Error incrementing topic");
+		};
+
+		return result;
+	}).catch((err: Error) => {
+		return err;
+	});
 };
 
 /* Remove fields from question. Utorid is removed by default as the client side uses userId.
@@ -525,9 +549,21 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		await updateLatest(currVersion as QuestionBackEndType, false, session);
 
 		if (oldTopicId !== newTopicId) {
-			await topicIncrementor(new ObjectID(oldTopicId), -1, session);
-			await topicIncrementor(new ObjectID(newTopicId), 1, session);
+			await utmQuestCollections.Topics?.findOneAndUpdate(
+				{
+					_id: new ObjectID(newTopicId),
+					deleted: true,
+				},
+				{ $set: { deleted: false } },
+				{ session },
+			).then(async () => {
+				await topicIncrementor(new ObjectID(oldTopicId), -1, session);
+				await topicIncrementor(new ObjectID(newTopicId), 1, session);
+			}).catch(err => {
+				throw new Error(err);
+			});
 		};
+		
 
 		// Attempts to update badge progression for specified utorid, reverts all changes if failed
 		if (!req.body.anon) {
@@ -573,17 +609,21 @@ questionRouter.put(
 			try {
 				session.startTransaction();
 
-				await utmQuestCollections.Topics?.findOneAndUpdate(
-					{
-						_id: new ObjectID(topicId),
-						deleted: true,
-					},
-					{ $set: { deleted: false } },
-					{ session },
-				).then(async () => {
-					await topicIncrementor(new ObjectID(latestTopicId), -1, session);
-					await topicIncrementor(new ObjectID(topicId), 1, session);
-				});
+				if (latestTopicId !== topicId) {
+					await utmQuestCollections.Topics?.findOneAndUpdate(
+						{
+							_id: new ObjectID(topicId),
+							deleted: true,
+						},
+						{ $set: { deleted: false } },
+						{ session },
+					).then(async () => {
+						await topicIncrementor(new ObjectID(latestTopicId), -1, session);
+						await topicIncrementor(new ObjectID(topicId), 1, session);
+					}).catch(err => {
+						throw new Error(err);
+					});
+				};
 
 				await updateLatest(restoredVersion as QuestionBackEndType, true, session);
 
@@ -615,6 +655,8 @@ questionRouter.put(
 							{ session },
 						);
 					});
+				}).catch(err => {
+					throw new Error(err);
 				});
 
 				await session.commitTransaction();
