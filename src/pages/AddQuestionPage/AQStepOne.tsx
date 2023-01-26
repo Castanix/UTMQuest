@@ -17,7 +17,7 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
     useEffect(() => {
         if (editableQns) {
             const { topicId } = editableQns;
-
+            
             setTopicSelected([topicId, editableQns.topicName]);
             setSelected(topicId);
         } else if (defaultTopicId && defaultTopicName) {
@@ -43,6 +43,17 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
 
         if(editableQns && !doesTopicIdExist) {
             topicArr.push(<Option key={editableQns.topicId} value={editableQns._id}>{editableQns.topicName}</Option>);
+            
+            const { topicId: _id, topicName } = editableQns;
+            fullTopicList.push(
+                {
+                    _id,
+                    topicName,
+                    courseId,
+                    numQns: 0,
+                    deleted: false,
+                }
+            );
         };
 
         return topicArr;
