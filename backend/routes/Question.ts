@@ -1,66 +1,35 @@
 import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
-import { ObjectId } from "mongodb";
+import { ClientSession, ObjectId } from "mongodb";
 import seedrandom from "seedrandom";
-import { utmQuestCollections } from "../db/db.service";
+import { utmQuestCollections , mongoDBConnection } from "../db/db.service";
 import { qnsTypeEnum, QuestionBackEndType } from "../types/Questions";
 
 const questionRouter = Router();
 
-const updateBadge = async (utorId: string) => {
-	const failed = {
-		code: 500,
-		message: `Update 'qnsEdited' field for badges collection failed. Reverting all changes.`,
-		qnsStatus: null,
-	};
-
-	return utmQuestCollections.Badges?.findOne({ utorId })
-		.then((findRes) => {
-			if (!findRes) {
-				return {
-					code: 404,
-					message: `Could not find badge progression for ${utorId}`,
-					qnsStatus: null,
-				};
-			}
-
-			return utmQuestCollections.Badges?.updateOne(findRes, {
-				$inc: { qnsEdited: 1 },
-			})
-				.then((updateRes) => {
-					if (!updateRes) {
-						return failed;
-					}
-					return {
-						code: 200,
-						message: `success`,
-						qnsStatus: findRes.qnsEdited + 1,
-					};
-				})
-				.catch(() => failed);
-		})
-		.catch(() => failed);
+// badgeType: qnsEdited/qnsAdded
+const updateBadge = async (utorId: string, update: Object, session: ClientSession) => {
+	await utmQuestCollections.Badges?.findOneAndUpdate(
+		{ utorId }, 
+		update,
+		{ session }
+	);
 };
 
-const updateLatest = (question: any, set: boolean) => utmQuestCollections.Questions?.updateOne(question, {
-		$set: { latest: set },
-	}).then(result => {
-		if(!result) return false;
-
-		return true;
-	}).catch(err => {
-		throw new Error(err);
-		// return err;
-		// throw new Error("Error updating latest flag on document id: " + question._id);
-	});
-
-const topicIncrementor = (topicId: ObjectID, increment: boolean) => {
-	const result = utmQuestCollections.Topics?.findOneAndUpdate(
-		{ _id: topicId },
-		{ $inc: { numQns: increment ? 1 : -1 } }
+const updateLatest = async (question: QuestionBackEndType, latest: boolean, session: ClientSession) => {
+	await utmQuestCollections.Questions?.updateOne(
+		question, 
+		{ $set: { latest } },
+		{ session },
 	);
+};
 
-	return !!result;
+const topicIncrementor = async (topicId: ObjectID, increment: number, session: ClientSession) => {
+	await utmQuestCollections.Topics?.findOneAndUpdate(
+		{ _id: topicId },
+		{ $inc: { numQns: increment } },
+		{ session },
+	);
 };
 
 /* Remove fields from question. Utorid is removed by default as the client side uses userId.
@@ -362,269 +331,226 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 			error: "Could not find badge progression for user.",
 		});
 		return;
-	}
+	};
 
-	utmQuestCollections.Questions?.insertOne(question)
-		.then((result) => {
-			if (!result) {
-				res.status(500).send({ error: "Unable to add new question." });
-				return;
-			}
+	const session = mongoDBConnection.startSession();
 
-			// INCREMENT COUNTER
-			const isIncremented = topicIncrementor(topicId, true);
-			if (!isIncremented) {
-				res.status(500).send({
-					error: `Unable to increment numQuestions for ${req.body.topicName}`,
-				});
-				utmQuestCollections.Questions?.deleteOne(question);
-				return;
-			}
+	try {
+		session.startTransaction();
 
-			// Update badge progression
-			if (!question.anon) {
-				const now = new Date();
+		await utmQuestCollections.Questions?.insertOne(
+			question,
+			{ session }
+		);
 
-				if (badge.firstPostToday === "") {
-					utmQuestCollections.Badges?.updateOne(badge, {
+		// Increment counter
+		await topicIncrementor(topicId, 1, session);
+
+		// Update badge progression
+		if (!question.anon) {
+			const now = new Date();
+
+			if (badge.firstPostToday === "") {
+				await updateBadge(
+					utorId, 
+					{
 						$set: {
 							firstPostToday: now.toISOString(),
 							consecutivePosting: 1,
 						},
 						$inc: { qnsAdded: 1 },
-					}).then((updateResult) => {
-						if (!updateResult) {
-							res.status(500).send({
-								error: "Unable to update badge progression.",
-							});
-							topicIncrementor(topicId, false);
-							utmQuestCollections.Questions?.deleteOne(question);
-						} else {
-							res.status(201).send({
-								qnsLink,
-								qnsStatus: badge.qnsAdded + 1,
-								consecutivePosting: 1,
-								unlockedBadges: badge.unlockedBadges,
-								edit: false,
-							});
-						}
-					});
-				} else {
-					const currTime = now.getTime() / (60 * 60 * 1000);
-					const lastPostTime =
-						Date.parse(badge.firstPostToday) / (60 * 60 * 1000);
-					const timeDiff = currTime - lastPostTime;
+					},
+					session,
+				);
 
-					if (
-						timeDiff < 48 &&
-						timeDiff > 24 &&
-						badge.consecutivePosting < 7
-					) {
-						utmQuestCollections.Badges?.updateOne(badge, {
+				await session.commitTransaction();
+
+				res.status(201).send({
+					qnsLink,
+					qnsStatus: badge.qnsAdded + 1,
+					consecutivePosting: 1,
+					unlockedBadges: badge.unlockedBadges,
+					edit: false,
+				});
+			} else {
+				const currTime = now.getTime() / (60 * 60 * 1000);
+				const lastPostTime =
+					Date.parse(badge.firstPostToday) / (60 * 60 * 1000);
+				const timeDiff = currTime - lastPostTime;
+
+				if (
+					timeDiff < 48 &&
+					timeDiff > 24 &&
+					badge.consecutivePosting < 7
+				) {
+					await updateBadge(
+						utorId,
+						{
 							$set: { firstPostToday: now.toISOString() },
 							$inc: { consecutivePosting: 1, qnsAdded: 1 },
-						}).then((updateResult) => {
-							if (!updateResult) {
-								res.status(500).send({
-									error: "Unable to update badge progression.",
-								});
-								topicIncrementor(topicId, false);
-								utmQuestCollections.Questions?.deleteOne(
-									question
-								);
-							} else {
-								res.status(201).send({
-									qnsLink,
-									qnsStatus: badge.qnsAdded + 1,
-									consecutivePosting:
-										badge.consecutivePosting + 1,
-									unlockedBadges: badge.unlockedBadges,
-									edit: false,
-								});
-							}
-						});
-					} else if (timeDiff > 48 && badge.consecutivePosting < 7) {
-						utmQuestCollections.Badges?.updateOne(badge, {
+						},
+						session
+					);
+
+					await session.commitTransaction();
+
+					res.status(201).send({
+						qnsLink,
+						qnsStatus: badge.qnsAdded + 1,
+						consecutivePosting:
+							badge.consecutivePosting + 1,
+						unlockedBadges: badge.unlockedBadges,
+						edit: false,
+					});
+				} else if (timeDiff > 48 && badge.consecutivePosting < 7) {
+					await updateBadge(
+						utorId,
+						{
 							$set: {
 								firstPostToday: now.toISOString(),
 								consecutivePosting: 1,
 							},
 							$inc: { qnsAdded: 1 },
-						}).then((updateResult) => {
-							if (!updateResult) {
-								res.status(500).send({
-									error: "Unable to update badge progression.",
-								});
-							} else {
-								res.status(201).send({
-									qnsLink,
-									qnsStatus: badge.qnsAdded + 1,
-									consecutivePosting: 1,
-									unlockedBadges: badge.unlockedBadges,
-									edit: false,
-								});
-							}
-						});
-					} else {
-						utmQuestCollections.Badges?.updateOne(badge, {
-							$inc: { qnsAdded: 1 },
-						}).then((incrementResult) => {
-							if (!incrementResult) {
-								res.status(500).send({
-									error: "Unable to increment questionsAdded for badge progression.",
-								});
-								topicIncrementor(topicId, false);
-								utmQuestCollections.Questions?.deleteOne(
-									question
-								);
-							} else {
-								res.status(201).send({
-									qnsLink,
-									qnsStatus: badge.qnsAdded + 1,
-									consecutivePosting:
-										badge.consecutivePosting,
-									unlockedBadges: badge.unlockedBadges,
-									edit: false,
-								});
-							}
-						});
-					}
-				}
-			} else {
-				res.status(201).send({ qnsLink });
-			}
-		})
-		.catch((error) => {
-			res.status(500).send(error);
-		});
+						},
+						 session,
+					);
+
+					await session.commitTransaction();
+
+					res.status(201).send({
+						qnsLink,
+						qnsStatus: badge.qnsAdded + 1,
+						consecutivePosting: 1,
+						unlockedBadges: badge.unlockedBadges,
+						edit: false,
+					});
+				} else {
+					await updateBadge(utorId, { $inc: { qnsAdded: 1 } }, session);
+
+					await session.commitTransaction();
+
+					res.status(201).send({
+						qnsLink,
+						qnsStatus: badge.qnsAdded + 1,
+						consecutivePosting:
+							badge.consecutivePosting,
+						unlockedBadges: badge.unlockedBadges,
+						edit: false,
+					});
+				};
+			};
+		} else {
+			await session.commitTransaction();
+			res.status(201).send({ qnsLink });
+		};
+	} catch (err) {
+		await session.abortTransaction();
+
+		res.status(500).send({ err });
+	} finally {
+		await session.endSession();
+	}
 });
 
 questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
+	const { qnsLink, anon, topicId: newTopicId, oldTopicId } = req.body;
+
+	const currVersion = await utmQuestCollections.Questions?.findOne({
+		qnsLink,
+		latest: true,
+	});
+
+	if (!currVersion) {
+		res.status(404).send({ error: "No such latest question found." });
+		return;
+	};
+
+	const utorId = req.headers.utorid as string;
+
+	const badge = await utmQuestCollections.Badges?.findOne({
+		utorId,
+	});
+
+	if (!badge) {
+		res.status(404).send({
+			error: "Could not find badge progression for user.",
+		});
+		return;
+	};
+
+	const email: string = req.headers.http_mail as string;
+	const name = email.split("@")[0].split(".");
+	const firstName = name[0].charAt(0).toUpperCase() + name[0].slice(1);
+	const lastName =
+		name[name.length - 1].charAt(0).toUpperCase() +
+		name[name.length - 1].slice(1);
+
+	const question = {
+		qnsLink,
+		topicId: new ObjectID(req.body.topicId),
+		topicName: req.body.topicName,
+		courseId: req.body.courseId,
+		qnsName: req.body.qnsName,
+		qnsType: req.body.qnsType,
+		description: req.body.description,
+		explanation: req.body.explanation,
+		choices: req.body.choices,
+		answers: req.body.answers,
+		utorId,
+		userId: req.body.userId,
+		anonId: req.body.anonId,
+		utorName: anon ? "Anonymous" : `${firstName} ${lastName}`,
+		date: new Date().toISOString(),
+		numDiscussions: req.body.numDiscussions,
+		anon: req.body.anon,
+		latest: true,
+		rating: {},
+		likes: 0,
+		dislikes: 0,
+		views: 0,
+		viewers: {},
+	};
+
+	const session = mongoDBConnection.startSession();
+
 	try {
-		const { qnsLink, anon, topicId: newTopicId, oldTopicId } = req.body;
-
-		const currVersion = await utmQuestCollections.Questions?.findOne({
-			qnsLink,
-			latest: true,
-		});
-		if (!currVersion) {
-			res.status(404).send({ error: "No such latest question found." });
-			return;
-		}
-
-		const utorId = req.headers.utorid as string;
-
-		const badge = await utmQuestCollections.Badges?.findOne({
-			utorId,
-		});
-
-		if (!badge) {
-			res.status(404).send({
-				error: "Could not find badge progression for user.",
-			});
-			return;
-		}
-
-		const email: string = req.headers.http_mail as string;
-		const name = email.split("@")[0].split(".");
-		const firstName = name[0].charAt(0).toUpperCase() + name[0].slice(1);
-		const lastName =
-			name[name.length - 1].charAt(0).toUpperCase() +
-			name[name.length - 1].slice(1);
-
-		const question = {
-			qnsLink,
-			topicId: new ObjectID(req.body.topicId),
-			topicName: req.body.topicName,
-			courseId: req.body.courseId,
-			qnsName: req.body.qnsName,
-			qnsType: req.body.qnsType,
-			description: req.body.description,
-			explanation: req.body.explanation,
-			choices: req.body.choices,
-			answers: req.body.answers,
-			utorId,
-			userId: req.body.userId,
-			anonId: req.body.anonId,
-			utorName: anon ? "Anonymous" : `${firstName} ${lastName}`,
-			date: new Date().toISOString(),
-			numDiscussions: req.body.numDiscussions,
-			anon: req.body.anon,
-			latest: true,
-			rating: {},
-			likes: 0,
-			dislikes: 0,
-			views: 0,
-			viewers: {},
-		};
+		session.startTransaction();
 
 		// Add edited questions doc into db
-		utmQuestCollections.Questions?.insertOne(question)
-			.then((result) => {
-				if (!result) {
-					res.status(500).send({ error: "Unable to add new question." });
-					return;
-				}
+		await utmQuestCollections.Questions?.insertOne(
+			question,
+			{ session }
+		);
 
-				// Attempts to update latest from old questions doc, reverts any changes if failed
-				const latestStatus = updateLatest(currVersion, false);
-				if (!latestStatus) {
-					utmQuestCollections.Questions?.deleteOne(question);
-					res.status(500).send({
-						error: "Update 'latest' flag for previous question failed. Reverting any changes.",
-					});
-					return;
-				}
+		await updateLatest(currVersion as QuestionBackEndType, false, session);
 
-				// Attempts to update numQns in topics collection for any topic changes
-				// TODO: Eventually replace all non-atomic operations with transactions
-				if (oldTopicId !== newTopicId) {
-					utmQuestCollections.Topics?.findOneAndUpdate({
-						_id: new ObjectID(oldTopicId)
-					}, {
-						$inc: { numQns: -1 }
-					});
+		if (oldTopicId !== newTopicId) {
+			await topicIncrementor(new ObjectID(oldTopicId), -1, session);
+			await topicIncrementor(new ObjectID(newTopicId), 1, session);
+		};
 
-					utmQuestCollections.Topics?.findOneAndUpdate({
-						_id: new ObjectID(newTopicId)
-					}, {
-						$inc: { numQns: 1 }
-					});
-				};
+		// Attempts to update badge progression for specified utorid, reverts all changes if failed
+		if (!req.body.anon) {
+			await updateBadge(utorId, { $inc: { qnsEdited: 1 } }, session);
 
-				// Attempts to update badge progression for specified utorid, reverts all changes if failed
-				if (!req.body.anon) {
-					updateBadge(utorId).then((updateRes) => {
-						if (!updateRes) {
-							updateLatest(currVersion, true);
-							utmQuestCollections.Questions?.deleteOne(question);
-							res.status(500).send({
-								error: "Unable to update badges. Reverting all changes.",
-							});
-							return;
-						}
-						const { code, message, qnsStatus } = updateRes;
+			await session.commitTransaction();
 
-						if (code === 200) {
-							res.status(201).send({
-								qnsStatus,
-								unlockedBadges: badge.unlockedBadges,
-								edit: true,
-							});
-						} else {
-							res.status(code).send(message);
-						}
-					});
-				} else {
-					res.status(201).send({ qnsLink });
-				}
-			})
-			.catch((error) => {
-				res.status(500).send(error);
+			res.status(201).send({
+				qnsStatus: badge.qnsEdited + 1,
+				unlockedBadges: badge.unlockedBadges,
+				edit: true,
 			});
-	} catch (error) {
-		res.status(500).send(`ERROR: ${error}`);
-	}
+		} else {
+			await session.commitTransaction();
+			res.status(201).send({ qnsLink });
+		}
+	} catch (err) {
+		await session.abortTransaction();
+
+		res.status(500).send({ err });
+	} finally {
+		await session.endSession();
+	};
 });
 
 
@@ -634,7 +560,7 @@ questionRouter.put(
 
 		utmQuestCollections.Questions?.findOne({
 			_id: new ObjectID(restorableQnsId)
-		}).then(restoredVersion => {
+		}).then(async restoredVersion => {
 			if(!restoredVersion) {
 				res.status(404).send({ error: "No restored version found" });
 				return;
@@ -642,85 +568,69 @@ questionRouter.put(
 
 			const { qnsLink, topicId } = restoredVersion;
 
-			utmQuestCollections.Topics?.findOneAndUpdate({
-				_id: new ObjectID(topicId),
-				deleted: true,
-			}, {
-				$set: { deleted: false },
-			}).then((updateRes) => {
-				if(updateRes.value != null) {
-					utmQuestCollections.Topics?.findOneAndUpdate({
-						_id: new ObjectID(latestTopicId),
-					}, {
-						$inc: { numQns: -1 },
-					});
+			const session = mongoDBConnection.startSession();
 
-					utmQuestCollections.Topics?.findOneAndUpdate({
-						_id: updateRes.value._id,
-					}, {
-						$inc: { numQns: 1 },
-					});
-				}
-			}).catch(err => {
-				throw new Error(err);
-			});
+			try {
+				session.startTransaction();
 
-			const isUpdated = updateLatest(restoredVersion, true);
-
-			if(!isUpdated) {
-				res.status(400).send({ error: "Cannot restore version at this time" });
-				return;
-			};
-
-			utmQuestCollections.Questions?.deleteMany({
-				$expr: { $gt: [{ $toDate: "$date" }, new Date(restoredVersion.date)] },
-				qnsLink
-			}).then(result => {
-				if(!result) {
-					const revert = updateLatest(restoredVersion, false);
-
-					if(!revert) {
-						res.status(400).send({ 
-							error: "Unable to delete all versions after restore point. Cannot revert changes, data may not be in sync"
-						});
-						return;
-					};
-
-					res.status(400).send({ 
-						error: "Unable to delete all versions after restore point."
-					});
-					return;
-				};
-
-				utmQuestCollections.Discussions?.find({
-					qnsLink,
-					op: true,
-					$expr: { $gt: [{ $toDate: "$opDate" }, new Date(restorableDate)] },
-				}).toArray().then(documents => {
-					documents.forEach(doc => {
-						utmQuestCollections.Discussions?.deleteMany({
-							_id: { $in: doc.thread.map((id: string) => new ObjectID(id)) }
-						}).then(() => {
-							utmQuestCollections.Discussions?.deleteOne(doc).catch(err => {
-								throw new Error(err);
-							});
-						}).catch(err => {
-							throw new Error(err);
-						});
-					});
-
-					res.status(200).send({qnsLink});
-				}).catch(err => {
-					throw new Error(err);
+				await utmQuestCollections.Topics?.findOneAndUpdate(
+					{
+						_id: new ObjectID(topicId),
+						deleted: true,
+					},
+					{ $set: { deleted: false } },
+					{ session },
+				).then(async () => {
+					await topicIncrementor(new ObjectID(latestTopicId), -1, session);
+					await topicIncrementor(new ObjectID(topicId), 1, session);
 				});
-			}).catch(err => {
-				throw new Error(err);
-			});
-		}).catch(err => {
-			res.status(500).send(err);
+
+				await updateLatest(restoredVersion as QuestionBackEndType, true, session);
+
+				await utmQuestCollections.Questions?.deleteMany(
+					{
+						$expr: { $gt: [{ $toDate: "$date" }, new Date(restoredVersion.date)] },
+						qnsLink,
+					},
+					{ session },
+				);
+
+				utmQuestCollections.Discussions?.find(
+					{
+						qnsLink,
+						op: true,
+						$expr: { $gt: [{ $toDate: "$opDate" }, new Date(restorableDate)] },
+					}
+				).toArray().then(documents => {
+					documents.forEach(async doc => {
+						await utmQuestCollections.Discussions?.deleteMany(
+							{
+								_id: { $in: doc.thread.map((id: string) => new ObjectID(id)) }
+							},
+							{ session },
+						);
+
+						await utmQuestCollections.Discussions?.deleteOne(
+							doc,
+							{ session },
+						);
+					});
+				});
+
+				await session.commitTransaction();
+
+				res.status(200).send({qnsLink});
+			} catch (err) {
+				await session.abortTransaction();
+
+				res.status(500).send(err);
+			} finally {
+				await session.endSession();
+			};
 		});
 	}
 );
+
 
 questionRouter.get(
 	"/similar/:topicId/:originalQnsId/:term",
