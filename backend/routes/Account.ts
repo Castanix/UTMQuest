@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { utmQuestCollections } from "../db/db.service";
+import { utmQuestCollections , mongoDBConnection } from "../db/db.service";
+
 
 const accountRouter = Router();
 
@@ -16,66 +17,71 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 	const user = await utmQuestCollections.Accounts?.findOne({ utorId });
 
 	if (!user) {
+		const session = mongoDBConnection.startSession();
+
 		// generate unique userId
 		const userId = uuidv4();
 		const anonId = uuidv4();
 
-		utmQuestCollections.Accounts?.insertOne({
-			utorId,
-			userId,
-			anonId,
-			utorName: `${firstName} ${lastName}`,
-			bookmarkCourses: [],
-		}).then((result) => {
-			if (!result) {
-				res.status(500).send({
-					error: "Unable to perform first time sign in.",
-				});
-				return;
-			}
+		try {
+			session.startTransaction();
 
-			utmQuestCollections.Badges?.insertOne({
-				utorId,
-				userId,
-				qnsAdded: 0,
-				qnsEdited: 0,
-				threadResponses: 0,
-				currLoginStreak: 1,
-				longestLoginStreak: 1,
-				lastLogin: new Date().toISOString(),
-				firstPostToday: "",
-				consecutivePosting: 0,
-				displayBadges: [],
-				unlockedBadges: {
-					addQns: null,
-					editQns: null,
-					consecutivePosting: null,
-					dailyLogin: "dailybadge",
-					threadReplies: null,
-				},
-			}).then((badgeResult) => {
-				if (!badgeResult) {
-					utmQuestCollections.Accounts?.deleteOne({ utorId });
-					res.status(500).send({
-						error: "Unable to perform first time sign in.",
-					});
-					return;
-				}
-
-				res.status(201).send({
-					username: firstName.concat(" ").concat(lastName),
+			await utmQuestCollections.Accounts?.insertOne(
+				{
+					utorId,
 					userId,
-					anonId: [],
-				});
+					anonId,
+					utorName: `${firstName} ${lastName}`,
+					bookmarkCourses: [],
+				}, 
+				{ session },
+			);
+	
+			await utmQuestCollections.Badges?.insertOne(
+				{
+					utorId,
+					userId,
+					qnsAdded: 0,
+					qnsEdited: 0,
+					threadResponses: 0,
+					currLoginStreak: 1,
+					longestLoginStreak: 1,
+					lastLogin: new Date().toISOString(),
+					firstPostToday: "",
+					consecutivePosting: 0,
+					displayBadges: [],
+					unlockedBadges: {
+						addQns: null,
+						editQns: null,
+						consecutivePosting: null,
+						dailyLogin: "dailybadge",
+						threadReplies: null,
+					},
+				},
+				{ session },
+			);
+
+			await session.commitTransaction();
+
+			res.status(201).send({
+				username: firstName.concat(" ").concat(lastName),
+				userId,
+				anonId: [],
 			});
-		});
+		} catch (error) {
+			await session.abortTransaction();
+
+			res.status(500).send({ error });
+		} finally {
+			await session.endSession();
+		}
 	} else {
 		res.status(418).send({
 			username: firstName.concat(" ").concat(lastName),
 			userId: user.userId,
 			anonId: user.anonId,
 		});
-	}
+	};
 });
 
 accountRouter.get("/getAccount/:userId", (req: Request, res: Response) => {
