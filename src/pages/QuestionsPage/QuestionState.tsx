@@ -51,7 +51,7 @@ const QuestionState = (questions: QuestionFrontEndType[], courseId: string) => {
         }
         else {
             setData(originalData.filter(item => item.qnsName.toLowerCase().includes(value.toLowerCase()) && (topicFilters.size === 0 || topicFilters.has(item.topicName.toLocaleLowerCase()))));
-            setSearchTerm(value.toLocaleLowerCase());
+            setSearchTerm(value);
         }
     };
 
