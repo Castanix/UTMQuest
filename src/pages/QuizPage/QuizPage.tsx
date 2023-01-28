@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Breadcrumb, Button, Card, Progress, Result, Space, Typography } from "antd";
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { red, green } from '@ant-design/colors';
 import { useQuery } from 'react-query';
 import { MultipleChoiceTab } from '../ApprovedQuestion/ApprovedQuestion';
@@ -19,6 +19,12 @@ export type QuizDependencyTypes = {
     setMCResult?: Function,
 };
 
+type QuizFetchTypes = {
+    courseId: string,
+    topicsGen: string[],
+    numQnsGen: number,
+}
+
 const Header = ({ courseId }: { courseId: string }) => (
     <div>
         <Breadcrumb>
@@ -32,16 +38,17 @@ const Header = ({ courseId }: { courseId: string }) => (
     </div>
 );
 
-const fetchGenerateQuiz = async (courseId: string) => {
-    const response = await fetch(`${process.env.REACT_APP_API_URI}/question/generateQuiz/${courseId}`);
+const fetchGenerateQuiz = async (fetchParams: QuizFetchTypes) => {
+    const { courseId, topicsGen, numQnsGen } = fetchParams;
+
+    const response = await fetch(`${process.env.REACT_APP_API_URI}/question/generateQuiz/${courseId}/${JSON.stringify(topicsGen)}/${numQnsGen}`);
     if (!response.ok) throw Error(response.statusText);
     return response.json();
 };
 
 
-const GenerateQuestions = (courseId: string) => {
-
-    const result = useQuery(["generateQuiz", courseId], () => fetchGenerateQuiz(courseId));
+const GenerateQuestions = (fetchParams: QuizFetchTypes) => {
+    const result = useQuery(["generateQuiz", fetchParams], () => fetchGenerateQuiz(fetchParams));
 
     return {
         loading: result.isLoading,
@@ -63,7 +70,9 @@ const QuizPage = () => {
 
     const isLightMode = useContext(ThemeContext);
 
-    const { loading, questions, error } = GenerateQuestions(courseId ?? '');
+    const { topicsGen, numQnsGen } = useLocation().state;
+
+    const { loading, questions, error } = GenerateQuestions({ courseId: courseId ?? '', topicsGen, numQnsGen });
 
     if (loading) return <Loading />;
 
