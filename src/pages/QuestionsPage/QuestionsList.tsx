@@ -1,4 +1,4 @@
-import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, FormOutlined, CheckCircleFilled } from '@ant-design/icons';
+import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, CheckCircleFilled } from '@ant-design/icons';
 import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography } from 'antd';
 import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -10,6 +10,7 @@ import GetRelativeTime from '../../RelativeTime';
 
 import "./QuestionsList.css";
 import QuestionState from './QuestionState';
+import QuizGenerationMenu from '../QuizPage/QuizGenerationMenu';
 
 const { Option } = Select;
 
@@ -104,7 +105,7 @@ const QuestionsList = ({ questions, topics, courseId }:
                     <Input placeholder="Search question" prefix={<SearchOutlined />} value={searchTerm} className='questions-search' onChange={(event) => onSearchChange(event.target.value)} />
                 </Space>
                 <Space>
-                    <Link to={`/courses/${courseId}/quiz`}><Button type="primary" shape="round" icon={<FormOutlined />}>Generate Quiz</Button></Link>
+                    <QuizGenerationMenu courseId={courseId} topics={topics} />
                     <Link to={`/courses/${courseId}/addQuestion`}><Button type="primary" shape="round" icon={<PlusCircleTwoTone />}>Add a Question</Button></Link>
                 </Space>
 

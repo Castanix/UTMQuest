@@ -205,18 +205,31 @@ const SortArrayByScore = (q1: ScoredQuestion, q2: ScoredQuestion) => {
 };
 
 questionRouter.get(
-	"/generateQuiz/:courseId",
+	"/generateQuiz/:courseId/:topicsGen/:numQnsGen",
 	async (req: Request, res: Response) => {
+		const { courseId, topicsGen, numQnsGen } = req.params;
+
+		const topicsGenArr = JSON.parse(topicsGen);
+
+		const match = {
+			$match: topicsGenArr.length === 0 ?
+				{
+					courseId: courseId,
+					latest: true,
+					qnsType: qnsTypeEnum.mc,
+				} :
+				{
+					courseId: courseId,
+					latest: true,
+					qnsType: qnsTypeEnum.mc,
+					topicName: { $in: topicsGenArr },
+				}
+		};
+
 		try {
 			const generated = await utmQuestCollections.Questions?.aggregate([
-				{
-					$match: {
-						courseId: req.params.courseId,
-						latest: true,
-						qnsType: qnsTypeEnum.mc,
-					},
-				},
-				{ $sample: { size: 10 } },
+				match,
+				{ $sample: { size: Number(numQnsGen) } },
 			]).toArray();
 
 			if (!generated) res.status(200).send([]);
