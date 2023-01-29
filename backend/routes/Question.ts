@@ -212,7 +212,7 @@ questionRouter.get(
 		const topicsGenArr = JSON.parse(topicsGen);
 
 		const baseMatch = {
-			courseId: courseId,
+			courseId,
 			latest: true,
 			qnsType: qnsTypeEnum.mc,
 			$expr: { $gte: [
