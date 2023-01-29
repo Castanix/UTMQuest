@@ -48,7 +48,7 @@ const fetchGenerateQuiz = async (fetchParams: QuizFetchTypes) => {
 
 
 const GenerateQuestions = (fetchParams: QuizFetchTypes) => {
-    const result = useQuery(["generateQuiz", fetchParams], () => fetchGenerateQuiz(fetchParams));
+    const result = useQuery(["generateQuiz", fetchParams], () => fetchGenerateQuiz(fetchParams), { refetchOnWindowFocus: false });
 
     return {
         loading: result.isLoading,

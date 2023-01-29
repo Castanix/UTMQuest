@@ -211,17 +211,24 @@ questionRouter.get(
 
 		const topicsGenArr = JSON.parse(topicsGen);
 
+		const baseMatch = {
+			courseId: courseId,
+			latest: true,
+			qnsType: qnsTypeEnum.mc,
+			$expr: { $gte: [
+					{ $divide: [
+						{ $sum: ["$likes", 1] },
+						{ $sum: [{ $sum: ["$likes", "$dislikes"] }, 1] }
+					] },
+					0.5
+				] },
+		};
+
 		const match = {
 			$match: topicsGenArr.length === 0 ?
+				baseMatch :
 				{
-					courseId: courseId,
-					latest: true,
-					qnsType: qnsTypeEnum.mc,
-				} :
-				{
-					courseId: courseId,
-					latest: true,
-					qnsType: qnsTypeEnum.mc,
+					...baseMatch, 
 					topicName: { $in: topicsGenArr },
 				}
 		};
