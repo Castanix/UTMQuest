@@ -114,7 +114,7 @@ test('test searching for question', () => {
     // list contains two rows
     expect(document.getElementsByTagName('ul')[0].children.length).toBe(2)
 
-    fireEvent.change(searchBar, { target: { value: 'Arrays' } });
+    fireEvent.change(searchBar, { target: { value: 'arrays' } });
     expect(searchBar.value).toBe('arrays');
 
     // list now contains only one row
