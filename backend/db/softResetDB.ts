@@ -30,6 +30,6 @@ const softResetDB = async () => {
         console.log("Completed soft reset");
         await session.endSession();
     };
-}
+};
 
 softResetDB();
