@@ -1,7 +1,6 @@
 import { Request, Response, Router } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { utmQuestCollections , mongoDBConnection } from "../db/db.service";
-
+import { utmQuestCollections, mongoDBConnection } from "../db/db.service";
 
 const accountRouter = Router();
 
@@ -33,17 +32,16 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 					anonId,
 					utorName: `${firstName} ${lastName}`,
 					bookmarkCourses: [],
-				}, 
-				{ session },
+				},
+				{ session }
 			);
-	
+
 			await utmQuestCollections.Badges?.insertOne(
 				{
 					utorId,
 					userId,
 					qnsAdded: 0,
 					qnsEdited: 0,
-					threadResponses: 0,
 					currLoginStreak: 1,
 					longestLoginStreak: 1,
 					lastLogin: new Date().toISOString(),
@@ -58,7 +56,7 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 						threadReplies: null,
 					},
 				},
-				{ session },
+				{ session }
 			);
 
 			await session.commitTransaction();
@@ -81,7 +79,7 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 			userId: user.userId,
 			anonId: user.anonId,
 		});
-	};
+	}
 });
 
 accountRouter.get("/getAccount/:userId", (req: Request, res: Response) => {

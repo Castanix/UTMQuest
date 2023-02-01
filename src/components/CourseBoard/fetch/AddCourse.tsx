@@ -1,7 +1,7 @@
 import { message } from "antd";
-import CoursesType from "../../../../backend/types/Courses";
+import { CoursesFrontEndType } from "../../../../backend/types/Courses";
 
-const AddCourse = async (courseId: string, courseName: string, modalData: CoursesType[], rerender: Function, setModalData: Function) => {
+const AddCourse = async (courseId: string, courseName: string, modalData: CoursesFrontEndType[], rerender: Function, setModalData: Function) => {
     await fetch(`${process.env.REACT_APP_API_URI}/course/addCourse`,
         {
             method: 'PUT',

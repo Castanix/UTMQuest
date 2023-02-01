@@ -1,9 +1,16 @@
-interface CoursesType {
-    _id: string;
-    courseId: string;
-    courseName: string;
-    numTopics: number;
-    added: boolean;
+import { ObjectId } from "mongodb";
+
+interface BaseCoursesType {
+	courseId: string;
+	courseName: string;
+	numTopics: number;
+	added: boolean;
 }
 
-export default CoursesType;
+export interface CoursesFrontEndType extends BaseCoursesType {
+	_id: string;
+}
+
+export interface CoursesBackEndType extends BaseCoursesType {
+	_id: ObjectId;
+}

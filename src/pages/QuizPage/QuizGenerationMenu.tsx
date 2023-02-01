@@ -2,15 +2,15 @@ import { Button, Form, Modal, Popover, Radio, RadioChangeEvent, Select, SelectPr
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { FormOutlined } from "@ant-design/icons";
-import TopicsType from "../../../backend/types/Topics";
+import { TopicsFrontEndType } from "../../../backend/types/Topics";
 
 const { Item } = Form;
 
-const QuizGenerationMenu = ({ courseId, topics }: { courseId: string, topics: TopicsType[] }) => {
+const QuizGenerationMenu = ({ courseId, topics }: { courseId: string, topics: TopicsFrontEndType[] }) => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
     const [numQns, setNumQns] = useState<number>(10);
-    
+
 
     const topicOptions: SelectProps['options'] = useMemo(
         /* eslint-disable-next-line arrow-body-style */
@@ -22,20 +22,20 @@ const QuizGenerationMenu = ({ courseId, topics }: { courseId: string, topics: To
 
 
     const handleTopicChanges = (value: string[]) => setSelectedTopics(value);
-    
+
     const handleNumQnsChanges = (e: RadioChangeEvent) => setNumQns(e.target.value);
 
     return (
         <>
-            <Button 
-                type="primary" 
-                shape="round" 
+            <Button
+                type="primary"
+                shape="round"
                 icon={<FormOutlined />}
                 onClick={() => setIsModalOpen(true)}
             >Generate Quiz</Button>
 
-            <Modal 
-                title="Generate a quiz" 
+            <Modal
+                title="Generate a quiz"
                 open={isModalOpen}
                 onOk={() => setIsModalOpen(false)}
                 onCancel={() => setIsModalOpen(false)}

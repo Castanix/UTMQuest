@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow, no-unused-vars */
 
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 
 export enum qnsTypeEnum {
 	mc = "mc",
@@ -31,9 +31,7 @@ interface BaseQuestionType {
 	viewers: { [userId: string]: number };
 }
 
-export interface QuestionBackEndType
-	extends WithId<Document>,
-		BaseQuestionType {
+export interface QuestionBackEndType extends BaseQuestionType {
 	_id: ObjectId;
 	topicId: ObjectId;
 	utorId: string;

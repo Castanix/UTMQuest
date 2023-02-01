@@ -2,50 +2,62 @@ import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
 import { ClientSession, ObjectId } from "mongodb";
 import seedrandom from "seedrandom";
-import { utmQuestCollections , mongoDBConnection } from "../db/db.service";
+import { utmQuestCollections, mongoDBConnection } from "../db/db.service";
 import { qnsTypeEnum, QuestionBackEndType } from "../types/Questions";
 
 const questionRouter = Router();
 
 // badgeType: qnsEdited/qnsAdded
-const updateBadge = (utorId: string, update: Object, session: ClientSession) => 
-	utmQuestCollections.Badges?.findOneAndUpdate(
-		{ utorId }, 
-		update,
-		{ session }
-	).then((result) => {
-		if (!result) {
-			throw new Error("Error updating badge progression");
-		};
+const updateBadge = (utorId: string, update: Object, session: ClientSession) =>
+	utmQuestCollections.Badges?.findOneAndUpdate({ utorId }, update, {
+		session,
+	})
+		.then((result) => {
+			if (!result) {
+				throw new Error("Error updating badge progression");
+			}
 
-		return result;
-	}).catch((err: Error) => err);
+			return result;
+		})
+		.catch((err: Error) => err);
 
-const updateLatest = (question: QuestionBackEndType, latest: boolean, session: ClientSession) => 
+const updateLatest = (
+	question: QuestionBackEndType,
+	latest: boolean,
+	session: ClientSession
+) =>
 	utmQuestCollections.Questions?.updateOne(
-		question, 
+		question,
 		{ $set: { latest } },
-		{ session },
-	).then((result) => {
-		if (!result) {
-			throw new Error("Error updating latest flag");
-		};
+		{ session }
+	)
+		.then((result) => {
+			if (!result) {
+				throw new Error("Error updating latest flag");
+			}
 
-		return result;
-	}).catch((err: Error) => err);
+			return result;
+		})
+		.catch((err: Error) => err);
 
-const topicIncrementor = (topicId: ObjectID, increment: number, session: ClientSession) => 
+const topicIncrementor = (
+	topicId: ObjectID,
+	increment: number,
+	session: ClientSession
+) =>
 	utmQuestCollections.Topics?.findOneAndUpdate(
 		{ _id: topicId },
 		{ $inc: { numQns: increment } },
-		{ session },
-	).then((result) => {
-		if (!result) {
-			throw new Error("Error incrementing topic");
-		};
+		{ session }
+	)
+		.then((result) => {
+			if (!result) {
+				throw new Error("Error incrementing topic");
+			}
 
-		return result;
-	}).catch((err: Error) => err);
+			return result;
+		})
+		.catch((err: Error) => err);
 
 /* Remove fields from question. Utorid is removed by default as the client side uses userId.
    Additionally, if the question is anon, send back anonId instead of userId */
@@ -215,22 +227,27 @@ questionRouter.get(
 			courseId,
 			latest: true,
 			qnsType: qnsTypeEnum.mc,
-			$expr: { $gte: [
-					{ $divide: [
-						{ $sum: ["$likes", 1] },
-						{ $sum: [{ $sum: ["$likes", "$dislikes"] }, 1] }
-					] },
-					0.5
-				] },
+			$expr: {
+				$gte: [
+					{
+						$divide: [
+							{ $sum: ["$likes", 1] },
+							{ $sum: [{ $sum: ["$likes", "$dislikes"] }, 1] },
+						],
+					},
+					0.5,
+				],
+			},
 		};
 
 		const match = {
-			$match: topicsGenArr.length === 0 ?
-				baseMatch :
-				{
-					...baseMatch, 
-					topicName: { $in: topicsGenArr },
-				}
+			$match:
+				topicsGenArr.length === 0
+					? baseMatch
+					: {
+							...baseMatch,
+							topicName: { $in: topicsGenArr },
+					  },
 		};
 
 		try {
@@ -366,17 +383,14 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 			error: "Could not find badge progression for user.",
 		});
 		return;
-	};
+	}
 
 	const session = mongoDBConnection.startSession();
 
 	try {
 		session.startTransaction();
 
-		await utmQuestCollections.Questions?.insertOne(
-			question,
-			{ session }
-		);
+		await utmQuestCollections.Questions?.insertOne(question, { session });
 
 		// Increment counter
 		await topicIncrementor(topicId, 1, session);
@@ -387,7 +401,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 
 			if (badge.firstPostToday === "") {
 				await updateBadge(
-					utorId, 
+					utorId,
 					{
 						$set: {
 							firstPostToday: now.toISOString(),
@@ -395,7 +409,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 						},
 						$inc: { qnsAdded: 1 },
 					},
-					session,
+					session
 				);
 
 				await session.commitTransaction();
@@ -432,8 +446,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 					res.status(201).send({
 						qnsLink,
 						qnsStatus: badge.qnsAdded + 1,
-						consecutivePosting:
-							badge.consecutivePosting + 1,
+						consecutivePosting: badge.consecutivePosting + 1,
 						unlockedBadges: badge.unlockedBadges,
 						edit: false,
 					});
@@ -447,7 +460,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 							},
 							$inc: { qnsAdded: 1 },
 						},
-						 session,
+						session
 					);
 
 					await session.commitTransaction();
@@ -460,24 +473,27 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 						edit: false,
 					});
 				} else {
-					await updateBadge(utorId, { $inc: { qnsAdded: 1 } }, session);
+					await updateBadge(
+						utorId,
+						{ $inc: { qnsAdded: 1 } },
+						session
+					);
 
 					await session.commitTransaction();
 
 					res.status(201).send({
 						qnsLink,
 						qnsStatus: badge.qnsAdded + 1,
-						consecutivePosting:
-							badge.consecutivePosting,
+						consecutivePosting: badge.consecutivePosting,
 						unlockedBadges: badge.unlockedBadges,
 						edit: false,
 					});
-				};
-			};
+				}
+			}
 		} else {
 			await session.commitTransaction();
 			res.status(201).send({ qnsLink });
-		};
+		}
 	} catch (err) {
 		await session.abortTransaction();
 
@@ -498,7 +514,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 	if (!currVersion) {
 		res.status(404).send({ error: "No such latest question found." });
 		return;
-	};
+	}
 
 	const utorId = req.headers.utorid as string;
 
@@ -511,7 +527,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 			error: "Could not find badge progression for user.",
 		});
 		return;
-	};
+	}
 
 	const email: string = req.headers.http_mail as string;
 	const name = email.split("@")[0].split(".");
@@ -552,10 +568,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		session.startTransaction();
 
 		// Add edited questions doc into db
-		await utmQuestCollections.Questions?.insertOne(
-			question,
-			{ session }
-		);
+		await utmQuestCollections.Questions?.insertOne(question, { session });
 
 		await updateLatest(currVersion as QuestionBackEndType, false, session);
 
@@ -566,15 +579,24 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 					deleted: true,
 				},
 				{ $set: { deleted: false } },
-				{ session },
-			).then(async () => {
-				await topicIncrementor(new ObjectID(oldTopicId), -1, session);
-				await topicIncrementor(new ObjectID(newTopicId), 1, session);
-			}).catch(err => {
-				throw new Error(err);
-			});
-		};
-		
+				{ session }
+			)
+				.then(async () => {
+					await topicIncrementor(
+						new ObjectID(oldTopicId),
+						-1,
+						session
+					);
+					await topicIncrementor(
+						new ObjectID(newTopicId),
+						1,
+						session
+					);
+				})
+				.catch((err) => {
+					throw new Error(err);
+				});
+		}
 
 		// Attempts to update badge progression for specified utorid, reverts all changes if failed
 		if (!req.body.anon) {
@@ -597,93 +619,114 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		res.status(500).send({ err });
 	} finally {
 		await session.endSession();
-	};
+	}
 });
 
+questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
+	const { restorableQnsId, restorableDate, latestTopicId } = req.body;
 
-questionRouter.put(
-	"/restoreQuestion", async (req: Request, res: Response) => {
-		const { restorableQnsId, restorableDate, latestTopicId } = req.body;
+	utmQuestCollections.Questions?.findOne({
+		_id: new ObjectID(restorableQnsId),
+	}).then(async (restoredVersion) => {
+		if (!restoredVersion) {
+			res.status(404).send({ error: "No restored version found" });
+			return;
+		}
 
-		utmQuestCollections.Questions?.findOne({
-			_id: new ObjectID(restorableQnsId)
-		}).then(async restoredVersion => {
-			if(!restoredVersion) {
-				res.status(404).send({ error: "No restored version found" });
-				return;
-			};
+		const { qnsLink, topicId } = restoredVersion;
 
-			const { qnsLink, topicId } = restoredVersion;
+		const session = mongoDBConnection.startSession();
 
-			const session = mongoDBConnection.startSession();
+		try {
+			session.startTransaction();
 
-			try {
-				session.startTransaction();
-
-				if (latestTopicId !== topicId) {
-					await utmQuestCollections.Topics?.findOneAndUpdate(
-						{
-							_id: new ObjectID(topicId),
-							deleted: true,
-						},
-						{ $set: { deleted: false } },
-						{ session },
-					).then(async () => {
-						await topicIncrementor(new ObjectID(latestTopicId), -1, session);
-						await topicIncrementor(new ObjectID(topicId), 1, session);
-					}).catch(err => {
+			if (latestTopicId !== topicId) {
+				await utmQuestCollections.Topics?.findOneAndUpdate(
+					{
+						_id: new ObjectID(topicId),
+						deleted: true,
+					},
+					{ $set: { deleted: false } },
+					{ session }
+				)
+					.then(async () => {
+						await topicIncrementor(
+							new ObjectID(latestTopicId),
+							-1,
+							session
+						);
+						await topicIncrementor(
+							new ObjectID(topicId),
+							1,
+							session
+						);
+					})
+					.catch((err) => {
 						throw new Error(err);
 					});
-				};
+			}
 
-				await updateLatest(restoredVersion as QuestionBackEndType, true, session);
+			await updateLatest(
+				restoredVersion as QuestionBackEndType,
+				true,
+				session
+			);
 
-				await utmQuestCollections.Questions?.deleteMany(
-					{
-						$expr: { $gt: [{ $toDate: "$date" }, new Date(restoredVersion.date)] },
-						qnsLink,
+			await utmQuestCollections.Questions?.deleteMany(
+				{
+					$expr: {
+						$gt: [
+							{ $toDate: "$date" },
+							new Date(restoredVersion.date),
+						],
 					},
-					{ session },
-				);
+					qnsLink,
+				},
+				{ session }
+			);
 
-				utmQuestCollections.Discussions?.find(
-					{
-						qnsLink,
-						op: true,
-						$expr: { $gt: [{ $toDate: "$opDate" }, new Date(restorableDate)] },
-					}
-				).toArray().then(documents => {
-					documents.forEach(async doc => {
+			utmQuestCollections.Discussions?.find({
+				qnsLink,
+				op: true,
+				$expr: {
+					$gt: [{ $toDate: "$opDate" }, new Date(restorableDate)],
+				},
+			})
+				.toArray()
+				.then((documents) => {
+					documents.forEach(async (doc) => {
 						await utmQuestCollections.Discussions?.deleteMany(
 							{
-								_id: { $in: doc.thread.map((id: string) => new ObjectID(id)) }
+								_id: {
+									$in: doc.thread.map(
+										(id: string) => new ObjectID(id)
+									),
+								},
 							},
-							{ session },
+							{ session }
 						);
 
-						await utmQuestCollections.Discussions?.deleteOne(
-							doc,
-							{ session },
-						);
+						await utmQuestCollections.Discussions?.deleteOne(doc, {
+							session,
+						});
 					});
-				}).catch(err => {
+				})
+				.catch((err) => {
 					throw new Error(err);
 				});
 
-				await session.commitTransaction();
+			await session.commitTransaction();
 
-				res.status(200).send({qnsLink});
-			} catch (err) {
-				await session.abortTransaction();
+			res.status(200).send({ qnsLink });
+		} catch (err) {
+			await session.abortTransaction();
 
-				res.status(500).send(err);
-			} finally {
-				await session.endSession();
-			};
-		});
-	}
-);
-
+			res.status(500).send(err);
+		} finally {
+			await session.endSession();
+		}
+	});
+});
 
 questionRouter.get(
 	"/similar/:topicId/:originalQnsId/:term",

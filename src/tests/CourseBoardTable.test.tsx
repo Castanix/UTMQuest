@@ -1,5 +1,5 @@
 import React from 'react';
-import CoursesType from '../../backend/types/Courses';
+import { CoursesFrontEndType } from '../../backend/types/Courses';
 import { fireEvent, getByPlaceholderText, prettyDOM, render, screen, waitFor } from '@testing-library/react';
 import CourseBoardTable from '../components/CourseBoard/CourseBoardTable';
 import { BrowserRouter } from 'react-router-dom';
@@ -38,7 +38,7 @@ const server = setupServer(
 );
 
 
-const courses: CoursesType[] = [
+const courses: CoursesFrontEndType[] = [
     {
         _id: "1234",
         courseId: "CSC108",

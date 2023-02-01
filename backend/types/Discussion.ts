@@ -1,4 +1,4 @@
-import type { WithId, Document, ObjectId } from "mongodb";
+import type { ObjectId } from "mongodb";
 
 interface BaseDiscussionType {
 	qnsLink: string;
@@ -15,9 +15,7 @@ interface BaseDiscussionType {
 	edited: boolean;
 }
 
-export interface DiscussionBackEndType
-	extends WithId<Document>,
-		BaseDiscussionType {
+export interface DiscussionBackEndType extends BaseDiscussionType {
 	_id: ObjectId;
 	utorId: string;
 }

@@ -3,7 +3,7 @@ import { QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { Form, Input, Popconfirm, Table, Typography, Space, Tooltip, Alert, Button } from 'antd';
 import React from 'react';
-import TopicsType from '../../../backend/types/Topics';
+import { TopicsFrontEndType } from '../../../backend/types/Topics';
 import AddTopic from './AddTopic';
 import TopicState from './TopicState';
 
@@ -43,7 +43,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
     </td>
 );
 
-const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: string }) => {
+const TopicsTable = ({ topics, courseId }: { topics: TopicsFrontEndType[], courseId: string }) => {
     const {
         form,
         data,
@@ -64,17 +64,17 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
             title: 'Topic',
             dataIndex: 'topicName',
             editable: true,
-            sorter: (a: TopicsType, b: TopicsType) => a.topicName.localeCompare(b.topicName),
+            sorter: (a: TopicsFrontEndType, b: TopicsFrontEndType) => a.topicName.localeCompare(b.topicName),
             ellipsis: true,
         },
         {
             title: 'Questions',
             dataIndex: 'numQns',
-            sorter: (a: TopicsType, b: TopicsType) => a.numQns - b.numQns,
+            sorter: (a: TopicsFrontEndType, b: TopicsFrontEndType) => a.numQns - b.numQns,
         },
         {
             title: 'Manage',
-            render: (_: any, record: TopicsType) => {
+            render: (_: any, record: TopicsFrontEndType) => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
@@ -116,7 +116,7 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsType[], courseId: str
         }
         return {
             ...col,
-            onCell: (record: TopicsType) => ({
+            onCell: (record: TopicsFrontEndType) => ({
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),

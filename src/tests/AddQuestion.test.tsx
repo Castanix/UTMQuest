@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom';
-import TopicsType from '../../backend/types/Topics';
+import { TopicsFrontEndType } from '../../backend/types/Topics';
 import AQStepOne from '../pages/AddQuestionPage/AQStepOne';
 import AQStepTwo from '../pages/AddQuestionPage/AQStepTwo';
 import { ThemeContext } from '../components/Topbar/Topbar';
@@ -25,7 +25,7 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 
-const req: TopicsType = {
+const req: TopicsFrontEndType = {
     _id: "abcd1234",
     topicName: "ABCD",
     courseId: "ABC123",

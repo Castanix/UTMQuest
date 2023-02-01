@@ -1,5 +1,5 @@
 import React from 'react';
-import TopicsType from '../../backend/types/Topics';
+import { TopicsFrontEndType } from '../../backend/types/Topics';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { QuestionsList } from '../pages/QuestionsPage/QuestionsList';
 import { qnsTypeEnum, QuestionFrontEndType } from '../../backend/types/Questions';
@@ -18,7 +18,7 @@ Object.defineProperty(window, 'matchMedia', {
     }
 })
 
-const topics: TopicsType[] = [
+const topics: TopicsFrontEndType[] = [
     {
         _id: '1234',
         topicName: 'Strings',

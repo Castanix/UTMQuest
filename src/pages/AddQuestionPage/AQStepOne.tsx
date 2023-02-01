@@ -1,11 +1,11 @@
 import { Alert, Button, Form, message, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import TopicsType from "../../../backend/types/Topics";
+import { TopicsFrontEndType } from "../../../backend/types/Topics";
 import { onMobile } from "../../components/EditHistory/EditHistory";
 
 const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
-    { courseId: string, topics: TopicsType[], setCurrStep: Function, setTopicSelected: Function }) => {
+    { courseId: string, topics: TopicsFrontEndType[], setCurrStep: Function, setTopicSelected: Function }) => {
 
     const fullTopicList = topics;
     const [selected, setSelected] = useState<string>();
@@ -17,7 +17,7 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
     useEffect(() => {
         if (editableQns) {
             const { topicId } = editableQns;
-            
+
             setTopicSelected([topicId, editableQns.topicName]);
             setSelected(topicId);
         } else if (defaultTopicId && defaultTopicName) {
@@ -34,16 +34,16 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
         let doesTopicIdExist = false;
 
         fullTopicList.forEach(item => {
-            if(editableQns && !doesTopicIdExist) {
-                if(item._id === editableQns.topicId) doesTopicIdExist = true;
+            if (editableQns && !doesTopicIdExist) {
+                if (item._id === editableQns.topicId) doesTopicIdExist = true;
             };
 
-            topicArr.push(<Option key={item._id} value={item._id}>{item.topicName}</Option>);
+            topicArr.push(<Option key={item._id.toString()} value={item._id}>{item.topicName}</Option>);
         });
 
-        if(editableQns && !doesTopicIdExist) {
+        if (editableQns && !doesTopicIdExist) {
             topicArr.push(<Option key={editableQns.topicId} value={editableQns._id}>{editableQns.topicName}</Option>);
-            
+
             const { topicId: _id, topicName } = editableQns;
             fullTopicList.push(
                 {
@@ -108,7 +108,7 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
                         disabled={!selected}
                         onClick={() => {
                             if (selected) {
-                                const name = fullTopicList.find(item => item._id === selected)?.topicName;
+                                const name = fullTopicList.find(item => item._id.toString() === selected)?.topicName;
 
                                 setTopicSelected([selected, name]);
                                 setCurrStep(1);

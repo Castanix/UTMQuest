@@ -1,24 +1,24 @@
 import { Form, message } from 'antd';
 import { useQueryClient } from "react-query";
 import React, { useState } from 'react';
-import TopicsType from '../../../backend/types/Topics';
+import { TopicsFrontEndType } from '../../../backend/types/Topics';
 
 
-const TopicState = (topics: TopicsType[], courseId: string) => {
+const TopicState = (topics: TopicsFrontEndType[], courseId: string) => {
     const [form] = Form.useForm();
-    const [originalData, setOriginalData] = useState<TopicsType[]>(topics);
-    const [data, setData] = useState<TopicsType[]>(topics);
+    const [originalData, setOriginalData] = useState<TopicsFrontEndType[]>(topics);
+    const [data, setData] = useState<TopicsFrontEndType[]>(topics);
     const [editingKey, setEditingKey] = useState<string>('');
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [lastTopicAdded, setLastTopicAdded] = useState<TopicsType | null>(null);
+    const [lastTopicAdded, setLastTopicAdded] = useState<TopicsFrontEndType | null>(null);
 
     const queryClient = useQueryClient();
 
-    const isEditing = (record: TopicsType) => record._id === editingKey;
+    const isEditing = (record: TopicsFrontEndType) => record._id === editingKey;
 
-    const isDisabled = (record: TopicsType) => record.numQns > 0;
+    const isDisabled = (record: TopicsFrontEndType) => record.numQns > 0;
 
-    const addTopicCallback = (topic: TopicsType) => {
+    const addTopicCallback = (topic: TopicsFrontEndType) => {
         queryClient.invalidateQueries(["getTopics", courseId]);
         setSearchTerm('');
         setOriginalData([...originalData, topic]);
@@ -31,7 +31,7 @@ const TopicState = (topics: TopicsType[], courseId: string) => {
         setData(originalData.filter(item => item.topicName.toLowerCase().includes(value.toLowerCase())));
     };
 
-    const edit = (record: Partial<TopicsType> & { _id: React.Key }) => {
+    const edit = (record: Partial<TopicsFrontEndType> & { _id: React.Key }) => {
         form.setFieldsValue({ topicName: '', ...record });
         setEditingKey(record._id ?? '');
     };
@@ -69,7 +69,7 @@ const TopicState = (topics: TopicsType[], courseId: string) => {
 
     const save = async (key: React.Key) => {
         try {
-            const row = (await form.validateFields()) as TopicsType;
+            const row = (await form.validateFields()) as TopicsFrontEndType;
             const newTopicName = row.topicName.trim();
 
             if (!newTopicName) {

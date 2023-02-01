@@ -3,7 +3,7 @@ import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography }
 import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionFrontEndType } from '../../../backend/types/Questions';
-import TopicsType from '../../../backend/types/Topics';
+import { TopicsFrontEndType } from '../../../backend/types/Topics';
 import DisplayBadges from '../../components/DisplayBadges/DisplayBadges';
 import { ThemeContext } from '../../components/Topbar/Topbar';
 import GetRelativeTime from '../../RelativeTime';
@@ -57,7 +57,7 @@ const GetRating = (rating: Object) => {
 };
 
 const QuestionsList = ({ questions, topics, courseId }:
-    { questions: QuestionFrontEndType[], topics: TopicsType[], courseId: string }) => {
+    { questions: QuestionFrontEndType[], topics: TopicsFrontEndType[], courseId: string }) => {
 
     const {
         data,

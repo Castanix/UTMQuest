@@ -1,0 +1,30 @@
+config:
+    target: "http://localhost:5001/api"
+    phases:
+        - duration: 60
+          arrivalRate: 50
+          name: Warm up
+        # - duration: 120
+        #   arrivalRate: 5
+        #   rampTo: 50
+        #   name: Ramp up load
+        # - duration: 600
+        #   arrivalRate: 50
+        #   name: Sustained load
+    defaults:
+        headers:
+            utorid: "dummy22"
+
+scenarios:
+    - name: "Go to a question"
+      flow:
+          # - get:
+          #     url: "/account/getAccount/9199aee1-ba4b-4987-93de-8f01868df115"
+          # - think: 1
+          # - get:
+          #     url: "/topic/getTopics/CSC108"
+          # - get:
+          #     url: "/question/latestQuestions/CSC108"
+          # - think: 5
+          - get:
+                url: "/question/oneQuestion/63dab90f20593742769cac43"

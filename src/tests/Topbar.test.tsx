@@ -1,7 +1,5 @@
 import React from 'react';
-import TopicsType from '../../backend/types/Topics';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import TopicsTable from '../pages/ManageTopics/TopicsTable';
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -55,9 +53,9 @@ test("dropdown", async () => {
     await waitFor(() => {
         expect(screen.getByText(/Dummy/i)).toBeInTheDocument();
         const menu = screen.getByRole("menuitem");
-    
+
         fireEvent.mouseOver(menu);
-    
+
         waitFor(() => {
             expect(screen.getByText(/Profile/i)).toBeInTheDocument();
             expect(screen.getByText(/Dark Mode/i)).toBeInTheDocument();

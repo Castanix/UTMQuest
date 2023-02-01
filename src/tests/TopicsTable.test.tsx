@@ -1,5 +1,5 @@
 import React from 'react';
-import TopicsType from '../../backend/types/Topics';
+import { TopicsFrontEndType } from '../../backend/types/Topics';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import TopicsTable from '../pages/ManageTopics/TopicsTable';
 import { rest } from 'msw'
@@ -42,7 +42,7 @@ const server = setupServer(
     }),
 )
 
-const topics: TopicsType[] = [
+const topics: TopicsFrontEndType[] = [
     {
         _id: '1234',
         topicName: 'Strings',
@@ -63,11 +63,11 @@ let document: HTMLElement;
 
 beforeEach(() => {
     const { container } = render(
-            <QueryClientProvider client={queryClient}>
-                <TopicsTable courseId='test' topics={topics} />
-            </QueryClientProvider>,
+        <QueryClientProvider client={queryClient}>
+            <TopicsTable courseId='test' topics={topics} />
+        </QueryClientProvider>,
         { wrapper: BrowserRouter })
-            
+
     document = container;
 });
 

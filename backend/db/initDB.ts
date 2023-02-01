@@ -14,6 +14,22 @@ async function initDB() {
 
 	const db: mongoDB.Db = client.db(configValues.DB_NAME);
 
+	// drop collections
+	try {
+		await db.dropCollection("Accounts");
+		await db.dropCollection("Badges");
+		await db.dropCollection("Courses");
+		await db.dropCollection("Topics");
+		await db.dropCollection("Questions");
+		await db.dropCollection("Discussions");
+		// await db.collection("Badges").drop();
+		// await db.collection("Courses").drop();
+		// await db.collection("Topics").drop();
+		// await db.collection("Questions").drop();
+		// await db.collection("Discussions").drop();
+		// eslint-disable-next-line no-empty
+	} catch (error) {}
+
 	// Creates the Accounts collection in Mongo Atlas with validation
 	await db
 		.createCollection("Accounts", {
@@ -77,6 +93,9 @@ async function initDB() {
 				"Error creating collections or Accounts collection already exists"
 			);
 		});
+
+	await db.collection("Accounts").createIndex({ utorId: 1 });
+	await db.collection("Accounts").createIndex({ userId: 1 });
 
 	// Creates the Courses collection in Mongo Atlas with validation
 	await db
@@ -169,7 +188,7 @@ async function initDB() {
 							bsonType: "bool",
 							description:
 								"'deleted' must be a bool and is required",
-						}
+						},
 					},
 				},
 			},
@@ -196,6 +215,8 @@ async function initDB() {
 		.catch(() => {
 			console.log("Error creating index for Topics");
 		});
+
+	await db.collection("Topics").createIndex({ courseId: 1 });
 
 	// Creates the Questions collection in Mongo Atlas with validation
 	await db
@@ -227,7 +248,7 @@ async function initDB() {
 						"likes",
 						"dislikes",
 						"views",
-						"viewers"
+						"viewers",
 					],
 					additionalProperties: false,
 					properties: {
@@ -379,6 +400,9 @@ async function initDB() {
 			);
 		});
 
+	await db.collection("Questions").createIndex({ qnsLink: 1, latest: 1 });
+	await db.collection("Questions").createIndex({ courseId: 1, latest: 1 });
+
 	// Creates the Discussions collection in Mongo Atlas with validation
 	await db
 		.createCollection("Discussions", {
@@ -491,6 +515,8 @@ async function initDB() {
 			);
 		});
 
+	await db.collection("Discussions").createIndex({ qnsLink: 1, op: 1 });
+
 	// Creates the Badges collection in Mongo Atlas with validation
 	await db
 		.createCollection("Badges", {
@@ -503,7 +529,6 @@ async function initDB() {
 						"userId",
 						"qnsAdded",
 						"qnsEdited",
-						"threadResponses",
 						"currLoginStreak",
 						"longestLoginStreak",
 						"lastLogin",
@@ -537,11 +562,6 @@ async function initDB() {
 							bsonType: "int",
 							description:
 								"'qnsEdited' must be an int and is required",
-						},
-						threadResponses: {
-							bsonType: "int",
-							description:
-								"'threadResponses' must be an int and is required",
 						},
 						currLoginStreak: {
 							bsonType: "int",
@@ -597,9 +617,12 @@ async function initDB() {
 			);
 		});
 
+	await db.collection("Badges").createIndex({ utorId: 1 });
+	await db.collection("Badges").createIndex({ userId: 1 });
+
 	client.close();
 }
 
 initDB();
 
-export {};
+export default initDB;

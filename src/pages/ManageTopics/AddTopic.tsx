@@ -1,10 +1,10 @@
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Button, Form, Input, message, Modal } from 'antd';
 import React, { useState } from 'react';
-import TopicsType from '../../../backend/types/Topics';
+import { TopicsFrontEndType } from '../../../backend/types/Topics';
 
 type onCreateCallback = (topicName: string) => void; // eslint-disable-line no-unused-vars
-type addTopicCallbackType = (topic: TopicsType) => void; // eslint-disable-line no-unused-vars
+type addTopicCallbackType = (topic: TopicsFrontEndType) => void; // eslint-disable-line no-unused-vars
 
 interface CollectionCreateFormProps {
     open: boolean;
@@ -79,8 +79,8 @@ const AddTopic = ({ courseId, addTopicCallback }: { courseId: string, addTopicCa
             body: JSON.stringify({ courseId, topicName })
         };
 
-        const topic: TopicsType = {
-            _id: '',
+        const topic: TopicsFrontEndType = {
+            _id: "",
             topicName,
             courseId,
             numQns: 0,

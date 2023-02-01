@@ -1,14 +1,14 @@
 import { Button, Form, Modal, Select } from 'antd';
 import React, { useState } from 'react';
 import AddCourse from './fetch/AddCourse';
-import CoursesType from '../../../backend/types/Courses';
+import { CoursesFrontEndType } from '../../../backend/types/Courses';
 import "./CourseBoard.css";
 
 const { Option, OptGroup } = Select;
 
 const AddCourseModal = (props: any) => {
     const { modalState, setModalState, rerender, modalData, setModalData }:
-        { modalState: boolean, setModalState: Function, rerender: Function, modalData: CoursesType[], setModalData: Function } = props;
+        { modalState: boolean, setModalState: Function, rerender: Function, modalData: CoursesFrontEndType[], setModalData: Function } = props;
 
     const [searchInput, setSearchInput] = useState<string>();
     const [selected, setSelected] = useState<string>();
@@ -18,7 +18,7 @@ const AddCourseModal = (props: any) => {
         const groupArr: React.ReactNode[] = [];
         let oldCourseId: string = "";
 
-        const courseSort = (data: CoursesType[]) => {
+        const courseSort = (data: CoursesFrontEndType[]) => {
             const newData = data.sort((a, b) => {
                 const fa = a.courseId.toLowerCase();
                 const fb = b.courseId.toLowerCase();
@@ -35,7 +35,7 @@ const AddCourseModal = (props: any) => {
             return newData;
         };
 
-        courseSort(modalData).forEach((item: CoursesType) => {
+        courseSort(modalData).forEach((item: CoursesFrontEndType) => {
             const courseId = item.courseId.slice(0, 3);
 
             if (oldCourseId === courseId) {
