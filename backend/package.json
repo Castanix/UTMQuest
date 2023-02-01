@@ -14,7 +14,8 @@
     "prerender": "ts-node prerender.ts",
     "dev": "nodemon ./server.ts",
     "fetchCourses": "ts-node ./fetchUTMCourses.ts",
-    "startInProd": "NODE_ENV=production npx ts-node ./server.ts"
+    "startInProd": "NODE_ENV=production npx ts-node ./server.ts",
+    "resetDB": "ts-node ./db/softResetDB.ts"
   },
   "keywords": [],
   "author": "",

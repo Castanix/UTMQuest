@@ -38,6 +38,7 @@
     "eject": "react-scripts eject",
     "dev": "concurrently \"npm run startCrossEnv\" \"cd backend && npm run start\"",
     "initDB": "cd backend && npm run initDB",
+    "resetDB": "cd backend && npm run resetDB",
     "fetchCourses": "cd backend && npm run fetchCourses",
     "lint": "eslint . --ext .tsx,.ts .",
     "installDeps": "npm i && cd backend && npm i",
