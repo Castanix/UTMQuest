@@ -27,7 +27,7 @@ export const mockQuestions = () => {
 			description: `description${nameCounter}`,
 			explanation: `explanation${nameCounter}`,
 			choices: ["A", "B", "C"],
-			answers: ["A", "B", "C"][Math.floor(Math.random() * (3 - 1) + 1)],
+			answers: [["A", "B", "C"][Math.floor(Math.random() * (3 - 1) + 1)]],
 			utorId: randAccount.utorId,
 			utorName: randAccount.utorName,
 			userId: randAccount.userId,
