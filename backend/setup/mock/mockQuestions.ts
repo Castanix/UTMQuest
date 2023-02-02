@@ -16,6 +16,8 @@ export const mockQuestions = () => {
 			mockedAccounts[Math.floor(Math.random() * (3 - 1) + 1)];
 		const likes = Math.floor(Math.random());
 
+		const answer = ["A", "B", "C"][Math.floor(Math.random() * (3 - 1) + 1)]
+
 		mockedQuestions.push({
 			_id: someId,
 			qnsLink: someId.toString(),
@@ -26,8 +28,8 @@ export const mockQuestions = () => {
 			qnsType,
 			description: `description${nameCounter}`,
 			explanation: `explanation${nameCounter}`,
-			choices: ["A", "B", "C"],
-			answers: [["A", "B", "C"][Math.floor(Math.random() * (3 - 1) + 1)]],
+			choices: qnsType === qnsTypeEnum.short ? [] : ["A", "B", "C"],
+			answers: qnsType === qnsTypeEnum.short ? answer : [answer],
 			utorId: randAccount.utorId,
 			utorName: randAccount.utorName,
 			userId: randAccount.userId,

@@ -64,7 +64,7 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 			res.status(201).send({
 				username: firstName.concat(" ").concat(lastName),
 				userId,
-				anonId: [],
+				anonId,
 			});
 		} catch (error) {
 			await session.abortTransaction();
