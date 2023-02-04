@@ -1,5 +1,6 @@
 import * as mongoDB from "mongodb";
 import configValues from "../config";
+import { resolve } from "path";
 
 // Use 'npm run init' on the terminal backend to setup the database and collections
 // with validation in mongoDB if collections do not exist yet.
@@ -7,7 +8,7 @@ async function initDB() {
 	const env = process.env.NODE_ENV || "dev";
 
 	const client: mongoDB.MongoClient = new mongoDB.MongoClient(
-		env === "dev" ? configValues.MONGO_TEST2_URI : configValues.MONGO_URI
+		env === "dev" ? configValues.MONGO_LOCAL : configValues.MONGO_URI
 	);
 
 	await client.connect();
@@ -16,22 +17,19 @@ async function initDB() {
 
 	// drop collections
 	try {
-		await db.dropCollection("Accounts");
-		await db.dropCollection("Badges");
-		await db.dropCollection("Courses");
-		await db.dropCollection("Topics");
-		await db.dropCollection("Questions");
-		await db.dropCollection("Discussions");
-		// await db.collection("Badges").drop();
-		// await db.collection("Courses").drop();
-		// await db.collection("Topics").drop();
-		// await db.collection("Questions").drop();
-		// await db.collection("Discussions").drop();
+		await Promise.all([
+			db.dropCollection("Accounts"),
+			db.dropCollection("Badges"),
+			db.dropCollection("Courses"),
+			db.dropCollection("Topics"),
+			db.dropCollection("Questions"),
+			db.dropCollection("Discussions")
+		]);
 		// eslint-disable-next-line no-empty
 	} catch (error) {}
 
 	// Creates the Accounts collection in Mongo Atlas with validation
-	await db
+	const accounts = db
 		.createCollection("Accounts", {
 			validator: {
 				$jsonSchema: {
@@ -85,8 +83,17 @@ async function initDB() {
 				},
 			},
 		})
-		.then(() => {
+		.then(async () => {
 			console.log("Successfully created Accounts collection");
+
+			await Promise.all([
+				db.collection("Accounts").createIndex({ utorId: 1 }),
+				db.collection("Accounts").createIndex({ userId: 1 })
+			]).then(() => {
+				console.log("Added indexes for Accounts");
+			}).catch(() => {
+				console.log("Error creating indexes for Acccounts");
+			});
 		})
 		.catch(() => {
 			console.log(
@@ -94,11 +101,11 @@ async function initDB() {
 			);
 		});
 
-	await db.collection("Accounts").createIndex({ utorId: 1 });
-	await db.collection("Accounts").createIndex({ userId: 1 });
+	// await db.collection("Accounts").createIndex({ utorId: 1 });
+	// await db.collection("Accounts").createIndex({ userId: 1 });
 
 	// Creates the Courses collection in Mongo Atlas with validation
-	await db
+	const courses = db
 		.createCollection("Courses", {
 			validator: {
 				$jsonSchema: {
@@ -135,8 +142,18 @@ async function initDB() {
 				},
 			},
 		})
-		.then(() => {
+		.then(async () => {
 			console.log("Successfully created Courses collection");
+
+			// add index into topics; this index ensures combination of topicName and course is unique as well as ignores case
+			await db.collection("Courses")
+				.createIndex({ courseId: 1 }, { unique: true })
+				.then(() => {
+					console.log("Added indexes for Courses");
+				})
+				.catch(() => {
+					console.log("Error creating index for Courses");
+				});
 		})
 		.catch(() => {
 			console.log(
@@ -144,19 +161,19 @@ async function initDB() {
 			);
 		});
 
-	// add index into topics; this index ensures combination of topicName and course is unique as well as ignores case
-	await db
-		.collection("Courses")
-		.createIndex({ courseId: 1 }, { unique: true })
-		.then(() => {
-			console.log("Successfully created index for Topics");
-		})
-		.catch(() => {
-			console.log("Error creating index for Topics");
-		});
+	// // add index into topics; this index ensures combination of topicName and course is unique as well as ignores case
+	// await db
+	// 	.collection("Courses")
+	// 	.createIndex({ courseId: 1 }, { unique: true })
+	// 	.then(() => {
+	// 		console.log("Successfully created index for Topics");
+	// 	})
+	// 	.catch(() => {
+	// 		console.log("Error creating index for Topics");
+	// 	});
 
 	// Creates the Topics collection in Mongo Atlas with validation
-	await db
+	const topics =  db
 		.createCollection("Topics", {
 			validator: {
 				$jsonSchema: {
@@ -193,8 +210,35 @@ async function initDB() {
 				},
 			},
 		})
-		.then(() => {
+		.then(async () => {
 			console.log("Successfully created Topics collection");
+
+			// add index into topics; this index ensures combination of topicName and course is unique as well as ignores case
+			// db.collection("Topics")
+			// .createIndex(
+			// 	{ topicName: 1, courseId: 1 },
+			// 	{ collation: { locale: "en", strength: 2 }, unique: true }
+			// )
+			// .then(() => {
+			// 	console.log("Successfully created index for Topics");
+			// })
+			// .catch(() => {
+			// 	console.log("Error creating index for Topics");
+			// });
+
+			// db.collection("Topics").createIndex({ courseId: 1 });
+
+			await Promise.all([
+				db.collection("Topics").createIndex(
+					{ topicName: 1, courseId: 1 },
+					{ collation: { locale: "en", strength: 2 }, unique: true }
+				),
+				db.collection("Topics").createIndex({ courseId: 1 })
+			]).then(() => {
+				console.log("Added indexes for Topics");
+			}).catch(() => {
+				console.log("Error creating indexes for Topics");
+			});
 		})
 		.catch(() => {
 			console.log(
@@ -202,24 +246,24 @@ async function initDB() {
 			);
 		});
 
-	// add index into topics; this index ensures combination of topicName and course is unique as well as ignores case
-	await db
-		.collection("Topics")
-		.createIndex(
-			{ topicName: 1, courseId: 1 },
-			{ collation: { locale: "en", strength: 2 }, unique: true }
-		)
-		.then(() => {
-			console.log("Successfully created index for Topics");
-		})
-		.catch(() => {
-			console.log("Error creating index for Topics");
-		});
+	// // add index into topics; this index ensures combination of topicName and course is unique as well as ignores case
+	// await db
+	// 	.collection("Topics")
+	// 	.createIndex(
+	// 		{ topicName: 1, courseId: 1 },
+	// 		{ collation: { locale: "en", strength: 2 }, unique: true }
+	// 	)
+	// 	.then(() => {
+	// 		console.log("Successfully created index for Topics");
+	// 	})
+	// 	.catch(() => {
+	// 		console.log("Error creating index for Topics");
+	// 	});
 
-	await db.collection("Topics").createIndex({ courseId: 1 });
+	// await db.collection("Topics").createIndex({ courseId: 1 });
 
 	// Creates the Questions collection in Mongo Atlas with validation
-	await db
+	const questions = db
 		.createCollection("Questions", {
 			validator: {
 				$jsonSchema: {
@@ -391,8 +435,17 @@ async function initDB() {
 				},
 			},
 		})
-		.then(() => {
+		.then(async () => {
 			console.log("Successfully created Questions collection");
+
+			await Promise.all([
+				db.collection("Questions").createIndex({ qnsLink: 1, latest: 1 }),
+				db.collection("Questions").createIndex({ courseId: 1, latest: 1 })
+			]).then(() => {
+				console.log("Added indexes for Questions");
+			}).catch(() => {
+				console.log("Error creating indexes for Questions");
+			});
 		})
 		.catch(() => {
 			console.log(
@@ -400,11 +453,11 @@ async function initDB() {
 			);
 		});
 
-	await db.collection("Questions").createIndex({ qnsLink: 1, latest: 1 });
-	await db.collection("Questions").createIndex({ courseId: 1, latest: 1 });
+	// await db.collection("Questions").createIndex({ qnsLink: 1, latest: 1 });
+	// await db.collection("Questions").createIndex({ courseId: 1, latest: 1 });
 
 	// Creates the Discussions collection in Mongo Atlas with validation
-	await db
+	const discussions = db
 		.createCollection("Discussions", {
 			validator: {
 				$jsonSchema: {
@@ -506,8 +559,17 @@ async function initDB() {
 				},
 			},
 		})
-		.then(() => {
+		.then(async () => {
 			console.log("Successfully created Discussions collection");
+
+			await db.collection("Discussions")
+				.createIndex({ qnsLink: 1, op: 1 })
+				.then(() => {
+					console.log("Added indexes for Discussion");
+				})
+				.catch(() => {
+					console.log("Error creating index for discussion");
+				});
 		})
 		.catch(() => {
 			console.log(
@@ -515,10 +577,10 @@ async function initDB() {
 			);
 		});
 
-	await db.collection("Discussions").createIndex({ qnsLink: 1, op: 1 });
+	// await db.collection("Discussions").createIndex({ qnsLink: 1, op: 1 });
 
 	// Creates the Badges collection in Mongo Atlas with validation
-	await db
+	const badges = db
 		.createCollection("Badges", {
 			validator: {
 				$jsonSchema: {
@@ -608,8 +670,17 @@ async function initDB() {
 				},
 			},
 		})
-		.then(() => {
+		.then(async () => {
 			console.log("Successfully created Badges collection");
+
+			await Promise.all([
+				db.collection("Badges").createIndex({ utorId: 1 }),
+				db.collection("Badges").createIndex({ userId: 1 })
+			]).then(() => {
+				console.log("Added indexes for Badges");
+			}).catch(() => {
+				console.log("Error creating indexes for Badges");
+			});
 		})
 		.catch(() => {
 			console.log(
@@ -617,12 +688,24 @@ async function initDB() {
 			);
 		});
 
-	await db.collection("Badges").createIndex({ utorId: 1 });
-	await db.collection("Badges").createIndex({ userId: 1 });
+	// await db.collection("Badges").createIndex({ utorId: 1 });
+	// await db.collection("Badges").createIndex({ userId: 1 });
+	await Promise.all([
+		accounts,
+		courses,
+		topics,
+		questions,
+		discussions,
+		badges
+	]).then(() => {
+		return;
+	}).catch(err => {
+		console.log(err);
+	});
 
 	client.close();
 }
 
-initDB();
+// initDB();
 
 export default initDB;

@@ -1,22 +1,18 @@
-const mockedCourses = [
-	{
-		courseId: "C1",
-		courseName: "Course 1",
-		numTopics: 0,
-		added: true,
-	},
-	{
-		courseId: "C2",
-		courseName: "Course 2",
-		numTopics: 0,
-		added: false,
-	},
-	{
-		courseId: "C3",
-		courseName: "Course 3",
-		numTopics: 0,
-		added: true,
-	},
-];
+import { ObjectId } from "mongodb";
+import { CoursesBackEndType } from "../../types/Courses";
+
+const mockedCourses: CoursesBackEndType[] = [];
+
+export const mockCourses = async (numCourses: number, numTopics: number) => {
+	for (let i = 0; i < numCourses; i++) {
+		mockedCourses.push({
+			_id: new ObjectId(),
+			courseId: `C${i}`,
+			courseName: `Course ${i}`,
+			numTopics,
+			added: i % 2 === 0
+		});
+	};
+};
 
 export default mockedCourses;

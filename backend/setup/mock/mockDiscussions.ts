@@ -6,7 +6,7 @@ import mockedQuestions from "./mockQuestions";
 
 const mockedDiscussions: DiscussionBackEndType[] = [];
 
-export const mockDiscussions = () => {
+export const mockDiscussions = async () => {
 	mockedQuestions.forEach((question: QuestionBackEndType, index: number) => {
 		const someId = new ObjectId();
 		const randAccount =

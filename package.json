@@ -44,7 +44,8 @@
     "installDeps": "npm i && cd backend && npm i",
     "lintFix": "eslint . --ext .tsx,.ts . --fix",
     "test:e2e": "npx cypress run --e2e",
-    "test:coverage": "react-scripts test --transformIgnorePatterns 'node_modules/(?!@uiw)/' \"--watchAll\" \"--coverage\""
+    "test:coverage": "react-scripts test --transformIgnorePatterns 'node_modules/(?!@uiw)/' \"--watchAll\" \"--coverage\"",
+    "mockData": "cd backend && npm run mockData"
   },
   "eslintConfig": {
     "extends": [

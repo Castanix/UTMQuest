@@ -1,35 +1,20 @@
 import { ObjectId } from "mongodb";
-import mockedCourses from "./mockCourses";
 import { TopicsBackEndType } from "../../types/Topics";
 
 const mockedTopics: TopicsBackEndType[] = [];
-let counter = 0;
 
-export const mockTopics = () => {
-	mockedCourses.forEach((course) => {
-		mockedTopics.push({
-			_id: new ObjectId(),
-			topicName: `topic${counter}`,
-			numQns: 0,
-			courseId: course.courseId,
-			deleted: false,
-		});
-		mockedTopics.push({
-			_id: new ObjectId(),
-			topicName: `topic${counter + 1}`,
-			numQns: 0,
-			courseId: course.courseId,
-			deleted: false,
-		});
-		mockedTopics.push({
-			_id: new ObjectId(),
-			topicName: `topic${counter + 2}`,
-			numQns: 0,
-			courseId: course.courseId,
-			deleted: false,
-		});
-		counter += 3;
-	});
+export const mockTopics = (numCourses: number, topicsPerCourse: number, qnsPerTopic: number) => {
+	for (let i = 0; i < numCourses; i++) {
+		for (let j = 0; j < topicsPerCourse; j++) {
+			mockedTopics.push({
+				_id: new ObjectId(),
+				topicName: `Topic ${j}`,
+				numQns: qnsPerTopic,
+				courseId: `C${i}`,
+				deleted: false,
+			});
+		};
+	};
 };
 
 export default mockedTopics;
