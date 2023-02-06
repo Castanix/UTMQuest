@@ -1,24 +1,24 @@
 const mockedAccounts = [
 	{
 		anonId: "anon1",
-		userId: "user1",
+		userId: "dummy22",
 		bookmarkCourses: [],
-		utorId: "user1",
-		utorName: "User 1",
+		utorId: "dummy22",
+		utorName: "Dummy Test 22",
 	},
 	{
 		anonId: "anon2",
-		userId: "user2",
+		userId: "dummy23",
 		bookmarkCourses: [],
-		utorId: "user2",
-		utorName: "User 2",
+		utorId: "dummy23",
+		utorName: "Dummy Test 23",
 	},
 	{
 		anonId: "anon3",
-		userId: "user3",
+		userId: "dummy24",
 		bookmarkCourses: [],
-		utorId: "user3",
-		utorName: "User 3",
+		utorId: "dummy24",
+		utorName: "Dummy Test 24",
 	},
 ];
 
