@@ -1,10 +1,14 @@
 import { ObjectId } from "mongodb";
+import fs from "fs";
+import path from "path";
 import { qnsTypeEnum, QuestionBackEndType } from "../../types/Questions";
 import { TopicsBackEndType } from "../../types/Topics";
 import mockedTopics from "./mockTopics";
 import mockedAccounts from "./mockAccounts";
 
 const mockedQuestions: QuestionBackEndType[] = [];
+
+const questionLinks: string[] = [];
 
 export const mockQuestions = (qnsPerTopic: number) => {
 	mockedTopics.forEach((topic: TopicsBackEndType, index: number) => {
@@ -15,9 +19,13 @@ export const mockQuestions = (qnsPerTopic: number) => {
 			const randAccount =
 				mockedAccounts[Math.floor(Math.random() * (3 - 1) + 1)];
 			const likes = Math.floor(Math.random());
-	
-			const answer = ["A", "B", "C"][Math.floor(Math.random() * (3 - 1) + 1)];
-	
+
+			const answer = ["A", "B", "C"][
+				Math.floor(Math.random() * (3 - 1) + 1)
+			];
+
+			const isAnon = index % 2 === 0;
+
 			mockedQuestions.push({
 				_id: someId,
 				qnsLink: someId.toString(),
@@ -29,14 +37,17 @@ export const mockQuestions = (qnsPerTopic: number) => {
 				description: `Description ${index} ${i}`,
 				explanation: `Explanation ${index} ${i}`,
 				choices: qnsType === qnsTypeEnum.short ? [] : ["A", "B", "C"],
-				answers: qnsType === qnsTypeEnum.short ? `${index} ${i} ${answer}` : [answer],
+				answers:
+					qnsType === qnsTypeEnum.short
+						? `${index} ${i} ${answer}`
+						: [answer],
 				utorId: randAccount.utorId,
-				utorName: randAccount.utorName,
+				utorName: isAnon ? "Anonymous" : randAccount.utorName,
 				userId: randAccount.userId,
 				anonId: randAccount.anonId,
 				date: new Date().toISOString(),
 				numDiscussions: 0,
-				anon: index % 2 === 0,
+				anon: isAnon,
 				latest: true,
 				rating: { [randAccount.userId]: likes },
 				likes: likes === 1 ? 1 : 0,
@@ -44,8 +55,15 @@ export const mockQuestions = (qnsPerTopic: number) => {
 				views: 0,
 				viewers: { [randAccount.userId]: 1 },
 			});
-		};
+
+			questionLinks.push(someId.toString());
+		}
 	});
+
+	fs.writeFileSync(
+		path.join(__dirname, "../../artillery/questions.txt"),
+		questionLinks.join("\n")
+	);
 };
 
 export default mockedQuestions;

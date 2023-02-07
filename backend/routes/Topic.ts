@@ -1,13 +1,12 @@
 import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
-import { utmQuestCollections , mongoDBConnection } from "../db/db.service";
+import { utmQuestCollections, mongoDBConnection } from "../db/db.service";
 
 const topicRouter = Router();
 
 topicRouter.get("/getTopics/:courseId", async (req: Request, res: Response) => {
 	const course = await utmQuestCollections.Courses?.findOne({
 		courseId: req.params.courseId,
-		
 	});
 
 	if (!course) {
@@ -55,14 +54,14 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 	if (!topic) {
 		res.status(404).send({ error: "No such topic found" });
 		return;
-	};
+	}
 
 	if (topic.numQns !== 0) {
 		res.status(400).send({
 			error: "Topics must contain no questions before they can be deleted.",
 		});
 		return;
-	};
+	}
 
 	const session = mongoDBConnection.startSession();
 
@@ -72,7 +71,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		await utmQuestCollections.Topics?.updateOne(
 			topic,
 			{ $set: { deleted: true } },
-			{ session },
+			{ session }
 		);
 
 		// Decrement topic counter in course
@@ -84,7 +83,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		await utmQuestCollections.Courses?.findOneAndUpdate(
 			course,
 			{ $inc: { numTopics: -1 } },
-			{ session },
+			{ session }
 		);
 
 		await session.commitTransaction();
@@ -98,7 +97,7 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		res.status(500).send(err);
 	} finally {
 		await session.endSession();
-	};
+	}
 });
 
 topicRouter.put("/putTopic", async (req: Request, res: Response) => {
@@ -109,20 +108,20 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 	if (!topic) {
 		res.status(404).send({ error: "No such topic found." });
 		return;
-	};
+	}
 
 	const newTopicName = req.body.newTopic.trim();
 	if (!newTopicName) {
 		res.status(400).send({ error: "Cannot update with given topic name" });
 		return;
-	};
+	}
 
 	if (newTopicName.length > 255) {
 		res.status(400).send({
 			error: "Topic name must be <= 255 characters.",
 		});
 		return;
-	};
+	}
 
 	const session = mongoDBConnection.startSession();
 
@@ -132,13 +131,13 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 		const updateTopicResult = await utmQuestCollections.Topics?.updateOne(
 			topic,
 			{ $set: { topicName: newTopicName } },
-			{ session },
+			{ session }
 		);
 
 		await utmQuestCollections.Questions?.updateMany(
 			{ topicId: new ObjectID(req.body._id) },
 			{ $set: { topicName: req.body.newTopic.trim() } },
-			{ session },
+			{ session }
 		);
 
 		await session.commitTransaction();
@@ -150,9 +149,8 @@ topicRouter.put("/putTopic", async (req: Request, res: Response) => {
 		res.status(500).send(err);
 	} finally {
 		await session.endSession();
-	};
+	}
 });
-
 
 topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 	const course = await utmQuestCollections.Courses?.findOne({
@@ -168,14 +166,14 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 	if (!newTopicName) {
 		res.status(400).send({ error: "Cannot add with given topic name" });
 		return;
-	};
+	}
 
 	if (newTopicName.length > 255) {
 		res.status(400).send({
 			error: "Topic name must be <= 255 characters.",
 		});
 		return;
-	};
+	}
 
 	const session = mongoDBConnection.startSession();
 
@@ -187,50 +185,54 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 				courseId: req.body.courseId,
 				topicName: newTopicName,
 				deleted: true,
-			}, 
+			},
 			{ $set: { deleted: false } },
-			{ session },
-		).then(async updateRes => {
-			if (!updateRes.value) {
-				const topicId = new ObjectID();
-				const newTopic = {
-					_id: topicId,
-					topicName: newTopicName,
-					courseId: req.body.courseId,
-					numQns: 0,
-					deleted: false,
-				};
+			{ session }
+		)
+			.then(async (updateRes) => {
+				if (!updateRes.value) {
+					const topicId = new ObjectID();
+					const newTopic = {
+						_id: topicId,
+						topicName: newTopicName,
+						courseId: req.body.courseId,
+						numQns: 0,
+						deleted: false,
+					};
 
-				const insertRes = await utmQuestCollections.Topics?.insertOne(
-					newTopic,
-					{ session },
-				);
+					const insertRes =
+						await utmQuestCollections.Topics?.insertOne(newTopic, {
+							session,
+						});
 
-				// Increment counter
-				await utmQuestCollections.Courses?.updateOne(
-					course, 
-					{ $inc: { numTopics: 1 } },
-					{ session },
-				);
-			
-				await session.commitTransaction();
+					// Increment counter
+					await utmQuestCollections.Courses?.updateOne(
+						course,
+						{ $inc: { numTopics: 1 } },
+						{ session }
+					);
 
-				res.status(201).send(insertRes);
-			} else {
-				await session.commitTransaction();
+					await session.commitTransaction();
 
-				res.status(200).send({insertedId: updateRes.value._id.toString()});
-			};
-		}).catch(err => {
-			throw new Error(err);
-		});
+					res.status(201).send(insertRes);
+				} else {
+					await session.commitTransaction();
+
+					res.status(200).send({
+						insertedId: updateRes.value._id.toString(),
+					});
+				}
+			})
+			.catch((err) => {
+				throw new Error(err);
+			});
 	} catch (err) {
 		await session.abortTransaction();
 
 		res.status(500).send(err);
 	} finally {
 		await session.endSession();
-	};
+	}
 });
 
 export default topicRouter;

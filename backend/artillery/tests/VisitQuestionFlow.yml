@@ -1,0 +1,39 @@
+config:
+    target: "http://localhost:5001/api"
+    phases:
+        - duration: 60
+          arrivalRate: 5
+          name: Warm up
+        - duration: 120
+          arrivalRate: 2
+          rampTo: 25
+          name: Ramp up load
+        - duration: 500
+          arrivalRate: 25
+          name: Sustained load
+    defaults:
+        headers:
+            utorid: "dummy22"
+    payload:
+        - path: "../questions.txt"
+          fields:
+              - "qnsLink"
+          loadAll: true
+        - path: "../courses.txt"
+          fields:
+              - "courseId"
+          loadAll: true
+
+scenarios:
+    - name: "Go to a question"
+      flow:
+          - get:
+                url: "/account/getAccount/dummy22"
+          - think: 1
+          - get:
+                url: "/topic/getTopics/{{ courseId }}"
+          - get:
+                url: "/question/latestQuestions/{{ courseId }}"
+          - think: 5
+          - get:
+                url: "/question/oneQuestion/{{ qnsLink }}"

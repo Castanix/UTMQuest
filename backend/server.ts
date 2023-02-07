@@ -20,16 +20,13 @@ const num = Math.floor(Math.random() * 3);
 
 // ensure all requests are authorized
 app.use((req, res, next) => {
-	if (env === "dev") {
+	// should be hard to spoof the utorid
+	if (req.headers.utorid !== undefined) {
+		next();
+	} else if (env === "dev") {
 		const dummy = ["dummy22", "dummy23", "dummy24"];
 		req.headers.utorid = dummy[num];
 		req.headers.http_mail = `${dummy[num]}.test@test.com`;
-		next();
-		return;
-	}
-
-	// should be hard to spoof the utorid
-	if (req.headers.utorid !== undefined) {
 		next();
 	} else {
 		// handle if shib is not enabled for some reaso

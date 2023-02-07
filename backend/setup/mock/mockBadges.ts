@@ -1,7 +1,7 @@
 const mockBadges = [
 	{
-		utorId: "user1",
-		userId: "user1",
+		utorId: "dummy22",
+		userId: "dummy22",
 		qnsAdded: 0,
 		qnsEdited: 0,
 		currLoginStreak: 1,
@@ -19,8 +19,8 @@ const mockBadges = [
 		displayBadges: [],
 	},
 	{
-		utorId: "user2",
-		userId: "user2",
+		utorId: "dummy23",
+		userId: "dummy23",
 		qnsAdded: 0,
 		qnsEdited: 0,
 		currLoginStreak: 1,
@@ -38,8 +38,8 @@ const mockBadges = [
 		displayBadges: [],
 	},
 	{
-		utorId: "user3",
-		userId: "user3",
+		utorId: "dummy24",
+		userId: "dummy24",
 		qnsAdded: 0,
 		qnsEdited: 0,
 		currLoginStreak: 1,
