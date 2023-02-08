@@ -14,27 +14,14 @@ config:
     defaults:
         headers:
             utorid: "dummy22"
-    payload:
-        - path: "../questions.txt"
-          fields:
-              - "qnsLink"
-          loadAll: true
-        - path: "../courses.txt"
-          fields:
-              - "courseId"
-          loadAll: true
 
 scenarios:
-    - name: "Go to a question"
-    
+    - name: "Visit own profile"
       flow:
           - get:
                 url: "/account/getAccount/dummy22"
           - think: 1
           - get:
-                url: "/topic/getTopics/{{ courseId }}"
+                url: "/badge/userBadges/dummy22"
           - get:
-                url: "/question/latestQuestions/{{ courseId }}"
-          - think: 5
-          - get:
-                url: "/question/oneQuestion/{{ qnsLink }}"
+                url: "/question/allUserPostedQuestions/dummy22

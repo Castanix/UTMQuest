@@ -1,0 +1,69 @@
+config:
+    target: "http://localhost:5001/api"
+    phases:
+        - duration: 60
+          arrivalRate: 5
+          name: Warm up
+        - duration: 120
+          arrivalRate: 2
+          rampTo: 25
+          name: Ramp up load
+        - duration: 500
+          arrivalRate: 25
+          name: Sustained load
+    defaults:
+        headers:
+            utorid: "dummy22"
+            http_mail: "dummy.test22@mail.com"
+    payload:
+        - path: "../questions.txt"
+          fields:
+              - "qnsLink"
+          loadAll: true
+        - path: "../courses.txt"
+          fields:
+              - "courseId"
+          loadAll: true
+        - path: "../topics.csv"
+          fields:
+              - "topicId"
+              - "topicName"
+          loadAll: true
+
+scenarios:
+    - name: "Add a question"
+      flow:
+          - get:
+                url: "/course/course/getCourse/{{ courseId }}"
+          - get:
+                url: "/topic/getTopics/{{ courseId }}"
+          - think: 5
+          - post:
+                url: "/question/addQuestion"
+                json:
+                  _id: ""
+                  qnsLink: ""
+                  topicId: "{{ topicId }}"
+                  topicName: "{{ topicName }}"
+                  courseId: "{{ courseId }}"
+                  qnsName: "Load test"
+                  qnsType: "short"
+                  description: "Load test"
+                  explanation: "Load test"
+                  choices: []
+                  answers: "A"
+                  userId: "dummy22"
+                  anonId: "anon1"
+                  utorName: "Dummy Test 22"
+                  date: ""
+                  numDiscussions: 0
+                  anon: false
+                  latest: true
+                  rating: {}
+                  likes: 0
+                  dislikes: 0
+                  views: 0
+                  viewers: {}
+
+          
+              

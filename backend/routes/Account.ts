@@ -16,14 +16,14 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 	const user = await utmQuestCollections.Accounts?.findOne({ utorId });
 
 	if (!user) {
-		const session = mongoDBConnection.startSession();
+		// const session = mongoDBConnection.startSession();
 
 		// generate unique userId
 		const userId = uuidv4();
 		const anonId = uuidv4();
 
 		try {
-			session.startTransaction();
+			// session.startTransaction();
 
 			await utmQuestCollections.Accounts?.insertOne(
 				{
@@ -33,7 +33,7 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 					utorName: `${firstName} ${lastName}`,
 					bookmarkCourses: [],
 				},
-				{ session }
+				// { session }
 			);
 
 			await utmQuestCollections.Badges?.insertOne(
@@ -56,10 +56,10 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 						threadReplies: null,
 					},
 				},
-				{ session }
+				// { session }
 			);
 
-			await session.commitTransaction();
+			// await session.commitTransaction();
 
 			res.status(201).send({
 				username: firstName.concat(" ").concat(lastName),
@@ -67,11 +67,11 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 				anonId,
 			});
 		} catch (error) {
-			await session.abortTransaction();
+			// await session.abortTransaction();
 
 			res.status(500).send({ error });
 		} finally {
-			await session.endSession();
+			// await session.endSession();
 		}
 	} else {
 		res.status(418).send({

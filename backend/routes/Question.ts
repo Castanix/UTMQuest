@@ -8,9 +8,9 @@ import { qnsTypeEnum, QuestionBackEndType } from "../types/Questions";
 const questionRouter = Router();
 
 // badgeType: qnsEdited/qnsAdded
-const updateBadge = (utorId: string, update: Object, session: ClientSession) =>
+const updateBadge = (utorId: string, update: Object) =>
 	utmQuestCollections.Badges?.findOneAndUpdate({ utorId }, update, {
-		session,
+		// session,
 	})
 		.then((result) => {
 			if (!result) {
@@ -24,12 +24,12 @@ const updateBadge = (utorId: string, update: Object, session: ClientSession) =>
 const updateLatest = (
 	question: QuestionBackEndType,
 	latest: boolean,
-	session: ClientSession
+	// session: ClientSession
 ) =>
 	utmQuestCollections.Questions?.updateOne(
 		question,
 		{ $set: { latest } },
-		{ session }
+		// { session }
 	)
 		.then((result) => {
 			if (!result) {
@@ -43,12 +43,12 @@ const updateLatest = (
 const topicIncrementor = (
 	topicId: ObjectID,
 	increment: number,
-	session: ClientSession
+	// session: ClientSession
 ) =>
 	utmQuestCollections.Topics?.findOneAndUpdate(
 		{ _id: topicId },
 		{ $inc: { numQns: increment } },
-		{ session }
+		// { session }
 	)
 		.then((result) => {
 			if (!result) {
@@ -385,15 +385,22 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		return;
 	}
 
-	const session = mongoDBConnection.startSession();
+	// const session = mongoDBConnection.startSession();
 
 	try {
-		session.startTransaction();
+		// session.startTransaction();
 
-		await utmQuestCollections.Questions?.insertOne(question, { session });
+		await utmQuestCollections.Questions?.insertOne(
+			question,
+			// { session }
+		);
 
 		// Increment counter
-		await topicIncrementor(topicId, 1, session);
+		await topicIncrementor(
+			topicId,
+			1,
+			// session
+		);
 
 		// Update badge progression
 		if (!question.anon) {
@@ -409,10 +416,10 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 						},
 						$inc: { qnsAdded: 1 },
 					},
-					session
+					// session
 				);
 
-				await session.commitTransaction();
+				// await session.commitTransaction();
 
 				res.status(201).send({
 					qnsLink,
@@ -438,10 +445,10 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 							$set: { firstPostToday: now.toISOString() },
 							$inc: { consecutivePosting: 1, qnsAdded: 1 },
 						},
-						session
+						// session
 					);
 
-					await session.commitTransaction();
+					// await session.commitTransaction();
 
 					res.status(201).send({
 						qnsLink,
@@ -460,10 +467,10 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 							},
 							$inc: { qnsAdded: 1 },
 						},
-						session
+						// session
 					);
 
-					await session.commitTransaction();
+					// await session.commitTransaction();
 
 					res.status(201).send({
 						qnsLink,
@@ -476,10 +483,10 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 					await updateBadge(
 						utorId,
 						{ $inc: { qnsAdded: 1 } },
-						session
+						// session
 					);
 
-					await session.commitTransaction();
+					// await session.commitTransaction();
 
 					res.status(201).send({
 						qnsLink,
@@ -491,15 +498,15 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 				}
 			}
 		} else {
-			await session.commitTransaction();
+			// await session.commitTransaction();
 			res.status(201).send({ qnsLink });
 		}
 	} catch (err) {
-		await session.abortTransaction();
+		// await session.abortTransaction();
 
 		res.status(500).send({ err });
 	} finally {
-		await session.endSession();
+		// await session.endSession();
 	}
 });
 
@@ -562,15 +569,22 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		viewers: {},
 	};
 
-	const session = mongoDBConnection.startSession();
+	// const session = mongoDBConnection.startSession();
 
 	try {
-		session.startTransaction();
+		// session.startTransaction();
 
 		// Add edited questions doc into db
-		await utmQuestCollections.Questions?.insertOne(question, { session });
+		await utmQuestCollections.Questions?.insertOne(
+			question,
+			// { session }
+		);
 
-		await updateLatest(currVersion as QuestionBackEndType, false, session);
+		await updateLatest(
+			currVersion as QuestionBackEndType,
+			false,
+			// session
+		);
 
 		if (oldTopicId !== newTopicId) {
 			await utmQuestCollections.Topics?.findOneAndUpdate(
@@ -579,18 +593,18 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 					deleted: true,
 				},
 				{ $set: { deleted: false } },
-				{ session }
+				// { session }
 			)
 				.then(async () => {
 					await topicIncrementor(
 						new ObjectID(oldTopicId),
 						-1,
-						session
+						// session
 					);
 					await topicIncrementor(
 						new ObjectID(newTopicId),
 						1,
-						session
+						// session
 					);
 				})
 				.catch((err) => {
@@ -600,9 +614,13 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 
 		// Attempts to update badge progression for specified utorid, reverts all changes if failed
 		if (!req.body.anon) {
-			await updateBadge(utorId, { $inc: { qnsEdited: 1 } }, session);
+			await updateBadge(
+				utorId,
+				{ $inc: { qnsEdited: 1 } },
+				// session
+			);
 
-			await session.commitTransaction();
+			// await session.commitTransaction();
 
 			res.status(201).send({
 				qnsStatus: badge.qnsEdited + 1,
@@ -610,15 +628,15 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 				edit: true,
 			});
 		} else {
-			await session.commitTransaction();
+			// await session.commitTransaction();
 			res.status(201).send({ qnsLink });
 		}
 	} catch (err) {
-		await session.abortTransaction();
+		// await session.abortTransaction();
 
 		res.status(500).send({ err });
 	} finally {
-		await session.endSession();
+		// await session.endSession();
 	}
 });
 
@@ -635,10 +653,10 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 
 		const { qnsLink, topicId } = restoredVersion;
 
-		const session = mongoDBConnection.startSession();
+		// const session = mongoDBConnection.startSession();
 
 		try {
-			session.startTransaction();
+			// session.startTransaction();
 
 			if (latestTopicId !== topicId) {
 				await utmQuestCollections.Topics?.findOneAndUpdate(
@@ -647,18 +665,18 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 						deleted: true,
 					},
 					{ $set: { deleted: false } },
-					{ session }
+					// { session }
 				)
 					.then(async () => {
 						await topicIncrementor(
 							new ObjectID(latestTopicId),
 							-1,
-							session
+							// session
 						);
 						await topicIncrementor(
 							new ObjectID(topicId),
 							1,
-							session
+							// session
 						);
 					})
 					.catch((err) => {
@@ -669,7 +687,7 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 			await updateLatest(
 				restoredVersion as QuestionBackEndType,
 				true,
-				session
+				// session
 			);
 
 			await utmQuestCollections.Questions?.deleteMany(
@@ -682,7 +700,7 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 					},
 					qnsLink,
 				},
-				{ session }
+				// { session }
 			);
 
 			utmQuestCollections.Discussions?.find({
@@ -703,11 +721,11 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 									),
 								},
 							},
-							{ session }
+							// { session }
 						);
 
 						await utmQuestCollections.Discussions?.deleteOne(doc, {
-							session,
+							// session,
 						});
 					});
 				})
@@ -715,15 +733,15 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 					throw new Error(err);
 				});
 
-			await session.commitTransaction();
+			// await session.commitTransaction();
 
 			res.status(200).send({ qnsLink });
 		} catch (err) {
-			await session.abortTransaction();
+			// await session.abortTransaction();
 
 			res.status(500).send(err);
 		} finally {
-			await session.endSession();
+			// await session.endSession();
 		}
 	});
 });

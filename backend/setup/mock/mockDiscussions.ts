@@ -10,7 +10,9 @@ export const mockDiscussions = async () => {
 	mockedQuestions.forEach((question: QuestionBackEndType, index: number) => {
 		const someId = new ObjectId();
 		const randAccount =
-			mockedAccounts[Math.floor(Math.random() * (3 - 1) + 1)];
+			mockedAccounts[Math.floor(Math.random() * 3)];
+		
+		const isAnon = Math.random() < 0.25;
 
 		mockedDiscussions.push({
 			_id: someId,
@@ -25,7 +27,7 @@ export const mockDiscussions = async () => {
 			opDate: new Date().toISOString(),
 			editDate: null,
 			deleted: false,
-			anon: false,
+			anon: isAnon,
 			edited: false,
 		});
 	});

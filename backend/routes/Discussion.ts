@@ -145,33 +145,33 @@ discussionRouter.post("/", async (req: Request, res: Response) => {
 		edited: false,
 	};
 
-	const session = mongoDBConnection.startSession();
+	// const session = mongoDBConnection.startSession();
 
 	try {
-		session.startTransaction();
+		// session.startTransaction();
 
 		await utmQuestCollections.Discussions?.insertOne(discussion, {
-			session,
+			// session,
 		});
 
 		await utmQuestCollections.Questions?.findOneAndUpdate(
 			{ qnsLink, latest: true },
 			{ $inc: { numDiscussions: 1 } },
-			{ session }
+			// { session }
 		);
 
-		await session.commitTransaction();
+		// await session.commitTransaction();
 
 		res.status(201).send({
 			insertedId: discussion._id,
 			utorName: anon ? "Anonymous" : `${firstName} ${lastName}`,
 		});
 	} catch (error) {
-		await session.abortTransaction();
+		// await session.abortTransaction();
 
 		res.status(500).send({ error });
 	} finally {
-		await session.endSession();
+		// await session.endSession();
 	}
 });
 

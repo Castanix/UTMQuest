@@ -17,14 +17,14 @@ export const mockQuestions = (qnsPerTopic: number) => {
 			const qnsType: qnsTypeEnum =
 				index % 2 === 0 ? qnsTypeEnum.mc : qnsTypeEnum.short;
 			const randAccount =
-				mockedAccounts[Math.floor(Math.random() * (3 - 1) + 1)];
+				mockedAccounts[Math.floor(Math.random() * 3)];
 			const likes = Math.floor(Math.random());
 
 			const answer = ["A", "B", "C"][
-				Math.floor(Math.random() * (3 - 1) + 1)
+				Math.floor(Math.random() * 3)
 			];
 
-			const isAnon = index % 2 === 0;
+			const isAnon = Math.random() < 0.25;
 
 			mockedQuestions.push({
 				_id: someId,
