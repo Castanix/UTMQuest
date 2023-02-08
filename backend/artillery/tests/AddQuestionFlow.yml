@@ -34,7 +34,7 @@ scenarios:
     - name: "Add a question"
       flow:
           - get:
-                url: "/course/course/getCourse/{{ courseId }}"
+                url: "/course/getCourse/{{ courseId }}"
           - get:
                 url: "/topic/getTopics/{{ courseId }}"
           - think: 5

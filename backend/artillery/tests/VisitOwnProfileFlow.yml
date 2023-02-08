@@ -19,9 +19,6 @@ scenarios:
     - name: "Visit own profile"
       flow:
           - get:
-                url: "/account/getAccount/dummy22"
-          - think: 1
-          - get:
                 url: "/badge/userBadges/dummy22"
           - get:
                 url: "/question/allUserPostedQuestions/dummy22
