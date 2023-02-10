@@ -11,6 +11,7 @@ config:
         - duration: 500
           arrivalRate: 25
           name: Sustained load
+    processor: "../functions/getRandom.js"
     defaults:
         headers:
             utorid: "dummy22"
@@ -23,11 +24,11 @@ config:
 
 scenarios:
     - name: "Post a discussion"
-      # weight: 3
+      weight: 3
       flow:
           - think: 5
           - post:
-                url: "/discussion/{{ qnsLink }}"
+                url: "/discussion"
                 json:
                   _id: ""
                   qnsLink: "{{ qnsLink }}"
@@ -44,52 +45,61 @@ scenarios:
                   anon: false
                   edited: false
 
-    # - name: "Post a reply"
-    #   weight: 7
-    #   flow:
-    #       - get:
-    #             url: "/discussion/thread/{{ qnsLink }}"
-    #             capture:
-    #               json: "$"
-    #               as: threads
-    #       - function: "getRandomPost"
-    #       - think: 5
-    #       - post:
-    #             url: "/discussion/{{ qnsLink }}"
-    #             json:
-    #               _id: ""
-    #               qnsLink: "{{ qnsLink }}"
-    #               op: false
-    #               utorId: "dummy22"
-    #               utorName: "Dummy Test 22"
-    #               userId: "dummy22"
-    #               anonId: "anon1"
-    #               content: "{{ $randomString() }}"
-    #               thread: []
-    #               opDate: ""
-    #               editDate: ""
-    #               deleted: false
-    #               anon: false
-    #               edited: false
-    #       - get:
-    #             url: "/discussion/{{ discussionId }}"
-    #             capture:
-    #               json: 
+    - name: "Post a reply"
+      weight: 7
+      flow:
+          - get:
+                url: "/discussion/thread/{{ qnsLink }}"
+                capture:
+                  json: "$"
+                  as: opPosts
 
-    #       - put:
-    #             url: "/discussion/{{ discussionId }}"
-    #             json:
-    #               _id: ""
-    #               qnsLink: "{{ qnsLink }}"
-    #               op: false
-    #               utorId: "dummy22"
-    #               utorName: "Dummy Test 22"
-    #               userId: "dummy22"
-    #               anonId: "anon1"
-    #               content: "{{ $randomString() }}"
-    #               thread: []
-    #               opDate: ""
-    #               editDate: ""
-    #               deleted: false
-    #               anon: false
-    #               edited: false
+          - function: "getRandomPost"
+          - think: 5
+
+          - post:
+                url: "/discussion"
+                json:
+                  _id: ""
+                  qnsLink: "{{ qnsLink }}"
+                  op: false
+                  utorId: "dummy22"
+                  utorName: "Dummy Test 22"
+                  userId: "dummy22"
+                  anonId: "anon1"
+                  content: "{{ $randomString() }}"
+                  thread: []
+                  opDate: ""
+                  editDate: ""
+                  deleted: false
+                  anon: false
+                  edited: false
+                capture:
+                  - json: "$"
+                    as: discussionResult
+
+          - get:
+                url: "/discussion/{{ discussionId }}"
+                capture:
+                  - json: "$"
+                    as: discussionDoc
+
+          - function: "updateData"
+
+          - put:
+                url: "/discussion/{{ discussionId }}"
+                json:
+                  _id: "{{ discussionId }}"
+                  qnsLink: "{{ qnsLink }}"
+                  op: true
+                  utorId: "{{ oldUtorId }}"
+                  utorName: "{{ oldUtorName }}"
+                  userId: "{{ oldUserId }}"
+                  anonId: "{{ oldAnonId }}"
+                  content: "{{ oldContent }}"
+                  thread: "{{ newThread }}"
+                  opDate: "{{ oldOpDate }}"
+                  editDate: "{{ oldEditDate }}"
+                  deleted: "{{ oldDeleted }}"
+                  anon: "{{ oldAnon }}"
+                  edited: "{{ oldEdited }}"
