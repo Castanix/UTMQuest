@@ -1,0 +1,95 @@
+config:
+    target: "http://localhost:5001/api"
+    phases:
+        - duration: 60
+          arrivalRate: 5
+          name: Warm up
+        - duration: 120
+          arrivalRate: 2
+          rampTo: 25
+          name: Ramp up load
+        - duration: 500
+          arrivalRate: 25
+          name: Sustained load
+    defaults:
+        headers:
+            utorid: "dummy22"
+            http_mail: "dummy.test22@mail.com"
+    payload:
+        - path: "../questions.txt"
+          fields:
+              - "qnsLink"
+          loadAll: true
+
+scenarios:
+    - name: "Post a discussion"
+      # weight: 3
+      flow:
+          - think: 5
+          - post:
+                url: "/discussion/{{ qnsLink }}"
+                json:
+                  _id: ""
+                  qnsLink: "{{ qnsLink }}"
+                  op: true
+                  utorId: "dummy22"
+                  utorName: "Dummy Test 22"
+                  userId: "dummy22"
+                  anonId: "anon1"
+                  content: "{{ $randomString() }}"
+                  thread: []
+                  opDate: ""
+                  editDate: ""
+                  deleted: false
+                  anon: false
+                  edited: false
+
+    # - name: "Post a reply"
+    #   weight: 7
+    #   flow:
+    #       - get:
+    #             url: "/discussion/thread/{{ qnsLink }}"
+    #             capture:
+    #               json: "$"
+    #               as: threads
+    #       - function: "getRandomPost"
+    #       - think: 5
+    #       - post:
+    #             url: "/discussion/{{ qnsLink }}"
+    #             json:
+    #               _id: ""
+    #               qnsLink: "{{ qnsLink }}"
+    #               op: false
+    #               utorId: "dummy22"
+    #               utorName: "Dummy Test 22"
+    #               userId: "dummy22"
+    #               anonId: "anon1"
+    #               content: "{{ $randomString() }}"
+    #               thread: []
+    #               opDate: ""
+    #               editDate: ""
+    #               deleted: false
+    #               anon: false
+    #               edited: false
+    #       - get:
+    #             url: "/discussion/{{ discussionId }}"
+    #             capture:
+    #               json: 
+
+    #       - put:
+    #             url: "/discussion/{{ discussionId }}"
+    #             json:
+    #               _id: ""
+    #               qnsLink: "{{ qnsLink }}"
+    #               op: false
+    #               utorId: "dummy22"
+    #               utorName: "Dummy Test 22"
+    #               userId: "dummy22"
+    #               anonId: "anon1"
+    #               content: "{{ $randomString() }}"
+    #               thread: []
+    #               opDate: ""
+    #               editDate: ""
+    #               deleted: false
+    #               anon: false
+    #               edited: false

@@ -31,7 +31,7 @@ config:
           loadAll: true
 
 scenarios:
-    - name: "Add a question"
+    - name: "Edit a question"
       flow:
           - get:
                 url: "/course/getCourse/{{ courseId }}"
@@ -39,17 +39,17 @@ scenarios:
                 url: "/topic/getTopics/{{ courseId }}"
           - think: 5
           - post:
-                url: "/question/addQuestion"
+                url: "/question/editQuestion"
                 json:
                   _id: ""
-                  qnsLink: ""
+                  qnsLink: "{{ qnsLink }}"
                   topicId: "{{ topicId }}"
                   topicName: "{{ topicName }}"
                   courseId: "{{ courseId }}"
-                  qnsName: "Add test"
+                  qnsName: "Edit test {{ $randomString() }}"
                   qnsType: "short"
-                  description: "Add test"
-                  explanation: "Add test"
+                  description: "Edit test {{ $randomString() }}"
+                  explanation: "Edit test {{ $randomString() }}"
                   choices: []
                   answers: "A"
                   userId: "dummy22"
