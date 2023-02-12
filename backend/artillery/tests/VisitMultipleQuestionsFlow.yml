@@ -15,6 +15,7 @@ config:
     defaults:
         headers:
             utorid: "dummy22"
+            http_mail: "dummy.test22@mail.utoronto.ca"
     payload:
         - path: "../questions.txt"
           fields:
@@ -30,9 +31,9 @@ scenarios:
       beforeScenario: "setRandomStudyAmount"
 
       flow:
-          - get:
+          - put:
                 url: "/account/setup"
-          - get:
+          - put:
                 url: "/incrementLoginStreak"
           - think: 1
           - get:
@@ -50,7 +51,7 @@ scenarios:
               - think: 2 # choosing a question
               - function: "getRandomThink"
               - get:
-                    url: "/question/oneQuestion/{{ qnslink }}"
+                    url: "/question/oneQuestion/{{ qnslink }}" # TODO: need to fix it such that it only grabs questions from the specified courseId
               - think: "{{ thinkTime }}" # answering a question
             count: "{{ studyAmount }}" # random number of questions a user will be studying during the session
 
