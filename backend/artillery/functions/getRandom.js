@@ -38,5 +38,7 @@ function setRandomStudyAmount(context, events, done) {
 
 module.exports = {
     updateData: updateData,
-    getRandomPost: getRandomPost
+    getRandomPost: getRandomPost,
+    getRandomThink: getRandomThink,
+    setRandomStudyAmount: setRandomStudyAmount,
 };
