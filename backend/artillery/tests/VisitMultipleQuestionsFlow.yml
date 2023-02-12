@@ -27,6 +27,7 @@ config:
 
 scenarios:
     - name: "Simulate user studying a course"
+    - beforeScenario: "getRandomStudyAmount"
 
       flow:
           - get:
@@ -47,6 +48,7 @@ scenarios:
                 url: "/question/latestQuestions/{{ courseId }}"
           - loop:
               - think: 2 # choosing a question
+              - function: "getRandomThink"
               - get:
                     url: "/question/oneQuestion/{{ qnslink }}"
               - think: "{{ thinkTime }}" # answering a question
