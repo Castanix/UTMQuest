@@ -1,0 +1,54 @@
+config:
+    target: "http://localhost:5001/api"
+    phases:
+        - duration: 60
+          arrivalRate: 5
+          name: Warm up
+        - duration: 120
+          arrivalRate: 2
+          rampTo: 25
+          name: Ramp up load
+        - duration: 500
+          arrivalRate: 25
+          name: Sustained load
+    processor: "../functions/getRandom.js"
+    defaults:
+        headers:
+            utorid: "dummy22"
+    payload:
+        - path: "../questions.txt"
+          fields:
+              - "qnsLink"
+          loadAll: true
+        - path: "../courses.txt"
+          fields:
+              - "courseId"
+          loadAll: true
+
+scenarios:
+    - name: "Simulate user studying a course"
+
+      flow:
+          - get:
+                url: "/account/setup"
+          - get:
+                url: "/incrementLoginStreak"
+          - think: 1
+          - get:
+                url: "/course/getAllCourses"
+          - think: 1
+          - get:
+                url: "/course/getCourse/{{ courseId }}"
+          - get: 
+                url: "/account/checkBookmark/{{ courseId }}"
+          - get: 
+                url: "/topic/getTopics/{{ courseId }}"
+          - get: 
+                url: "/question/latestQuestions/{{ courseId }}"
+          - loop:
+              - think: 2 # choosing a question
+              - get:
+                    url: "/question/oneQuestion/{{ qnslink }}"
+              - think: "{{ thinkTime }}" # answering a question
+            count: "{{ studyAmount }}" # random number of questions a user will be studying during the session
+

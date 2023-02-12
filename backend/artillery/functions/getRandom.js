@@ -21,6 +21,21 @@ function getRandomPost(context, events, done) {
     return done();
 };
 
+function getRandomThink(context, events, done) {
+    let randomThink = Math.floor(Math.random() * 26) + 5;
+    if (randomThink > 25) randomThink = Math.floor(Math.random() * 26) + 5;
+
+    context.vars.thinkTime = randomThink;
+    return done();
+};
+
+function setRandomStudyAmount(context, events, done) {
+    let randomAmount = Math.floor(Math.random() * 21) + 3;
+
+    context.vars.studyAmount = randomAmount;
+    return done();
+};
+
 module.exports = {
     updateData: updateData,
     getRandomPost: getRandomPost
