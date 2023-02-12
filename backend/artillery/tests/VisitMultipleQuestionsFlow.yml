@@ -27,7 +27,7 @@ config:
 
 scenarios:
     - name: "Simulate user studying a course"
-      beforeScenario: "getRandomStudyAmount"
+      beforeScenario: "setRandomStudyAmount"
 
       flow:
           - get:
