@@ -48,7 +48,7 @@ root.render(
           <Route path="/courses/:courseId/editQuestion" element={<AddQuestionPage />} />
 
           <Route path="/courses/:courseId/quiz" element={<QuizPage />} />
-          <Route path="/courses/:courseId" element={<QuestionsPage />} />
+          <Route path="/courses/:courseId/:page" element={<QuestionsPage />} />
 
           <Route path="/courses/:courseId/question/:qnsLink" element={<ApprovedQuestion />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />

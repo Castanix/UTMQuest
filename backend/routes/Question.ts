@@ -271,11 +271,13 @@ questionRouter.get(
 );
 
 questionRouter.get(
-	"/latestQuestions/:courseId",
+	"/latestQuestions/:courseId/:page",
 	async (req: Request, res: Response) => {
+		const { courseId, page } = req.params;
+
 		try {
 			const allQuestions = await utmQuestCollections.Questions?.find({
-				courseId: req.params.courseId,
+				courseId,
 				latest: true,
 			})
 				.sort({ date: -1 })
@@ -319,14 +321,17 @@ questionRouter.get(
 
 			newQuestions.sort(SortArrayByScore);
 			scoredQuestions.sort(SortArrayByScore);
-			res.status(200).send([
-				...newQuestions.map((elem) =>
-					RemoveFieldsFromQuestion(elem.question)
-				),
-				...scoredQuestions.map((elem) =>
-					RemoveFieldsFromQuestion(elem.question)
-				),
-			]);
+			res.status(200).send({
+				questions: [
+					...newQuestions.map((elem) =>
+						RemoveFieldsFromQuestion(elem.question)
+					),
+					...scoredQuestions.map((elem) =>
+						RemoveFieldsFromQuestion(elem.question)
+					),
+				].slice((Number(page)-1)*10, Number(page)*10),
+				totalNumQns: allQuestions?.length
+			});
 			return;
 		} catch (error) {
 			res.status(500).send(error);

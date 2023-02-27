@@ -1,6 +1,6 @@
 import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, CheckCircleFilled } from '@ant-design/icons';
 import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography } from 'antd';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionFrontEndType } from '../../../backend/types/Questions';
 import { TopicsFrontEndType } from '../../../backend/types/Topics';
@@ -11,8 +11,16 @@ import GetRelativeTime from '../../RelativeTime';
 import "./QuestionsList.css";
 import QuestionState from './QuestionState';
 import QuizGenerationMenu from '../QuizPage/QuizGenerationMenu';
+import Loading from '../../components/Loading/Loading';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 
 const { Option } = Select;
+
+type QueryType = {
+    loading: boolean;
+    fetchData: any;
+    error: unknown;
+};
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
     <Space>
@@ -56,8 +64,27 @@ const GetRating = (rating: Object) => {
     return false;
 };
 
-const QuestionsList = ({ questions, topics, courseId }:
-    { questions: QuestionFrontEndType[], topics: TopicsFrontEndType[], courseId: string }) => {
+const QuestionsList = ({ queryStatus, topics, courseId }:
+    { queryStatus: QueryType, topics: TopicsFrontEndType[], courseId: string }) => {
+
+    const { loading, fetchData, error } = queryStatus;
+
+    // useEffect(() => {
+
+    //     setTimeout(() => window.scrollTo(0, sessionState.scrollY), 100);
+
+    //     window.addEventListener("scroll", onScroll);
+
+    //     return () => {
+    //         window.removeEventListener('scroll', onScroll);
+    //     };
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
+
+    const isLightMode = useContext(ThemeContext);
+
+    if (loading) return <Loading />;
+    if (error instanceof Error) return <ErrorMessage title={error.message} link="." message="Refresh" />;
 
     const {
         data,
@@ -67,22 +94,8 @@ const QuestionsList = ({ questions, topics, courseId }:
         sessionState,
         onPaginationChange,
         onTopicFilterChange,
-        onScroll
-    } = QuestionState(questions, courseId);
-
-    useEffect(() => {
-
-        setTimeout(() => window.scrollTo(0, sessionState.scrollY), 100);
-
-        window.addEventListener("scroll", onScroll);
-
-        return () => {
-            window.removeEventListener('scroll', onScroll);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const isLightMode = useContext(ThemeContext);
+        // onScroll
+    } = QuestionState(fetchData.questions, courseId);
 
     const options: React.ReactNode[] = [];
 
@@ -116,9 +129,10 @@ const QuestionsList = ({ questions, topics, courseId }:
                 bordered
                 size="small"
                 pagination={{
-                    showSizeChanger: true,
+                    showSizeChanger: false,
                     current: sessionState.currentPage,
                     pageSize: sessionState.pageSize,
+                    total: fetchData.totalNumQns ?? data.length,
                     onChange: onPaginationChange
                 }}
                 dataSource={data}

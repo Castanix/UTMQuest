@@ -45,16 +45,16 @@ const Header = ({ courseId, courseName, bookmarked, setBookmarked, client }:
 const QuestionsPage = () => {
     const params = useParams();
     const courseId = params.courseId ?? "";
+    const page = params.page ?? "";
     const queryClient = useQueryClient();
 
     const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
     const { loadingBookmarked, errorBookmarked, loadingCourse, errorCourse, courseName } = CheckBookmark(courseId, setIsBookmarked);
 
     const { loadingTopics, topics, errorTopics } = GetAllTopics(courseId);
-    const { loading, questions, error } = GetQuestions(courseId);
+    const queryStatus = GetQuestions(courseId, page);
 
-    if (loading || loadingTopics || loadingBookmarked || loadingCourse) return <Loading />;
-    if (error instanceof Error) return <ErrorMessage title={error.message} link="." message="Refresh" />;
+    if (loadingTopics || loadingBookmarked || loadingCourse) return <Loading />;
     if (errorTopics instanceof Error) return <ErrorMessage title={errorTopics.message} link="." message="Refresh" />;
     if (errorBookmarked instanceof Error) return <ErrorMessage title={errorBookmarked.message} link="." message="Refresh" />;
     if (errorCourse instanceof Error) return <ErrorMessage title={errorCourse.message} link="." message="Refresh" />;
@@ -62,7 +62,7 @@ const QuestionsPage = () => {
     return (
         <Card title={<Header courseId={courseId} courseName={courseName} bookmarked={isBookmarked} setBookmarked={setIsBookmarked} client={queryClient} />} bordered={false}>
             <main className='main-container'>
-                <QuestionsList questions={questions} topics={topics} courseId={courseId} />
+                <QuestionsList queryStatus={queryStatus} topics={topics} courseId={courseId} />
             </main>
         </Card>
     );

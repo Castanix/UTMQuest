@@ -93,7 +93,7 @@ let document: HTMLElement;
 beforeEach(() => {
     const { container } = render(
         <QueryClientProvider client={queryClient}>
-            <QuestionsList questions={questions} topics={topics} courseId="test" />
+            <QuestionsList queryStatus={{ fetchData: { questions, totalNumQns: 2 }, loading: false, error: false }}topics={topics} courseId="test" />
         </QueryClientProvider>,
         { wrapper: BrowserRouter }
     );

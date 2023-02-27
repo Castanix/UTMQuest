@@ -1,5 +1,10 @@
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "react-query";
 import { QuestionFrontEndType } from "../../../backend/types/Questions";
+
+
+
 
 interface QuestionListState {
     currentPage: number,
@@ -22,6 +27,9 @@ const GetStateFromSessionStorage = (courseId: string) => {
 
 /* anti-pattern here should change at some point */
 const QuestionState = (questions: QuestionFrontEndType[], courseId: string) => {
+    const navigate = useNavigate();
+
+    const queryClient = useQueryClient();
 
     const state = GetStateFromSessionStorage(courseId);
     const initFilter: Set<string> = new Set(state.topicFilters);
@@ -74,6 +82,11 @@ const QuestionState = (questions: QuestionFrontEndType[], courseId: string) => {
         sessionStorage.setItem("questionList", JSON.stringify({ [courseId]: newState }));
 
         sessionStateRef.current = newState;
+        // setSearchParams(page.toString());
+        console.log("this runs");
+        queryClient.invalidateQueries(['latestQuestions', courseId, page]);
+        navigate(`/courses/${courseId}/${page}`);
+
         setSessionState(newState);
     };
 
