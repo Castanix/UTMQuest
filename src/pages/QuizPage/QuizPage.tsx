@@ -11,6 +11,7 @@ import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import { OptionType, initMC } from '../../components/MultipleChoice/MultipleChoiceState';
 import { onMobile } from '../../components/EditHistory/EditHistory';
 import { ThemeContext } from '../../components/Topbar/Topbar';
+import { pageList } from '../QuestionsPage/QuestionState';
 
 const { Text, Title } = Typography;
 
@@ -29,7 +30,7 @@ const Header = ({ courseId }: { courseId: string }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseId}`}>{courseId}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${courseId}/${pageList.currPage}`}>{courseId}</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Text>Quiz</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="browse-question-title">

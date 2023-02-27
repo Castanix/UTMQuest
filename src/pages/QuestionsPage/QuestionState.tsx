@@ -4,8 +4,6 @@ import { useQueryClient } from "react-query";
 import { QuestionFrontEndType } from "../../../backend/types/Questions";
 
 
-
-
 interface QuestionListState {
     currentPage: number,
     pageSize: number,
@@ -24,6 +22,8 @@ const GetStateFromSessionStorage = (courseId: string) => {
     }
     return { currentPage: 1, pageSize: 10, scrollY: 0, topicFilters: [] };
 };
+
+export const pageList = { currPage: 0 };
 
 /* anti-pattern here should change at some point */
 const QuestionState = (questions: QuestionFrontEndType[], courseId: string) => {
@@ -77,6 +77,7 @@ const QuestionState = (questions: QuestionFrontEndType[], courseId: string) => {
         const newState = { ...sessionStateRef.current };
 
         newState.currentPage = page;
+        pageList.currPage = page;
         newState.pageSize = pageSize;
 
         sessionStorage.setItem("questionList", JSON.stringify({ [courseId]: newState }));

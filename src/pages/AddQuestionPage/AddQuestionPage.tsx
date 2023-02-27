@@ -7,6 +7,7 @@ import GetAllTopics from '../ManageTopics/fetch/GetTopics';
 import "./AddQuestionPage.css";
 import AQStepOne from './AQStepOne';
 import AQStepTwo from './AQStepTwo';
+import { pageList } from '../QuestionsPage/QuestionState';
 
 
 const { Text, Title } = Typography;
@@ -16,7 +17,7 @@ const Header = ({ courseId }:
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseId}`}>{courseId}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${courseId}/${pageList.currPage}`}>{courseId}</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Text>Add a Question</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">
