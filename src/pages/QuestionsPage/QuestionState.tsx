@@ -82,8 +82,6 @@ const QuestionState = (questions: QuestionFrontEndType[], courseId: string) => {
         sessionStorage.setItem("questionList", JSON.stringify({ [courseId]: newState }));
 
         sessionStateRef.current = newState;
-        // setSearchParams(page.toString());
-        console.log("this runs");
         queryClient.invalidateQueries(['latestQuestions', courseId, page]);
         navigate(`/courses/${courseId}/${page}`);
 

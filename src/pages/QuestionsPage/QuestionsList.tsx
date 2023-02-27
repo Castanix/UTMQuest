@@ -69,6 +69,8 @@ const QuestionsList = ({ queryStatus, topics, courseId }:
 
     const { loading, fetchData, error } = queryStatus;
 
+
+    // Note: may not be needed if pagination is limited to 10 per page
     // useEffect(() => {
 
     //     setTimeout(() => window.scrollTo(0, sessionState.scrollY), 100);
