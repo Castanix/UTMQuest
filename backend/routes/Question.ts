@@ -114,7 +114,7 @@ questionRouter.get(
 				...questions.map((elem) =>
 					RemoveFieldsFromQuestion(elem as QuestionBackEndType)
 				),
-			]);
+			].slice(0, 20));
 		} catch (error) {
 			res.status(500).send(error);
 		}
