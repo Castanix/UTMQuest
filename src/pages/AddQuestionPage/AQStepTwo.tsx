@@ -283,6 +283,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                                 dislikes: editableQns ? editableQns.dislikes : 0,
                                 views: editableQns ? editableQns.views : 0,
                                 viewers: editableQns ? editableQns.viewers : {},
+                                score: editableQns ? editableQns.score : 0,
                             };
 
                             if (editableQns) {

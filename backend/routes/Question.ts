@@ -1,6 +1,6 @@
 import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
-import { ClientSession, ObjectId } from "mongodb";
+import { ClientSession, Double, ObjectId } from "mongodb";
 import seedrandom from "seedrandom";
 import { utmQuestCollections, mongoDBConnection } from "../db/db.service";
 import { qnsTypeEnum, QuestionBackEndType } from "../types/Questions";
@@ -275,14 +275,24 @@ questionRouter.get(
 	async (req: Request, res: Response) => {
 		const { courseId, page } = req.params;
 
-		try {
-			const allQuestions = await utmQuestCollections.Questions?.find({
-				courseId,
-				latest: true,
-			})
-				.sort({ date: -1 })
-				.toArray();
+		const newQnsMatch = {
+			courseId,
+			latest: true,
+			$expr: {
+				$lt: [
+					{ $dateDiff: 
+						{ 
+							startDate: { $dateFromString: { dateString: "$date" } }, 
+							endDate: new Date(), 
+							unit: "hour" 
+						}
+					},
+					24
+				]
+			},
+		};
 
+		try {
 			/* Create a seed using the number of days between today     */
 			/* and the startingDate. This will allow different people   */
 			/* to view new questions daily.					  			*/
@@ -295,9 +305,49 @@ questionRouter.get(
 			let diff = currentDate.getTime() - startingDate.getTime();
 			const diffInDays = Math.ceil(diff / (1000 * 3600 * 24)).toString();
 
+			// const randomGen = seedrandom(
+			// 	diffInDays + utorId
+			// );
+
+			const newSeededQuestions: QuestionBackEndType[] = [];
+
+			if (Number(page) === 1) {
+				const newQuestions = await utmQuestCollections.Questions?.aggregate([
+					{ $match: newQnsMatch },
+				])
+					.sort({ _id: 1 })	
+					.toArray();
+	
+				
+				
+	
+				newQuestions?.forEach(qns => {
+					if (newSeededQuestions.length < 3) {
+						const randomGen = seedrandom(
+							diffInDays + utorId + qns._id
+						);
+	
+						if (randomGen() < 0.20) {
+							newSeededQuestions.push(qns as QuestionBackEndType);
+						}
+					}
+
+					if (qns.utorId === utorId) {
+						newSeededQuestions.push(qns as QuestionBackEndType);
+					}
+				});
+			}
+
+			const allQuestions = await utmQuestCollections.Questions?.find({
+				courseId,
+				latest: true,
+			})
+				.sort({ date: -1 })
+				.toArray();
+
 			// these questions are sorted by score
-			const newQuestions: ScoredQuestion[] = [];
-			const scoredQuestions: ScoredQuestion[] = [];
+			// const newScoredQuestions: ScoredQuestion[] = [];
+			const oldScoredQuestions: ScoredQuestion[] = [];
 
 			allQuestions?.forEach((question: any) => {
 				const randomGen = seedrandom(
@@ -313,20 +363,20 @@ questionRouter.get(
 
 				const score = ComputeQuestionScore(question);
 				if (diff > 24 || utorId === question.utorId) {
-					scoredQuestions.push({ score, question });
+					oldScoredQuestions.push({ score, question });
 				} else if (showNewQuestions) {
-					newQuestions.push({ score, question });
+					// newScoredQuestions.push({ score, question });
 				}
 			});
 
-			newQuestions.sort(SortArrayByScore);
-			scoredQuestions.sort(SortArrayByScore);
+			// newScoredQuestions.sort(SortArrayByScore);
+			oldScoredQuestions.sort(SortArrayByScore);
 			res.status(200).send({
 				questions: [
-					...newQuestions.map((elem) =>
-						RemoveFieldsFromQuestion(elem.question)
-					),
-					...scoredQuestions.map((elem) =>
+					// ...newScoredQuestions.map((elem) =>
+					// 	RemoveFieldsFromQuestion(elem.question)
+					// ),
+					...oldScoredQuestions.map((elem) =>
 						RemoveFieldsFromQuestion(elem.question)
 					),
 				].slice((Number(page)-1)*10, Number(page)*10),
@@ -379,6 +429,7 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		dislikes: req.body.dislikes,
 		views: req.body.views,
 		viewers: req.body.viewers,
+		score: new Double(0),
 	};
 
 	const badge = await utmQuestCollections.Badges?.findOne({ utorId });
@@ -565,6 +616,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		dislikes: 0,
 		views: 0,
 		viewers: {},
+		score: 0,
 	};
 
 	const session = mongoDBConnection.startSession();
@@ -889,16 +941,30 @@ questionRouter.put("/rating", async (req: Request, res: Response) => {
 			rate
 		);
 
-		utmQuestCollections.Questions?.updateOne(question, {
-			$set: { rating: newRating },
-			$inc: newUpdate,
-		}).then((updateRes) => {
+
+		const computedQuestion = { ...question };
+
+		for (const [key, value] of Object.entries(newUpdate)) {
+			if (key === "likes") computedQuestion.likes += value;
+			if (key === "dislikes") computedQuestion.dislikes += value;
+		}
+
+		utmQuestCollections.Questions?.updateOne(question, 
+			{
+				$set: { 
+					rating: newRating,
+					score:  new Double(ComputeQuestionScore(computedQuestion)),
+				},
+				$inc: newUpdate,
+			},
+		).then((updateRes) => {
 			if (!updateRes) {
 				res.status(500).send({ error: "Unable to update rating" });
 				return;
 			}
 			res.status(200).send(updateRes);
 		});
+
 	} catch (error) {
 		res.status(500).send(error);
 	}
@@ -907,16 +973,6 @@ questionRouter.put("/rating", async (req: Request, res: Response) => {
 questionRouter.put(
 	"/incrementView/:qnsLink",
 	async (req: Request, res: Response) => {
-		const question = await utmQuestCollections.Questions?.findOne({
-			qnsLink: req.params.qnsLink,
-			latest: true,
-		});
-
-		if (!question) {
-			res.status(404).send({ error: "Could not find question." });
-			return;
-		}
-
 		const utorId = req.headers.utorid as string;
 
 		const user = await utmQuestCollections.Accounts?.findOne({ utorId });
@@ -926,25 +982,44 @@ questionRouter.put(
 			return;
 		}
 
-		const uniqueViewers = question.viewers;
+		const question: any = await utmQuestCollections.Questions?.findOne({
+			qnsLink: req.params.qnsLink,
+			latest: true,
+		});
+
+		if (!question) {
+			res.status(404).send({ error: "Could not find question." });
+			return;
+		}
+
+		const uniqueViewers = { ...question.viewers };
 		if (!(user.userId in uniqueViewers)) uniqueViewers[user.userId] = 1;
 
-		utmQuestCollections.Questions?.findOneAndUpdate(
-			{ qnsLink: req.params.qnsLink, latest: true },
-			{ $inc: { views: 1 }, $set: { viewers: uniqueViewers } }
-		)
-			.then((result) => {
-				if (result.value == null)
-					res.status(404).send({
-						error: "Unable to increment view count",
-					});
-			})
-			.then((response) => {
-				res.status(200).send(response);
-			})
-			.catch((error) => {
-				res.status(500).send({ error: error.message });
-			});
+		const computedQuestion = { ...question };
+		computedQuestion.views += 1;
+		
+		
+		utmQuestCollections.Questions?.updateOne(question,
+			{ 
+				$set: 
+					{ 
+						viewers: uniqueViewers,
+						score: new Double(ComputeQuestionScore(computedQuestion)),
+					},
+				$inc: { views: 1 }, 
+			}
+		).then((updateRes) => {
+			if (!updateRes) {
+				res.status(500).send({ error: "Unable to increment view count" });
+			}
+		})
+		.then((response) => {
+			res.status(200).send(response);
+		})
+		.catch((error) => {
+			console.log(error);
+			res.status(500).send({ error: error.message });
+		});
 	}
 );
 

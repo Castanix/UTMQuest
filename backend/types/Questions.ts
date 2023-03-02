@@ -29,6 +29,7 @@ interface BaseQuestionType {
 	dislikes: number;
 	views: number;
 	viewers: { [userId: string]: number };
+	score: number;
 }
 
 export interface QuestionBackEndType extends BaseQuestionType {

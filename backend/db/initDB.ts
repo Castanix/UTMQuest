@@ -300,6 +300,7 @@ async function initDB() {
 						"dislikes",
 						"views",
 						"viewers",
+						"score",
 					],
 					additionalProperties: false,
 					properties: {
@@ -437,6 +438,11 @@ async function initDB() {
 							bsonType: "object",
 							description:
 								"'viwers' is an object with key representing unique users who have viewed this question",
+						},
+						score: {
+							bsonType: "double",
+							description:
+								"'score' is a number representing the rating of a question",
 						},
 					},
 				},

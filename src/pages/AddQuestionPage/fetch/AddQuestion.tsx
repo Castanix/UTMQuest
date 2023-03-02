@@ -155,6 +155,7 @@ const AddQuestion = async (addableQns: QuestionFrontEndType, setRedirect: Functi
             setIsSubmit(false);
         })
         .catch((error) => {
+            console.log("help");
             message.error(error.message);
         });
 
