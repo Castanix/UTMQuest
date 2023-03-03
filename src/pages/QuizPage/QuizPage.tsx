@@ -123,7 +123,7 @@ const QuizPage = () => {
                                 <Text>Number of questions incorrect: {numIncorrect}</Text>
                                 <div className='quiz-options'>
                                     <Space direction={onMobile() ? "vertical" : "horizontal"} size="middle">
-                                        <Link to={`/courses/${courseId}`}><Button>Back to questions</Button></Link>
+                                        <Link to={`/courses/${courseId}/${pageList.currPage}`}><Button>Back to questions</Button></Link>
                                         <Button onClick={() => window.location.reload()}>Generate another quiz</Button>
                                     </Space>
                                 </div>
@@ -141,7 +141,7 @@ const QuizPage = () => {
                 <Result
                     title="No Multiple Choice questions available."
                     extra={
-                        <Link to={`/courses/${courseId}`}>
+                        <Link to={`/courses/${courseId}/${pageList.currPage}`}>
                             <Button type="primary">
                                 Back to courses
                             </Button>

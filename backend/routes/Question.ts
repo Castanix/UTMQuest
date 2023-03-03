@@ -171,10 +171,10 @@ questionRouter.get(
 	}
 );
 
-type ScoredQuestion = {
-	score: number;
-	question: QuestionBackEndType;
-};
+// type ScoredQuestion = {
+// 	score: number;
+// 	question: QuestionBackEndType;
+// };
 
 /* Compute the "helpful" score for each question. 
 Score should be prioritized as follows:
@@ -208,13 +208,13 @@ const ComputeQuestionScore = (question: QuestionBackEndType) => {
 	return engagementScore + uniqueViewBonus + repeatedViewBonus;
 };
 
-const SortArrayByScore = (q1: ScoredQuestion, q2: ScoredQuestion) => {
-	if (q1.score < q2.score) return 1;
+// const SortArrayByScore = (q1: ScoredQuestion, q2: ScoredQuestion) => {
+// 	if (q1.score < q2.score) return 1;
 
-	if (q1.score > q2.score) return -1;
+// 	if (q1.score > q2.score) return -1;
 
-	return 0;
-};
+// 	return 0;
+// };
 
 questionRouter.get(
 	"/generateQuiz/:courseId/:topicsGen/:numQnsGen",
@@ -292,7 +292,38 @@ questionRouter.get(
 			},
 		};
 
+		const oldQnsMatch = {
+			courseId,
+			latest: true,
+			$expr: {
+				$gte: [
+					{ $dateDiff: 
+						{ 
+							startDate: { $dateFromString: { dateString: "$date" } }, 
+							endDate: new Date(), 
+							unit: "hour" 
+						}
+					},
+					24
+				]
+			},
+		};
+
 		try {
+			const course = await utmQuestCollections.Courses?.findOne(
+				{ courseId, added: true }
+			);
+
+			if (!course) {
+				res.status(404).send(
+					{ error: "Could not find course" }
+				);
+
+				return;
+			}
+
+			const { numQns } = course;
+
 			/* Create a seed using the number of days between today     */
 			/* and the startingDate. This will allow different people   */
 			/* to view new questions daily.					  			*/
@@ -302,89 +333,78 @@ questionRouter.get(
 			const startingDate = new Date(2000, 1, 1); // starting date for seed
 			const currentDate = new Date();
 
-			let diff = currentDate.getTime() - startingDate.getTime();
+			const diff = currentDate.getTime() - startingDate.getTime();
 			const diffInDays = Math.ceil(diff / (1000 * 3600 * 24)).toString();
-
-			// const randomGen = seedrandom(
-			// 	diffInDays + utorId
-			// );
 
 			const newSeededQuestions: QuestionBackEndType[] = [];
 
-			if (Number(page) === 1) {
-				const newQuestions = await utmQuestCollections.Questions?.aggregate([
-					{ $match: newQnsMatch },
-				])
-					.sort({ _id: 1 })	
-					.toArray();
-	
-				
-				
-	
-				newQuestions?.forEach(qns => {
-					if (newSeededQuestions.length < 3) {
-						const randomGen = seedrandom(
-							diffInDays + utorId + qns._id
-						);
-	
-						if (randomGen() < 0.20) {
-							newSeededQuestions.push(qns as QuestionBackEndType);
-						}
-					}
+			const newQuestions = await utmQuestCollections.Questions?.aggregate([
+				{ $match: newQnsMatch },
+			])
+				.sort({ _id: 1 })	
+				.toArray();
+			
+			newQuestions?.forEach(qns => {
+				const {length} = newSeededQuestions;
+				if (length < 3) {
+					const randomGen = seedrandom(
+						diffInDays + utorId + qns._id
+					);
 
+					if (randomGen() < 0.20 || qns.utorId === utorId) { // chance of people seeing new questions, up to 3
+						newSeededQuestions.push(qns as QuestionBackEndType);
+					}
+				} else if (length < 10) {
 					if (qns.utorId === utorId) {
 						newSeededQuestions.push(qns as QuestionBackEndType);
 					}
-				});
-			}
-
-			const allQuestions = await utmQuestCollections.Questions?.find({
-				courseId,
-				latest: true,
-			})
-				.sort({ date: -1 })
-				.toArray();
-
-			// these questions are sorted by score
-			// const newScoredQuestions: ScoredQuestion[] = [];
-			const oldScoredQuestions: ScoredQuestion[] = [];
-
-			allQuestions?.forEach((question: any) => {
-				const randomGen = seedrandom(
-					diffInDays + utorId + question._id
-				);
-				const randomNum = randomGen();
-				const showNewQuestions = randomNum <= 1; // chance of people seeing new questions
-
-				const now = new Date();
-				diff =
-					(now.getTime() - new Date(question.date).getTime()) /
-					(60 * 60 * 1000);
-
-				const score = ComputeQuestionScore(question);
-				if (diff > 24 || utorId === question.utorId) {
-					oldScoredQuestions.push({ score, question });
-				} else if (showNewQuestions) {
-					// newScoredQuestions.push({ score, question });
 				}
 			});
 
-			// newScoredQuestions.sort(SortArrayByScore);
-			oldScoredQuestions.sort(SortArrayByScore);
-			res.status(200).send({
-				questions: [
-					// ...newScoredQuestions.map((elem) =>
-					// 	RemoveFieldsFromQuestion(elem.question)
-					// ),
-					...oldScoredQuestions.map((elem) =>
-						RemoveFieldsFromQuestion(elem.question)
-					),
-				].slice((Number(page)-1)*10, Number(page)*10),
-				totalNumQns: allQuestions?.length
-			});
+			const numNew = newSeededQuestions.length;
+
+			if (Number(page) === 1) {
+				const oldQuestions = await utmQuestCollections.Questions?.aggregate([
+					{ $match: oldQnsMatch },
+				])
+					.limit(10 - numNew)
+					.toArray() ?? [];
+
+				const questions = 
+					[
+						...newSeededQuestions.map((elem) =>
+							RemoveFieldsFromQuestion(elem)
+						),
+						...oldQuestions.map((elem) =>
+							RemoveFieldsFromQuestion(elem as QuestionBackEndType)
+						),
+					];
+
+				res.status(200).send({
+					questions,
+					totalNumQns: (questions.length === 10) ? numQns : questions.length,
+				});
+			} else {
+				const oldQuestions = await utmQuestCollections.Questions?.aggregate([
+					{ $match: oldQnsMatch }
+				])
+					.skip((Number(page) - 1) * 10 - numNew)
+					.limit(10)
+					.toArray() ?? [];
+
+				res.status(200).send({
+					questions: [
+						...oldQuestions.map((elem) =>
+							RemoveFieldsFromQuestion(elem as QuestionBackEndType)
+						),
+					],
+					totalNumQns: numQns
+				});
+			}
+
 			return;
 		} catch (error) {
-			res.status(500).send(error);
+			res.status(500).send( { error } );
 		}
 	}
 );
@@ -438,6 +458,17 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		res.status(404).send({
 			error: "Could not find badge progression for user.",
 		});
+
+		return;
+	}
+	
+	const course = await utmQuestCollections.Courses?.findOne({ courseId: req.body.courseId });
+
+	if (!course) {
+		res.status(404).send({
+			error: "Could not find course",
+		});
+
 		return;
 	}
 
@@ -447,6 +478,10 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		session.startTransaction();
 
 		await utmQuestCollections.Questions?.insertOne(question, { session });
+
+		await utmQuestCollections.Courses?.updateOne(course, 
+			{ $inc: { numQns: 1 } }
+		);
 
 		// Increment counter
 		await topicIncrementor(topicId, 1, session);
@@ -944,6 +979,8 @@ questionRouter.put("/rating", async (req: Request, res: Response) => {
 
 		const computedQuestion = { ...question };
 
+
+		// eslint-disable-next-line
 		for (const [key, value] of Object.entries(newUpdate)) {
 			if (key === "likes") computedQuestion.likes += value;
 			if (key === "dislikes") computedQuestion.dislikes += value;

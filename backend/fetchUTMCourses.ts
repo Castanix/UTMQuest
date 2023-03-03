@@ -1,5 +1,5 @@
 import axios from "axios";
-import connectDB, { mongoDBConnection, utmQuestCollections } from "./db/db.service";
+import connectDB, { utmQuestCollections } from "./db/db.service";
 
 const dataBody = {
 	courseCodeAndTitleProps: {
@@ -35,6 +35,7 @@ const fetchCourses = async () => {
 					courseId: item.code.substring(0, item.code.length - 2),
 					courseName: item.name,
 					numTopics: 0,
+					numQns: 0,
 					added: false,
 				};
 				utmQuestCollections.Courses?.insertOne(course)

@@ -23,7 +23,7 @@ const GetStateFromSessionStorage = (courseId: string) => {
     return { currentPage: 1, pageSize: 10, scrollY: 0, topicFilters: [] };
 };
 
-export const pageList = { currPage: 0 };
+const pageList = { currPage: 1 };
 
 /* anti-pattern here should change at some point */
 const QuestionState = (questions: QuestionFrontEndType[], courseId: string) => {
@@ -123,4 +123,7 @@ const QuestionState = (questions: QuestionFrontEndType[], courseId: string) => {
     };
 };
 
-export default QuestionState;
+export {
+    QuestionState,
+    pageList
+};

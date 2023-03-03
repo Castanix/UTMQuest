@@ -17,11 +17,11 @@ const Header = ({ courseId }:
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseId}/${pageList.currPage}`}>{courseId}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${courseId}/${pageList.currPage}`}>{ courseId }</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Text>Add a Question</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">
-            <Title level={3} ellipsis>Add a Question <div className="subtitle">&#8226; {courseId}</div></Title>
+            <Title level={3} ellipsis>Add a Question <div className="subtitle">&#8226; { courseId }</div></Title>
         </div>
     </div>
 );

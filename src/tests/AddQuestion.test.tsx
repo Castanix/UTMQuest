@@ -57,6 +57,7 @@ const question: QuestionFrontEndType = {
     dislikes: 0,
     views: 1,
     viewers: {},
+    score: 0,
 }
 
 

@@ -9,7 +9,7 @@ import { ThemeContext } from '../../components/Topbar/Topbar';
 import GetRelativeTime from '../../RelativeTime';
 
 import "./QuestionsList.css";
-import QuestionState from './QuestionState';
+import { QuestionState } from './QuestionState';
 import QuizGenerationMenu from '../QuizPage/QuizGenerationMenu';
 import Loading from '../../components/Loading/Loading';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
