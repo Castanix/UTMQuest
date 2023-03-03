@@ -274,6 +274,7 @@ questionRouter.get(
 	"/latestQuestions/:courseId/:page",
 	async (req: Request, res: Response) => {
 		const { courseId, page } = req.params;
+		const pageNum = Number(page);
 
 		const newQnsMatch = {
 			courseId,
@@ -322,8 +323,6 @@ questionRouter.get(
 				return;
 			}
 
-			const { numQns } = course;
-
 			/* Create a seed using the number of days between today     */
 			/* and the startingDate. This will allow different people   */
 			/* to view new questions daily.					  			*/
@@ -337,6 +336,7 @@ questionRouter.get(
 			const diffInDays = Math.ceil(diff / (1000 * 3600 * 24)).toString();
 
 			const newSeededQuestions: QuestionBackEndType[] = [];
+			const newUserQuestions: QuestionBackEndType[] = [];
 
 			const newQuestions = await utmQuestCollections.Questions?.aggregate([
 				{ $match: newQnsMatch },
@@ -346,61 +346,59 @@ questionRouter.get(
 			
 			newQuestions?.forEach(qns => {
 				const {length} = newSeededQuestions;
-				if (length < 3) {
+				if (length < 3 && qns.utorId !== utorId) {
 					const randomGen = seedrandom(
 						diffInDays + utorId + qns._id
 					);
 
-					if (randomGen() < 0.20 || qns.utorId === utorId) { // chance of people seeing new questions, up to 3
-						newSeededQuestions.push(qns as QuestionBackEndType);
-					}
-				} else if (length < 10) {
-					if (qns.utorId === utorId) {
+					if (randomGen() < 0.20) { // chance of people seeing new questions per day, up to 3
 						newSeededQuestions.push(qns as QuestionBackEndType);
 					}
 				}
+
+				if (qns.utorId === utorId) newUserQuestions.push(qns as QuestionBackEndType);
 			});
 
-			const numNew = newSeededQuestions.length;
+			const combinedNewQuestions = [...newSeededQuestions, ...newUserQuestions];
+			const sentNewQuestions =  combinedNewQuestions.slice((pageNum - 1) * 10, pageNum * 10);
+			const combinedNewNum = combinedNewQuestions.length;
+			const sentNewNum = sentNewQuestions.length;
 
-			if (Number(page) === 1) {
-				const oldQuestions = await utmQuestCollections.Questions?.aggregate([
-					{ $match: oldQnsMatch },
-				])
-					.limit(10 - numNew)
-					.toArray() ?? [];
+			const totalNumQns = combinedNewNum + (course.numQns - (newQuestions ? newQuestions.length : 0));
 
-				const questions = 
-					[
-						...newSeededQuestions.map((elem) =>
-							RemoveFieldsFromQuestion(elem)
-						),
-						...oldQuestions.map((elem) =>
-							RemoveFieldsFromQuestion(elem as QuestionBackEndType)
-						),
-					];
+			console.log("sentNewNum: ", sentNewNum);
 
+			if (sentNewNum === 10) {
 				res.status(200).send({
-					questions,
-					totalNumQns: (questions.length === 10) ? numQns : questions.length,
+					questions: sentNewQuestions,
+					totalNumQns,
 				});
-			} else {
-				const oldQuestions = await utmQuestCollections.Questions?.aggregate([
-					{ $match: oldQnsMatch }
-				])
-					.skip((Number(page) - 1) * 10 - numNew)
-					.limit(10)
-					.toArray() ?? [];
 
-				res.status(200).send({
-					questions: [
-						...oldQuestions.map((elem) =>
-							RemoveFieldsFromQuestion(elem as QuestionBackEndType)
-						),
-					],
-					totalNumQns: numQns
-				});
+				return;
 			}
+
+
+			const oldQuestions = await utmQuestCollections.Questions?.aggregate([
+				{ $match: oldQnsMatch },
+			])
+				.skip(pageNum === 1 ? 0 : (pageNum - 1) * 10 - (Math.floor(combinedNewNum / 10) * 10 + combinedNewNum % 10))
+				.limit(10 - sentNewNum)
+				.toArray() ?? [];
+
+			const questions = 
+				[
+					...sentNewQuestions.map((elem) =>
+						RemoveFieldsFromQuestion(elem)
+					),
+					...oldQuestions.map((elem) =>
+						RemoveFieldsFromQuestion(elem as QuestionBackEndType)
+					),
+				];
+
+			res.status(200).send({
+				questions,
+				totalNumQns,
+			});
 
 			return;
 		} catch (error) {
@@ -976,9 +974,7 @@ questionRouter.put("/rating", async (req: Request, res: Response) => {
 			rate
 		);
 
-
 		const computedQuestion = { ...question };
-
 
 		// eslint-disable-next-line
 		for (const [key, value] of Object.entries(newUpdate)) {
