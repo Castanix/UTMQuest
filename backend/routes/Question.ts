@@ -366,8 +366,6 @@ questionRouter.get(
 
 			const totalNumQns = combinedNewNum + (course.numQns - (newQuestions ? newQuestions.length : 0));
 
-			console.log("sentNewNum: ", sentNewNum);
-
 			if (sentNewNum === 10) {
 				res.status(200).send({
 					questions: sentNewQuestions,
@@ -377,11 +375,10 @@ questionRouter.get(
 				return;
 			}
 
-
 			const oldQuestions = await utmQuestCollections.Questions?.aggregate([
 				{ $match: oldQnsMatch },
 			])
-				.skip(pageNum === 1 ? 0 : (pageNum - 1) * 10 - (Math.floor(combinedNewNum / 10) * 10 + combinedNewNum % 10))
+				.skip((pageNum - 1 - Math.floor(combinedNewNum / 10)) * 10 - (pageNum - 1 <= Math.floor(combinedNewNum / 10) ? 0 : combinedNewNum % 10))
 				.limit(10 - sentNewNum)
 				.toArray() ?? [];
 
