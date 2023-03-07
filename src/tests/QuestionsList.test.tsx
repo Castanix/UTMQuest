@@ -92,10 +92,12 @@ const questions: QuestionFrontEndType[] = [
 
 let document: HTMLElement;
 
+// queryStatus={{ fetchData: { questions, totalNumQns: 2 }, loading: false, error: false }} topics={topics} 
+
 beforeEach(() => {
     const { container } = render(
         <QueryClientProvider client={queryClient}>
-            <QuestionsList queryStatus={{ fetchData: { questions, totalNumQns: 2 }, loading: false, error: false }}topics={topics} courseId="test" />
+            <QuestionsList courseId="test" />
         </QueryClientProvider>,
         { wrapper: BrowserRouter }
     );

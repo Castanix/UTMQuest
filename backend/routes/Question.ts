@@ -273,12 +273,18 @@ questionRouter.get(
 questionRouter.get(
 	"/latestQuestions/:courseId/:page",
 	async (req: Request, res: Response) => {
+
 		const { courseId, page } = req.params;
+		const { utorid: utorId, topics: topicFilters, search: searchFilter } = req.headers;
 		const pageNum = Number(page);
+		const topics = JSON.parse(topicFilters as string);
+		const search = searchFilter as string;
 
 		const newQnsMatch = {
 			courseId,
 			latest: true,
+			...(topics.length > 0 && {topicName: { $in: topics }}),
+			...(search.length > 0 && {qnsName: { $regex: search }}),
 			$expr: {
 				$lt: [
 					{ $dateDiff: 
@@ -296,6 +302,8 @@ questionRouter.get(
 		const oldQnsMatch = {
 			courseId,
 			latest: true,
+			...(topics.length > 0 && {topicName: { $in: topics }}),
+			...(search.length > 0 && {qnsName: { $regex: search }}),
 			$expr: {
 				$gte: [
 					{ $dateDiff: 
@@ -326,8 +334,6 @@ questionRouter.get(
 			/* Create a seed using the number of days between today     */
 			/* and the startingDate. This will allow different people   */
 			/* to view new questions daily.					  			*/
-
-			const { utorid: utorId } = req.headers;
 
 			const startingDate = new Date(2000, 1, 1); // starting date for seed
 			const currentDate = new Date();
