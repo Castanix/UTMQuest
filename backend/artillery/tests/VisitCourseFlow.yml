@@ -1,0 +1,33 @@
+config:
+    target: "http://localhost:5001/api"
+    phases:
+        - duration: 60
+          arrivalRate: 20
+          name: Warm up
+        - duration: 120
+          arrivalRate: 2
+          rampTo: 100
+          name: Ramp up load
+        - duration: 500
+          arrivalRate: 100
+          name: Sustained load
+    defaults:
+        headers:
+            utorid: "dummy22"
+    payload:
+        - path: "../courses.txt"
+          fields:
+              - "courseId"
+          loadAll: true
+
+scenarios:
+    - name: "Go to a Course"
+    
+      flow:
+          - get:
+                url: "/course/getAllCourses"
+          - think: 1
+          - get:
+                url: "/course/getCourse/{{ courseId }}"
+          - get:
+                url: "/account/checkBookmark/{{ courseId }}"
