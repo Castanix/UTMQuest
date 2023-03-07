@@ -451,7 +451,7 @@ async function initDB() {
 					.createIndex({ qnsLink: 1, latest: 1 }),
 				db
 					.collection("Questions")
-					.createIndex({ courseId: 1, latest: 1 }),
+					.createIndex({ courseId: 1, latest: 1, date: 1 }),
 			])
 				.then(() => {
 					console.log("Added indexes for Questions");

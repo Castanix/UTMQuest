@@ -1,12 +1,25 @@
 import { Request, Response, Router } from "express";
 import { utmQuestCollections } from "../db/db.service";
+import redisClient from "../redis/setup";
+import { DEFAULT_MAX_VERSION } from "tls";
 
 const courseRouter = Router();
 
 courseRouter.get("/getAllCourses", async (req: Request, res: Response) => {
 	try {
-		const courseLst = await utmQuestCollections.Courses?.find().toArray();
-		res.status(200).send(courseLst);
+		const redisData = await redisClient.get('course').catch((error) => {
+			if (error) console.log(error);
+		});
+
+		if (redisData != null) {
+			return res.json(JSON.parse(redisData));
+		}
+		else {
+			const courseLst = await utmQuestCollections.Courses?.find().toArray();
+			redisClient.set('course', JSON.stringify(courseLst));
+			redisClient.expire('course', 10);
+			res.status(200).send(courseLst);
+		}
 	} catch (error) {
 		res.status(500).send(error);
 	}

@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import path from "path";
 import connectDB from "./db/db.service";
 import apiRouter from "./api";
+import redisClient from "./redis/setup";
 // import fetchCourses from "./fetchUTMCourses";
 
 const app = express();
@@ -44,11 +45,13 @@ app.get("/*", (req, res) => {
 connectDB()
 	.then(async () => {
 		app.listen(port, () => console.log(`Listening on port ${port}`));
-
+		redisClient.on('error', err => console.log('Redis Client Error', err));
+		await redisClient.connect();
 		// fetchCourses();
 	})
-	.catch((error: Error) => {
+	.catch(async (error: Error) => {
 		console.error(`Error could not connect to db: ${error}`);
+		await redisClient.disconnect();
 	});
 
 export default app;
