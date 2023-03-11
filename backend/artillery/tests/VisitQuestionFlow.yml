@@ -2,14 +2,14 @@ config:
     target: "http://localhost:5001/api"
     phases:
         - duration: 60
-          arrivalRate: 5
+          arrivalRate: 10
           name: Warm up
         - duration: 120
           arrivalRate: 2
-          rampTo: 25
+          rampTo: 50
           name: Ramp up load
         - duration: 500
-          arrivalRate: 25
+          arrivalRate: 50
           name: Sustained load
     defaults:
         headers:
@@ -23,6 +23,10 @@ config:
           fields:
               - "courseId"
           loadAll: true
+        - path: "../pages.txt"
+          fields:
+              - "page"
+          loadAll: true
 
 scenarios:
     - name: "Go to a question"
@@ -34,7 +38,7 @@ scenarios:
           - get:
                 url: "/topic/getTopics/{{ courseId }}"
           - get:
-                url: "/question/latestQuestions/{{ courseId }}"
+                url: "/question/latestQuestions/{{ courseId }}/{{ page }}"
           - think: 5
           - get:
                 url: "/question/oneQuestion/{{ qnsLink }}"

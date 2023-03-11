@@ -25,6 +25,19 @@ export const mockTopics = (numCourses: number, topicsPerCourse: number, qnsPerTo
 		};
 	};
 
+	let count = 1;
+	for (let i = 0; i < topicsPerCourse * qnsPerTopic; i++) {
+		if (i % 10 === 0) {
+			fs.writeFileSync(
+				path.join(__dirname, "../../artillery/pages.txt"),
+				count + "\n"
+			);
+
+			count++;
+		}
+	};
+	
+
 	fs.writeFileSync(
 		path.join(__dirname, "../../artillery/topics.csv"),
 		topicIdName.join("\n")
