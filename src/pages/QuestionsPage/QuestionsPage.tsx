@@ -1,7 +1,7 @@
 import { Breadcrumb, Button, Card, Space, Typography } from 'antd';
 import { QueryClient, useQueryClient } from 'react-query';
 import Title from 'antd/es/typography/Title';
-import React, { SetStateAction, createContext, useContext, useEffect, useState } from 'react';
+import React, { SetStateAction, createContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { SettingTwoTone, StarFilled, StarOutlined } from '@ant-design/icons';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
@@ -11,7 +11,6 @@ import { CheckBookmark, BookmarkCourse } from './fetch/BookmarkCourse';
 import GetAllTopics from '../ManageTopics/fetch/GetTopics';
 import { GetStateFromSessionStorage } from './QuestionState';
 import GetQuestions from './fetch/GetQuestions';
-import { ThemeContext } from '../../components/Topbar/Topbar';
 
 
 
@@ -73,8 +72,6 @@ const QuestionsPage = () => {
     const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
     const { loadingBookmarked, errorBookmarked, loadingCourse, errorCourse, courseName } = CheckBookmark(courseId, setIsBookmarked);
 
-    const isLightMode = useContext(ThemeContext);
-
     useEffect(() => {
         refetch();
     }, [refetch, topicFilters, searchFilter]);
@@ -87,12 +84,13 @@ const QuestionsPage = () => {
     return (
         <Card title={<Header courseId={courseId} courseName={courseName} bookmarked={isBookmarked} setBookmarked={setIsBookmarked} client={queryClient} />} bordered={false}>
             {
+                // eslint-disable-next-line no-nested-ternary
                 loadingQuestions 
                     ? <Loading />
                     : (errorQuestions instanceof Error)
                         ? <ErrorMessage title={errorQuestions.message} link="." message="Refresh" />
                         : <main className='main-container'>
-                            <QuestionsList questionsData={questionsData} courseId={courseId} topics={topics} setTopicFilters={setTopicFilters} setSearchFilter={setSearchFilter} lightMode={isLightMode}/>
+                            <QuestionsList questionsData={questionsData} courseId={courseId} topics={topics} setTopicFilters={setTopicFilters} setSearchFilter={setSearchFilter} />
                         </main>
             }
         </Card>

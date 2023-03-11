@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TopicsFrontEndType } from '../../backend/types/Topics';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { QuestionsList } from '../pages/QuestionsPage/QuestionsList';
@@ -92,12 +92,13 @@ const questions: QuestionFrontEndType[] = [
 
 let document: HTMLElement;
 
-// queryStatus={{ fetchData: { questions, totalNumQns: 2 }, loading: false, error: false }} topics={topics} 
-
 beforeEach(() => {
+    const [topicFilters, setTopicFilters] = useState<Set<string>>(new Set());
+    const [searchFilter, setSearchFilter] = useState<string>("");
+
     const { container } = render(
         <QueryClientProvider client={queryClient}>
-            <QuestionsList courseId="test" />
+            <QuestionsList questionsData={{ questions, totalNumQns: 2 }} courseId="test" topics={topics} setTopicFilters={setTopicFilters} setSearchFilter={setSearchFilter} />
         </QueryClientProvider>,
         { wrapper: BrowserRouter }
     );

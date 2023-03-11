@@ -1,6 +1,6 @@
 import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, CheckCircleFilled } from '@ant-design/icons';
 import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography } from 'antd';
-import React, { SetStateAction } from 'react';
+import React, { SetStateAction, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionFrontEndType } from '../../../backend/types/Questions';
 import DisplayBadges from '../../components/DisplayBadges/DisplayBadges';
@@ -10,20 +10,14 @@ import "./QuestionsList.css";
 import QuizGenerationMenu from '../QuizPage/QuizGenerationMenu';
 import { TopicsFrontEndType } from '../../../backend/types/Topics';
 import { QuestionState } from './QuestionState';
+import { ThemeContext } from '../../components/Topbar/Topbar';
 
 const { Option } = Select;
-
-// type QueryType = {
-//     loading: boolean;
-//     fetchData: any;
-//     error: unknown;
-//     refetch: Function;
-// };
 
 type QuestionsDataType = {
     questions: QuestionFrontEndType[],
     totalNumQns: number,
-}
+};
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
     <Space>
@@ -67,8 +61,8 @@ const GetRating = (rating: Object) => {
     return false;
 };
 
-const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSearchFilter, lightMode }: 
-    { questionsData: QuestionsDataType, courseId: string, topics: TopicsFrontEndType[], setTopicFilters: React.Dispatch<SetStateAction<Set<string>>>, setSearchFilter: React.Dispatch<SetStateAction<string>>, lightMode: boolean }) => {
+const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSearchFilter }: 
+    { questionsData: QuestionsDataType, courseId: string, topics: TopicsFrontEndType[], setTopicFilters: React.Dispatch<SetStateAction<Set<string>>>, setSearchFilter: React.Dispatch<SetStateAction<string>> }) => {
     // Note: may not be needed if pagination is limited to 10 per page
     // useEffect(() => {
 
@@ -81,18 +75,18 @@ const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSe
     //     };
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
     // }, []);
+    const isLightMode = useContext(ThemeContext);
+
     const { questions, totalNumQns } = questionsData;
 
     const {
-        // data,
         searchTerm,
         currTopicFilters,
         onSearchChange,
         sessionState,
         onPaginationChange,
         onTopicFilterChange,
-        // onScroll
-    } = QuestionState(questions, courseId, setTopicFilters, setSearchFilter);
+    } = QuestionState(courseId, setTopicFilters, setSearchFilter);
 
     const options: React.ReactNode[] = [];
 
@@ -156,7 +150,7 @@ const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSe
                             <List.Item.Meta
                                 className='question-list-meta'
                                 avatar={
-                                    <div className={`question-list-img ${lightMode ? 'light' : 'dark'}`}>
+                                    <div className={`question-list-img ${ isLightMode ? 'light' : 'dark'}`}>
                                         {anon ?
                                             <QuestionOutlined />
                                             :
