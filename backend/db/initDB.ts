@@ -235,22 +235,22 @@ async function initDB() {
 
 			// db.collection("Topics").createIndex({ courseId: 1 });
 
-			// await Promise.all([
-			// 	db.collection("Topics").createIndex(
-			// 		{ topicName: 1, courseId: 1 },
-			// 		{
-			// 			collation: { locale: "en", strength: 2 },
-			// 			unique: true,
-			// 		}
-			// 	),
-			// 	db.collection("Topics").createIndex({ courseId: 1 }),
-			// ])
-			// 	.then(() => {
-			// 		console.log("Added indexes for Topics");
-			// 	})
-			// 	.catch(() => {
-			// 		console.log("Error creating indexes for Topics");
-			// 	});
+			await Promise.all([
+				db.collection("Topics").createIndex(
+					{ topicName: 1, courseId: 1 },
+					{
+						collation: { locale: "en", strength: 2 },
+						unique: true,
+					}
+				),
+				db.collection("Topics").createIndex({ courseId: 1 }),
+			])
+				.then(() => {
+					console.log("Added indexes for Topics");
+				})
+				.catch(() => {
+					console.log("Error creating indexes for Topics");
+				});
 		})
 		.catch(() => {
 			console.log(
