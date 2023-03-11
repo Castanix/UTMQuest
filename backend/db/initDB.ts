@@ -112,7 +112,7 @@ async function initDB() {
 				$jsonSchema: {
 					bsonType: "object",
 					title: "Courses Object Validation",
-					required: ["courseId", "courseName", "numTopics", "added"],
+					required: ["courseId", "courseName", "numTopics", "numQns", "added"],
 					additionalProperties: false,
 					properties: {
 						_id: {
@@ -133,6 +133,11 @@ async function initDB() {
 							bsonType: "int",
 							description:
 								"'numTopics' must be an int and is required",
+						},
+						numQns: {
+							bsonType: "int",
+							description:
+								"'numQns' must be an int and is required",
 						},
 						added: {
 							bsonType: "bool",
@@ -300,6 +305,7 @@ async function initDB() {
 						"dislikes",
 						"views",
 						"viewers",
+						"score",
 					],
 					additionalProperties: false,
 					properties: {
@@ -438,6 +444,11 @@ async function initDB() {
 							description:
 								"'viwers' is an object with key representing unique users who have viewed this question",
 						},
+						score: {
+							bsonType: "double",
+							description:
+								"'score' is a number representing the rating of a question",
+						},
 					},
 				},
 			},
@@ -451,7 +462,7 @@ async function initDB() {
 					.createIndex({ qnsLink: 1, latest: 1 }),
 				db
 					.collection("Questions")
-					.createIndex({ courseId: 1, latest: 1 }),
+					.createIndex({ courseId: 1, latest: 1, score: -1 }),
 			])
 				.then(() => {
 					console.log("Added indexes for Questions");

@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow, no-unused-vars */
 
-import { ObjectId } from "mongodb";
+import { Double, ObjectId } from "mongodb";
 
 export enum qnsTypeEnum {
 	mc = "mc",
@@ -35,9 +35,11 @@ export interface QuestionBackEndType extends BaseQuestionType {
 	_id: ObjectId;
 	topicId: ObjectId;
 	utorId: string;
+	score: Double;
 }
 
 export interface QuestionFrontEndType extends BaseQuestionType {
 	_id: string;
 	topicId: string;
+	score: number;
 }

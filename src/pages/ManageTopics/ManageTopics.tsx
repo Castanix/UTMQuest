@@ -5,6 +5,7 @@ import Loading from '../../components/Loading/Loading';
 import GetAllTopics from './fetch/GetTopics';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import TopicsTable from './TopicsTable';
+import { pageList } from '../QuestionsPage/QuestionState';
 
 const { Text, Title } = Typography;
 
@@ -13,7 +14,7 @@ const Header = ({ courseId, title }:
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseId}`}>{courseId}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${courseId}/${pageList.currPage}`}>{courseId}</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Text>Topics</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="title">

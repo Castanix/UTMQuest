@@ -19,6 +19,7 @@ import GetRelativeTime from "../../RelativeTime";
 import { ThemeContext } from "../../components/Topbar/Topbar";
 import QuestionRater from "../../components/QuestionRater/QuestionRater";
 import { QuizDependencyTypes } from "../QuizPage/QuizPage";
+import { pageList } from "../QuestionsPage/QuestionState";
 
 const { Text, Title } = Typography;
 
@@ -80,7 +81,7 @@ const Header = ({ question }: { question: QuestionFrontEndType }) => (
         {!onMobile() ?
             <Breadcrumb>
                 <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-                <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}>{question.courseId}</Link></Breadcrumb.Item>
+                <Breadcrumb.Item><Link to={`/courses/${question.courseId}/${pageList.currPage}`}>{question.courseId}</Link></Breadcrumb.Item>
                 <Breadcrumb.Item>
                     <Text
                         style={{ width: 100 }}
@@ -91,7 +92,7 @@ const Header = ({ question }: { question: QuestionFrontEndType }) => (
             </Breadcrumb>
             :
             <Breadcrumb>
-                <Breadcrumb.Item><Link to={`/courses/${question.courseId}`}><CaretLeftOutlined />{question.courseId}</Link></Breadcrumb.Item>
+                <Breadcrumb.Item><Link to={`/courses/${question.courseId}/${pageList.currPage}`}><CaretLeftOutlined />{question.courseId}</Link></Breadcrumb.Item>
             </Breadcrumb>
         }
         <div className="title">

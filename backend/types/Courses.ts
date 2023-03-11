@@ -9,8 +9,10 @@ interface BaseCoursesType {
 
 export interface CoursesFrontEndType extends BaseCoursesType {
 	_id: string;
+
 }
 
 export interface CoursesBackEndType extends BaseCoursesType {
 	_id: ObjectId;
+	numQns: number;
 }

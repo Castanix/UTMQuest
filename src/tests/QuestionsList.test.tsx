@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TopicsFrontEndType } from '../../backend/types/Topics';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { QuestionsList } from '../pages/QuestionsPage/QuestionsList';
@@ -60,6 +60,7 @@ const questions: QuestionFrontEndType[] = [
         dislikes: 0,
         views: 1,
         viewers: {},
+        score: 0,
     },
     {
         _id: 'abcde',
@@ -85,15 +86,19 @@ const questions: QuestionFrontEndType[] = [
         dislikes: 0,
         views: 1,
         viewers: {},
+        score: 0,
     },
 ]
 
 let document: HTMLElement;
 
 beforeEach(() => {
+    const [topicFilters, setTopicFilters] = useState<Set<string>>(new Set());
+    const [searchFilter, setSearchFilter] = useState<string>("");
+
     const { container } = render(
         <QueryClientProvider client={queryClient}>
-            <QuestionsList questions={questions} topics={topics} courseId="test" />
+            <QuestionsList questionsData={{ questions, totalNumQns: 2 }} courseId="test" topics={topics} setTopicFilters={setTopicFilters} setSearchFilter={setSearchFilter} />
         </QueryClientProvider>,
         { wrapper: BrowserRouter }
     );

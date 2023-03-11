@@ -29,3 +29,4 @@ yarn-error.log*
 /backend/artillery/courses.txt
 /backend/artillery/questions.txt
 /backend/artillery/reports
+/backend/artillery/topics.csv
