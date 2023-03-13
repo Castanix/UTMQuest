@@ -4,6 +4,8 @@ import { ClientSession, ObjectId } from "mongodb";
 import seedrandom from "seedrandom";
 import { utmQuestCollections, mongoDBConnection } from "../db/db.service";
 import { qnsTypeEnum, QuestionBackEndType } from "../types/Questions";
+import redisClient from "../redis/setup";
+import { DEFAULT_MAX_VERSION } from "tls";
 
 const questionRouter = Router();
 
@@ -274,13 +276,11 @@ questionRouter.get(
 	"/latestQuestions/:courseId",
 	async (req: Request, res: Response) => {
 		try {
-			const allQuestions = await utmQuestCollections.Questions?.find({
-				courseId: req.params.courseId,
-				latest: true,
-			})
-				.sort({ date: -1 })
-				.toArray();
-
+			const redisData = await redisClient.get(`questions${req.params.courseId}`)
+				.catch((error) => {
+					if (error) console.error(error);
+				});
+			
 			/* Create a seed using the number of days between today     */
 			/* and the startingDate. This will allow different people   */
 			/* to view new questions daily.					  			*/
@@ -293,41 +293,87 @@ questionRouter.get(
 			let diff = currentDate.getTime() - startingDate.getTime();
 			const diffInDays = Math.ceil(diff / (1000 * 3600 * 24)).toString();
 
-			// these questions are sorted by score
-			const newQuestions: ScoredQuestion[] = [];
-			const scoredQuestions: ScoredQuestion[] = [];
+			if (redisData != null) {
 
-			allQuestions?.forEach((question: any) => {
-				const randomGen = seedrandom(
-					diffInDays + utorId + question._id
-				);
-				const randomNum = randomGen();
-				const showNewQuestions = randomNum <= 1; // chance of people seeing new questions
+				// Need to pull questions that are new
+				const allNewQuestions = await utmQuestCollections.Questions?.find({
+					courseId: req.params.courseId,
+					latest: true,
+					date: { $gte: new Date(Date.now() - 246060*1000).toISOString() }
+				})
+					.sort({ date: -1 })
+					.toArray();
 
-				const now = new Date();
-				diff =
-					(now.getTime() - new Date(question.date).getTime()) /
-					(60 * 60 * 1000);
+				const newQuestions: ScoredQuestion[] = [];
+				
+				allNewQuestions?.forEach((question: any) => {
+					const randomGen = seedrandom(
+						diffInDays + utorId + question._id
+					);
 
-				const score = ComputeQuestionScore(question);
-				if (diff > 24 || utorId === question.utorId) {
-					scoredQuestions.push({ score, question });
-				} else if (showNewQuestions) {
-					newQuestions.push({ score, question });
-				}
-			});
+					const randomNum = randomGen();
+					const showNewQuestions = randomNum <= 1; // chance of people seeing new questions
 
-			newQuestions.sort(SortArrayByScore);
-			scoredQuestions.sort(SortArrayByScore);
-			res.status(200).send([
-				...newQuestions.map((elem) =>
-					RemoveFieldsFromQuestion(elem.question)
-				),
-				...scoredQuestions.map((elem) =>
-					RemoveFieldsFromQuestion(elem.question)
-				),
-			]);
-			return;
+					if (showNewQuestions) {
+						const score = ComputeQuestionScore(question);
+						newQuestions.push({ score, question });
+					}
+				});
+
+				res.status(200).send([
+					...newQuestions.map((elem) => RemoveFieldsFromQuestion(elem.question)),
+					...redisData
+				]);
+			} else {
+				const allQuestions = await utmQuestCollections.Questions?.find({
+					courseId: req.params.courseId,
+					latest: true,
+				})
+					.sort({ date: -1 })
+					.toArray();
+	
+				// these questions are sorted by score
+				const newQuestions: ScoredQuestion[] = [];
+				const scoredQuestions: ScoredQuestion[] = [];
+	
+				allQuestions?.forEach((question: any) => {
+					const randomGen = seedrandom(
+						diffInDays + utorId + question._id
+					);
+					const randomNum = randomGen();
+					const showNewQuestions = randomNum <= 1; // chance of people seeing new questions
+	
+					const now = new Date();
+					diff =
+						(now.getTime() - new Date(question.date).getTime()) /
+						(60 * 60 * 1000);
+	
+					const score = ComputeQuestionScore(question);
+					if (diff > 24 || utorId === question.utorId) {
+						scoredQuestions.push({ score, question });
+					} else if (showNewQuestions) {
+						newQuestions.push({ score, question });
+					}
+				});
+	
+				newQuestions.sort(SortArrayByScore);
+				scoredQuestions.sort(SortArrayByScore);
+
+				const newQuestionsR = newQuestions.map((elem) => RemoveFieldsFromQuestion(elem.question));
+				const scoredQuestionsR = scoredQuestions.map((elem) => RemoveFieldsFromQuestion(elem.question));
+				
+
+				redisClient.set(`questions${req.params.courseId}`, JSON.stringify(scoredQuestionsR));
+				// const todayEnd = new Date().setHours(23, 59, 59, 999);
+				// redisClient.expireAt(`questions${req.params.courseId}`, todayEnd/1000);
+				redisClient.expire(`questions${req.params.courseId}`, 86400);
+
+				res.status(200).send([
+					...newQuestionsR,
+					...scoredQuestionsR
+				]);
+				return;
+			}
 		} catch (error) {
 			res.status(500).send(error);
 		}
