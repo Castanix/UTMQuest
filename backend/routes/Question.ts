@@ -352,7 +352,7 @@ questionRouter.get(
 			newQuestions?.forEach(qns => {
 				if (qns.utorId !== utorId) {
 					const randomGen = seedrandom(
-						diffInDays + utorId + qns.id
+						diffInDays + utorId + qns._id
 					);
 
 					if (randomGen() < 0.20) {

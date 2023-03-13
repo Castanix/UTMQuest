@@ -27,7 +27,7 @@ export const mockQuestions = (qnsPerTopic: number) => {
 			const isAnon = index % 2 === 0;
 
 			const date = new Date();
-			date.setDate(date.getDate() - Math.floor(Math.random() * 2));
+			date.setDate(date.getDate() - Math.floor(Math.random() * 14));
 
 			mockedQuestions.push({
 				_id: someId,
