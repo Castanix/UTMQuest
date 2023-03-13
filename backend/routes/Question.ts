@@ -342,35 +342,32 @@ questionRouter.get(
 			const diffInDays = Math.ceil(diff / (1000 * 3600 * 24)).toString();
 
 			const newSeededQuestions: QuestionBackEndType[] = [];
-			const newUserQuestions: QuestionBackEndType[] = [];
 
 			const newQuestions = await utmQuestCollections.Questions?.aggregate([
 				{ $match: newQnsMatch },
 			])
-				.sort({ _id: 1 })	
+				.sort({ score: -1 })	
 				.toArray();
 			
 			newQuestions?.forEach(qns => {
-				const {length} = newSeededQuestions;
-				if (length < 3 && qns.utorId !== utorId) {
+				if (qns.utorId !== utorId) {
 					const randomGen = seedrandom(
-						diffInDays + utorId + qns._id
+						diffInDays + utorId + qns.id
 					);
 
-					if (randomGen() < 0.20) { // chance of people seeing new questions per day, up to 3
+					if (randomGen() < 0.20) {
 						newSeededQuestions.push(qns as QuestionBackEndType);
 					}
 				}
 
-				if (qns.utorId === utorId) newUserQuestions.push(qns as QuestionBackEndType);
+				if (qns.utorId === utorId) newSeededQuestions.push(qns as QuestionBackEndType);
 			});
 
-			const combinedNewQuestions = [...newSeededQuestions, ...newUserQuestions];
-			const sentNewQuestions =  combinedNewQuestions.slice((pageNum - 1) * 10, pageNum * 10);
-			const combinedNewNum = combinedNewQuestions.length;
+			const sentNewQuestions =  newSeededQuestions.slice((pageNum - 1) * 10, pageNum * 10);
+			const seededNewNum = newSeededQuestions.length;
 			const sentNewNum = sentNewQuestions.length;
 
-			const totalNumQns = combinedNewNum + (course.numQns - (newQuestions ? newQuestions.length : 0));
+			const totalNumQns = seededNewNum + (course.numQns - (newQuestions ? newQuestions.length : 0));
 
 			if (sentNewNum === 10) {
 				res.status(200).send({
@@ -384,7 +381,7 @@ questionRouter.get(
 			const oldQuestions = await utmQuestCollections.Questions?.aggregate([
 				{ $match: oldQnsMatch },
 			])
-				.skip((pageNum - 1 - Math.floor(combinedNewNum / 10)) * 10 - (pageNum - 1 <= Math.floor(combinedNewNum / 10) ? 0 : combinedNewNum % 10))
+				.skip((pageNum - 1 - Math.floor(seededNewNum / 10)) * 10 - (pageNum - 1 <= Math.floor(seededNewNum / 10) ? 0 : seededNewNum % 10))
 				.limit(10 - sentNewNum)
 				.toArray() ?? [];
 
