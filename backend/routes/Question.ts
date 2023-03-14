@@ -320,6 +320,8 @@ questionRouter.get(
 					}
 				});
 
+				newQuestions.sort(SortArrayByScore);
+
 				res.status(200).send([
 					...newQuestions.map((elem) => RemoveFieldsFromQuestion(elem.question)),
 					...redisData
