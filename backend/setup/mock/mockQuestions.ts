@@ -26,6 +26,9 @@ export const mockQuestions = (qnsPerTopic: number) => {
 
 			const isAnon = index % 2 === 0;
 
+			const date = new Date();
+			date.setDate(date.getDate() - 10);
+
 			mockedQuestions.push({
 				_id: someId,
 				qnsLink: someId.toString(),
@@ -45,7 +48,7 @@ export const mockQuestions = (qnsPerTopic: number) => {
 				utorName: isAnon ? "Anonymous" : randAccount.utorName,
 				userId: randAccount.userId,
 				anonId: randAccount.anonId,
-				date: new Date().toISOString(),
+				date: date.toISOString(),
 				numDiscussions: 0,
 				anon: isAnon,
 				latest: true,
