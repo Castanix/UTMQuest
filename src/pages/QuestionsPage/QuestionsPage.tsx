@@ -1,7 +1,7 @@
 import { Breadcrumb, Button, Card, Space, Typography } from 'antd';
 import { QueryClient, useQueryClient } from 'react-query';
 import Title from 'antd/es/typography/Title';
-import React, { SetStateAction, createContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { SettingTwoTone, StarFilled, StarOutlined } from '@ant-design/icons';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
@@ -14,12 +14,6 @@ import GetQuestions from './fetch/GetQuestions';
 
 
 const { Text } = Typography;
-
-export type TopicFilterContextType = {
-    setTopicFilters: React.Dispatch<SetStateAction<Set<string>>>
-}
-
-export const TopicFiltersContext = createContext<TopicFilterContextType | null>(null);
 
 
 const Header = ({ courseId, courseName, bookmarked, setBookmarked, client }:

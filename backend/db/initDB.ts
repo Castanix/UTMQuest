@@ -7,7 +7,7 @@ async function initDB() {
 	const env = process.env.NODE_ENV || "dev";
 
 	const client: mongoDB.MongoClient = new mongoDB.MongoClient(
-		env === "dev" ? configValues.MONGO_TEST_URI : configValues.MONGO_URI
+		env === "dev" ? configValues.MONGO_TEST2_URI : configValues.MONGO_URI
 	);
 
 	await client.connect();
@@ -300,7 +300,6 @@ async function initDB() {
 						"dislikes",
 						"views",
 						"viewers",
-						"score",
 					],
 					additionalProperties: false,
 					properties: {
@@ -438,11 +437,6 @@ async function initDB() {
 							bsonType: "object",
 							description:
 								"'viwers' is an object with key representing unique users who have viewed this question",
-						},
-						score: {
-							bsonType: "double",
-							description:
-								"'score' is a number representing the rating of a question",
 						},
 					},
 				},
