@@ -6,7 +6,7 @@ const courseRouter = Router();
 
 courseRouter.get("/getAllCourses", async (req: Request, res: Response) => {
 	try {
-		const redisData = await redisClient.get('course').catch((error) => {
+		const redisData = await redisClient.get('course').catch((error: Error) => {
 			if (error) console.log(error);
 			return null;
 		});
@@ -38,37 +38,6 @@ courseRouter.get("/getCourse/:courseId", (req: Request, res: Response) => {
 			} else {
 				res.status(200).send(doc);
 			}
-		})
-		.catch((error) => {
-			res.status(500).send(error);
-		});
-});
-
-courseRouter.post("/", async (req: Request, res: Response) => {
-	const course = {
-		courseId: req.body.courseId,
-		courseName: req.body.courseName,
-		numTopics: 0,
-		added: false,
-	};
-
-	const item = await utmQuestCollections.Courses?.findOne({
-		courseId: course.courseId,
-	});
-	if (item) {
-		res.status(409).send({ error: "data already exists" });
-		return;
-	}
-
-	utmQuestCollections.Courses?.insertOne(course)
-		.then(async (result) => {
-			if (!result) {
-				res.status(400).send({ error: "Unable to add the course" });
-			}
-			await redisClient.del('course');
-			res.status(201).send({
-				success: `course ${course.courseId} has been added successfully`,
-			});
 		})
 		.catch((error) => {
 			res.status(500).send(error);
