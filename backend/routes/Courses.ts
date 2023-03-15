@@ -12,7 +12,7 @@ courseRouter.get("/getAllCourses", async (req: Request, res: Response) => {
 		});
 
 		if (redisData != null) {
-			res.json(JSON.parse(redisData));
+			res.status(200).json(JSON.parse(redisData));
 		} else {
 			const courseLst = await utmQuestCollections.Courses?.find().toArray();
 			redisClient.set('course', JSON.stringify(courseLst));
@@ -61,11 +61,11 @@ courseRouter.post("/", async (req: Request, res: Response) => {
 	}
 
 	utmQuestCollections.Courses?.insertOne(course)
-		.then((result) => {
+		.then(async (result) => {
 			if (!result) {
 				res.status(400).send({ error: "Unable to add the course" });
 			}
-			redisClient.del('course');
+			await redisClient.del('course');
 			res.status(201).send({
 				success: `course ${course.courseId} has been added successfully`,
 			});
