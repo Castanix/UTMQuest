@@ -1,18 +1,23 @@
 import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, CheckCircleFilled } from '@ant-design/icons';
 import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography } from 'antd';
-import React, { useContext, useEffect } from 'react';
+import React, { SetStateAction, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionFrontEndType } from '../../../backend/types/Questions';
-import { TopicsFrontEndType } from '../../../backend/types/Topics';
 import DisplayBadges from '../../components/DisplayBadges/DisplayBadges';
-import { ThemeContext } from '../../components/Topbar/Topbar';
 import GetRelativeTime from '../../RelativeTime';
 
 import "./QuestionsList.css";
-import QuestionState from './QuestionState';
 import QuizGenerationMenu from '../QuizPage/QuizGenerationMenu';
+import { TopicsFrontEndType } from '../../../backend/types/Topics';
+import { QuestionState } from './QuestionState';
+import { ThemeContext } from '../../components/Topbar/Topbar';
 
 const { Option } = Select;
+
+type QuestionsDataType = {
+    questions: QuestionFrontEndType[],
+    totalNumQns: number,
+};
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
     <Space>
@@ -56,19 +61,18 @@ const GetRating = (rating: Object) => {
     return false;
 };
 
-const QuestionsList = ({ questions, topics, courseId }:
-    { questions: QuestionFrontEndType[], topics: TopicsFrontEndType[], courseId: string }) => {
-
+const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSearchFilter }: 
+    { questionsData: QuestionsDataType, courseId: string, topics: TopicsFrontEndType[], setTopicFilters: React.Dispatch<SetStateAction<Set<string>>>, setSearchFilter: React.Dispatch<SetStateAction<string>> }) => {
+    
     const {
-        data,
         searchTerm,
-        topicFilters,
+        currTopicFilters,
         onSearchChange,
         sessionState,
         onPaginationChange,
         onTopicFilterChange,
         onScroll
-    } = QuestionState(questions, courseId);
+    } = QuestionState(courseId, setTopicFilters, setSearchFilter);
 
     useEffect(() => {
 
@@ -84,9 +88,14 @@ const QuestionsList = ({ questions, topics, courseId }:
 
     const isLightMode = useContext(ThemeContext);
 
+    const { questions, totalNumQns } = questionsData;
+
     const options: React.ReactNode[] = [];
 
-    topics.forEach(item => options.push(<Option key={item._id} value={item.topicName.toLowerCase()}>{item.topicName}</Option>));
+    (topics as TopicsFrontEndType[]).forEach(item => {
+        const { _id, topicName } = item;
+        options.push(<Option key={ _id } value={ topicName }>{ topicName }</Option>);
+    });
 
     return (
         <div>
@@ -97,16 +106,16 @@ const QuestionsList = ({ questions, topics, courseId }:
                         size="middle"
                         placeholder="Filter by topic"
                         className='question-list-select'
-                        defaultValue={[...topicFilters]}
-                        onChange={onTopicFilterChange}
+                        defaultValue={ currTopicFilters ? [...currTopicFilters] : [] }
+                        onChange={ onTopicFilterChange }
                     >
-                        {options}
+                        { options }
                     </Select>
-                    <Input placeholder="Search question" prefix={<SearchOutlined />} value={searchTerm} className='questions-search' onChange={(event) => onSearchChange(event.target.value)} />
+                    <Input placeholder="Search question" prefix={ <SearchOutlined /> } value={ searchTerm } className='questions-search' onChange={(event) => onSearchChange(event.target.value)} autoFocus={ searchTerm.length > 0 } />
                 </Space>
                 <Space>
-                    <QuizGenerationMenu courseId={courseId} topics={topics} />
-                    <Link to={`/courses/${courseId}/addQuestion`}><Button type="primary" shape="round" icon={<PlusCircleTwoTone />}>Add a Question</Button></Link>
+                    <QuizGenerationMenu courseId={ courseId } topics={ topics } />
+                    <Link to={ `/courses/${ courseId }/addQuestion` }><Button type="primary" shape="round" icon={ <PlusCircleTwoTone /> }>Add a Question</Button></Link>
                 </Space>
 
             </div>
@@ -116,32 +125,35 @@ const QuestionsList = ({ questions, topics, courseId }:
                 bordered
                 size="small"
                 pagination={{
-                    showSizeChanger: true,
+                    showSizeChanger: false,
                     current: sessionState.currentPage,
                     pageSize: sessionState.pageSize,
+                    total: totalNumQns,
                     onChange: onPaginationChange
                 }}
-                dataSource={data}
-                renderItem={item => {
+                dataSource={ questions }
+                renderItem={ item => {
+                    const { _id, anon, utorName, qnsLink, qnsName, rating, userId, numDiscussions, date } = item;
+
                     const diff = (new Date().getTime() - new Date(item.date).getTime()) / (60 * 60 * 1000);
 
                     return (
                         <List.Item
-                            key={item._id}
+                            key={_id}
                             actions={[
                                 // <IconText icon={LikeOutlined} text="156" key="list-vertical-message" />,
                                 // <IconText icon={DislikeOutlined} text="20" key="list-vertical-message" />,
-                                <IconText icon={MessageOutlined} text={item.numDiscussions.toString()} key="list-vertical-message" />
+                                <IconText icon={MessageOutlined} text={numDiscussions.toString()} key="list-vertical-message" />
                             ]}
                         >
                             <List.Item.Meta
                                 className='question-list-meta'
                                 avatar={
-                                    <div className={`question-list-img ${isLightMode ? 'light' : 'dark'}`}>
-                                        {item.anon ?
+                                    <div className={`question-list-img ${ isLightMode ? 'light' : 'dark'}`}>
+                                        {anon ?
                                             <QuestionOutlined />
                                             :
-                                            <p>{GetUserInitials(item.utorName)}</p>
+                                            <p>{GetUserInitials(utorName)}</p>
                                         }
                                     </div>
                                 }
@@ -150,10 +162,10 @@ const QuestionsList = ({ questions, topics, courseId }:
                                         <div className="question-list-page-header">
                                             <Space dir="vertical" size={1}>
                                                 {diff < 24 ? <Tag color="#428efa">New</Tag> : null}
-                                                <Link className="question-list-title" to={`/courses/${item.courseId}/question/${item.qnsLink}`}>
-                                                    <Typography.Text ellipsis className="question-name">{item.qnsName}</Typography.Text>
+                                                <Link className="question-list-title" to={`/courses/${courseId}/question/${qnsLink}`}>
+                                                    <Typography.Text ellipsis className="question-name">{qnsName}</Typography.Text>
                                                 </Link>
-                                                {GetRating(item.rating)
+                                                {GetRating(rating)
                                                     ?
                                                     <Popover content="Good Question">
                                                         <CheckCircleFilled style={{ color: "#d7ba41", marginInline: "0.25rem", fontSize: "1rem", verticalAlign: -4 }} />
@@ -165,9 +177,9 @@ const QuestionsList = ({ questions, topics, courseId }:
                                         <div className="ant-page-header-heading-sub-title">
                                             <Typography.Paragraph>
                                                 {GetAuthorName(item)}
-                                                {!item.anon ? <DisplayBadges userId={item.userId} /> : null}
+                                                {!anon ? <DisplayBadges userId={userId} /> : null}
                                             </Typography.Paragraph>
-                                            <Typography.Text type="secondary">{GetRelativeTime(new Date(item.date).getTime())}</Typography.Text>
+                                            <Typography.Text type="secondary">{GetRelativeTime(new Date(date).getTime())}</Typography.Text>
                                         </div>
                                     </div>
                                 }

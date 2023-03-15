@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { Double, ObjectId } from "mongodb";
 import fs from "fs";
 import path from "path";
 import { qnsTypeEnum, QuestionBackEndType } from "../../types/Questions";
@@ -26,6 +26,9 @@ export const mockQuestions = (qnsPerTopic: number) => {
 
 			const isAnon = index % 2 === 0;
 
+			const date = new Date();
+			date.setDate(date.getDate() - Math.floor(Math.random() * 14));
+
 			mockedQuestions.push({
 				_id: someId,
 				qnsLink: someId.toString(),
@@ -45,7 +48,7 @@ export const mockQuestions = (qnsPerTopic: number) => {
 				utorName: isAnon ? "Anonymous" : randAccount.utorName,
 				userId: randAccount.userId,
 				anonId: randAccount.anonId,
-				date: new Date().toISOString(),
+				date: date.toISOString(),
 				numDiscussions: 0,
 				anon: isAnon,
 				latest: true,
@@ -54,6 +57,7 @@ export const mockQuestions = (qnsPerTopic: number) => {
 				dislikes: likes === 1 ? 0 : 1,
 				views: 0,
 				viewers: { [randAccount.userId]: 1 },
+				score: new Double(Math.random() * 10)
 			});
 
 			questionLinks.push(someId.toString());

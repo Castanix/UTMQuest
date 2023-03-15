@@ -1,6 +1,7 @@
-import { Card, Divider, Timeline, Typography, Popover, Breadcrumb } from "antd";
+import { Card, Divider, Timeline, Typography, Popover, Breadcrumb, Tooltip } from "antd";
 import React, { ReactElement, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import BadgeDescriptions from "../../BadgeDescriptions";
 import BadgePicker from "../../components/BadgePicker/BadgePicker";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
@@ -13,6 +14,7 @@ import GetBadges from "./fetch/GetBadges";
 import GetProfile from "./fetch/Profile";
 import "./ProfilePage.css";
 import { QuestionFrontEndType } from "../../../backend/types/Questions";
+
 
 const { Text, Title } = Typography;
 
@@ -78,7 +80,6 @@ const ProfilePage = () => {
 
     sortedTimelineArr.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
 
-    // TODO: need to include threadreplies when edit badge routes have been set
     const { addQns, editQns, consecutivePosting } = badges.unlockedBadges;
     const badgesSrc: string[] = [
         ...addQns ? [addQns] : ["addbadgelocked"],
@@ -151,7 +152,7 @@ const ProfilePage = () => {
                     </div>
                 </div>
                 <div className="timeline-container" style={{ height: "70vh", overflowY: "auto", overflowX: "hidden", scrollbarWidth: "thin", scrollbarColor: "gray lightgray" }}>
-                    <Divider>Activity Timeline</Divider>
+                    <Divider>Activity Timeline <Tooltip title="Shows the 20 most recent questions added."><QuestionCircleOutlined /></Tooltip></Divider>
                     {loadingQuestions ?
                         <Loading /> :
                         <Timeline mode="left">

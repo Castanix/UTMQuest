@@ -22,7 +22,7 @@ const initMock = async (
 	await connectDB();
 
 	// setup mock
-	mockCourses(numCourses, topicsPerCourse);
+	mockCourses(numCourses, topicsPerCourse, qnsPerTopic * topicsPerCourse);
 
 	mockTopics(numCourses, topicsPerCourse, qnsPerTopic);
 	mockQuestions(qnsPerTopic);

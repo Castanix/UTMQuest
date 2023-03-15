@@ -11,6 +11,7 @@ import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import { OptionType, initMC } from '../../components/MultipleChoice/MultipleChoiceState';
 import { onMobile } from '../../components/EditHistory/EditHistory';
 import { ThemeContext } from '../../components/Topbar/Topbar';
+import { pageList } from '../QuestionsPage/QuestionState';
 
 const { Text, Title } = Typography;
 
@@ -29,7 +30,7 @@ const Header = ({ courseId }: { courseId: string }) => (
     <div>
         <Breadcrumb>
             <Breadcrumb.Item><Link to="/">Dashboard</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to={`/courses/${courseId}`}>{courseId}</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={`/courses/${courseId}/${pageList.currPage}`}>{courseId}</Link></Breadcrumb.Item>
             <Breadcrumb.Item><Text>Quiz</Text></Breadcrumb.Item>
         </Breadcrumb>
         <div className="browse-question-title">
@@ -122,7 +123,7 @@ const QuizPage = () => {
                                 <Text>Number of questions incorrect: {numIncorrect}</Text>
                                 <div className='quiz-options'>
                                     <Space direction={onMobile() ? "vertical" : "horizontal"} size="middle">
-                                        <Link to={`/courses/${courseId}`}><Button>Back to questions</Button></Link>
+                                        <Link to={`/courses/${courseId}/${pageList.currPage}`}><Button>Back to questions</Button></Link>
                                         <Button onClick={() => window.location.reload()}>Generate another quiz</Button>
                                     </Space>
                                 </div>
@@ -140,7 +141,7 @@ const QuizPage = () => {
                 <Result
                     title="No Multiple Choice questions available."
                     extra={
-                        <Link to={`/courses/${courseId}`}>
+                        <Link to={`/courses/${courseId}/${pageList.currPage}`}>
                             <Button type="primary">
                                 Back to courses
                             </Button>

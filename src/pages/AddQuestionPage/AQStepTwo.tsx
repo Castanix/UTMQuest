@@ -64,6 +64,21 @@ const isRestore = (restorable: QuestionFrontEndType, newQuestion: QuestionFrontE
         JSON.stringify(choices) === JSON.stringify(choices2) && JSON.stringify(answers) === JSON.stringify(answers2);
 };
 
+// Limits the update rate of user input for duplicate question fetches
+const useDebounceQuery = (value: string, time = 750) => {
+    const [debounceValue, setDebounceValue] = useState<string>(value);
+    
+    useEffect(() => {
+        const timeout = setTimeout(() => setDebounceValue(value), time);
+
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [value, time]);
+
+    return debounceValue;
+};
+
 const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
     { courseId: string, topicSelected: [string, string], setCurrStep: Function }) => {
 
@@ -79,6 +94,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
     const [redirect, setRedirect] = useState<string>();
     const [isAnon, setAnon] = useState<boolean>(false);
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
+    const debounceValue = useDebounceQuery(title ?? "");
 
     const { userId, username, anonId } = useContext(UserContext);
     const isLightMode = useContext(ThemeContext);
@@ -194,7 +210,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                         </Form.Item>
                     </div>
                     <Form.Item>
-                        {DuplicateQuestions(courseId, topicSelected[0], title ?? '', editableQns?.link)}
+                        {DuplicateQuestions(courseId, topicSelected[0], debounceValue, editableQns?.link)}
                     </Form.Item>
                     <div className="answer-form">
                         <Form.Item label="Problem Description" required>
@@ -267,6 +283,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                                 dislikes: editableQns ? editableQns.dislikes : 0,
                                 views: editableQns ? editableQns.views : 0,
                                 viewers: editableQns ? editableQns.viewers : {},
+                                score: editableQns ? editableQns.score : 0,
                             };
 
                             if (editableQns) {

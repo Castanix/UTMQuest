@@ -6,7 +6,7 @@ import { CoursesBackEndType } from "../../types/Courses";
 const mockedCourses: CoursesBackEndType[] = [];
 const courseIds: string[] = [];
 
-export const mockCourses = async (numCourses: number, numTopics: number) => {
+export const mockCourses = async (numCourses: number, numTopics: number, numQns: number) => {
 	for (let i = 0; i < numCourses; i++) {
 		const isAdded = i % 2 === 0;
 
@@ -15,6 +15,7 @@ export const mockCourses = async (numCourses: number, numTopics: number) => {
 			courseId: `C${i}`,
 			courseName: `Course ${i}`,
 			numTopics,
+			numQns,
 			added: isAdded,
 		});
 
