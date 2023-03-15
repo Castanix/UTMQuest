@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
-const fetchLatestQuestions = async (courseId: string, page: string, searchFilter: string, topicFilters?: Set<string>, ) => {
-    const topics = `${JSON.stringify(topicFilters ? Array.from(topicFilters) : [])}`;
+const fetchLatestQuestions = async (courseId: string, page: string, searchFilter: string, topicFilters: string[], ) => {
+    const topics = `${JSON.stringify(topicFilters)}`;
     const search = searchFilter;
 
     const response = await fetch(`${process.env.REACT_APP_API_URI}/question/latestQuestions/${courseId}/${page}`, {
@@ -15,8 +15,8 @@ const fetchLatestQuestions = async (courseId: string, page: string, searchFilter
     return response.json();
 };
 
-const GetQuestions = (courseId: string, page: string, searchFilter: string, topicFilters?: Set<string>, ) => {
-    const result = useQuery(['latestQuestions', courseId, page, topicFilters, searchFilter], () => fetchLatestQuestions(courseId, page, searchFilter, topicFilters), { staleTime: 300000 });
+const GetQuestions = (courseId: string, page: string, searchFilter: string, topicFilters: Set<string>, ) => {
+    const result = useQuery(['latestQuestions', courseId, page, Array.from(topicFilters), searchFilter], () => fetchLatestQuestions(courseId, page, searchFilter, Array.from(topicFilters)), { staleTime: 300000 });
 
     return {
         loadingQuestions: result.isLoading,

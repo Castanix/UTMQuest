@@ -42,8 +42,6 @@ const useDebouncer = (topicFilters: Set<string>, searchValue: string, accumulate
         };
     }, [topicFilters, searchValue, time, setFilters]);
 
-
-    console.log("test");
     return { ...filters, isNewFilter: (filters.topic !== accumulatedFilter.topic || filters.search !== accumulatedFilter.search) };
 };
 

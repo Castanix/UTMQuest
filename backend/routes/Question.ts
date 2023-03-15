@@ -285,18 +285,7 @@ questionRouter.get(
 			latest: true,
 			...(topics.length > 0 && {topicName: { $in: topics }}),
 			...(search.length > 0 && {qnsName: { $regex: search }}),
-			$expr: {
-				$lt: [
-					{ $dateDiff: 
-						{ 
-							startDate: { $dateFromString: { dateString: "$date" } }, 
-							endDate: new Date(), 
-							unit: "hour" 
-						}
-					},
-					24
-				]
-			},
+			date: { $gte: new Date(Date.now() - 24*60*60*1000).toISOString() }
 		};
 
 		const oldQnsMatch = {
@@ -304,18 +293,7 @@ questionRouter.get(
 			latest: true,
 			...(topics.length > 0 && {topicName: { $in: topics }}),
 			...(search.length > 0 && {qnsName: { $regex: search }}),
-			$expr: {
-				$gte: [
-					{ $dateDiff: 
-						{ 
-							startDate: { $dateFromString: { dateString: "$date" } }, 
-							endDate: new Date(), 
-							unit: "hour" 
-						}
-					},
-					24
-				]
-			},
+			date: { $lt: new Date(Date.now() - 24*60*60*1000).toISOString() }
 		};
 
 		try {
@@ -343,9 +321,7 @@ questionRouter.get(
 
 			const newSeededQuestions: QuestionBackEndType[] = [];
 
-			const newQuestions = await utmQuestCollections.Questions?.aggregate([
-				{ $match: newQnsMatch },
-			])
+			const newQuestions = await utmQuestCollections.Questions?.find(newQnsMatch)
 				.sort({ score: -1 })	
 				.toArray();
 			
@@ -367,20 +343,19 @@ questionRouter.get(
 			const seededNewNum = newSeededQuestions.length;
 			const sentNewNum = sentNewQuestions.length;
 
-			const totalNumQns = seededNewNum + (course.numQns - (newQuestions ? newQuestions.length : 0));
+			// Counts the number of old question docs after applying filters
+			const numOldQns = await utmQuestCollections.Questions?.count(oldQnsMatch);
 
 			if (sentNewNum === 10) {
 				res.status(200).send({
 					questions: sentNewQuestions,
-					totalNumQns,
+					totalNumQns: seededNewNum + (numOldQns ?? 0),
 				});
 
 				return;
 			}
 
-			const oldQuestions = await utmQuestCollections.Questions?.aggregate([
-				{ $match: oldQnsMatch },
-			])
+			const oldQuestions = await utmQuestCollections.Questions?.find(oldQnsMatch)
 				.skip((pageNum - 1 - Math.floor(seededNewNum / 10)) * 10 - (pageNum - 1 <= Math.floor(seededNewNum / 10) ? 0 : seededNewNum % 10))
 				.limit(10 - sentNewNum)
 				.toArray() ?? [];
@@ -397,7 +372,7 @@ questionRouter.get(
 
 			res.status(200).send({
 				questions,
-				totalNumQns,
+				totalNumQns: seededNewNum + (numOldQns ?? 0),
 			});
 
 			return;

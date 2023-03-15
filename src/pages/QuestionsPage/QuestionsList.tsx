@@ -79,6 +79,8 @@ const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSe
 
     const { questions, totalNumQns } = questionsData;
 
+    console.log(totalNumQns);
+
     const {
         searchTerm,
         currTopicFilters,
@@ -90,11 +92,11 @@ const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSe
 
     const options: React.ReactNode[] = [];
 
-    let numQns = 0;
+    // let numQns = 0;
     (topics as TopicsFrontEndType[]).forEach(item => {
-        const { _id, topicName, numQns: count } = item;
+        const { _id, topicName } = item;
 
-        if (currTopicFilters.has(topicName)) numQns += count;
+        // if (currTopicFilters.has(topicName)) numQns += count;
         options.push(<Option key={ _id } value={ topicName }>{ topicName }</Option>);
     });
 
@@ -129,7 +131,7 @@ const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSe
                     showSizeChanger: false,
                     current: sessionState.currentPage,
                     pageSize: sessionState.pageSize,
-                    total: currTopicFilters.size > 0 ? numQns : totalNumQns,
+                    total: totalNumQns,
                     onChange: onPaginationChange
                 }}
                 dataSource={ questions }
