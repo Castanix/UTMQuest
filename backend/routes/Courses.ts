@@ -1,7 +1,6 @@
 import { Request, Response, Router } from "express";
 import { utmQuestCollections } from "../db/db.service";
 import redisClient from "../redis/setup";
-import { DEFAULT_MAX_VERSION } from "tls";
 
 const courseRouter = Router();
 
@@ -17,7 +16,7 @@ courseRouter.get("/getAllCourses", async (req: Request, res: Response) => {
 		else {
 			const courseLst = await utmQuestCollections.Courses?.find().toArray();
 			redisClient.set('course', JSON.stringify(courseLst));
-			redisClient.expire('course', 10);
+			redisClient.expire('course', 7200);
 			res.status(200).send(courseLst);
 		}
 	} catch (error) {
@@ -65,6 +64,7 @@ courseRouter.post("/", async (req: Request, res: Response) => {
 			if (!result) {
 				res.status(400).send({ error: "Unable to add the course" });
 			}
+			redisClient.del('course');
 			res.status(201).send({
 				success: `course ${course.courseId} has been added successfully`,
 			});

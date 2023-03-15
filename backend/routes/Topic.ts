@@ -1,6 +1,7 @@
 import { ObjectID } from "bson";
 import { Request, Response, Router } from "express";
 import { utmQuestCollections, mongoDBConnection } from "../db/db.service";
+import redisClient from "../redis/setup";
 
 const topicRouter = Router();
 
@@ -87,6 +88,8 @@ topicRouter.delete("/deleteTopic", async (req: Request, res: Response) => {
 		);
 
 		await session.commitTransaction();
+
+		redisClient.del('course');
 
 		res.status(200).send({
 			success: "Topic successfully deleted.",
@@ -226,6 +229,9 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 			.catch((err) => {
 				throw new Error(err);
 			});
+
+		redisClient.del('course');
+
 	} catch (err) {
 		await session.abortTransaction();
 
