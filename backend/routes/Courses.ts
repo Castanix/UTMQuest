@@ -15,8 +15,8 @@ courseRouter.get("/getAllCourses", async (req: Request, res: Response) => {
 			res.status(200).json(JSON.parse(redisData));
 		} else {
 			const courseLst = await utmQuestCollections.Courses?.find().toArray();
-			redisClient.set('course', JSON.stringify(courseLst));
-			redisClient.expire('course', 7200);
+			await redisClient.set('course', JSON.stringify(courseLst));
+			await redisClient.expire('course', 7200);
 			res.status(200).send(courseLst);
 		}
 
