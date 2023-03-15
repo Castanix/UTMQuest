@@ -44,7 +44,7 @@ app.get("/*", (req, res) => {
 // Connect to mongoDB and listen on app
 connectDB()
 	.then(async () => {
-		redisClient.on('error', err => console.log('Redis Client Error', err));
+		redisClient.on('error', (err: Error) => console.log('Redis Client Error', err));
 		await redisClient.connect();
 		app.listen(port, () => console.log(`Listening on port ${port}`));
 		// fetchCourses();

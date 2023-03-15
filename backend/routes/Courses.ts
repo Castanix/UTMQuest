@@ -52,10 +52,13 @@ courseRouter.put("/addCourse", async (req: Request, res: Response) => {
 	utmQuestCollections.Courses?.findOneAndUpdate(course, {
 		$set: { added: true },
 	})
-		.then((result) => {
+		.then(async (result) => {
 			if (!result) {
 				res.status(400).send({ error: "Unable to update the course" });
 			}
+
+			await redisClient.del('course');
+
 			res.status(200).send({
 				message: `course ${course.courseId} has been updated successfully`,
 				_id: result.value?._id,
