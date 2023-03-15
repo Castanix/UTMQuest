@@ -620,7 +620,7 @@ questionRouter.post("/editQuestion", async (req: Request, res: Response) => {
 		dislikes: 0,
 		views: 0,
 		viewers: {},
-		score: 0,
+		score: new Double(0),
 	};
 
 	const session = mongoDBConnection.startSession();

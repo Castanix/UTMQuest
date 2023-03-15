@@ -111,6 +111,7 @@ const QuestionState = (courseId: string, setTopicFilters: React.Dispatch<SetStat
         newState.currentPage = page;
         pageList.currPage = page;
         newState.pageSize = pageSize;
+        newState.scrollY = 0;
 
         sessionStorage.setItem("questionList", JSON.stringify({ [courseId]: newState }));
 
