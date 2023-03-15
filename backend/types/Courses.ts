@@ -14,5 +14,4 @@ export interface CoursesFrontEndType extends BaseCoursesType {
 
 export interface CoursesBackEndType extends BaseCoursesType {
 	_id: ObjectId;
-	numQns: number;
 }

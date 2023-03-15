@@ -13,9 +13,7 @@ import { GetStateFromSessionStorage } from './QuestionState';
 import GetQuestions from './fetch/GetQuestions';
 
 
-
 const { Text } = Typography;
-
 
 export type TopicFilterContextType = {
     setTopicFilters: React.Dispatch<SetStateAction<Set<string>>>

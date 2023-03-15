@@ -1,6 +1,6 @@
 import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, CheckCircleFilled } from '@ant-design/icons';
 import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography } from 'antd';
-import React, { SetStateAction, useContext } from 'react';
+import React, { SetStateAction, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { QuestionFrontEndType } from '../../../backend/types/Questions';
 import DisplayBadges from '../../components/DisplayBadges/DisplayBadges';
@@ -63,24 +63,7 @@ const GetRating = (rating: Object) => {
 
 const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSearchFilter }: 
     { questionsData: QuestionsDataType, courseId: string, topics: TopicsFrontEndType[], setTopicFilters: React.Dispatch<SetStateAction<Set<string>>>, setSearchFilter: React.Dispatch<SetStateAction<string>> }) => {
-    // Note: may not be needed if pagination is limited to 10 per page
-    // useEffect(() => {
-
-    //     setTimeout(() => window.scrollTo(0, sessionState.scrollY), 100);
-
-    //     window.addEventListener("scroll", onScroll);
-
-    //     return () => {
-    //         window.removeEventListener('scroll', onScroll);
-    //     };
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, []);
-    const isLightMode = useContext(ThemeContext);
-
-    const { questions, totalNumQns } = questionsData;
-
-    console.log(totalNumQns);
-
+    
     const {
         searchTerm,
         currTopicFilters,
@@ -88,15 +71,29 @@ const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSe
         sessionState,
         onPaginationChange,
         onTopicFilterChange,
+        onScroll
     } = QuestionState(courseId, setTopicFilters, setSearchFilter);
+
+    useEffect(() => {
+
+        setTimeout(() => window.scrollTo(0, sessionState.scrollY), 100);
+
+        window.addEventListener("scroll", onScroll);
+
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const isLightMode = useContext(ThemeContext);
+
+    const { questions, totalNumQns } = questionsData;
 
     const options: React.ReactNode[] = [];
 
-    // let numQns = 0;
     (topics as TopicsFrontEndType[]).forEach(item => {
         const { _id, topicName } = item;
-
-        // if (currTopicFilters.has(topicName)) numQns += count;
         options.push(<Option key={ _id } value={ topicName }>{ topicName }</Option>);
     });
 
@@ -114,7 +111,7 @@ const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSe
                     >
                         { options }
                     </Select>
-                    <Input placeholder="Search question" prefix={ <SearchOutlined /> } value={ searchTerm } className='questions-search' onChange={(event) => onSearchChange(event.target.value)} />
+                    <Input placeholder="Search question" prefix={ <SearchOutlined /> } value={ searchTerm } className='questions-search' onChange={(event) => onSearchChange(event.target.value)} autoFocus={ searchTerm.length > 0 } />
                 </Space>
                 <Space>
                     <QuizGenerationMenu courseId={ courseId } topics={ topics } />

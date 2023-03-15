@@ -58,10 +58,6 @@ const QuestionState = (courseId: string, setTopicFilters: React.Dispatch<SetStat
     const [searchTerm, setSearchTerm] = useState<string>(initSearchFilter ?? "");
     const accFilter = useRef({ topic: initTopicFilter, search: initSearchFilter });
 
-    // const [originalData, setOriginalData] = useState<QuestionFrontEndType[]>([]);
-
-    // const [data, setData] = useState<QuestionFrontEndType[]>([]);
-
     const debounceValue = useDebouncer(currTopicFilters, searchTerm, accFilter.current);
 
 	useEffect(() => {
@@ -79,15 +75,6 @@ const QuestionState = (courseId: string, setTopicFilters: React.Dispatch<SetStat
 
 	}, [debounceValue, courseId, navigate, setSearchFilter, setTopicFilters]);
 
-    // useEffect(() => {
-    //     setOriginalData(questions);
-    //     const filteredData = initTopicFilter.size !== 0 ? questions.filter(item => currTopicFilters?.has(item.topicName)) : questions;
-        
-    //     // setData(filteredData);
-
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [questions]);
-
     const sessionStateRef = useRef<QuestionListState>(state);
     const [sessionState, setSessionState] = useState<QuestionListState>(state);
 
@@ -104,20 +91,15 @@ const QuestionState = (courseId: string, setTopicFilters: React.Dispatch<SetStat
         sessionStateRef.current = newState;
 
         if (value.length === 0) {
-            // setData(originalData.filter(item => currTopicFilters?.size === 0 || currTopicFilters?.has(item.topicName)));
             setSearchTerm("");
         }
         else {
-            // setData(originalData.filter(item => item.qnsName.toLowerCase().includes(value.toLowerCase()) && (currTopicFilters?.size === 0 || currTopicFilters?.has(item.topicName))));
             setSearchTerm(value);
         }
     };
 
     const filterQuestions = (value: string | string[]) => {
         const map = new Set(value);
-
-        // if (map.size === 0) setData(originalData.filter(item => item.qnsName.toLocaleLowerCase().includes(searchTerm)));
-        // else setData(originalData.filter(item => map.has(item.topicName) && item.qnsName.toLowerCase().includes(searchTerm)));
 
         setCurrTopicFilters(map);
     };
@@ -154,17 +136,16 @@ const QuestionState = (courseId: string, setTopicFilters: React.Dispatch<SetStat
         setSessionState(newState);
     };
 
-    // const onScroll = () => {
-    //     const newState = { ...sessionStateRef.current };
-    //     newState.scrollY = window.scrollY;
+    const onScroll = () => {
+        const newState = { ...sessionStateRef.current };
+        newState.scrollY = window.scrollY;
 
-    //     sessionStorage.setItem("questionList", JSON.stringify({ [courseId]: newState }));
-    //     sessionStateRef.current = newState;
-    //     setSessionState(newState);
-    // };
+        sessionStorage.setItem("questionList", JSON.stringify({ [courseId]: newState }));
+        sessionStateRef.current = newState;
+        setSessionState(newState);
+    };
 
     return {
-        // data,
         searchTerm,
         currTopicFilters,
         onSearchChange,
@@ -172,7 +153,7 @@ const QuestionState = (courseId: string, setTopicFilters: React.Dispatch<SetStat
         sessionStateRef,
         onPaginationChange,
         onTopicFilterChange,
-        // onScroll
+        onScroll
     };
 };
 

@@ -35,7 +35,6 @@ const fetchCourses = async () => {
 					courseId: item.code.substring(0, item.code.length - 2),
 					courseName: item.name,
 					numTopics: 0,
-					numQns: 0,
 					added: false,
 				};
 				utmQuestCollections.Courses?.insertOne(course)

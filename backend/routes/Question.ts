@@ -284,7 +284,7 @@ questionRouter.get(
 			courseId,
 			latest: true,
 			...(topics.length > 0 && {topicName: { $in: topics }}),
-			...(search.length > 0 && {qnsName: { $regex: search }}),
+			...(search.length > 0 && {qnsName: { $regex: search, $options: "i" }}),
 			date: { $gte: new Date(Date.now() - 24*60*60*1000).toISOString() }
 		};
 
@@ -292,7 +292,7 @@ questionRouter.get(
 			courseId,
 			latest: true,
 			...(topics.length > 0 && {topicName: { $in: topics }}),
-			...(search.length > 0 && {qnsName: { $regex: search }}),
+			...(search.length > 0 && {qnsName: { $regex: search, $options: "i" }}),
 			date: { $lt: new Date(Date.now() - 24*60*60*1000).toISOString() }
 		};
 
@@ -451,10 +451,6 @@ questionRouter.post("/addQuestion", async (req: Request, res: Response) => {
 		session.startTransaction();
 
 		await utmQuestCollections.Questions?.insertOne(question, { session });
-
-		await utmQuestCollections.Courses?.updateOne(course, 
-			{ $inc: { numQns: 1 } }
-		);
 
 		// Increment counter
 		await topicIncrementor(topicId, 1, session);
