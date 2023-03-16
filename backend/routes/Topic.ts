@@ -160,6 +160,8 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 		courseId: req.body.courseId,
 	});
 
+	console.log("addign topic");
+
 	if (!course) {
 		res.status(404).send({ error: "The given course doesn't exist." });
 		return;
@@ -183,6 +185,13 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 	try {
 		session.startTransaction();
 
+		// Increment counter
+		await utmQuestCollections.Courses?.updateOne(
+			course,
+			{ $inc: { numTopics: 1 } },
+			{ session }
+		);
+
 		await utmQuestCollections.Topics?.findOneAndUpdate(
 			{
 				courseId: req.body.courseId,
@@ -193,6 +202,8 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 			{ session }
 		)
 			.then(async (updateRes) => {
+
+				// If no existing document that is flagged as deleted with topicName is in the document, insert a new one, otherwise unflag and return document id
 				if (!updateRes.value) {
 					const topicId = new ObjectID();
 					const newTopic = {
@@ -208,17 +219,11 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 							session,
 						});
 
-					// Increment counter
-					await utmQuestCollections.Courses?.updateOne(
-						course,
-						{ $inc: { numTopics: 1 } },
-						{ session }
-					);
-
 					await session.commitTransaction();
 
 					res.status(201).send(insertRes);
 				} else {
+
 					await session.commitTransaction();
 
 					res.status(200).send({

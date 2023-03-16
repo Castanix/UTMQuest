@@ -47,11 +47,13 @@ const fetchCourses = async () => {
 						console.log("SUCCESSFULLY INSERTED COURSES");
 					})
 					.catch((err) => {
-						console.log(err);
+						console.error(err);
 					});
 			}
 		);
 	});
+
+	console.log("Added all courses");
 };
 
 fetchCourses();
