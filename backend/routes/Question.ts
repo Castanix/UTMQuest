@@ -4,6 +4,7 @@ import { ClientSession, Double, ObjectId } from "mongodb";
 import seedrandom from "seedrandom";
 import { utmQuestCollections, mongoDBConnection } from "../db/db.service";
 import { qnsTypeEnum, QuestionBackEndType } from "../types/Questions";
+import redisClient from "../redis/setup";
 
 const questionRouter = Router();
 
@@ -694,7 +695,7 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 			return;
 		}
 
-		const { qnsLink, topicId } = restoredVersion;
+		const { qnsLink, topicId, courseId } = restoredVersion;
 
 		const session = mongoDBConnection.startSession();
 
@@ -721,6 +722,18 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 							1,
 							session
 						);
+
+						await utmQuestCollections.Courses?.findOneAndUpdate(
+							{ courseId },
+							{ $inc: { numTopics: 1 } },
+							{ session }
+						)
+						.then(async () => {
+							await redisClient.del('course');
+						})
+						.catch((err) => {
+							throw new Error(err);
+						});
 					})
 					.catch((err) => {
 						throw new Error(err);
@@ -746,7 +759,7 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 				{ session }
 			);
 
-			utmQuestCollections.Discussions?.find({
+			await utmQuestCollections.Discussions?.find({
 				qnsLink,
 				op: true,
 				$expr: {
@@ -754,8 +767,8 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 				},
 			})
 				.toArray()
-				.then((documents) => {
-					documents.forEach(async (doc) => {
+				.then(async (documents) => {
+					for (const doc of documents) {
 						await utmQuestCollections.Discussions?.deleteMany(
 							{
 								_id: {
@@ -767,10 +780,10 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 							{ session }
 						);
 
-						await utmQuestCollections.Discussions?.deleteOne(doc, {
-							session,
-						});
-					});
+						await utmQuestCollections.Discussions?.deleteOne(doc,
+							{ session }
+						);
+					};
 				})
 				.catch((err) => {
 					throw new Error(err);

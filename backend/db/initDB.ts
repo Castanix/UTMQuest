@@ -1,5 +1,6 @@
 import * as mongoDB from "mongodb";
 import configValues from "../config";
+import redisClient from "../redis/setup";
 
 // Use 'npm run init' on the terminal backend to setup the database and collections
 // with validation in mongoDB if collections do not exist yet.
@@ -12,6 +13,10 @@ async function initDB() {
 
 	await client.connect();
 
+	redisClient.on('error', (err: Error) => console.log('Redis Client Error', err));
+	await redisClient.connect();
+
+
 	const db: mongoDB.Db = client.db(configValues.DB_NAME);
 
 	// drop collections
@@ -23,6 +28,7 @@ async function initDB() {
 			db.dropCollection("Topics"),
 			db.dropCollection("Questions"),
 			db.dropCollection("Discussions"),
+			redisClient.FLUSHDB()
 		]);
 		// eslint-disable-next-line no-empty
 	} catch (error) {}
@@ -438,6 +444,11 @@ async function initDB() {
 							description:
 								"'viwers' is an object with key representing unique users who have viewed this question",
 						},
+						score: {
+							bsonType: "double",
+							description:
+								"'score' is a number (double) representing how good or popular a question is"
+						}
 					},
 				},
 			},
@@ -719,9 +730,10 @@ async function initDB() {
 			console.log(err);
 		});
 
+	redisClient.disconnect();
 	client.close();
 }
 
-// initDB();
+initDB();
 
 export default initDB;

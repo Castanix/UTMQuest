@@ -160,8 +160,6 @@ topicRouter.post("/addTopic", async (req: Request, res: Response) => {
 		courseId: req.body.courseId,
 	});
 
-	console.log("addign topic");
-
 	if (!course) {
 		res.status(404).send({ error: "The given course doesn't exist." });
 		return;

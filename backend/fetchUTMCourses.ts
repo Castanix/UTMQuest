@@ -52,8 +52,6 @@ const fetchCourses = async () => {
 			}
 		);
 	});
-
-	console.log("Added all courses");
 };
 
 fetchCourses();
