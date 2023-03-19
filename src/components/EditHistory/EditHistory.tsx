@@ -160,7 +160,6 @@ const EditHistory = ({ qnsLink }: { qnsLink: string }) => {
 
         renderList.push(GetListItem(loading, "Made the original post.", actions, originalQuestion));
     }
-
     return (
         <div className='edit-history-container'>
             <Row gutter={[32, 16]}>
@@ -168,13 +167,9 @@ const EditHistory = ({ qnsLink }: { qnsLink: string }) => {
                     <List
                         size="large"
                         bordered
-                        pagination={{
-                            pageSize: 10,
-                            showSizeChanger: true,
-                        }}
                         className="edit-history-list"
                         itemLayout={onMobile() ? "vertical" : "horizontal"}
-                        dataSource={editHistory}
+                        dataSource={renderList}
                         renderItem={(_item, index) => (
                             renderList[index]
                         )}
