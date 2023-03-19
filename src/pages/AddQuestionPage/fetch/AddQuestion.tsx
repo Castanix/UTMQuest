@@ -150,12 +150,15 @@ const AddQuestion = async (addableQns: QuestionFrontEndType, setRedirect: Functi
 
             queryClient.invalidateQueries(["getTopics", addableQns.courseId]);
             queryClient.invalidateQueries("latestQuestions");
+            message.success("Success");
 
             setRedirect(result.qnsLink);
             setIsSubmit(false);
+
         })
         .catch((error) => {
             message.error(error.message);
+            setIsSubmit(false);
         });
 
     setIsSubmit(false);
@@ -173,7 +176,7 @@ const EditQuestion = async (editedQns: QuestionFrontEndType, setIsSubmit: Functi
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({...editedQns, oldTopicId})
+            body: JSON.stringify({ ...editedQns, oldTopicId })
         }).then((res: Response) => {
             if (!res.ok) {
                 throw new Error(res.statusText);
@@ -184,10 +187,13 @@ const EditQuestion = async (editedQns: QuestionFrontEndType, setIsSubmit: Functi
             queryClient.invalidateQueries("latestQuestions");
 
             checkBadge(editedQns.anon, result, [3, 7, 15], "editQns", editedQns.userId, queryClient);
+            message.success("Success");
             setIsSubmit(false);
             setRedirect(editedQns.qnsLink);
+
         }).catch((error) => {
             message.error(error.message);
+            setIsSubmit(false);
         });
 };
 
@@ -211,11 +217,14 @@ const RestoreQuestion = async (restoreQns: QuestionFrontEndType, restorableDate:
         }).then((result) => {
             queryClient.invalidateQueries(["getTopics", restoreQns.courseId]);
             queryClient.invalidateQueries("latestQuestions");
-            
+            message.success("Success");
+
             setIsSubmit(false);
             setRedirect(result.qnsLink);
+
         }).catch((error) => {
             message.error(error.message);
+            setIsSubmit(false);
         });
 };
 
