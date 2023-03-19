@@ -150,7 +150,6 @@ const AddQuestion = async (addableQns: QuestionFrontEndType, setRedirect: Functi
 
             queryClient.invalidateQueries(["getTopics", addableQns.courseId]);
             queryClient.invalidateQueries("latestQuestions");
-            message.success("Success");
 
             setRedirect(result.qnsLink);
             setIsSubmit(false);
@@ -179,15 +178,15 @@ const EditQuestion = async (editedQns: QuestionFrontEndType, setIsSubmit: Functi
             body: JSON.stringify({ ...editedQns, oldTopicId })
         }).then((res: Response) => {
             if (!res.ok) {
-                throw new Error(res.statusText);
+                throw new Error("Double check changes and that all MC options are unique.");
             };
             return res.json();
         }).then((result) => {
+            message.success("Question successfully edited.");
             queryClient.invalidateQueries(["getTopics", editedQns.courseId]);
             queryClient.invalidateQueries("latestQuestions");
 
             checkBadge(editedQns.anon, result, [3, 7, 15], "editQns", editedQns.userId, queryClient);
-            message.success("Success");
             setIsSubmit(false);
             setRedirect(editedQns.qnsLink);
 
@@ -215,9 +214,10 @@ const RestoreQuestion = async (restoreQns: QuestionFrontEndType, restorableDate:
             };
             return res.json();
         }).then((result) => {
+            message.success("Question successfully restored.");
+
             queryClient.invalidateQueries(["getTopics", restoreQns.courseId]);
             queryClient.invalidateQueries("latestQuestions");
-            message.success("Success");
 
             setIsSubmit(false);
             setRedirect(result.qnsLink);
