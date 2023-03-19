@@ -55,11 +55,11 @@ const MultipleChoice = ({ options, answers, explanation, setHasAnswered, quizDep
                     <Button className="answer-btn" shape="round" onClick={() => {
                         const result = showAnswers();
                         setHasAnswered(true);
-                        if(setMCResult) {
+                        if (setMCResult) {
                             setMCResult(result);
                         };
-                        }}>Check Answers</Button>
-                    <Button className="reset-btn" style={setMCResult ? {display: "none"} : {}} shape="round" onClick={resetAnswers}>Reset</Button>
+                    }}>Check Answers</Button>
+                    <Button className="reset-btn" style={setMCResult ? { display: "none" } : {}} shape="round" onClick={resetAnswers}>Reset</Button>
                     <Button className="explanation-btn" style={{
                         backgroundColor: isActive ? '#1890ff' : '',
                         color: isActive ? 'white' : '',
