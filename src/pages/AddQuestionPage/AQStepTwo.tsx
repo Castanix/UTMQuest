@@ -41,7 +41,7 @@ const GetEditor = (value: string | undefined, placeholder: string, onChange: any
 const isIdenticalEdit = (obj1: QuestionFrontEndType, obj2: QuestionFrontEndType) => {
     // NOTE: Clone object to avoid mutating original!
     const keys = ['_id', 'anon', 'numDiscussions', 'utorName', 'utorId', 'userId', 'anonId',
-        'date', 'latest', 'rating', 'likes', 'dislikes', 'views', 'viewers'];
+        'date', 'latest', 'rating', 'likes', 'dislikes', 'views', 'viewers', 'score'];
     const objClone1 = { ...obj1 };
     const objClone2 = { ...obj2 };
 
@@ -67,7 +67,7 @@ const isRestore = (restorable: QuestionFrontEndType, newQuestion: QuestionFrontE
 // Limits the update rate of user input for duplicate question fetches
 const useDebounceQuery = (value: string, time = 750) => {
     const [debounceValue, setDebounceValue] = useState<string>(value);
-    
+
     useEffect(() => {
         const timeout = setTimeout(() => setDebounceValue(value), time);
 
@@ -297,8 +297,9 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                                     } else {
                                         if (latest) {
                                             message.error("Changes are identical to the latest version");
-                                        };
-                                        message.error("No changes were made");
+                                        } else {
+                                            message.error("No changes were made");
+                                        }
                                         setIsSubmit(false);
                                     };
                                 };

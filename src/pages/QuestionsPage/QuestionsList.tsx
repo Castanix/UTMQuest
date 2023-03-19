@@ -1,4 +1,4 @@
-import { MessageOutlined, SearchOutlined, QuestionOutlined, PlusCircleTwoTone, CheckCircleFilled } from '@ant-design/icons';
+import { SearchOutlined, QuestionOutlined, PlusCircleTwoTone, CheckCircleFilled } from '@ant-design/icons';
 import { Button, Divider, Input, List, Popover, Select, Space, Tag, Typography } from 'antd';
 import React, { SetStateAction, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -18,13 +18,6 @@ type QuestionsDataType = {
     questions: QuestionFrontEndType[],
     totalNumQns: number,
 };
-
-const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
-    <Space>
-        {React.createElement(icon)}
-        {text}
-    </Space>
-);
 
 const GetAuthorName = (question: QuestionFrontEndType) => {
     const { anon, utorName, userId } = question;
@@ -61,9 +54,9 @@ const GetRating = (rating: Object) => {
     return false;
 };
 
-const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSearchFilter }: 
+const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSearchFilter }:
     { questionsData: QuestionsDataType, courseId: string, topics: TopicsFrontEndType[], setTopicFilters: React.Dispatch<SetStateAction<Set<string>>>, setSearchFilter: React.Dispatch<SetStateAction<string>> }) => {
-    
+
     const {
         searchTerm,
         currTopicFilters,
@@ -94,7 +87,7 @@ const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSe
 
     (topics as TopicsFrontEndType[]).forEach(item => {
         const { _id, topicName } = item;
-        options.push(<Option key={ _id } value={ topicName }>{ topicName }</Option>);
+        options.push(<Option key={_id} value={topicName}>{topicName}</Option>);
     });
 
     return (
@@ -106,16 +99,16 @@ const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSe
                         size="middle"
                         placeholder="Filter by topic"
                         className='question-list-select'
-                        defaultValue={ currTopicFilters ? [...currTopicFilters] : [] }
-                        onChange={ onTopicFilterChange }
+                        defaultValue={currTopicFilters ? [...currTopicFilters] : []}
+                        onChange={onTopicFilterChange}
                     >
-                        { options }
+                        {options}
                     </Select>
-                    <Input placeholder="Search question" prefix={ <SearchOutlined /> } value={ searchTerm } className='questions-search' onChange={(event) => onSearchChange(event.target.value)} autoFocus={ searchTerm.length > 0 } />
+                    <Input placeholder="Search question" prefix={<SearchOutlined />} value={searchTerm} className='questions-search' onChange={(event) => onSearchChange(event.target.value)} autoFocus={searchTerm.length > 0} />
                 </Space>
                 <Space>
-                    <QuizGenerationMenu courseId={ courseId } topics={ topics } />
-                    <Link to={ `/courses/${ courseId }/addQuestion` }><Button type="primary" shape="round" icon={ <PlusCircleTwoTone /> }>Add a Question</Button></Link>
+                    <QuizGenerationMenu courseId={courseId} topics={topics} />
+                    <Link to={`/courses/${courseId}/addQuestion`}><Button type="primary" shape="round" icon={<PlusCircleTwoTone />}>Add a Question</Button></Link>
                 </Space>
 
             </div>
@@ -131,9 +124,9 @@ const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSe
                     total: totalNumQns,
                     onChange: onPaginationChange
                 }}
-                dataSource={ questions }
-                renderItem={ item => {
-                    const { _id, anon, utorName, qnsLink, qnsName, rating, userId, numDiscussions, date } = item;
+                dataSource={questions}
+                renderItem={item => {
+                    const { _id, anon, utorName, qnsLink, qnsName, rating, userId, date } = item;
 
                     const diff = (new Date().getTime() - new Date(item.date).getTime()) / (60 * 60 * 1000);
 
@@ -143,13 +136,13 @@ const QuestionsList = ({ questionsData, courseId, topics, setTopicFilters, setSe
                             actions={[
                                 // <IconText icon={LikeOutlined} text="156" key="list-vertical-message" />,
                                 // <IconText icon={DislikeOutlined} text="20" key="list-vertical-message" />,
-                                <IconText icon={MessageOutlined} text={numDiscussions.toString()} key="list-vertical-message" />
+                                // <IconText icon={MessageOutlined} text={numDiscussions.toString()} key="list-vertical-message" />
                             ]}
                         >
                             <List.Item.Meta
                                 className='question-list-meta'
                                 avatar={
-                                    <div className={`question-list-img ${ isLightMode ? 'light' : 'dark'}`}>
+                                    <div className={`question-list-img ${isLightMode ? 'light' : 'dark'}`}>
                                         {anon ?
                                             <QuestionOutlined />
                                             :
