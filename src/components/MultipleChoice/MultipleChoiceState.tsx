@@ -1,5 +1,5 @@
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export interface OptionType {
     className: string;
@@ -29,6 +29,15 @@ const MultipleChoiceState = (options: string[], answers: string[], nextOptionSta
     const [showingAnswer, setShowingAnswer] = useState<boolean>(false);
     const [optionState, setOptionState] = useState<OptionType[]>(nextOptionState ?? initMC(options, correctAnswers));
 
+    useEffect(() => {
+        correctAnswers.clear();
+        answers.forEach(value => correctAnswers.add(value));
+
+        setOptionState(nextOptionState ?? initMC(options, correctAnswers));
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [options, answers, nextOptionState]);
+
     const onChange = (index: number) => {
         const newOptionState = [...optionState];
 
@@ -43,12 +52,12 @@ const MultipleChoiceState = (options: string[], answers: string[], nextOptionSta
 
         newOptionState.forEach(item => {
             if (item.isCorrect) {
-                if(!item.checked && result) result=false;
+                if (!item.checked && result) result = false;
                 item.className = "green";                   /* eslint-disable-line no-param-reassign */
                 item.icon = <CheckCircleOutlined />;        /* eslint-disable-line no-param-reassign */
             }
             else if (item.checked) {
-                if(result) result=false;
+                if (result) result = false;
                 item.className = "red";                     /* eslint-disable-line no-param-reassign */
                 item.icon = <CloseCircleOutlined />;        /* eslint-disable-line no-param-reassign */
             }
@@ -60,7 +69,7 @@ const MultipleChoiceState = (options: string[], answers: string[], nextOptionSta
 
         setOptionState(newOptionState);
         setShowingAnswer(true);
-        
+
         return result;
     };
 
