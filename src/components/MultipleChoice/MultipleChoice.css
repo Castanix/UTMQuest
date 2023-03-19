@@ -34,11 +34,23 @@
 
 .explanation-container { 
     margin-top: 1.5rem;
+    max-width: 80vw;
 }
 
 .explanation-title { 
     border-left: 3px solid #40a9ff !important;
     padding-left: 0.5rem;
+}
+
+.mc > span {
+    min-width: 275px;
+    width: fit-content;
+}
+
+@media screen and (max-width: 420px) {
+    .mc > span {
+        min-width: 60vw;
+    }
 }
 
 /* @media screen and (max-width: 375px) {
