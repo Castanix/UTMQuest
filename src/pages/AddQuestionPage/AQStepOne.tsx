@@ -7,11 +7,11 @@ import { onMobile } from "../../components/EditHistory/EditHistory";
 const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
     { courseId: string, topics: TopicsFrontEndType[], setCurrStep: Function, setTopicSelected: Function }) => {
 
-    const fullTopicList = topics;
+    const fullTopicList = [...topics];
     const [selected, setSelected] = useState<string>();
     const [searchValue, setSearchValue] = useState<string>();
 
-    const { defaultTopicId, defaultTopicName } = useLocation().state ?? "";
+    // const { defaultTopicId, defaultTopicName } = useLocation().state ?? "";
     const { editableQns } = useLocation().state ?? "";
 
     useEffect(() => {
@@ -20,11 +20,8 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
 
             setTopicSelected([topicId, editableQns.topicName]);
             setSelected(topicId);
-        } else if (defaultTopicId && defaultTopicName) {
-            setTopicSelected([defaultTopicId, defaultTopicName]);
-            setSelected(defaultTopicId);
-        };
-    }, [editableQns, topics, setTopicSelected, defaultTopicId, defaultTopicName]);
+        }
+    }, [editableQns, topics, setTopicSelected]);
 
     const { Option } = Select;
 
@@ -35,14 +32,14 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
 
         fullTopicList.forEach(item => {
             if (editableQns && !doesTopicIdExist) {
-                if (item._id === editableQns.topicId) doesTopicIdExist = true;
+                if (item._id.toString() === editableQns.topicId) doesTopicIdExist = true;
             };
 
             topicArr.push(<Option key={item._id.toString()} value={item._id}>{item.topicName}</Option>);
         });
 
         if (editableQns && !doesTopicIdExist) {
-            topicArr.push(<Option key={editableQns.topicId} value={editableQns._id}>{editableQns.topicName}</Option>);
+            topicArr.push(<Option key={editableQns.topicId} value={editableQns.topicId}>{editableQns.topicName}</Option>);
 
             const { topicId: _id, topicName } = editableQns;
             fullTopicList.push(
@@ -62,7 +59,7 @@ const AQStepOne = ({ courseId, topics, setCurrStep, setTopicSelected }:
     const GetSelectInitialValue = () => {
         if (editableQns) return editableQns.topicName;
 
-        if (defaultTopicId !== '' && defaultTopicName !== '') return defaultTopicName;
+        // if (defaultTopicId !== '' && defaultTopicName !== '') return defaultTopicName;
 
         return null;
     };
