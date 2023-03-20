@@ -704,38 +704,40 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 		try {
 			session.startTransaction();
 
-			if (latestTopicId !== topicId) {
+			if (latestTopicId !== topicId.toString()) {
 				await utmQuestCollections.Topics?.findOneAndUpdate(
 					{
-						_id: new ObjectID(topicId),
+						_id: topicId,
 						deleted: true,
 					},
 					{ $set: { deleted: false } },
 					{ session }
 				)
-					.then(async () => {
+					.then(async (result) => {
 						await topicIncrementor(
 							new ObjectID(latestTopicId),
 							-1,
 							session
 						);
 						await topicIncrementor(
-							new ObjectID(topicId),
+							topicId,
 							1,
 							session
 						);
 
-						await utmQuestCollections.Courses?.findOneAndUpdate(
-							{ courseId },
-							{ $inc: { numTopics: 1 } },
-							{ session }
-						)
-						.then(async () => {
-							await redisClient.del('course');
-						})
-						.catch((err) => {
-							throw new Error(err);
-						});
+						if (result.value) {
+							await utmQuestCollections.Courses?.findOneAndUpdate(
+								{ courseId },
+								{ $inc: { numTopics: 1 } },
+								{ session }
+							)
+							.then(async () => {
+								await redisClient.del('course');
+							})
+							.catch((err) => {
+								throw new Error(err);
+							});
+						}
 					})
 					.catch((err) => {
 						throw new Error(err);
