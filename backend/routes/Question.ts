@@ -772,7 +772,10 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 			})
 				.toArray()
 				.then(async (documents) => {
+
+					// eslint-disable-next-line no-restricted-syntax
 					for (const doc of documents) {
+						// eslint-disable-next-line no-await-in-loop
 						await utmQuestCollections.Discussions?.deleteMany(
 							{
 								_id: {
@@ -784,6 +787,7 @@ questionRouter.put("/restoreQuestion", async (req: Request, res: Response) => {
 							{ session }
 						);
 
+						// eslint-disable-next-line no-await-in-loop
 						await utmQuestCollections.Discussions?.deleteOne(doc,
 							{ session }
 						);
