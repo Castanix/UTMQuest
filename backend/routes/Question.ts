@@ -221,6 +221,7 @@ questionRouter.get(
 	"/generateQuiz/:courseId/:topicsGen/:numQnsGen",
 	async (req: Request, res: Response) => {
 		const { courseId, topicsGen, numQnsGen } = req.params;
+		const { utorid: utorId } = req.headers;
 
 		const topicsGenArr = JSON.parse(topicsGen);
 
@@ -228,8 +229,8 @@ questionRouter.get(
 			courseId,
 			latest: true,
 			qnsType: qnsTypeEnum.mc,
-			$expr: {
-				$gte: [
+			$and: [
+				{ $expr: {$gte: [
 					{
 						$divide: [
 							{ $sum: ["$likes", 1] },
@@ -237,8 +238,9 @@ questionRouter.get(
 						],
 					},
 					0.5,
-				],
-			},
+				] }},
+				{ $or: [{ utorId: { $eq: utorId } }, { date: { $lt: new Date(Date.now() - 24*60*60*1000).toISOString() } }] }
+			]
 		};
 
 		const match = {
