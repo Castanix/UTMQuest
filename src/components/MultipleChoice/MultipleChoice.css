@@ -1,9 +1,11 @@
 .mc {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
     white-space: pre-line;
     margin-bottom: 1rem;
+    max-width: 100%;
 }
 
 .mc-actions {
@@ -43,8 +45,9 @@
 }
 
 .mc > span {
-    min-width: 275px;
-    width: fit-content;
+    display: block;
+    position: relative;
+    width: 100%;
 }
 
 @media screen and (max-width: 420px) {
