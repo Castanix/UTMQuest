@@ -31,7 +31,8 @@ const MultipleChoiceState = (options: string[], answers: string[], nextOptionSta
 
     useEffect(() => {
         correctAnswers.clear();
-        answers.forEach(value => correctAnswers.add(value));
+        if (typeof (answers) === "string") correctAnswers.add(answers);
+        else answers.forEach(value => correctAnswers.add(value));
 
         setOptionState(nextOptionState ?? initMC(options, correctAnswers));
 
