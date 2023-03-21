@@ -127,7 +127,7 @@ tr th {
 }
 
 .wmde-markdown * {
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 @media screen and (max-width: 720px) {
@@ -138,7 +138,7 @@ tr th {
 
 @media screen and (max-width: 420px) {
   .wmde-markdown * {
-    font-size: 12px;
+    font-size: 0.8rem;
   }
 }
 
