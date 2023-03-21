@@ -84,7 +84,7 @@ const Header = ({ question }: { question: QuestionFrontEndType }) => (
                 <Breadcrumb.Item><Link to={`/courses/${question.courseId}/${pageList.currPage}`}>{question.courseId}</Link></Breadcrumb.Item>
                 <Breadcrumb.Item>
                     <Text
-                        style={{ width: 100 }}
+                        style={{ width: '20rem' }}
                         ellipsis
                     >
                         {question.qnsName}
