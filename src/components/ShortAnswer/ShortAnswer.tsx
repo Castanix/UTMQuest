@@ -28,13 +28,13 @@ const ShortAnswer = ({ answer, setHasAnswered }: { answer: string, setHasAnswere
         <div>
             {!isSubmit ?
                 <div>
-                    <TextArea showCount disabled={isSubmit} rows={!onMobile() ? 5 : 2} placeholder="Type your answer here" onChange={handleTextChange} value={text} maxLength={4000} />
+                    <TextArea style={{ fontSize: "1rem" }} showCount disabled={isSubmit} rows={!onMobile() ? 5 : 2} placeholder="Type your answer here" onChange={handleTextChange} value={text} maxLength={4000} />
                     <div className="submitButton-container">
                         <Button shape="round" onClick={submitAnswer}>Submit</Button>
                     </div>
                 </div>
                 :
-                <Paragraph>{text}</Paragraph>
+                <Paragraph style={{ fontSize: "1rem" }}>{text}</Paragraph>
             }
             {isSubmit &&
                 <div>

@@ -136,14 +136,6 @@ tr th {
   }
 }
 
-@media screen and (max-width: 420px) {
-  .wmde-markdown * {
-    font-size: 0.8rem;
-  }
-}
-
-
-
 /* Webkit css */
 /* webkit scrollbar compatible with Chrome, Edge, Opera, Safari */
 ::-webkit-scrollbar {
