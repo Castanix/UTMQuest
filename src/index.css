@@ -82,6 +82,7 @@ input,
 .content > .ant-card {
   box-shadow: none !important;
   border: none !important;
+  border-radius: 0;
 }
 
 .ant-typography {
