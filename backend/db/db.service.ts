@@ -11,7 +11,7 @@ export default async function connectDB() {
 	const env = process.env.NODE_ENV || "dev";
 
 	const client: mongoDB.MongoClient = new mongoDB.MongoClient(
-		env === "dev" ? configValues.MONGO_TEST2_URI : configValues.MONGO_URI
+		env === "dev" ? configValues.MONGO_TEST_URI : configValues.MONGO_URI
 	);
 
 	await client.connect();

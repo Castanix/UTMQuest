@@ -32,6 +32,7 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 					anonId,
 					utorName: `${firstName} ${lastName}`,
 					bookmarkCourses: [],
+					theme: "light",
 				},
 				{ session }
 			);
@@ -65,6 +66,7 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 				username: firstName.concat(" ").concat(lastName),
 				userId,
 				anonId,
+				theme: "light",
 			});
 		} catch (error) {
 			await session.abortTransaction();
@@ -78,6 +80,7 @@ accountRouter.put("/setup", async (req: Request, res: Response) => {
 			username: firstName.concat(" ").concat(lastName),
 			userId: user.userId,
 			anonId: user.anonId,
+			theme: user.theme,
 		});
 	}
 });
@@ -163,6 +166,17 @@ accountRouter.put(
 		}
 	}
 );
+
+accountRouter.patch("/updateTheme", async (req: Request) => {
+	const { utorid: utorId } = req.headers;
+	const account = await utmQuestCollections.Accounts?.findOne({ utorId });
+
+	if (account) {
+		await utmQuestCollections.Accounts?.updateOne(account, {
+			$set: { theme: account.theme === "light" ? "dark" : "light" },
+		});
+	}
+});
 
 /* Currently unused with the removal of the colour field */
 // accountRouter.put('/updateColour', async (req: Request, res: Response) => {

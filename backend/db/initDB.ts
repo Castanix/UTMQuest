@@ -8,14 +8,15 @@ async function initDB() {
 	const env = process.env.NODE_ENV || "dev";
 
 	const client: mongoDB.MongoClient = new mongoDB.MongoClient(
-		env === "dev" ? configValues.MONGO_TEST2_URI : configValues.MONGO_URI
+		env === "dev" ? configValues.MONGO_TEST_URI : configValues.MONGO_URI
 	);
 
 	await client.connect();
 
-	redisClient.on('error', (err: Error) => console.log('Redis Client Error', err));
+	redisClient.on("error", (err: Error) =>
+		console.log("Redis Client Error", err)
+	);
 	await redisClient.connect();
-
 
 	const db: mongoDB.Db = client.db(configValues.DB_NAME);
 
@@ -28,7 +29,7 @@ async function initDB() {
 			db.dropCollection("Topics"),
 			db.dropCollection("Questions"),
 			db.dropCollection("Discussions"),
-			redisClient.FLUSHDB()
+			redisClient.FLUSHDB(),
 		]);
 		// eslint-disable-next-line no-empty
 	} catch (error) {}
@@ -46,6 +47,7 @@ async function initDB() {
 						"userId",
 						"anonId",
 						"bookmarkCourses",
+						"theme",
 					],
 					additionalProperties: false,
 					properties: {
@@ -83,6 +85,11 @@ async function initDB() {
 								description:
 									"items in array must be a string referencing the Courses collection or empty",
 							},
+						},
+						theme: {
+							enum: ["light", "dark"],
+							description:
+								"'theme' is an enum representing app theme",
 						},
 					},
 				},
@@ -447,8 +454,8 @@ async function initDB() {
 						score: {
 							bsonType: "double",
 							description:
-								"'score' is a number (double) representing how good or popular a question is"
-						}
+								"'score' is a number (double) representing how good or popular a question is",
+						},
 					},
 				},
 			},
@@ -460,9 +467,12 @@ async function initDB() {
 				db
 					.collection("Questions")
 					.createIndex({ qnsLink: 1, latest: 1 }),
-				db
-					.collection("Questions")
-					.createIndex({ courseId: 1, latest: 1, score: -1, date: 1 }),
+				db.collection("Questions").createIndex({
+					courseId: 1,
+					latest: 1,
+					score: -1,
+					date: 1,
+				}),
 			])
 				.then(() => {
 					console.log("Added indexes for Questions");

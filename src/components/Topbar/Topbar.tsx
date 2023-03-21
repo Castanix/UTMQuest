@@ -47,20 +47,24 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URI}/account/setup`, { method: "PUT" })
-    .then((result) => {
-      if (result.status !== 418 && result.status !== 201) throw Error("Could not perform first time login");
-      return result.json();
-    }).then(response => {
-      setUsername(response.username);
-      setUserId(response.userId);
-      setAnonId(response.anonId);
-      setIsLoading(false);
-    }).catch((error) => {
-      console.log(error);
-    });
+      .then((result) => {
+        if (result.status !== 418 && result.status !== 201) throw Error("Could not perform first time login");
+        return result.json();
+      }).then(response => {
+        setUsername(response.username);
+        setUserId(response.userId);
+        setAnonId(response.anonId);
+        setLightMode(response.theme === "light");
+        setIsLoading(false);
+      }).catch((error) => {
+        console.log(error);
+      });
   }, []);
 
-  const onThemeChange = () => setLightMode(!isLightMode);
+  const onThemeChange = () => {
+    setLightMode(!isLightMode);
+    fetch(`${process.env.REACT_APP_API_URI}/account/updateTheme`, { method: "PATCH" });
+  };
 
   const signOut = () => {
     setShowModal(false);
