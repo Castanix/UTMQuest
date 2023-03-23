@@ -15,11 +15,18 @@ const QuizGenerationMenu = ({ courseId, topics }: { courseId: string, topics: To
     const topicOptions: SelectProps['options'] = useMemo(
         /* eslint-disable-next-line arrow-body-style */
         () => topics.map(topic => {
-            return { label: topic.topicName, value: topic.topicName };
+            return { label: topic.topicName, value: topic._id };
         }),
         [topics]
     );
 
+    const overflowEl = (document.querySelector(".dark") as HTMLElement) ?? (document.querySelector(".light") as HTMLElement);
+
+    if (isModalOpen) {
+        overflowEl.style.overflow = "hidden";
+    } else {
+        overflowEl.style.overflow = "";
+    }
 
     const handleTopicChanges = (value: string[]) => setSelectedTopics(value);
 
