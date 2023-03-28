@@ -13,10 +13,10 @@ async function initDB() {
 
 	await client.connect();
 
-	redisClient.on("error", (err: Error) =>
-		console.log("Redis Client Error", err)
-	);
-	await redisClient.connect();
+	// redisClient.on("error", (err: Error) =>
+	// 	console.log("Redis Client Error", err)
+	// );
+	// await redisClient.connect();
 
 	const db: mongoDB.Db = client.db(configValues.DB_NAME);
 
@@ -29,7 +29,7 @@ async function initDB() {
 			db.dropCollection("Topics"),
 			db.dropCollection("Questions"),
 			db.dropCollection("Discussions"),
-			redisClient.FLUSHDB(),
+			// redisClient.FLUSHDB(),
 		]);
 		// eslint-disable-next-line no-empty
 	} catch (error) {}
@@ -355,13 +355,11 @@ async function initDB() {
 							bsonType: "string",
 							description:
 								"'description' must be a string or empty, and is required",
-							maxLength: 4000,
 						},
 						explanation: {
 							bsonType: "string",
 							description:
 								"'explanation' must be a string or empty, and is required",
-							maxLength: 4000,
 						},
 						choices: {
 							bsonType: "array",
@@ -740,7 +738,7 @@ async function initDB() {
 			console.log(err);
 		});
 
-	redisClient.disconnect();
+	// redisClient.disconnect();
 	client.close();
 }
 

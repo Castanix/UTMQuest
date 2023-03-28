@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
 import './ApprovedQuestion.css';
-import MDEditor from '@uiw/react-md-editor';
+import parse from "html-react-parser";
 import { Breadcrumb, Button, Card, Typography } from 'antd';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { CaretLeftOutlined, EditOutlined } from "@ant-design/icons";
@@ -16,7 +16,6 @@ import Discussion from "../../components/Discussion/Discussion";
 import EditHistory, { GetUsername, onMobile } from "../../components/EditHistory/EditHistory";
 import DisplayBadges from "../../components/DisplayBadges/DisplayBadges";
 import GetRelativeTime from "../../RelativeTime";
-import { ThemeContext } from "../../components/Topbar/Topbar";
 import QuestionRater from "../../components/QuestionRater/QuestionRater";
 import { QuizDependencyTypes } from "../QuizPage/QuizPage";
 import { pageList } from "../QuestionsPage/QuestionState";
@@ -35,7 +34,7 @@ const GetTabKey = (key: string) => {
     }
 };
 
-export const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered, quizDependancies }: { question: QuestionFrontEndType, isLightMode: boolean, setHasAnswered: Function, quizDependancies?: QuizDependencyTypes }) => (
+export const MultipleChoiceTab = ({ question, setHasAnswered, quizDependancies }: { question: QuestionFrontEndType, setHasAnswered: Function, quizDependancies?: QuizDependencyTypes }) => (
     <div>
         <Typography.Paragraph
             ellipsis={{
@@ -48,7 +47,8 @@ export const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered, quizD
                 {question.qnsName}
             </div>
         </Typography.Paragraph>
-        <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.description} />
+        {parse(question.description)}
+        {/* <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.description} /> */}
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
@@ -56,7 +56,7 @@ export const MultipleChoiceTab = ({ question, isLightMode, setHasAnswered, quizD
     </div>
 );
 
-const ShortAnswerTab = ({ question, isLightMode, setHasAnswered }: { question: QuestionFrontEndType, isLightMode: boolean, setHasAnswered: Function }) => (
+const ShortAnswerTab = ({ question, setHasAnswered }: { question: QuestionFrontEndType, setHasAnswered: Function }) => (
     <div>
         <Typography.Paragraph
             ellipsis={{
@@ -67,7 +67,8 @@ const ShortAnswerTab = ({ question, isLightMode, setHasAnswered }: { question: Q
         >
             {question.qnsName}
         </Typography.Paragraph>
-        <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.description} />
+        {parse(question.description)}
+        {/* <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={question.description} /> */}
         <br />
         <br />
         <Title level={3} className='divider-title'>Your answer</Title>
@@ -126,12 +127,12 @@ const Header = ({ question }: { question: QuestionFrontEndType }) => (
     </div>
 );
 
-const getQuestionType = (question: QuestionFrontEndType, isLightMode: boolean, setHasAnswered: Function) => ({
-    mc: <MultipleChoiceTab question={question} isLightMode={isLightMode} setHasAnswered={setHasAnswered} />,
-    short: <ShortAnswerTab question={question} isLightMode={isLightMode} setHasAnswered={setHasAnswered} />
+const getQuestionType = (question: QuestionFrontEndType, setHasAnswered: Function) => ({
+    mc: <MultipleChoiceTab question={question} setHasAnswered={setHasAnswered} />,
+    short: <ShortAnswerTab question={question} setHasAnswered={setHasAnswered} />
 });
 
-const QuestionType = ({ question, qnsType, isLightMode, setHasAnswered }: { question: QuestionFrontEndType, qnsType: keyof TypeOfQuestion, isLightMode: boolean, setHasAnswered: Function }) => <div>{getQuestionType(question, isLightMode, setHasAnswered)[qnsType]}</div>;
+const QuestionType = ({ question, qnsType, setHasAnswered }: { question: QuestionFrontEndType, qnsType: keyof TypeOfQuestion, setHasAnswered: Function }) => <div>{getQuestionType(question, setHasAnswered)[qnsType]}</div>;
 
 const tabList = [
     {
@@ -157,7 +158,6 @@ const ApprovedQuestion = () => {
     const courseId = params.courseId ?? '';
     const { loading, question, hasRated, error } = GetQuestion(qnsLink);
 
-    const isLightMode = useContext(ThemeContext);
     const queryClient = useQueryClient();
 
 
@@ -195,7 +195,7 @@ const ApprovedQuestion = () => {
     };
 
     const contentList: Record<string, React.ReactNode> = {
-        Question: <QuestionType question={question} qnsType={question.qnsType as keyof TypeOfQuestion} isLightMode={isLightMode} setHasAnswered={setHasAnswered} />,
+        Question: <QuestionType question={question} qnsType={question.qnsType as keyof TypeOfQuestion} setHasAnswered={setHasAnswered} />,
         Discussion: <Discussion qnsLink={question.qnsLink} qnsDate={question.date} />,
         EditHistory: <EditHistory qnsLink={question.qnsLink} />
     };

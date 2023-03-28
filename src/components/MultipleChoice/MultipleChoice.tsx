@@ -1,10 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Button, Checkbox, Divider, Space } from "antd";
 import Title from "antd/es/typography/Title";
 import "./MultipleChoice.css";
-import MDEditor from "@uiw/react-md-editor";
+import parse from "html-react-parser";
 import { MultipleChoiceState } from "./MultipleChoiceState";
-import { ThemeContext } from "../Topbar/Topbar";
 import { QuizDependencyTypes } from "../../pages/QuizPage/QuizPage";
 
 
@@ -18,8 +17,6 @@ const MultipleChoice = ({ options, answers, explanation, setHasAnswered, quizDep
         setRevealExplanation(!revealExplanation);
         setIsActive(!isActive);
     };
-
-    const isLightMode = useContext(ThemeContext);
 
     const {
         showingAnswer,
@@ -72,7 +69,8 @@ const MultipleChoice = ({ options, answers, explanation, setHasAnswered, quizDep
                 <Title level={3} className="explanation-title">
                     Explanation
                 </Title>
-                <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={explanation} />
+                {parse(explanation)}
+                {/* <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={explanation} /> */}
             </div>}
         </div>
     );

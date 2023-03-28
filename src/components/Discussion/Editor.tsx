@@ -1,14 +1,10 @@
 import React, { useContext, useState } from "react";
 import { Button, Checkbox, Form, message, Space, } from "antd";
-import TextArea from "antd/es/input/TextArea";
 import { Comment } from '@ant-design/compatible';
-import rehypeSanitize from "rehype-sanitize";
-import MDEditor from "@uiw/react-md-editor";
+import { Editor as MDEditor } from '@tinymce/tinymce-react';
 // import { Link } from "react-router-dom";
 import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
-
 import "./Editor.css";
-import { onMobile } from "../EditHistory/EditHistory";
 import { ThemeContext, UserContext } from "../Topbar/Topbar";
 import { GetUserInitials } from "../../pages/QuestionsPage/QuestionsList";
 
@@ -155,22 +151,24 @@ const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread,
             content={
                 <span>
                     <Form.Item>
-                        {!onMobile() ?
-                            <MDEditor
-                                height={300}
-                                value={content}
-                                textareaProps={{ placeholder: "Add a comment", maxLength: 4000 }}
-                                onChange={(e) => setContent(e ?? "")}
-                                highlightEnable={false}
-                                data-color-mode={isLightMode ? "light" : "dark"}
-                                previewOptions={{
-                                    rehypePlugins: [[rehypeSanitize]]
-                                }}
-                            />
-                            :
-                            <TextArea placeholder="Add a comment" onChange={(e) => setContent(e.target.value)} value={content} rows={2} />
-                        }
-                        <span className="editor-count">{content.length} / 4000</span>
+                        <MDEditor
+                            key={isLightMode.toString()}
+                            apiKey="qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc"
+                            value={content}
+                            init={{
+                                plugins:
+                                    'print preview paste importcss searchreplace autolink directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap emoticons',
+                                menubar: 'file edit view insermt format tools table help',
+                                content_css: isLightMode ? 'default' : 'dark',
+                                skin: isLightMode ? 'oxide' : 'oxide-dark',
+                                toolbar_mode: 'sliding',
+                                height: 500,
+                                toolbar:
+                                    '| mybutton additem delete | undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview  print | insertfile image media link anchor codesample | ltr rtl',
+
+                            }}
+                            onEditorChange={(e) => setContent(e ?? "")}
+                        />
                     </Form.Item>
                     <Form.Item>
                         <Space className="post-toolbar">

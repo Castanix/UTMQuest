@@ -1,27 +1,44 @@
 import { Button, Checkbox, Form, Input, Modal, Select, Typography, message } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
 import { Navigate, useLocation } from 'react-router-dom';
 import React, { useContext, useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
-import MDEditor from '@uiw/react-md-editor';
-import rehypeSanitize from 'rehype-sanitize';
+import { Editor } from '@tinymce/tinymce-react';
 import { QuestionFrontEndType } from '../../../backend/types/Questions';
 import qnsTypeEnum from './types/QnsTypeEnum';
 import { AddQuestion, EditQuestion, RestoreQuestion } from './fetch/AddQuestion';
 import AddMultipleChoice, { AddOptionType } from '../../components/MultipleChoice/AddMultipleChoice/AddMultipleChoice';
 import DuplicateQuestions from '../../components/DuplicateQuestions/DuplicateQuestions';
-import { onMobile } from '../../components/EditHistory/EditHistory';
 import { ThemeContext, UserContext } from '../../components/Topbar/Topbar';
 
 const { Option } = Select;
 
-const GetEditor = (value: string | undefined, placeholder: string, onChange: any, isLightMode: boolean) => {
-    if (onMobile()) {
-        return <TextArea className="add-question-textarea" rows={4} placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)} maxLength={4000} showCount />;
-    }
-    return (
-        <div>
-            <MDEditor
+const GetEditor = (value: string, placeholder: string, onChange: any, isLightMode: boolean) => (
+    <div>
+        <Editor
+            key={isLightMode.toString()}
+            apiKey="qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc"
+            value={value}
+            init={{
+                external_plugins: {
+                    'tiny_mce_wiris': `node_modules/@wiris/mathtype-tinymce6/plugin.min.js`,
+                },
+                plugins:
+                    'preview importcss searchreplace autolink directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap emoticons',
+                menubar: 'file edit view insermt format tools table help',
+                content_css: isLightMode ? 'default' : 'dark',
+                skin: isLightMode ? 'oxide' : 'oxide-dark',
+                toolbar_mode: 'sliding',
+                placeholder,
+                height: 500,
+                draggable_modal: true,
+                extended_valid_elements: '*[.*]',
+                toolbar:
+                    '| mybutton additem delete | undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview  print | insertfile image media link anchor codesample | ltr rtl | tiny_mce_wiris_formulaEditor tiny_mce_wiris_formulaEditorChemistry',
+
+            }}
+            onEditorChange={onChange}
+        />
+        {/* <MDEditor
                 height={300}
                 value={value}
                 textareaProps={{ placeholder, maxLength: 4000 }}
@@ -32,10 +49,9 @@ const GetEditor = (value: string | undefined, placeholder: string, onChange: any
                     rehypePlugins: [[rehypeSanitize]]
                 }}
             />
-            <span className="editor-count">{(value ?? "").length} / 4000</span>
-        </div>
-    );
-};
+            <span className="editor-count">{(value ?? "").length} / 4000</span> */}
+    </div>
+);
 
 // Checks if the question to be restored is not edited to be identical to current latest
 const isIdenticalEdit = (obj1: QuestionFrontEndType, obj2: QuestionFrontEndType) => {
@@ -87,10 +103,10 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
     const [type, setType] = useState<qnsTypeEnum>();
     const [title, setTitle] = useState<string>();
     const [qnsLink, setQnsLink] = useState<string>('');
-    const [problemValue, setProblemValue] = useState<string>();
-    const [explanationValue, setExplanationValue] = useState<string>();
+    const [problemValue, setProblemValue] = useState<string>("");
+    const [explanationValue, setExplanationValue] = useState<string>("");
     const [mcOption, setMcOption] = useState<AddOptionType[]>([{ _id: 1, value: "", isCorrect: false }, { _id: 2, value: "", isCorrect: false }]);
-    const [solValue, setSolValue] = useState<string>();
+    const [solValue, setSolValue] = useState<string>("");
     const [redirect, setRedirect] = useState<string>();
     const [isAnon, setAnon] = useState<boolean>(false);
     const [isSubmit, setIsSubmit] = useState<boolean>(false);

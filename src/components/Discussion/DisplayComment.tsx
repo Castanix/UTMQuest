@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Popconfirm, Tag, Typography } from "antd";
 import { Comment } from '@ant-design/compatible';
 import { QuestionOutlined } from "@ant-design/icons";
-import MDEditor from "@uiw/react-md-editor";
+import parse from "html-react-parser";
 import { Link } from "react-router-dom";
 import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 import GetChildComments from "./fetch/GetChildComments";
@@ -10,7 +10,7 @@ import Editor from "./Editor";
 import GetRelativeTime from "../../RelativeTime";
 
 import "./Discussion.css";
-import { ThemeContext, UserContext } from "../Topbar/Topbar";
+import { UserContext } from "../Topbar/Topbar";
 import { GetUserInitials } from "../../pages/QuestionsPage/QuestionsList";
 
 const GetUsername = (comment: DiscussionFrontEndType) => {
@@ -39,7 +39,6 @@ const DisplayComment = ({ comment, qnsDate }: { comment: DiscussionFrontEndType,
     const [showEdit, setShowEdit] = useState(false);
     const actions = [];
 
-    const isLightMode = useContext(ThemeContext);
     const { userId, anonId } = useContext(UserContext);
 
     const date = displayComment.editDate ?? displayComment.opDate;
@@ -174,7 +173,8 @@ const DisplayComment = ({ comment, qnsDate }: { comment: DiscussionFrontEndType,
             content={
                 displayComment.deleted ?
                     <i>{displayComment.content}</i> :
-                    <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={displayComment.content} />
+                    parse(displayComment.content)
+                // <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={displayComment.content} />
             }
         >
             {
