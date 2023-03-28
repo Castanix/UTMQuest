@@ -1,6 +1,6 @@
-import { ConfigProvider, Layout, Menu, Modal, Space, theme } from 'antd';
+import { Alert, ConfigProvider, Layout, Menu, Modal, Space, theme } from 'antd';
 import {
-  CaretDownFilled, BookOutlined, UserOutlined, LogoutOutlined,
+  CaretDownFilled, BookOutlined, UserOutlined, LogoutOutlined
 } from '@ant-design/icons';
 import './Topbar.css';
 import React, { createContext, useEffect, useMemo, useState } from 'react';
@@ -9,6 +9,7 @@ import Dark from '../../Dark';
 import Light from '../../Light';
 import { onMobile } from '../EditHistory/EditHistory';
 import Loading from '../Loading/Loading';
+import Help from '../Help/Help';
 
 type UserContextType = {
   username: string;
@@ -45,16 +46,20 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const [helpModalOpen, setHelpModalOpen] = useState<boolean>(false);
+
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URI}/account/setup`, { method: "PUT" })
       .then((result) => {
         if (result.status !== 418 && result.status !== 201) throw Error("Could not perform first time login");
+        if (result.status === 201) setHelpModalOpen(true);
         return result.json();
       }).then(response => {
         setUsername(response.username);
         setUserId(response.userId);
         setAnonId(response.anonId);
         setLightMode(response.theme === "light");
+        document.getElementsByTagName("html")[0].style.backgroundColor = response.theme === "light" ? "white" : "#141414";
         setIsLoading(false);
       }).catch((error) => {
         console.log(error);
@@ -64,6 +69,7 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
   const onThemeChange = () => {
     setLightMode(!isLightMode);
     fetch(`${process.env.REACT_APP_API_URI}/account/updateTheme`, { method: "PATCH" });
+    document.getElementsByTagName("html")[0].style.backgroundColor = isLightMode ? "#141414" : "white";
   };
 
   const signOut = () => {
@@ -76,63 +82,76 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
   if (isLoading) return <Loading />;
 
   return (
-    <Layout>
-      <Header className="header">
-        <Link to="/" className="logo">
-          <Logo />
-        </Link>
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          selectable={false}
-        >
-          <Menu.SubMenu
-            key="sub-menu"
-            className="sub-menu"
-            title={(
-              <span>
-                {username.split(" ")[0]}
-                <CaretDownFilled />
-              </span>
-            )}
-          >
-            <Menu.Item key="profile" icon={<UserOutlined />}>
-              <Link to={`/profile/${userId}`}>
-                Profile
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="theme" onClick={onThemeChange}>
-              <Space size={0}>
-                {isLightMode ? <DarkModeIcon /> : <LightModeIcon />}
-                {isLightMode ? "Dark Mode" : "Light Mode"}
-              </Space>
-            </Menu.Item>
-            <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() => setShowModal(true)}>Sign out</Menu.Item>
-          </Menu.SubMenu>
+    <div>
+      <ConfigProvider theme={{
+        token: isLightMode ? Light : Dark,
+        algorithm: onMobile() ? [compactAlgorithm] : []
+      }}>
+        <Alert style={{ justifyContent: 'center', borderRadius: 0, zIndex: 1, position: 'sticky', top: 0 }} message={<div>Thanks for checking out utmQuest. Use this link if you have any feedback or bug reports: <a href='https://forms.gle/J9z3UEsyrjYoZyjA7' target="_blank" rel="noreferrer">Form</a> </div>} type="info" showIcon />
+        <Layout>
+          <Header className="header">
+            <Link to="/" className="logo">
+              <Logo />
+            </Link>
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              style={{ borderBottom: 'none' }}
+              selectable={false}
+            >
+              <Menu.Item key="help">
+                <Help initial={helpModalOpen} />
+              </Menu.Item>
+              <Menu.SubMenu
+                key="sub-menu"
+                className="sub-menu"
+                title={(
+                  <span>
+                    {username.split(" ")[0]}
+                    <CaretDownFilled />
+                  </span>
+                )}
+              >
+                <Menu.Item key="profile" icon={<UserOutlined />}>
+                  <Link to={`/profile/${userId}`}>
+                    Profile
+                  </Link>
+                </Menu.Item>
+                <Menu.Item key="theme" onClick={onThemeChange}>
+                  <Space size={0}>
+                    {isLightMode ? <DarkModeIcon /> : <LightModeIcon />}
+                    {isLightMode ? "Dark Mode" : "Light Mode"}
+                  </Space>
+                </Menu.Item>
+                <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() => setShowModal(true)}>Sign out</Menu.Item>
+              </Menu.SubMenu>
 
-        </Menu>
-        <Modal
-          title="Confirm Logout?"
-          onCancel={() => setShowModal(false)}
-          onOk={signOut}
-          open={showModal}
-        />
-      </Header>
-      <Content>
-        <div className={`content`.concat(isLightMode ? " light" : " dark")}>
-          <ConfigProvider theme={{
-            token: isLightMode ? Light : Dark,
-            algorithm: onMobile() ? [compactAlgorithm] : []
-          }}>
-            <ThemeContext.Provider value={isLightMode}>
-              <UserContext.Provider value={userContextValues}>
-                {children}
-              </UserContext.Provider>
-            </ThemeContext.Provider>
-          </ConfigProvider>
-        </div>
-      </Content>
-    </Layout>
+            </Menu>
+            <Modal
+              title="Confirm Logout?"
+              onCancel={() => setShowModal(false)}
+              onOk={signOut}
+              open={showModal}
+            />
+          </Header>
+          <Content>
+            <div className={`content`.concat(isLightMode ? " light" : " dark")}>
+              {/* <ConfigProvider theme={{ */}
+              {/* token: isLightMode ? Light : Dark, */}
+              {/* algorithm: onMobile() ? [compactAlgorithm] : [] */}
+              {/* }}> */}
+              <ThemeContext.Provider value={isLightMode}>
+                <UserContext.Provider value={userContextValues}>
+                  {children}
+                </UserContext.Provider>
+              </ThemeContext.Provider>
+              {/* </ConfigProvider> */}
+            </div>
+          </Content>
+        </Layout>
+        {/* </ThemeContext.Provider> */}
+      </ConfigProvider>
+    </div>
   );
 };
 

@@ -41,7 +41,6 @@ const Header = ({ courseId }: { courseId: string }) => (
 
 const fetchGenerateQuiz = async (fetchParams: QuizFetchTypes) => {
     const { courseId, topicsGen, numQnsGen } = fetchParams;
-
     const response = await fetch(`${process.env.REACT_APP_API_URI}/question/generateQuiz/${courseId}/${JSON.stringify(topicsGen)}/${numQnsGen}`);
     if (!response.ok) throw Error(response.statusText);
     return response.json();

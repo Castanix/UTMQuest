@@ -1,13 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { DropboxOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { Form, Input, Popconfirm, Table, Typography, Space, Tooltip, Alert, Button } from 'antd';
-import React from 'react';
+import { Form, Input, Popconfirm, Table, Typography, Space, Tooltip, Alert, Button, Empty } from 'antd';
+import React, { useContext } from 'react';
 import { TopicsFrontEndType } from '../../../backend/types/Topics';
 import AddTopic from './AddTopic';
 import TopicState from './TopicState';
 
 import "./TopicsTable.css";
+import { ThemeContext } from '../../components/Topbar/Topbar';
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -58,6 +59,8 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsFrontEndType[], cours
         onChange,
         addTopicCallback,
         lastTopicAdded } = TopicState(topics, courseId);
+
+    const isLightMode = useContext(ThemeContext);
 
     const columns = [
         {
@@ -157,6 +160,27 @@ const TopicsTable = ({ topics, courseId }: { topics: TopicsFrontEndType[], cours
                     body: {
                         cell: EditableCell,
                     },
+                }}
+                locale={{
+                    emptyText: (
+                        <Empty
+                            image={
+                                <DropboxOutlined style={{ fontSize: "5rem" }} />
+                            }
+                            description={
+                                <span
+                                    style={{
+                                        color: isLightMode ? "black" : "white",
+                                    }}
+                                >
+                                    This course doesn&apos;t have any topics
+                                    yet. Feel free to add some using the{" "}
+                                    <b>Add a new Topic</b> button in the top
+                                    right.
+                                </span>
+                            }
+                        />
+                    ),
                 }}
                 className='table'
                 rowKey="_id"

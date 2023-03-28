@@ -1,8 +1,9 @@
 import { Button, Form, Modal, Select } from 'antd';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import AddCourse from './fetch/AddCourse';
 import { CoursesFrontEndType } from '../../../backend/types/Courses';
 import "./CourseBoard.css";
+import { ThemeContext } from '../Topbar/Topbar';
 
 const { Option, OptGroup } = Select;
 
@@ -12,6 +13,7 @@ const AddCourseModal = (props: any) => {
 
     const [searchInput, setSearchInput] = useState<string>();
     const [selected, setSelected] = useState<string>();
+    const isLightMode = useContext(ThemeContext);
 
     const setupOptions = () => {
         let courseArr: React.ReactNode[] = [];
@@ -80,7 +82,7 @@ const AddCourseModal = (props: any) => {
             destroyOnClose
         >
             <Form layout="vertical">
-                <Form.Item label="Select Course to Add:" name="course">
+                <Form.Item label="Select Course to Add:" name={`course-${isLightMode ? "light" : "dark"}`}>
                     <Select
                         showSearch
                         searchValue={searchInput}

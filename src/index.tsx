@@ -40,6 +40,7 @@ fetch(`${process.env.REACT_APP_API_URI}/incrementLoginStreak`, { method: "PUT" }
 root.render(
   <BrowserRouter>
     <QueryClientProvider client={queryClient}>
+      {/* <Alert style={{ justifyContent: 'center', borderRadius: 0, zIndex: 1, position: 'sticky', top: 0 }} message={<div>Thanks for checking out utmQuest. Use this link if you have any feedback or bug reports: <a href='https://forms.gle/J9z3UEsyrjYoZyjA7' target="_blank" rel="noreferrer">Form</a> </div>} type="info" showIcon /> */}
       <Topbar>
         <Routes>
           <Route path="/" element={<LandingPage />} />

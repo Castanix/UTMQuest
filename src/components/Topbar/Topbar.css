@@ -5,10 +5,10 @@
 .header {
     position: fixed;
     padding-right: 0%;
-    padding-left: 1rem; 
+    padding-left: 1rem;
     z-index: 2;
     width: 100%;
-    display: flex; 
+    display: flex;
     justify-content: space-between;
     background-color: var(--theme);
 }
@@ -18,7 +18,8 @@
     padding-right: 0 !important;
 }
 
-.header, .ant-menu {
+.header,
+.ant-menu {
     background-color: var(--theme) !important;
 }
 
@@ -33,10 +34,10 @@
 
 .content {
     padding-top: 4rem;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
-.light { 
+.light {
     background-color: white;
 }
 
@@ -48,5 +49,5 @@
     .show-logo {
         display: none;
     }
-    
+
 }

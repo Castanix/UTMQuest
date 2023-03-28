@@ -1,0 +1,8 @@
+.help-btn {
+    background-color: #0d295a;
+    box-shadow: none;
+}
+
+.help-btn:hover {
+    background-color: #3676f9;
+}

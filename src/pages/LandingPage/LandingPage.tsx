@@ -1,7 +1,10 @@
 import { Breadcrumb, Button, Card, Divider, Space, Typography } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CourseBoard from "../../components/CourseBoard/CourseBoard";
 import DashboardPage from "../../components/DashboardPage/DashboardPage";
+import GetWidgets from "../../components/DashboardPage/fetch/GetWidgets";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
+import Loading from "../../components/Loading/Loading";
 
 import "./LandingPage.css";
 
@@ -17,7 +20,18 @@ const Header = () => (
 );
 
 const LandingPage = () => {
-    const [viewAllCourses, setViewAllCourses] = useState<boolean>(false);
+    const { loading, bookmarkedCourses, error } = GetWidgets();
+
+    const [viewAllCourses, setViewAllCourses] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (!loading) setViewAllCourses(bookmarkedCourses?.length === 0);
+
+    }, [loading, bookmarkedCourses.length]);
+
+    if (loading) return <Loading />;
+
+    if (error instanceof Error) return <ErrorMessage title={error.message} link='.' message='Refresh' />;
 
     return (
         <Card title={<Header />} bordered={false}>
@@ -28,7 +42,7 @@ const LandingPage = () => {
                     <Button shape="round" type={viewAllCourses ? `primary` : `default`} onClick={() => setViewAllCourses(true)}>Select from all courses</Button>
                 </Space>
                 <Divider />
-                {viewAllCourses ? <CourseBoard /> : <DashboardPage />}
+                {viewAllCourses ? <CourseBoard /> : <DashboardPage bookmarkedCourses={bookmarkedCourses} />}
             </main>
         </Card>
     );

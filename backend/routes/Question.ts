@@ -223,8 +223,9 @@ questionRouter.get(
 		const { courseId, topicsGen, numQnsGen } = req.params;
 		const { utorid: utorId } = req.headers;
 
-		const topicsGenArr = JSON.parse(topicsGen);
-
+		const topicsGenArr = JSON.parse(topicsGen).map(
+			(i: string) => new ObjectId(i)
+		);		
 		const baseMatch = {
 			courseId,
 			latest: true,
@@ -249,7 +250,7 @@ questionRouter.get(
 					? baseMatch
 					: {
 							...baseMatch,
-							topicName: { $in: topicsGenArr },
+							topicId: { $in: topicsGenArr },
 					  },
 		};
 
@@ -334,7 +335,7 @@ questionRouter.get(
 						diffInDays + utorId + qns._id
 					);
 
-					if (randomGen() < 0.20) {
+					if (randomGen() < 0.50) {
 						newSeededQuestions.push(qns as QuestionBackEndType);
 					}
 				}

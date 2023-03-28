@@ -27,6 +27,12 @@ code {
   background-color: transparent;
 }
 
+@media screen and (max-width: 420px) {
+  .wmde-markdown * {
+    font-size: 0.8rem;
+  }
+}
+
 /* 
 .ant-list-items > li {
   border-left: var(--border) solid #f0f0f0;
@@ -79,7 +85,7 @@ input,
 } */
 
 /* remove box-shadow on immediate card */
-.content > .ant-card {
+.content>.ant-card {
   box-shadow: none !important;
   border: none !important;
   border-radius: 0;
@@ -87,7 +93,7 @@ input,
 
 .ant-typography {
   margin-top: 0;
-  margin-bottom: 0; 
+  margin-bottom: 0;
 }
 
 .ant-tag {

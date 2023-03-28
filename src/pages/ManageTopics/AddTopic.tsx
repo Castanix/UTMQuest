@@ -102,7 +102,7 @@ const AddTopic = ({ courseId, addTopicCallback }: { courseId: string, addTopicCa
     return (
         <div>
             <Button type="primary" icon={<PlusCircleOutlined />} shape="round" className='add-new-topic' onClick={() => setOpen(true)}>
-                Add a new topic
+                Add a new Topic
             </Button>
             <CollectionCreateForm
                 open={open}

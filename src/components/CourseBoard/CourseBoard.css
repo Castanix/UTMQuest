@@ -31,8 +31,12 @@
     overflow-x: none;
 }
 
-#course {
+#course-dark {
     color: white !important;
+}
+
+#course-light {
+    color: black !important;
 }
 
 @media screen and (max-width: 420px) {

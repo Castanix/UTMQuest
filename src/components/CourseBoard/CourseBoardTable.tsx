@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
-import { Button, Input, Table } from 'antd';
+import { Alert, Button, Input, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { CoursesFrontEndType } from "../../../backend/types/Courses";
@@ -84,6 +84,8 @@ const CourseBoardTable = ({ coursesList }: { coursesList: CoursesFrontEndType[] 
 
     return (
         <div>
+            <Alert message={<span>If you don&apos;t see the course you&apos;re looking for, feel free to add it using the <b>Add a Course</b> button on the right.</span>} type="info" showIcon />
+            <br />
             <div className='toolbar'>
                 <Input className="course-board-search" placeholder="Search Course" prefix={<SearchOutlined />} value={searchValue} onChange={(e) => { handleSearch(e.target.value); }} />
                 <Button type="primary" icon={<PlusCircleOutlined />} shape="round" className='add-new-course' onClick={() => { setIsModalOpen(true); }}>

@@ -22,36 +22,36 @@
 
 .red {
     background-color: #ec6054;
-    border-radius: 25px;
+    border-radius: 6px;
     padding-inline: 0.5rem;
     padding-bottom: 0.1rem;
 }
 
 .green {
     background-color: #71c037;
-    border-radius: 25px;
+    border-radius: 6px;
     padding-inline: 0.5rem;
     padding-bottom: 0.1rem;
 }
 
-.explanation-container { 
+.explanation-container {
     margin-top: 1.5rem;
     max-width: 80vw;
 }
 
-.explanation-title { 
+.explanation-title {
     border-left: 3px solid #40a9ff !important;
     padding-left: 0.5rem;
 }
 
-.mc > span {
+.mc>span {
     display: block;
     position: relative;
     width: 100%;
 }
 
 @media screen and (max-width: 420px) {
-    .mc > span {
+    .mc>span {
         min-width: 60vw;
     }
 }
