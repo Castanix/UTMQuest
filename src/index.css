@@ -160,3 +160,134 @@ tr th {
   background: gray;
   border-radius: 20px;
 }
+
+/* TINY MCE STYLES */
+
+.tiny-dark body {
+  background-color: #222f3e;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.4;
+  margin: 1rem;
+}
+.tiny-dark a {
+  color: #4099ff;
+}
+.tiny-dark table {
+  border-collapse: collapse;
+}
+/* Apply a default padding if legacy cellpadding attribute is missing */
+.tiny-dark table:not([cellpadding]) th,
+.tiny-dark table:not([cellpadding]) td {
+  padding: 0.4rem;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.tiny-dark table[border]:not([border="0"]):not([style*="border-width"]) th,
+.tiny-dark table[border]:not([border="0"]):not([style*="border-width"]) td {
+  border-width: 1px;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.tiny-dark .tiny-darktable[border]:not([border="0"]):not([style*="border-style"]) th,
+.tiny-dark table[border]:not([border="0"]):not([style*="border-style"]) td {
+  border-style: solid;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.tiny-dark .tiny-darktable[border]:not([border="0"]):not([style*="border-color"]) th,
+.tiny-dark table[border]:not([border="0"]):not([style*="border-color"]) td {
+  border-color: #6d737b;
+}
+.tiny-dark figure {
+  display: table;
+  margin: 1rem auto;
+}
+.tiny-dark figure figcaption {
+  color: #8a8f97;
+  display: block;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+.tiny-dark hr {
+  border-color: #6d737b;
+  border-style: solid;
+  border-width: 1px 0 0 0;
+}
+.tiny-dark code {
+  background-color: #6d737b;
+  border-radius: 3px;
+  padding: 0.1rem 0.2rem;
+}
+.tiny-dark .mce-content-body:not([dir=rtl]) blockquote {
+  border-left: 2px solid #6d737b;
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+}
+.tiny-dark .mce-content-body[dir=rtl] blockquote {
+  border-right: 2px solid #6d737b;
+  margin-right: 1.5rem;
+  padding-right: 1rem;
+}
+
+.tiny-light body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.4;
+  margin: 1rem;
+}
+.tiny-light table {
+  border-collapse: collapse;
+}
+/* Apply a default padding if legacy cellpadding attribute is missing */
+.tiny-light table:not([cellpadding]) th,
+.tiny-light table:not([cellpadding]) td {
+  padding: 0.4rem;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.tiny-light table[border]:not([border="0"]):not([style*="border-width"]) th,
+.tiny-light table[border]:not([border="0"]):not([style*="border-width"]) td {
+  border-width: 1px;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.tiny-light table[border]:not([border="0"]):not([style*="border-style"]) th,
+.tiny-light table[border]:not([border="0"]):not([style*="border-style"]) td {
+  border-style: solid;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.tiny-light table[border]:not([border="0"]):not([style*="border-color"]) th,
+.tiny-light table[border]:not([border="0"]):not([style*="border-color"]) td {
+  border-color: #ccc;
+}
+.tiny-light figure {
+  display: table;
+  margin: 1rem auto;
+}
+.tiny-light figure figcaption {
+  color: #999;
+  display: block;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+.tiny-light hr {
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 1px 0 0 0;
+}
+.tiny-light code {
+  background-color: #e8e8e8;
+  border-radius: 3px;
+  padding: 0.1rem 0.2rem;
+}
+.tiny-light .mce-content-body:not([dir=rtl]) blockquote {
+  border-left: 2px solid #ccc;
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+}
+.tiny-light .mce-content-body[dir=rtl] blockquote {
+  border-right: 2px solid #ccc;
+  margin-right: 1.5rem;
+  padding-right: 1rem;
+}

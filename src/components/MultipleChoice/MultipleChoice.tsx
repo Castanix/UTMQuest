@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Checkbox, Divider, Space } from "antd";
 import Title from "antd/es/typography/Title";
 import "./MultipleChoice.css";
 import parse from "html-react-parser";
 import { MultipleChoiceState } from "./MultipleChoiceState";
 import { QuizDependencyTypes } from "../../pages/QuizPage/QuizPage";
+import { ThemeContext } from "../Topbar/Topbar";
 
 
 const MultipleChoice = ({ options, answers, explanation, setHasAnswered, quizDependancies = {} }: { options: string[], answers: string[], explanation: string, setHasAnswered: Function, quizDependancies?: QuizDependencyTypes }) => {
@@ -12,6 +13,8 @@ const MultipleChoice = ({ options, answers, explanation, setHasAnswered, quizDep
     const [revealExplanation, setRevealExplanation] = useState<boolean>(false);
     const [isActive, setIsActive] = useState(false);
     const { setMCResult, newOptionState } = quizDependancies;
+
+    const isLightMode = useContext(ThemeContext);
 
     const showExplanation = () => {
         setRevealExplanation(!revealExplanation);
@@ -69,7 +72,9 @@ const MultipleChoice = ({ options, answers, explanation, setHasAnswered, quizDep
                 <Title level={3} className="explanation-title">
                     Explanation
                 </Title>
-                {parse(explanation)}
+                <div className={`tiny-${isLightMode ? "light" : "dark"}`}>
+                    {parse(explanation)}
+                </div>
                 {/* <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={explanation} /> */}
             </div>}
         </div>

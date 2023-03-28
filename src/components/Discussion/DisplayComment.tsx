@@ -10,7 +10,7 @@ import Editor from "./Editor";
 import GetRelativeTime from "../../RelativeTime";
 
 import "./Discussion.css";
-import { UserContext } from "../Topbar/Topbar";
+import { ThemeContext, UserContext } from "../Topbar/Topbar";
 import { GetUserInitials } from "../../pages/QuestionsPage/QuestionsList";
 
 const GetUsername = (comment: DiscussionFrontEndType) => {
@@ -39,6 +39,7 @@ const DisplayComment = ({ comment, qnsDate }: { comment: DiscussionFrontEndType,
     const [showEdit, setShowEdit] = useState(false);
     const actions = [];
 
+    const isLightMode = useContext(ThemeContext);
     const { userId, anonId } = useContext(UserContext);
 
     const date = displayComment.editDate ?? displayComment.opDate;
@@ -173,7 +174,9 @@ const DisplayComment = ({ comment, qnsDate }: { comment: DiscussionFrontEndType,
             content={
                 displayComment.deleted ?
                     <i>{displayComment.content}</i> :
-                    parse(displayComment.content)
+                    <div className={`tiny-${isLightMode ? "light" : "dark"}`}>
+                        {parse(displayComment.content)}
+                    </div>
                 // <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={displayComment.content} />
             }
         >

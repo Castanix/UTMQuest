@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Input } from 'antd';
 import './ShortAnswer.css';
 import parse from "html-react-parser";
 import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
 import { onMobile } from "../EditHistory/EditHistory";
+import { ThemeContext } from "../Topbar/Topbar";
 
 
 const { TextArea } = Input;
@@ -12,6 +13,8 @@ const { TextArea } = Input;
 const ShortAnswer = ({ answer, setHasAnswered }: { answer: string, setHasAnswered: Function }) => {
     const [text, setText] = useState<string>("");
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
+
+    const isLightMode = useContext(ThemeContext);
 
     const handleTextChange = (event: any) => {
         setText(event.target.value);
@@ -39,7 +42,9 @@ const ShortAnswer = ({ answer, setHasAnswered }: { answer: string, setHasAnswere
                     <br />
                     <br />
                     <Title level={3} className='solution-title'>Solution</Title>
-                    {parse(answer)}
+                    <div className={`tiny-${isLightMode ? "light" : "dark"}`}>
+                        {parse(answer)}
+                    </div>
                     {/* <MDEditor.Markdown warpperElement={{ "data-color-mode": isLightMode ? "light" : "dark" }} source={answer} /> */}
                 </div>}
         </div>
