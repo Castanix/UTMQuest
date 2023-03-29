@@ -229,7 +229,7 @@ const AQStepTwo = ({ courseId, topicSelected, setCurrStep }:
                         </Form.Item>
                     </div>
                     <Form.Item>
-                        {DuplicateQuestions(courseId, topicSelected[0], debounceValue, editableQns.qnsLink)}
+                        {DuplicateQuestions(courseId, topicSelected[0], debounceValue, editableQns?.qnsLink)}
                     </Form.Item>
                     <div className="answer-form">
                         <Form.Item label="Problem Description" required>
