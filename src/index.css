@@ -167,8 +167,8 @@ button[title="Mathjax"] {
   font-size: 1.5rem !important;
 }
 
-.tox-notification { 
-  display: none !important 
+.tox-notification {
+  display: none !important
 }
 
 .tiny-dark body {
@@ -178,60 +178,78 @@ button[title="Mathjax"] {
   line-height: 1.4;
   margin: 1rem;
 }
+
 .tiny-dark a {
   color: #4099ff;
 }
+
 .tiny-dark table {
   border-collapse: collapse;
 }
+
 /* Apply a default padding if legacy cellpadding attribute is missing */
 .tiny-dark table:not([cellpadding]) th,
 .tiny-dark table:not([cellpadding]) td {
   padding: 0.4rem;
 }
+
 /* Set default table styles if a table has a positive border attribute
    and no inline css */
 .tiny-dark table[border]:not([border="0"]):not([style*="border-width"]) th,
 .tiny-dark table[border]:not([border="0"]):not([style*="border-width"]) td {
   border-width: 1px;
 }
+
 /* Set default table styles if a table has a positive border attribute
    and no inline css */
 .tiny-dark .tiny-darktable[border]:not([border="0"]):not([style*="border-style"]) th,
 .tiny-dark table[border]:not([border="0"]):not([style*="border-style"]) td {
   border-style: solid;
 }
+
 /* Set default table styles if a table has a positive border attribute
    and no inline css */
 .tiny-dark .tiny-darktable[border]:not([border="0"]):not([style*="border-color"]) th,
 .tiny-dark table[border]:not([border="0"]):not([style*="border-color"]) td {
   border-color: #6d737b;
 }
+
 .tiny-dark figure {
   display: table;
   margin: 1rem auto;
 }
+
 .tiny-dark figure figcaption {
   color: #8a8f97;
   display: block;
   margin-top: 0.25rem;
   text-align: center;
 }
+
 .tiny-dark hr {
   border-color: #6d737b;
   border-style: solid;
   border-width: 1px 0 0 0;
 }
+
 .tiny-dark pre {
-  background: #171b22;
+  background-color: #171b22;
   border-radius: 6px;
   padding: 1rem;
 }
+
+.tiny-dark code {
+  background-color: #171b22;
+  border-radius: 3px;
+  padding: 0.1rem 0.2rem;
+}
+
 .tiny-dark .mce-content-body:not([dir=rtl]) blockquote {
   border-left: 2px solid #6d737b;
   margin-left: 1.5rem;
   padding-left: 1rem;
 }
+
 .tiny-dark .mce-content-body[dir=rtl] blockquote {
   border-right: 2px solid #6d737b;
   margin-right: 1.5rem;
@@ -243,57 +261,74 @@ button[title="Mathjax"] {
   line-height: 1.4;
   margin: 1rem;
 }
+
 .tiny-light table {
   border-collapse: collapse;
 }
+
 /* Apply a default padding if legacy cellpadding attribute is missing */
 .tiny-light table:not([cellpadding]) th,
 .tiny-light table:not([cellpadding]) td {
   padding: 0.4rem;
 }
+
 /* Set default table styles if a table has a positive border attribute
    and no inline css */
 .tiny-light table[border]:not([border="0"]):not([style*="border-width"]) th,
 .tiny-light table[border]:not([border="0"]):not([style*="border-width"]) td {
   border-width: 1px;
 }
+
 /* Set default table styles if a table has a positive border attribute
    and no inline css */
 .tiny-light table[border]:not([border="0"]):not([style*="border-style"]) th,
 .tiny-light table[border]:not([border="0"]):not([style*="border-style"]) td {
   border-style: solid;
 }
+
 /* Set default table styles if a table has a positive border attribute
    and no inline css */
 .tiny-light table[border]:not([border="0"]):not([style*="border-color"]) th,
 .tiny-light table[border]:not([border="0"]):not([style*="border-color"]) td {
   border-color: #ccc;
 }
+
 .tiny-light figure {
   display: table;
   margin: 1rem auto;
 }
+
 .tiny-light figure figcaption {
   color: #999;
   display: block;
   margin-top: 0.25rem;
   text-align: center;
 }
+
 .tiny-light hr {
   border-color: #ccc;
   border-style: solid;
   border-width: 1px 0 0 0;
 }
+
 .tiny-light pre {
   background-color: #f6f8fa;
   border-radius: 6px;
   padding: 1rem;
 }
+
+.tiny-light code {
+  background-color: #f6f8fa;
+  border-radius: 3px;
+  padding: 0.1rem 0.2rem;
+}
+
 .tiny-light .mce-content-body:not([dir=rtl]) blockquote {
   border-left: 2px solid #ccc;
   margin-left: 1.5rem;
   padding-left: 1rem;
 }
+
 .tiny-light .mce-content-body[dir=rtl] blockquote {
   border-right: 2px solid #ccc;
   margin-right: 1.5rem;
