@@ -219,9 +219,12 @@ const ApprovedQuestion = () => {
             bordered={false}
         >
             <main className="main-container">
-                <MathJax>
-                    {contentList[activeTabKey]}
-                </MathJax>
+                {
+                    activeTabKey !== "EditHistory" ?
+                        <MathJax>
+                            {contentList[activeTabKey]}
+                        </MathJax>
+                        : contentList[activeTabKey]}
                 {activeTabKey === "Question" && (hasAnswered || hasRated) ? <QuestionRater hasRated={hasRated} qnsLink={question.qnsLink} /> : null}
             </main>
         </Card>

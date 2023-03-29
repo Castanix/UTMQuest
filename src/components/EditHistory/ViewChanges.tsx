@@ -1,6 +1,8 @@
 /* eslint-disable react/destructuring-assignment */
-import { Col, Row, Space, Typography } from "antd";
-import React, { useContext } from "react";
+import { Button, Col, Modal, Row, Space, Typography } from "antd";
+import MathJax from "better-react-mathjax/MathJax";
+import parse from "html-react-parser";
+import React, { useContext, useState } from "react";
 import { QuestionFrontEndType } from "../../../backend/types/Questions";
 import { ThemeContext } from "../Topbar/Topbar";
 
@@ -9,21 +11,42 @@ import "./ViewChanges.css";
 const RenderDiff = ({ title, oldField, newField }: { title: string, newField: string, oldField: string }) => {
     const isLightMode = useContext(ThemeContext);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalContent, setModalContent] = useState("");
+
+    const handleClose = () => setIsModalOpen(false);
+
+    const handleOpen = (content: string) => {
+        setModalContent(content);
+        setIsModalOpen(true);
+    };
+
     return (
         <div>
+            <Modal title="Expand" open={isModalOpen} onCancel={handleClose} destroyOnClose footer={[
+                <Button key="ok" type="primary" shape="round" onClick={() => handleClose()}>
+                    Close
+                </Button>
+            ]}>
+                <MathJax>
+                    {parse(modalContent)}
+                </MathJax>
+            </Modal>
             <Row gutter={[32, 16]}>
                 <Col span={8}>
                     {title}
                 </Col>
                 <Col span={8}>
                     <span className={"new".concat(isLightMode ? " new-light" : " new-dark")}>
+                        New
                         <Typography.Paragraph
                             ellipsis={{
                                 rows: 3,
                                 expandable: true,
+                                onExpand: () => handleOpen(newField)
                             }}>
                             {newField !== "" ?
-                                newField
+                                parse(newField)
                                 :
                                 <Typography.Text italic>
                                     None
@@ -34,14 +57,15 @@ const RenderDiff = ({ title, oldField, newField }: { title: string, newField: st
                 </Col>
                 <Col span={8}>
                     <span className={"old".concat(isLightMode ? " old-light" : " old-dark")}>
+                        Old
                         <Typography.Paragraph
-                            delete
                             ellipsis={{
                                 rows: 3,
                                 expandable: true,
+                                onExpand: () => handleOpen(oldField)
                             }}>
                             {oldField !== "" ?
-                                oldField
+                                parse(oldField)
                                 :
                                 <Typography.Text italic>
                                     None
