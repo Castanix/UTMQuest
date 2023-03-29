@@ -167,6 +167,10 @@ button[title="Mathjax"] {
   font-size: 1.5rem !important;
 }
 
+.tox-notification { 
+  display: none !important 
+}
+
 .tiny-dark body {
   background-color: #222f3e;
   color: #fff;
@@ -218,10 +222,10 @@ button[title="Mathjax"] {
   border-style: solid;
   border-width: 1px 0 0 0;
 }
-.tiny-dark code {
-  background-color: #6d737b;
-  border-radius: 3px;
-  padding: 0.1rem 0.2rem;
+.tiny-dark pre {
+  background: #171b22;
+  border-radius: 6px;
+  padding: 1rem;
 }
 .tiny-dark .mce-content-body:not([dir=rtl]) blockquote {
   border-left: 2px solid #6d737b;
@@ -280,10 +284,10 @@ button[title="Mathjax"] {
   border-style: solid;
   border-width: 1px 0 0 0;
 }
-.tiny-light code {
-  background-color: #e8e8e8;
-  border-radius: 3px;
-  padding: 0.1rem 0.2rem;
+.tiny-light pre {
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  padding: 1rem;
 }
 .tiny-light .mce-content-body:not([dir=rtl]) blockquote {
   border-left: 2px solid #ccc;
