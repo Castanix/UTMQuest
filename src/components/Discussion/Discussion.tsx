@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { FloatButton, Divider, List, Empty } from "antd";
 import { DropboxOutlined } from "@ant-design/icons";
+import { MathJax } from "better-react-mathjax";
 import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 import GetOPComments from "./fetch/GetOPComments";
 import Loading from "../Loading/Loading";
@@ -50,7 +51,9 @@ const Discussion = ({ qnsLink, qnsDate }: { qnsLink: string, qnsDate: string }) 
                 }}
                 dataSource={comments}
                 renderItem={item => (
-                    <DisplayComment key={item._id} comment={item} qnsDate={qnsDate} />
+                    <MathJax>
+                        <DisplayComment key={item._id} comment={item} qnsDate={qnsDate} />
+                    </MathJax>
                 )}
             />
             <Divider orientation="left">Post a Comment</Divider>

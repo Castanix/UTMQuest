@@ -5,6 +5,7 @@ import parse from "html-react-parser";
 import { Breadcrumb, Button, Card, Typography } from 'antd';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { CaretLeftOutlined, EditOutlined } from "@ant-design/icons";
+import MathJax from "better-react-mathjax/MathJax";
 import MultipleChoice from "../../components/MultipleChoice/MultipleChoice";
 import Loading from "../../components/Loading/Loading";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
@@ -218,7 +219,9 @@ const ApprovedQuestion = () => {
             bordered={false}
         >
             <main className="main-container">
-                {contentList[activeTabKey]}
+                <MathJax>
+                    {contentList[activeTabKey]}
+                </MathJax>
                 {activeTabKey === "Question" && (hasAnswered || hasRated) ? <QuestionRater hasRated={hasRated} qnsLink={question.qnsLink} /> : null}
             </main>
         </Card>

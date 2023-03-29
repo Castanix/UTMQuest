@@ -19,9 +19,12 @@ const GetEditor = (value: string, placeholder: string, onChange: any, isLightMod
             apiKey="qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc"
             value={value}
             init={{
-                // external_plugins: {
-                //     'tiny_mce_wiris': `${process.env.PUBLIC_URL}/plugin.min.js`,
-                // },
+                external_plugins: {
+                    mathjax: `${process.env.PUBLIC_URL}/plugin.min.js`,
+                },
+                mathjax: {
+                    lib: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+                },
                 plugins:
                     'preview importcss searchreplace autolink directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap emoticons',
                 menubar: 'file edit view insermt format tools table help',
@@ -33,7 +36,7 @@ const GetEditor = (value: string, placeholder: string, onChange: any, isLightMod
                 draggable_modal: true,
                 // extended_valid_elements: '*[.*]',
                 toolbar:
-                    '| mybutton additem delete | undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview  print | insertfile image media link anchor codesample | ltr rtl',
+                    '| mathjax mybutton additem delete | undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview  print | insertfile image media link anchor codesample | ltr rtl',
 
             }}
             onEditorChange={onChange}

@@ -5,6 +5,7 @@ import {
 import './Topbar.css';
 import React, { createContext, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { MathJaxContext } from 'better-react-mathjax';
 import Dark from '../../Dark';
 import Light from '../../Light';
 import { onMobile } from '../EditHistory/EditHistory';
@@ -142,7 +143,9 @@ const Topbar = ({ children }: { children: React.ReactNode }) => {
               {/* }}> */}
               <ThemeContext.Provider value={isLightMode}>
                 <UserContext.Provider value={userContextValues}>
-                  {children}
+                  <MathJaxContext>
+                    {children}
+                  </MathJaxContext>
                 </UserContext.Provider>
               </ThemeContext.Provider>
               {/* </ConfigProvider> */}

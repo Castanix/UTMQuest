@@ -156,6 +156,12 @@ const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread,
                             apiKey="qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc"
                             value={content}
                             init={{
+                                external_plugins: {
+                                    mathjax: `${process.env.PUBLIC_URL}/plugin.min.js`,
+                                },
+                                mathjax: {
+                                    lib: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+                                },
                                 plugins:
                                     'print preview paste importcss searchreplace autolink directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap emoticons',
                                 menubar: 'file edit view insermt format tools table help',
@@ -164,7 +170,7 @@ const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread,
                                 toolbar_mode: 'sliding',
                                 height: 500,
                                 toolbar:
-                                    '| mybutton additem delete | undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview  print | insertfile image media link anchor codesample | ltr rtl',
+                                    '| mathjax mybutton additem delete | undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview  print | insertfile image media link anchor codesample | ltr rtl',
 
                             }}
                             onEditorChange={(e) => setContent(e ?? "")}
