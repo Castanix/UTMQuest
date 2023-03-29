@@ -1,12 +1,12 @@
 import React, { useContext, useState } from "react";
 import { Button, Checkbox, Form, message, Space, } from "antd";
 import { Comment } from '@ant-design/compatible';
-import { Editor as MDEditor } from '@tinymce/tinymce-react';
 // import { Link } from "react-router-dom";
 import { DiscussionFrontEndType } from "../../../backend/types/Discussion";
 import "./Editor.css";
 import { ThemeContext, UserContext } from "../Topbar/Topbar";
 import { GetUserInitials } from "../../pages/QuestionsPage/QuestionsList";
+import { GetEditor } from "../../pages/AddQuestionPage/AQStepTwo";
 
 const AddComment = async (discussionId: string, qnsLink: string, op: boolean, content: string, isAnon: boolean, userId: string, anonId: string) => {
     // MAKE POST CALL HERE
@@ -151,30 +151,7 @@ const Editor = ({ discussionId, qnsLink, op, oldContent, updateComments, thread,
             content={
                 <span>
                     <Form.Item>
-                        <MDEditor
-                            key={isLightMode.toString()}
-                            apiKey="qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc"
-                            value={content}
-                            init={{
-                                external_plugins: {
-                                    mathjax: `${process.env.PUBLIC_URL}/plugin.min.js`,
-                                },
-                                mathjax: {
-                                    lib: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
-                                },
-                                plugins:
-                                    'print preview paste importcss searchreplace autolink directionality code visualblocks visualchars fullscreen image link media codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap emoticons',
-                                menubar: 'file edit view insermt format tools table help',
-                                content_css: isLightMode ? 'default' : 'dark',
-                                skin: isLightMode ? 'oxide' : 'oxide-dark',
-                                toolbar_mode: 'sliding',
-                                height: 500,
-                                toolbar:
-                                    '| mathjax mybutton additem delete | undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview  print | insertfile image media link anchor codesample | ltr rtl',
-
-                            }}
-                            onEditorChange={(e) => setContent(e ?? "")}
-                        />
+                        {GetEditor(content, "Type your comment here", setContent, isLightMode)}
                     </Form.Item>
                     <Form.Item>
                         <Space className="post-toolbar">

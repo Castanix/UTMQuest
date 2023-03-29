@@ -12,7 +12,7 @@ import { ThemeContext, UserContext } from '../../components/Topbar/Topbar';
 
 const { Option } = Select;
 
-const GetEditor = (value: string, placeholder: string, onChange: any, isLightMode: boolean) => (
+export const GetEditor = (value: string, placeholder: string, onChange: any, isLightMode: boolean) => (
     <div>
         <Editor
             key={isLightMode.toString()}
